@@ -78,7 +78,7 @@ export default function PainelAlunoPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight">Meu Treino</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Painel do Aluno</h1>
         <p className="text-muted-foreground text-sm">
           Sua ficha ativa e seu progresso — atualizado pelo seu personal.
         </p>

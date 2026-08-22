@@ -12,7 +12,7 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
             <span className="font-bold tracking-tight">
               Shape<span className="text-primary">OS</span>
             </span>
-            <span className="text-muted-foreground text-sm">· Meu Treino</span>
+            <span className="text-muted-foreground text-sm">· Painel do Aluno</span>
           </div>
           <BotaoSairAluno />
         </div>
