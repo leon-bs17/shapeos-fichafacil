@@ -9,8 +9,17 @@ import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { useCriarExercicio, useExercicios } from '@/hooks/use-exercicios'
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
+import { DashboardShell } from '@/components/layout/dashboard-shell'
 
 export default function ExerciciosPage() {
+  return (
+    <DashboardShell>
+      <ExerciciosConteudo />
+    </DashboardShell>
+  )
+}
+
+function ExerciciosConteudo() {
   const { data: exercicios, isLoading } = useExercicios()
   const criar = useCriarExercicio()
 

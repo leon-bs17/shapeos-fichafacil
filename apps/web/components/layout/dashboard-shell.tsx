@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Sidebar } from '@/components/layout/sidebar'
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <Sidebar />

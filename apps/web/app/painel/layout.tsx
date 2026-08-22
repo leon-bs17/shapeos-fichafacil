@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Dumbbell } from 'lucide-react'
 import { BotaoSairAluno } from '@/components/aluno/botao-sair'
 
-export default function PainelAlunoLayout({ children }: { children: ReactNode }) {
+export default function PainelLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-muted/30">
       <header className="border-b border-border bg-card">

@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/modal'
 import { useAcoesFichas, useFichas } from '@/hooks/use-fichas'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
+import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { formatarData } from '@/lib/utils'
 
 interface LinhaItem {
@@ -27,6 +28,14 @@ const ITEM_VAZIO: LinhaItem = {
 }
 
 export default function TreinosPage() {
+  return (
+    <DashboardShell>
+      <TreinosConteudo />
+    </DashboardShell>
+  )
+}
+
+function TreinosConteudo() {
   const { data: fichas, isLoading } = useFichas()
   const acoes = useAcoesFichas()
   const [modalAberto, setModalAberto] = useState(false)

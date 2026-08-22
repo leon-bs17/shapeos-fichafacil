@@ -6,6 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
+import { DashboardShell } from '@/components/layout/dashboard-shell'
+
+export default function RelatoriosPage() {
+  return (
+    <DashboardShell>
+      <RelatoriosConteudo />
+    </DashboardShell>
+  )
+}
+
 
 interface Agrupado {
   nome: string
@@ -16,7 +26,7 @@ interface Agrupado {
   }[]
 }
 
-export default function RelatoriosPage() {
+function RelatoriosConteudo() {
   const { data: alunos, isLoading: carregandoAlunos } = useAlunos()
   const [alunoId, setAlunoId] = useState('')
   const { data: registros, isLoading } = useRegistrosDoAluno(alunoId || undefined)

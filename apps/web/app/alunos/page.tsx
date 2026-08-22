@@ -9,9 +9,18 @@ import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
+import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos } from '@/hooks/use-alunos'
 
 export default function AlunosPage() {
+  return (
+    <DashboardShell>
+      <AlunosConteudo />
+    </DashboardShell>
+  )
+}
+
+function AlunosConteudo() {
   const { data: alunos, isLoading } = useAlunos()
   const [modalAberto, setModalAberto] = useState(false)
   const [email, setEmail] = useState('')

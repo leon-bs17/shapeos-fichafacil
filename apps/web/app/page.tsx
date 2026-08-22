@@ -3,10 +3,19 @@
 import Link from 'next/link'
 import { Activity, ClipboardList, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos, useMetricasGerais } from '@/hooks/use-alunos'
 import { formatarData } from '@/lib/utils'
 
 export default function VisaoGeralPage() {
+  return (
+    <DashboardShell>
+      <VisaoGeralConteudo />
+    </DashboardShell>
+  )
+}
+
+function VisaoGeralConteudo() {
   const { data: alunos, isLoading, isError } = useAlunos()
   const metricas = useMetricasGerais(alunos)
 
