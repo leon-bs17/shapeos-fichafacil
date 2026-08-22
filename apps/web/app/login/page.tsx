@@ -153,12 +153,19 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            Não tem conta?{' '}
-            <Link href="/cadastro" className="text-primary font-medium hover:underline">
-              Cadastre-se
-            </Link>
-          </p>
+          {tipo === 'PERSONAL' ? (
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              Não tem conta?{' '}
+              <Link href="/cadastro" className="text-primary font-medium hover:underline">
+                Cadastre-se
+              </Link>
+            </p>
+          ) : (
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              Alunos recebem acesso pelo convite enviado pelo personal —
+              não é preciso criar conta aqui.
+            </p>
+          )}
         </CardContent>
       </Card>
     </main>

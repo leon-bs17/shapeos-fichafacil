@@ -21,7 +21,6 @@ export default function CadastroPage() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [tipo, setTipo] = useState<'PERSONAL' | 'ALUNO'>('PERSONAL')
   const [erro, setErro] = useState<string | null>(null)
   const [aguardandoEmail, setAguardandoEmail] = useState(false)
   const [carregando, setCarregando] = useState(false)
@@ -45,7 +44,7 @@ export default function CadastroPage() {
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.senha,
-      options: { data: { nome: nome.trim(), tipo } },
+      options: { data: { nome: nome.trim(), tipo: 'PERSONAL' } },
     })
 
     if (error) {
@@ -75,14 +74,16 @@ export default function CadastroPage() {
           <CardTitle className="text-2xl font-bold">
             Shape<span className="text-primary">OS</span>
           </CardTitle>
-          <CardDescription>Criar sua conta</CardDescription>
+          <CardDescription>Criar conta de Personal Trainer</CardDescription>
         </CardHeader>
         <CardContent>
           {aguardandoEmail ? (
             <div className="space-y-3 text-center">
               <p className="font-medium">Conta criada! 📬</p>
               <p className="text-muted-foreground text-sm">
-                Confirme seu e-mail para ativar o acesso e depois faça login.
+                Enviamos um e-mail de confirmação para{' '}
+                <span className="font-medium">{email}</span>. Confirme para
+                ativar seu acesso e começar o teste do painel.
               </p>
               <Link
                 href="/login"
@@ -93,21 +94,9 @@ export default function CadastroPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-2">
-                {(['PERSONAL', 'ALUNO'] as const).map((opcao) => (
-                  <button
-                    key={opcao}
-                    type="button"
-                    onClick={() => setTipo(opcao)}
-                    className={
-                      tipo === opcao
-                        ? 'rounded-md border border-primary bg-primary/10 px-3 py-2 text-sm font-medium text-primary cursor-pointer'
-                        : 'rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:border-foreground/30 cursor-pointer'
-                    }
-                  >
-                    {opcao === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}
-                  </button>
-                ))}
+              <div className="rounded-md bg-primary/5 px-3 py-2 text-center text-xs text-muted-foreground">
+                Seus alunos não precisam de conta aqui: eles entram pelo
+                convite que você envia dentro do painel.
               </div>
 
               <div className="space-y-2">
@@ -152,7 +141,7 @@ export default function CadastroPage() {
               ) : null}
 
               <Button type="submit" className="w-full" disabled={carregando}>
-                {carregando ? 'Criando...' : 'Criar conta'}
+                {carregando ? 'Criando...' : 'Criar conta gratuita'}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
