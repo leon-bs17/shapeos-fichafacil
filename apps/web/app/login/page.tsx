@@ -162,8 +162,8 @@ export default function LoginPage() {
             </p>
           ) : (
             <p className="mt-4 text-center text-xs text-muted-foreground">
-              Alunos recebem acesso pelo convite enviado pelo personal —
-              não é preciso criar conta aqui.
+              Alunos recebem acesso pelo convite enviado pelo personal.
+              Não é preciso criar conta aqui.
             </p>
           )}
         </CardContent>
