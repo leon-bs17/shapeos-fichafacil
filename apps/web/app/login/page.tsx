@@ -42,7 +42,13 @@ export default function LoginPage() {
     })
 
     if (erroAuth) {
-      setErro('E-mail ou senha incorretos.')
+      if (erroAuth.message.includes('not confirmed')) {
+        setErro(
+          'Seu e-mail ainda não foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
+        )
+      } else {
+        setErro('E-mail ou senha incorretos.')
+      }
       setCarregando(false)
       return
     }
