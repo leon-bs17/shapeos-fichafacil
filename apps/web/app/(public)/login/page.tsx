@@ -65,11 +65,8 @@ export default function LoginPage() {
     }
 
     if (tipoReal === 'ALUNO') {
-      await supabase.auth.signOut()
-      setCarregando(false)
-      setErro(
-        'Login correto! O acesso dos alunos é pelo aplicativo ShapeOS no celular — o painel web é exclusivo dos personal trainers.'
-      )
+      router.push('/painel')
+      router.refresh()
       return
     }
 

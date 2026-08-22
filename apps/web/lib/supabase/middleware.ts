@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
@@ -16,7 +16,7 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet: {
             name: string
             value: string
-            options: CookieOptions
+            options: import('@supabase/ssr').CookieOptions
           }[]
         ) {
           cookiesToSet.forEach(({ name, value }) =>
@@ -48,9 +48,33 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (user && pathname === '/login') {
+  let tipo: 'PERSONAL' | 'ALUNO' | null = null
+  if (user) {
+    const { data: perfil } = await supabase
+      .from('usuarios')
+      .select('tipo')
+      .eq('id', user.id)
+      .single()
+    tipo = perfil?.tipo ?? null
+  }
+
+  const isPainelAluno = pathname.startsWith('/painel')
+
+  if (user && tipo === 'ALUNO' && !isPainelAluno && pathname !== '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/painel'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && tipo === 'PERSONAL' && isPainelAluno) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && pathname === '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = tipo === 'ALUNO' ? '/painel' : '/'
     return NextResponse.redirect(url)
   }
 
