@@ -81,7 +81,11 @@ export default function LoginPage() {
           <CardTitle className="text-2xl font-bold">
             Shape<span className="text-primary">OS</span>
           </CardTitle>
-          <CardDescription>Ficha Fácil · Painel do Personal</CardDescription>
+          <CardDescription>
+            {tipo === 'PERSONAL'
+              ? 'Ficha Fácil · Painel do Personal'
+              : 'Ficha Fácil · Painel do Aluno'}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
