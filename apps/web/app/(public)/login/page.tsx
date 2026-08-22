@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
+  const [tipo, setTipo] = useState<'PERSONAL' | 'ALUNO'>('PERSONAL')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState<string | null>(null)
@@ -35,14 +36,40 @@ export default function LoginPage() {
 
     setCarregando(true)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error: erroAuth } = await supabase.auth.signInWithPassword({
       email: parsed.data.email,
       password: parsed.data.senha,
     })
 
-    if (error) {
+    if (erroAuth) {
       setErro('E-mail ou senha incorretos.')
       setCarregando(false)
+      return
+    }
+
+    const { data: perfil } = await supabase
+      .from('usuarios')
+      .select('tipo')
+      .eq('id', data.user.id)
+      .single()
+
+    const tipoReal = perfil?.tipo
+
+    if (tipoReal && tipoReal !== tipo) {
+      await supabase.auth.signOut()
+      setCarregando(false)
+      setErro(
+        `Esta conta é ${tipoReal === 'PERSONAL' ? 'de Personal Trainer' : 'de Aluno'}. Selecione "${tipoReal === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}" para entrar.`
+      )
+      return
+    }
+
+    if (tipoReal === 'ALUNO') {
+      await supabase.auth.signOut()
+      setCarregando(false)
+      setErro(
+        'Login correto! O acesso dos alunos é pelo aplicativo ShapeOS no celular — o painel web é exclusivo dos personal trainers.'
+      )
       return
     }
 
@@ -61,6 +88,28 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo de conta">
+              {(['PERSONAL', 'ALUNO'] as const).map((opcao) => (
+                <button
+                  key={opcao}
+                  type="button"
+                  role="radio"
+                  aria-checked={tipo === opcao}
+                  onClick={() => {
+                    setTipo(opcao)
+                    setErro(null)
+                  }}
+                  className={
+                    tipo === opcao
+                      ? 'rounded-md border border-primary bg-primary/10 px-3 py-2 text-sm font-medium text-primary cursor-pointer'
+                      : 'rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:border-foreground/30 cursor-pointer'
+                  }
+                >
+                  {opcao === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}
+                </button>
+              ))}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -85,11 +134,13 @@ export default function LoginPage() {
                 required
               />
             </div>
+
             {erro ? (
               <p className="text-sm text-destructive" role="alert">
                 {erro}
               </p>
             ) : null}
+
             <Button type="submit" className="w-full" disabled={carregando}>
               {carregando ? 'Entrando...' : 'Entrar'}
             </Button>
