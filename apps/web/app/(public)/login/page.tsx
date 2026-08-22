@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
 import { Button } from '@/components/ui/button'
@@ -93,6 +94,13 @@ export default function LoginPage() {
               {carregando ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
+
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Não tem conta?{' '}
+            <Link href="/cadastro" className="text-primary font-medium hover:underline">
+              Cadastre-se
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </main>

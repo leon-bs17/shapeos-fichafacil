@@ -22,7 +22,7 @@ Deno.serve(async (req: Request) => {
     return Response.json({ error: 'JSON inválido' }, { status: 400 })
   }
 
-  const { email, nome } = payload
+  const email = payload.email?.trim().toLowerCase()
   if (!email) {
     return Response.json({ error: 'E-mail obrigatório' }, { status: 400 })
   }
@@ -34,12 +34,37 @@ Deno.serve(async (req: Request) => {
 
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
     redirectTo: `${Deno.env.get('WEB_APP_URL') ?? ''}/login`,
-    data: { nome, tipo: 'ALUNO' },
+    data: { nome: payload.nome, tipo: 'ALUNO' },
   })
 
-  if (error) {
-    return Response.json({ error: error.message }, { status: 400 })
+  if (!error && data.user) {
+    return Response.json(
+      { data: { user: { id: data.user.id, novo: true } } },
+      { status: 200 }
+    )
   }
 
-  return Response.json({ data }, { status: 200 })
+  if (
+    error &&
+    (error.message.includes('already been registered') ||
+      error.message.includes('already exists'))
+  ) {
+    const { data: perfil } = await admin
+      .from('usuarios')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle()
+
+    if (perfil?.id) {
+      return Response.json(
+        { data: { user: { id: perfil.id, novo: false } } },
+        { status: 200 }
+      )
+    }
+  }
+
+  return Response.json(
+    { error: error?.message ?? 'Falha no convite' },
+    { status: 400 }
+  )
 })
