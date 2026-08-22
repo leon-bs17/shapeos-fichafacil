@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "ShapeOS",
+    "slug": "shapeos",
+    "version": "0.1.0",
+    "scheme": "shapeos",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "jsEngine": "hermes",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0f172a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shapeos.app"
+    },
+    "android": {
+      "package": "com.shapeos.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-dev-client"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
