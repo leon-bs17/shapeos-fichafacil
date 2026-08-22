@@ -11,8 +11,11 @@ out/
 supabase/.temp/
 supabase/.branches/
 Temp/
+.vercel/
 ios/
 android/
 web-build/
 *.log
 .turbo/
+
+.vercel
