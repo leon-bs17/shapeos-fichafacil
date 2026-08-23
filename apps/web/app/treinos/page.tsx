@@ -12,6 +12,7 @@ import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { formatarData } from '@/lib/utils'
+import { TEMPLATES, type TemplateFicha } from '@/lib/templates'
 import type { FichaResumo } from '@/services/treinos'
 
 interface LinhaItem {
@@ -41,6 +42,7 @@ function TreinosConteudo() {
   const acoes = useAcoesFichas()
   const [modalAberto, setModalAberto] = useState(false)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
+  const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
 
   return (
     <div className="space-y-6">
@@ -169,9 +171,11 @@ function TreinosConteudo() {
 
       <ModalNovaFicha
         open={modalAberto}
-        onClose={() => setModalAberto(false)}
+        onClose={() => { setModalAberto(false); setTemplateSelecionado(null) }}
         erro={acoes.criar.error?.message ?? null}
         ocupado={acoes.criar.isPending}
+        template={templateSelecionado}
+        onSelecionarTemplate={setTemplateSelecionado}
       />
 
       {fichaEditando ? (
@@ -192,20 +196,45 @@ function ModalNovaFicha({
   onClose,
   erro,
   ocupado,
+  template,
+  onSelecionarTemplate,
 }: {
   open: boolean
   onClose: () => void
   erro: string | null
   ocupado: boolean
+  template: TemplateFicha | null
+  onSelecionarTemplate: (t: TemplateFicha | null) => void
 }) {
   const { data: alunos } = useAlunos()
   const { data: exercicios } = useExercicios()
   const { criar } = useAcoesFichas()
 
   const [alunoId, setAlunoId] = useState('')
-  const [titulo, setTitulo] = useState('')
+  const [titulo, setTitulo] = useState(template?.titulo ?? '')
   const [itens, setItens] = useState<LinhaItem[]>([{ ...ITEM_VAZIO }])
   const [erroLocal, setErroLocal] = useState<string | null>(null)
+
+  function aplicarTemplate(t: TemplateFicha | null) {
+    onSelecionarTemplate(t)
+    if (t && exercicios) {
+      setTitulo(t.titulo)
+      setItens(
+        t.exercicios.map((ex) => {
+          const encontrado = exercicios.find((e) => e.nome === ex.nome)
+          return {
+            exercicio_id: encontrado?.id ?? '',
+            series: String(ex.series),
+            repeticoes: ex.repeticoes,
+            descanso_segundos: String(ex.descanso_segundos),
+          }
+        })
+      )
+    } else {
+      setTitulo('')
+      setItens([{ ...ITEM_VAZIO }])
+    }
+  }
 
   function atualizarItem(indice: number, campo: keyof LinhaItem, valor: string) {
     setItens((atual) =>
@@ -251,6 +280,7 @@ function ModalNovaFicha({
       setTitulo('')
       setAlunoId('')
       setItens([{ ...ITEM_VAZIO }])
+      onSelecionarTemplate(null)
       onClose()
     } catch (e) {
       setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar ficha')
@@ -272,116 +302,167 @@ function ModalNovaFicha({
       className="max-w-2xl"
     >
       <div className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="ficha-aluno">Aluno</Label>
-            <select
-              id="ficha-aluno"
-              value={alunoId}
-              onChange={(e) => setAlunoId(e.target.value)}
-              className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="">Selecione...</option>
-              {alunos?.map((a) => (
-                <option key={a.vinculo_id} value={a.aluno_id}>
-                  {a.nome}
-                </option>
+        {!template ? (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Comece de um template pronto ou crie do zero.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button
+                onClick={() => aplicarTemplate(null)}
+                className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
+              >
+                <span className="font-medium">Em branco</span>
+                <span className="text-muted-foreground text-xs">
+                  Monte do zero
+                </span>
+              </button>
+              {TEMPLATES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => aplicarTemplate(t)}
+                  className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
+                >
+                  <span className="font-medium">{t.titulo}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {t.descricao}
+                  </span>
+                </button>
               ))}
-            </select>
+            </div>
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="ficha-titulo">Título</Label>
-            <Input
-              id="ficha-titulo"
-              placeholder="Ex.: Push A - Peito e Tríceps"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-            />
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="ficha-aluno">Aluno</Label>
+                <select
+                  id="ficha-aluno"
+                  value={alunoId}
+                  onChange={(e) => setAlunoId(e.target.value)}
+                  className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Selecione...</option>
+                  {alunos?.map((a) => (
+                    <option key={a.vinculo_id} value={a.aluno_id}>
+                      {a.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ficha-titulo">Título</Label>
+                <Input
+                  id="ficha-titulo"
+                  placeholder="Ex.: Push A - Peito e Tríceps"
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                />
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <Label>Exercícios</Label>
-          {itens.map((item, indice) => (
-            <div key={indice} className="flex items-end gap-2">
-              <select
-                value={item.exercicio_id}
-                onChange={(e) => atualizarItem(indice, 'exercicio_id', e.target.value)}
-                className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <option value="">Exercício...</option>
-                {[...grupos.entries()].map(([grupo, lista]) => (
-                  <optgroup key={grupo} label={grupo}>
-                    {(lista ?? []).map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.nome}
-                      </option>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Exercícios</Label>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 text-xs"
+                  onClick={() => aplicarTemplate(null)}
+                >
+                  Trocar template
+                </Button>
+              </div>
+              {itens.map((item, indice) => (
+                <div key={indice} className="flex items-end gap-2">
+                  <select
+                    value={item.exercicio_id}
+                    onChange={(e) =>
+                      atualizarItem(indice, 'exercicio_id', e.target.value)
+                    }
+                    className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Exercício...</option>
+                    {[...grupos.entries()].map(([grupo, lista]) => (
+                      <optgroup key={grupo} label={grupo}>
+                        {(lista ?? []).map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.nome}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
-                  </optgroup>
-                ))}
-              </select>
-              <Input
-                className="w-16"
-                type="number"
-                min={1}
-                max={30}
-                aria-label={`Séries do exercício ${indice + 1}`}
-                value={item.series}
-                onChange={(e) => atualizarItem(indice, 'series', e.target.value)}
-              />
-              <Input
-                className="w-20"
-                placeholder="Reps"
-                aria-label={`Repetições do exercício ${indice + 1}`}
-                value={item.repeticoes}
-                onChange={(e) => atualizarItem(indice, 'repeticoes', e.target.value)}
-              />
-              <Input
-                className="w-20"
-                type="number"
-                min={0}
-                max={900}
-                aria-label={`Descanso do exercício ${indice + 1}`}
-                value={item.descanso_segundos}
-                onChange={(e) =>
-                  atualizarItem(indice, 'descanso_segundos', e.target.value)
-                }
-              />
+                  </select>
+                  <Input
+                    className="w-16"
+                    type="number"
+                    min={1}
+                    max={30}
+                    aria-label={`Séries do exercício ${indice + 1}`}
+                    value={item.series}
+                    onChange={(e) =>
+                      atualizarItem(indice, 'series', e.target.value)
+                    }
+                  />
+                  <Input
+                    className="w-20"
+                    placeholder="Reps"
+                    aria-label={`Repetições do exercício ${indice + 1}`}
+                    value={item.repeticoes}
+                    onChange={(e) =>
+                      atualizarItem(indice, 'repeticoes', e.target.value)
+                    }
+                  />
+                  <Input
+                    className="w-20"
+                    type="number"
+                    min={0}
+                    max={900}
+                    aria-label={`Descanso do exercício ${indice + 1}`}
+                    value={item.descanso_segundos}
+                    onChange={(e) =>
+                      atualizarItem(indice, 'descanso_segundos', e.target.value)
+                    }
+                  />
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`Remover exercício ${indice + 1}`}
+                    onClick={() =>
+                      setItens((atual) => atual.filter((_, i) => i !== indice))
+                    }
+                    disabled={itens.length === 1}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+
               <Button
-                size="icon"
-                variant="ghost"
-                aria-label={`Remover exercício ${indice + 1}`}
+                size="sm"
+                variant="secondary"
                 onClick={() =>
-                  setItens((atual) => atual.filter((_, i) => i !== indice))
+                  setItens((atual) => [...atual, { ...ITEM_VAZIO }])
                 }
-                disabled={itens.length === 1}
               >
-                <Trash2 className="h-4 w-4" />
+                <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercício
               </Button>
             </div>
-          ))}
 
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setItens((atual) => [...atual, { ...ITEM_VAZIO }])}
-          >
-            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercício
-          </Button>
-        </div>
+            {erroLocal || erro ? (
+              <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+            ) : null}
 
-        {erroLocal || erro ? (
-          <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
-        ) : null}
-
-        <div className="flex justify-end gap-2 border-t border-border pt-4">
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={salvar} disabled={ocupado}>
-            {ocupado ? 'Salvando...' : 'Criar Ficha'}
-          </Button>
-        </div>
+            <div className="flex justify-end gap-2 border-t border-border pt-4">
+              <Button variant="outline" onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button onClick={salvar} disabled={ocupado}>
+                {ocupado ? 'Salvando...' : 'Criar Ficha'}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </Modal>
   )
