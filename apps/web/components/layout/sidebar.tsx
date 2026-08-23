@@ -6,6 +6,7 @@ import { Dumbbell, FileBarChart, LayoutDashboard, Library, LogOut, Users } from 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
+import { ThemeToggle } from './theme-toggle'
 
 const NAV_ITEMS = [
   { href: '/', label: 'Visão Geral', icon: LayoutDashboard },
@@ -54,6 +55,9 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-border p-3">
+        <div className="mb-2 flex justify-end">
+          <ThemeToggle />
+        </div>
         <Button
           variant="ghost"
           size="sm"

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Dumbbell } from 'lucide-react'
 import { BotaoSairAluno } from '@/components/aluno/botao-sair'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 export default function PainelLayout({ children }: { children: ReactNode }) {
   return (
@@ -14,7 +15,10 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
             </span>
             <span className="text-muted-foreground text-sm">· Painel do Aluno</span>
           </div>
-          <BotaoSairAluno />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <BotaoSairAluno />
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-4xl p-6">{children}</main>
