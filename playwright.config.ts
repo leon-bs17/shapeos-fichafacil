@@ -6,6 +6,7 @@ export default defineConfig({
   retries: 1,
   workers: 2,
   globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
   use: {
     baseURL: 'https://shapeos-fichafacil.vercel.app',
     headless: true,

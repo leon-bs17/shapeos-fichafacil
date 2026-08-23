@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test'
 
-const PERSONAL_EMAIL = 'personal_1787426424337@shapeosteste.com'
-const SENHA = 'senha123456'
-
 test.describe('Autenticação', () => {
   test('login page carrega corretamente', async ({ page }) => {
     await page.goto('/login')

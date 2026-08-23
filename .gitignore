@@ -24,3 +24,6 @@ web-build/
 # Playwright
 test-results/
 playwright-report/
+
+# E2E runtime accounts
+e2e/.e2e-accounts.json

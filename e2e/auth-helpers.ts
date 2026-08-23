@@ -1,7 +1,23 @@
 import type { Page } from '@playwright/test'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
-const PERSONAL_EMAIL = 'personal_1787426424337@shapeosteste.com'
-const ALUNO_EMAIL = 'aluno_1787426424337@shapeosteste.com'
+interface ContasE2E {
+  personalEmail: string
+  alunoEmail: string
+}
+
+function carregarContas(): ContasE2E {
+  const caminho = resolve(__dirname, '.e2e-accounts.json')
+  try {
+    return JSON.parse(readFileSync(caminho, 'utf-8')) as ContasE2E
+  } catch {
+    throw new Error(
+      'Arquivo .e2e-accounts.json nao encontrado. O global-setup deve rodar antes dos testes.'
+    )
+  }
+}
+
 const SENHA = 'senha123456'
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -48,11 +64,13 @@ async function loginViaPageAuth(page: Page, email: string) {
 }
 
 export async function loginComoPersonal(page: Page) {
-  await loginViaPageAuth(page, PERSONAL_EMAIL)
+  const { personalEmail } = carregarContas()
+  await loginViaPageAuth(page, personalEmail)
 }
 
 export async function loginComoAluno(page: Page) {
-  await loginViaPageAuth(page, ALUNO_EMAIL)
+  const { alunoEmail } = carregarContas()
+  await loginViaPageAuth(page, alunoEmail)
 }
 
 export async function desabilitarCaptcha() {
