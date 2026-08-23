@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 import { GoogleIcon } from '@/components/ui/google-icon'
+import { Dumbbell, ArrowRight, Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -33,12 +34,12 @@ export default function LoginPage() {
 
     const parsed = loginSchema.safeParse({ email, senha })
     if (!parsed.success) {
-      setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos')
+      setErro(parsed.error.issues[0]?.message ?? 'Dados invalidos')
       return
     }
 
     if (captchaAtivo() && !captchaToken) {
-      setErro('Confirme a verificação anti-robô antes de continuar.')
+      setErro('Confirme a verificacao anti-robo antes de continuar.')
       return
     }
 
@@ -54,7 +55,7 @@ export default function LoginPage() {
       setCaptchaToken('')
       if (erroAuth.message.includes('not confirmed')) {
         setErro(
-          'Seu e-mail ainda não foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
+          'Seu e-mail ainda nao foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
         )
       } else {
         setErro('E-mail ou senha incorretos.')
@@ -75,7 +76,7 @@ export default function LoginPage() {
       await supabase.auth.signOut()
       setCarregando(false)
       setErro(
-        `Esta conta é ${tipoReal === 'PERSONAL' ? 'de Personal Trainer' : 'de Aluno'}. Selecione "${tipoReal === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}" para entrar.`
+        `Esta conta e ${tipoReal === 'PERSONAL' ? 'de Personal Trainer' : 'de Aluno'}. Selecione "${tipoReal === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}" para entrar.`
       )
       return
     }
@@ -101,23 +102,37 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
+      <div className="w-full max-w-md space-y-6 animate-fade-in">
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
+            <Dumbbell className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight">
             Shape<span className="text-primary">OS</span>
-          </CardTitle>
-          <CardDescription>
-            {tipo === 'PERSONAL'
-              ? 'Ficha Fácil · Painel do Personal'
-              : 'Ficha Fácil · Painel do Aluno'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Ficha Facil para Personal Trainers
+          </p>
+        </div>
+
+        <Card className="border-border/50 shadow-lg shadow-black/5">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-lg">
+              {tipo === 'PERSONAL'
+                ? 'Painel do Personal'
+                : 'Painel do Aluno'}
+            </CardTitle>
+            <CardDescription>
+              {tipo === 'PERSONAL'
+                ? 'Acesse seus treinos e alunos'
+                : 'Acesse sua ficha de treino'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full h-11 font-medium"
               onClick={handleGoogleLogin}
             >
               <GoogleIcon className="mr-2 h-4 w-4" />
@@ -126,15 +141,17 @@ export default function LoginPage() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">ou</span>
+                <span className="bg-card px-3 text-muted-foreground tracking-wider">
+                  ou
+                </span>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo de conta">
+              <div className="grid grid-cols-2 gap-1.5 p-1 bg-muted rounded-xl" role="radiogroup" aria-label="Tipo de conta">
                 {(['PERSONAL', 'ALUNO'] as const).map((opcao) => (
                   <button
                     key={opcao}
@@ -147,8 +164,8 @@ export default function LoginPage() {
                     }}
                     className={
                       tipo === opcao
-                        ? 'rounded-md border border-primary bg-primary/10 px-3 py-2 text-sm font-medium text-primary cursor-pointer'
-                        : 'rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:border-foreground/30 cursor-pointer'
+                        ? 'rounded-lg bg-background px-3 py-2.5 text-sm font-medium shadow-sm transition-all'
+                        : 'rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-all'
                     }
                   >
                     {opcao === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}
@@ -156,8 +173,10 @@ export default function LoginPage() {
                 ))}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  E-mail
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -166,54 +185,66 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
                   required
+                  className="h-11"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="senha">Senha</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="senha" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Senha
+                </Label>
                 <Input
                   id="senha"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Sua senha"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   autoComplete="current-password"
                   required
+                  className="h-11"
                 />
               </div>
 
               <Captcha onToken={setCaptchaToken} />
 
               {erro ? (
-                <p className="text-sm text-destructive" role="alert">
-                  {erro}
-                </p>
+                <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3">
+                  <p className="text-sm text-destructive" role="alert">
+                    {erro}
+                  </p>
+                </div>
               ) : null}
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-11 font-medium"
                 disabled={carregando || (captchaAtivo() && !captchaToken)}
               >
-                {carregando ? 'Entrando...' : 'Entrar'}
+                {carregando ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    Entrar
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
               </Button>
             </form>
-          </div>
+          </CardContent>
+        </Card>
 
+        <p className="text-center text-sm text-muted-foreground">
           {tipo === 'PERSONAL' ? (
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              Não tem conta?{' '}
+            <>
+              Nao tem conta?{' '}
               <Link href="/cadastro" className="text-primary font-medium hover:underline">
-                Cadastre-se
+                Cadastre-se gratis
               </Link>
-            </p>
+            </>
           ) : (
-            <p className="mt-4 text-center text-xs text-muted-foreground">
-              Alunos recebem acesso pelo convite enviado pelo personal.
-              Não é preciso criar conta aqui.
-            </p>
+            'Alunos recebem acesso pelo convite enviado pelo personal.'
           )}
-        </CardContent>
-      </Card>
+        </p>
+      </div>
     </main>
   )
 }

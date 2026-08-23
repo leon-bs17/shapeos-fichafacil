@@ -16,9 +16,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2 } from 'lucide-react'
+import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, GripVertical } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
@@ -62,92 +62,100 @@ function TreinosConteudo() {
   const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-center justify-between">
+    <div className="space-y-8">
+      <header className="flex items-center justify-between animate-fade-in">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Treinos</h1>
           <p className="text-muted-foreground text-sm">
             Monte fichas rapidamente e gerencie as ativas de cada aluno.
           </p>
         </div>
-        <Button onClick={() => setModalAberto(true)}>
-          <Plus className="mr-1 h-4 w-4" /> Nova Ficha
+        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
+          <Plus className="mr-1.5 h-4 w-4" /> Nova Ficha
         </Button>
       </header>
 
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">
           {[0, 1].map((i) => (
-            <div key={i} className="h-40 animate-pulse rounded-lg bg-muted" />
+            <div key={i} className="h-48 skeleton" />
           ))}
         </div>
       ) : fichas?.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-2 py-12 text-center">
-            <Dumbbell className="h-10 w-10 text-muted-foreground" />
-            <p className="font-medium">Nenhuma ficha criada</p>
-            <p className="text-muted-foreground text-sm max-w-md">
+        <Card className="border-dashed">
+          <CardContent className="py-14 text-center">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+              <Dumbbell className="h-7 w-7 text-primary" />
+            </div>
+            <p className="font-semibold text-lg">Nenhuma ficha criada</p>
+            <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
               Clique em Nova Ficha para montar o treino de um aluno em segundos.
             </p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {fichas?.map((ficha) => (
-            <Card key={ficha.id}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <CardTitle className="text-base">{ficha.titulo}</CardTitle>
-                    <p className="text-muted-foreground mt-0.5 text-sm">
+          {fichas?.map((ficha, idx) => (
+            <Card key={ficha.id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} hover:shadow-md transition-all duration-200`}>
+              <CardContent className="p-5 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base truncate">{ficha.titulo}</h3>
+                    <p className="text-muted-foreground text-sm mt-0.5">
                       {ficha.aluno_nome} · {formatarData(ficha.criado_em)}
                     </p>
                   </div>
                   <span
                     className={
                       ficha.ativo
-                        ? 'rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary'
-                        : 'rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground'
+                        ? 'inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success shrink-0'
+                        : 'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground shrink-0'
                     }
                   >
+                    <span className={`h-1.5 w-1.5 rounded-full ${ficha.ativo ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`} />
                     {ficha.ativo ? 'Ativa' : 'Pausada'}
                   </span>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <ul className="space-y-1 text-sm">
-                  {ficha.itens.map((item) => (
-                    <li key={item.id} className="flex justify-between gap-2">
-                      <span className="truncate">{item.exercicio.nome}</span>
-                      <span className="text-muted-foreground shrink-0">
-                        {item.series}×{item.repeticoes}
-                      </span>
-                    </li>
-                  ))}
-                  {ficha.itens.length === 0 ? (
-                    <li className="text-muted-foreground">Sem exercícios</li>
-                  ) : null}
-                </ul>
 
-                <div className="flex gap-2 border-t border-border pt-3">
+                <div className="space-y-1">
+                  {ficha.itens.slice(0, 4).map((item) => (
+                    <div key={item.id} className="flex items-center justify-between text-sm py-1">
+                      <span className="truncate text-muted-foreground">{item.exercicio.nome}</span>
+                      <span className="text-xs font-mono text-muted-foreground/70 shrink-0 ml-2">
+                        {item.series}x{item.repeticoes}
+                      </span>
+                    </div>
+                  ))}
+                  {ficha.itens.length > 4 && (
+                    <p className="text-xs text-muted-foreground">+{ficha.itens.length - 4} exercicios</p>
+                  )}
+                  {ficha.itens.length === 0 && (
+                    <p className="text-sm text-muted-foreground italic">Sem exercicios</p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 border-t border-border pt-3">
                   <Button
                     size="sm"
                     variant="outline"
+                    className="h-8 text-xs"
                     disabled={acoes.duplicar.isPending}
                     onClick={() => acoes.duplicar.mutate(ficha.id)}
                   >
-                    <Copy className="mr-1 h-3.5 w-3.5" /> Duplicar
+                    <Copy className="mr-1 h-3 w-3" /> Duplicar
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
+                    className="h-8 text-xs"
                     onClick={() => setFichaEditando(ficha)}
                   >
-                    <Pencil className="mr-1 h-3.5 w-3.5" /> Editar
+                    <Pencil className="mr-1 h-3 w-3" /> Editar
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
+                    className="h-8 text-xs"
                     disabled={acoes.alternar.isPending}
                     onClick={() =>
                       acoes.alternar.mutate({
@@ -158,18 +166,18 @@ function TreinosConteudo() {
                   >
                     {ficha.ativo ? (
                       <>
-                        <Pause className="mr-1 h-3.5 w-3.5" /> Pausar
+                        <Pause className="mr-1 h-3 w-3" /> Pausar
                       </>
                     ) : (
                       <>
-                        <Play className="mr-1 h-3.5 w-3.5" /> Ativar
+                        <Play className="mr-1 h-3 w-3" /> Ativar
                       </>
                     )}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="ml-auto hover:text-destructive"
+                    className="ml-auto h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                     disabled={acoes.excluir.isPending}
                     onClick={() => {
                       if (window.confirm(`Excluir a ficha "${ficha.titulo}"?`)) {
@@ -268,24 +276,10 @@ function ModalNovaFicha({
 
   async function salvar() {
     setErroLocal(null)
-
-    if (!alunoId) {
-      setErroLocal('Escolha o aluno da ficha.')
-      return
-    }
-    if (titulo.trim().length < 3) {
-      setErroLocal('Dê um título com pelo menos 3 letras.')
-      return
-    }
-
-    const itensValidos = itens.filter(
-      (i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim()
-    )
-    if (itensValidos.length === 0) {
-      setErroLocal('Adicione ao menos um exercício completo.')
-      return
-    }
-
+    if (!alunoId) { setErroLocal('Escolha o aluno da ficha.'); return }
+    if (titulo.trim().length < 3) { setErroLocal('De um titulo com pelo menos 3 letras.'); return }
+    const itensValidos = itens.filter((i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim())
+    if (itensValidos.length === 0) { setErroLocal('Adicione ao menos um exercicio completo.'); return }
     try {
       await criar.mutateAsync({
         ficha: {
@@ -300,100 +294,75 @@ function ModalNovaFicha({
           })),
         },
       })
-
-      setTitulo('')
-      setAlunoId('')
-      setItens([{ ...ITEM_VAZIO }])
-      onSelecionarTemplate(null)
-      onClose()
+      setTitulo(''); setAlunoId(''); setItens([{ ...ITEM_VAZIO }]); onSelecionarTemplate(null); onClose()
     } catch (e) {
       setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar ficha')
     }
   }
 
   const grupos = new Map<string, typeof exercicios>()
-  exercicios?.forEach((e) => {
-    const lista = grupos.get(e.grupo_muscular) ?? []
-    lista.push(e)
-    grupos.set(e.grupo_muscular, lista)
-  })
+  exercicios?.forEach((e) => { const l = grupos.get(e.grupo_muscular) ?? []; l.push(e); grupos.set(e.grupo_muscular, l) })
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
-
     setItens((atual) => {
-      const antigoIndex = atual.findIndex((_, i) => `item-${i}` === active.id)
-      const novoIndex = atual.findIndex((_, i) => `item-${i}` === over.id)
-      return arrayMove(atual, antigoIndex, novoIndex)
+      const oldIdx = atual.findIndex((_, i) => `item-${i}` === active.id)
+      const newIdx = atual.findIndex((_, i) => `item-${i}` === over.id)
+      return arrayMove(atual, oldIdx, newIdx)
     })
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      titulo="Nova Ficha de Treino"
-      className="max-w-2xl"
-    >
-      <div className="space-y-4">
+    <Modal open={open} onClose={onClose} titulo="Nova Ficha de Treino" className="max-w-2xl">
+      <div className="space-y-5">
         {!template ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Tipo de Treino</Label>
+          <div className="space-y-5">
+            <div className="space-y-2.5">
+              <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Tipo de Treino</Label>
               <div className="grid grid-cols-3 gap-2">
                 {TIPOS_TREINO.map((tipo) => (
                   <button
                     key={tipo.id}
                     onClick={() => onSelecionarTipo(tipo.id)}
-                    className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-center text-sm transition-colors ${
+                    className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center text-sm transition-all duration-200 ${
                       tipoTreino === tipo.id
-                        ? 'border-primary bg-primary/10 text-foreground'
-                        : 'border-border hover:bg-accent'
+                        ? 'border-primary bg-primary/10 shadow-sm'
+                        : 'border-border hover:border-border/80 hover:bg-accent/50'
                     }`}
                   >
-                    <span className="text-lg">{tipo.icone}</span>
-                    <span className="font-medium">{tipo.titulo}</span>
-                    <span className="text-muted-foreground text-xs leading-tight">
-                      {tipo.descricao}
-                    </span>
+                    <span className="text-2xl">{tipo.icone}</span>
+                    <span className="font-semibold">{tipo.titulo}</span>
+                    <span className="text-muted-foreground text-xs leading-tight">{tipo.descricao}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Template</Label>
-              <p className="text-muted-foreground text-xs">
-                Escolha a estrutura do treino ou comece do zero.
-              </p>
+            <div className="space-y-2.5">
+              <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Template</Label>
+              <p className="text-muted-foreground text-xs">Escolha a estrutura do treino ou comeca do zero.</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 <button
                   onClick={() => aplicarTemplate(null)}
-                  className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
+                  className="flex flex-col items-start gap-1 rounded-xl border-2 border-dashed border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
                 >
-                  <span className="font-medium">Em branco</span>
-                  <span className="text-muted-foreground text-xs">
-                    Monte do zero
-                  </span>
+                  <span className="font-semibold">Em branco</span>
+                  <span className="text-muted-foreground text-xs">Monte do zero</span>
                 </button>
                 {TEMPLATES.map((t) => (
                   <button
                     key={t.id}
                     onClick={() => aplicarTemplate(t)}
-                    className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
+                    className="flex flex-col items-start gap-1 rounded-xl border-2 border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
                   >
-                    <span className="font-medium">{t.titulo}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {t.descricao}
-                    </span>
+                    <span className="font-semibold">{t.titulo}</span>
+                    <span className="text-muted-foreground text-xs">{t.descricao}</span>
                   </button>
                 ))}
               </div>
@@ -403,53 +372,34 @@ function ModalNovaFicha({
           <>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="ficha-aluno">Aluno</Label>
+                <Label htmlFor="ficha-aluno" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Aluno</Label>
                 <select
                   id="ficha-aluno"
                   value={alunoId}
                   onChange={(e) => setAlunoId(e.target.value)}
-                  className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="">Selecione...</option>
                   {alunos?.map((a) => (
-                    <option key={a.vinculo_id} value={a.aluno_id}>
-                      {a.nome}
-                    </option>
+                    <option key={a.vinculo_id} value={a.aluno_id}>{a.nome}</option>
                   ))}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="ficha-titulo">Título</Label>
-                <Input
-                  id="ficha-titulo"
-                  placeholder="Ex.: Push A - Peito e Tríceps"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                />
+                <Label htmlFor="ficha-titulo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Titulo</Label>
+                <Input id="ficha-titulo" placeholder="Ex.: Push A - Peito e Triceps" value={titulo} onChange={(e) => setTitulo(e.target.value)} className="h-10" />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <Label>Exercícios</Label>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-7 text-xs"
-                  onClick={() => aplicarTemplate(null)}
-                >
+                <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Exercicios</Label>
+                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => aplicarTemplate(null)}>
                   Trocar template
                 </Button>
               </div>
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={itens.map((_, i) => `item-${i}`)}
-                  strategy={verticalListSortingStrategy}
-                >
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={itens.map((_, i) => `item-${i}`)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-2">
                     {itens.map((item, indice) => (
                       <LinhaItemArrastavel
@@ -460,35 +410,26 @@ function ModalNovaFicha({
                         grupos={grupos}
                         totalItens={itens.length}
                         onAtualizar={atualizarItem}
-                        onRemover={(i) =>
-                          setItens((atual) => atual.filter((_, idx) => idx !== i))
-                        }
+                        onRemover={(i) => setItens((atual) => atual.filter((_, idx) => idx !== i))}
                       />
                     ))}
                   </div>
                 </SortableContext>
               </DndContext>
-
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() =>
-                  setItens((atual) => [...atual, { ...ITEM_VAZIO }])
-                }
-              >
-                <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercício
+              <Button size="sm" variant="secondary" className="rounded-xl" onClick={() => setItens((atual) => [...atual, { ...ITEM_VAZIO }])}>
+                <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercicio
               </Button>
             </div>
 
             {erroLocal || erro ? (
-              <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+              <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+                <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+              </div>
             ) : null}
 
             <div className="flex justify-end gap-2 border-t border-border pt-4">
-              <Button variant="outline" onClick={onClose}>
-                Cancelar
-              </Button>
-              <Button onClick={salvar} disabled={ocupado}>
+              <Button variant="outline" onClick={onClose} className="rounded-xl">Cancelar</Button>
+              <Button onClick={salvar} disabled={ocupado} className="rounded-xl shadow-sm">
                 {ocupado ? 'Salvando...' : 'Criar Ficha'}
               </Button>
             </div>
@@ -500,174 +441,83 @@ function ModalNovaFicha({
 }
 
 function ModalEditarFicha({
-  ficha,
-  open,
-  onClose,
-  erro,
-  ocupado,
+  ficha, open, onClose, erro, ocupado,
 }: {
-  ficha: FichaResumo
-  open: boolean
-  onClose: () => void
-  erro: string | null
-  ocupado: boolean
+  ficha: FichaResumo; open: boolean; onClose: () => void; erro: string | null; ocupado: boolean
 }) {
   const { data: exercicios } = useExercicios()
   const { editar } = useAcoesFichas()
-
   const [titulo, setTitulo] = useState(ficha.titulo)
   const [itens, setItens] = useState<LinhaItem[]>(
-    ficha.itens.length > 0
-      ? ficha.itens.map((item) => ({
-          exercicio_id: item.exercicio.id,
-          series: String(item.series),
-          repeticoes: item.repeticoes,
-          descanso_segundos: String(item.descanso_segundos),
-        }))
-      : [{ ...ITEM_VAZIO }]
+    ficha.itens.length > 0 ? ficha.itens.map((item) => ({
+      exercicio_id: item.exercicio.id, series: String(item.series), repeticoes: item.repeticoes, descanso_segundos: String(item.descanso_segundos),
+    })) : [{ ...ITEM_VAZIO }]
   )
   const [erroLocal, setErroLocal] = useState<string | null>(null)
 
   function atualizarItem(indice: number, campo: keyof LinhaItem, valor: string) {
-    setItens((atual) =>
-      atual.map((item, i) => (i === indice ? { ...item, [campo]: valor } : item))
-    )
+    setItens((atual) => atual.map((item, i) => (i === indice ? { ...item, [campo]: valor } : item)))
   }
 
   async function salvar() {
     setErroLocal(null)
-
-    if (titulo.trim().length < 3) {
-      setErroLocal('Dê um título com pelo menos 3 letras.')
-      return
-    }
-
-    const itensValidos = itens.filter(
-      (i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim()
-    )
-    if (itensValidos.length === 0) {
-      setErroLocal('Adicione ao menos um exercício completo.')
-      return
-    }
-
+    if (titulo.trim().length < 3) { setErroLocal('De um titulo com pelo menos 3 letras.'); return }
+    const itensValidos = itens.filter((i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim())
+    if (itensValidos.length === 0) { setErroLocal('Adicione ao menos um exercicio completo.'); return }
     try {
       await editar.mutateAsync({
         fichaId: ficha.id,
-        ficha: {
-          titulo: titulo.trim(),
-          itens: itensValidos.map((i, indice) => ({
-            exercicio_id: i.exercicio_id,
-            series: Number(i.series),
-            repeticoes: i.repeticoes.trim(),
-            descanso_segundos: Number(i.descanso_segundos) || 60,
-            ordem: indice,
-          })),
-        },
+        ficha: { titulo: titulo.trim(), itens: itensValidos.map((i, indice) => ({
+          exercicio_id: i.exercicio_id, series: Number(i.series), repeticoes: i.repeticoes.trim(), descanso_segundos: Number(i.descanso_segundos) || 60, ordem: indice,
+        })) },
       })
       onClose()
-    } catch (e) {
-      setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar alterações')
-    }
+    } catch (e) { setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar alteracoes') }
   }
 
   const grupos = new Map<string, typeof exercicios>()
-  exercicios?.forEach((e) => {
-    const lista = grupos.get(e.grupo_muscular) ?? []
-    lista.push(e)
-    grupos.set(e.grupo_muscular, lista)
-  })
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  )
+  exercicios?.forEach((e) => { const l = grupos.get(e.grupo_muscular) ?? []; l.push(e); grupos.set(e.grupo_muscular, l) })
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }))
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-
-    setItens((atual) => {
-      const antigoIndex = atual.findIndex((_, i) => `item-${i}` === active.id)
-      const novoIndex = atual.findIndex((_, i) => `item-${i}` === over.id)
-      return arrayMove(atual, antigoIndex, novoIndex)
-    })
+    const { active, over } = event; if (!over || active.id === over.id) return
+    setItens((atual) => { const old = atual.findIndex((_, i) => `item-${i}` === active.id); const nw = atual.findIndex((_, i) => `item-${i}` === over.id); return arrayMove(atual, old, nw) })
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      titulo="Editar Ficha de Treino"
-      className="max-w-2xl"
-    >
-      <div className="space-y-4">
+    <Modal open={open} onClose={onClose} titulo="Editar Ficha de Treino" className="max-w-2xl">
+      <div className="space-y-5">
         <div className="space-y-1.5">
-          <Label>Aluno</Label>
-          <p className="text-sm text-muted-foreground">{ficha.aluno_nome}</p>
+          <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Aluno</Label>
+          <p className="text-sm text-muted-foreground bg-muted/50 rounded-xl px-3 py-2">{ficha.aluno_nome}</p>
         </div>
-
         <div className="space-y-1.5">
-          <Label htmlFor="editar-titulo">Título</Label>
-          <Input
-            id="editar-titulo"
-            placeholder="Ex.: Push A - Peito e Tríceps"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-          />
+          <Label htmlFor="editar-titulo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Titulo</Label>
+          <Input id="editar-titulo" placeholder="Ex.: Push A - Peito e Triceps" value={titulo} onChange={(e) => setTitulo(e.target.value)} className="h-10" />
         </div>
-
-        <div className="space-y-2">
-          <Label>Exercícios</Label>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={itens.map((_, i) => `item-${i}`)}
-              strategy={verticalListSortingStrategy}
-            >
+        <div className="space-y-2.5">
+          <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Exercicios</Label>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={itens.map((_, i) => `item-${i}`)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
                 {itens.map((item, indice) => (
-                  <LinhaItemArrastavel
-                    key={`item-${indice}`}
-                    id={`item-${indice}`}
-                    indice={indice}
-                    item={item}
-                    grupos={grupos}
-                    totalItens={itens.length}
-                    onAtualizar={atualizarItem}
-                    onRemover={(i) =>
-                      setItens((atual) => atual.filter((_, idx) => idx !== i))
-                    }
-                  />
+                  <LinhaItemArrastavel key={`item-${indice}`} id={`item-${indice}`} indice={indice} item={item} grupos={grupos} totalItens={itens.length} onAtualizar={atualizarItem} onRemover={(i) => setItens((atual) => atual.filter((_, idx) => idx !== i))} />
                 ))}
               </div>
             </SortableContext>
           </DndContext>
-
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setItens((atual) => [...atual, { ...ITEM_VAZIO }])}
-          >
-            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercício
+          <Button size="sm" variant="secondary" className="rounded-xl" onClick={() => setItens((atual) => [...atual, { ...ITEM_VAZIO }])}>
+            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercicio
           </Button>
         </div>
-
         {erroLocal || erro ? (
-          <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+          <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+            <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+          </div>
         ) : null}
-
         <div className="flex justify-end gap-2 border-t border-border pt-4">
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={salvar} disabled={ocupado}>
-            {ocupado ? 'Salvando...' : 'Salvar Alterações'}
-          </Button>
+          <Button variant="outline" onClick={onClose} className="rounded-xl">Cancelar</Button>
+          <Button onClick={salvar} disabled={ocupado} className="rounded-xl shadow-sm">{ocupado ? 'Salvando...' : 'Salvar Alteracoes'}</Button>
         </div>
       </div>
     </Modal>

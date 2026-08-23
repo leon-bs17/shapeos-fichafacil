@@ -2,37 +2,18 @@
 
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ClipboardList, Dumbbell, History, Play, Send } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { ClipboardList, Dumbbell, History, Play, Send, Loader2, TrendingUp } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
-import {
-  fichasAtivasDoAluno,
-  meusRegistros,
-  registrarExecucaoWeb,
-} from '@/services/aluno'
+import { fichasAtivasDoAluno, meusRegistros, registrarExecucaoWeb } from '@/services/aluno'
 import { formatarData } from '@/lib/utils'
 import { ModoExecucao } from '@/components/aluno/modo-execucao'
 
 interface FichaAluno {
-  id: string
-  titulo: string
-  criado_em: string
-  itens: {
-    id: string
-    exercicio: { id: string; nome: string; grupo_muscular: string }
-    series: number
-    repeticoes: string
-    descanso_segundos: number
-    ordem: number
-  }[]
+  id: string; titulo: string; criado_em: string
+  itens: { id: string; exercicio: { id: string; nome: string; grupo_muscular: string }; series: number; repeticoes: string; descanso_segundos: number; ordem: number }[]
 }
 
 export default function PainelAlunoPage() {
@@ -44,10 +25,8 @@ export default function PainelAlunoPage() {
     queryKey: ['ficha-aluno'],
     queryFn: async () => {
       const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Sessão expirada')
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessao expirada')
       return fichasAtivasDoAluno(supabase, user.id)
     },
   })
@@ -56,34 +35,18 @@ export default function PainelAlunoPage() {
     queryKey: ['registros-aluno'],
     queryFn: async () => {
       const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Sessão expirada')
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessao expirada')
       return meusRegistros(supabase, user.id)
     },
   })
 
   const registrar = useMutation({
-    mutationFn: async ({
-      itemTreinoId,
-      carga,
-      reps,
-    }: {
-      itemTreinoId: string
-      carga: number | null
-      reps: number | null
-    }) => {
+    mutationFn: async ({ itemTreinoId, carga, reps }: { itemTreinoId: string; carga: number | null; reps: number | null }) => {
       const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Sessão expirada')
-      await registrarExecucaoWeb(supabase, user.id, {
-        item_treino_id: itemTreinoId,
-        carga_utilizada: carga,
-        repeticoes_feitas: reps,
-      })
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessao expirada')
+      await registrarExecucaoWeb(supabase, user.id, { item_treino_id: itemTreinoId, carga_utilizada: carga, repeticoes_feitas: reps })
     },
     onSuccess: (_d, vars) => {
       setCampos((atual) => ({ ...atual, [vars.itemTreinoId]: { carga: '', reps: '' } }))
@@ -93,11 +56,8 @@ export default function PainelAlunoPage() {
 
   async function finalizarExecucao(registrosMap: Map<string, { carga: string; reps: string }[]>) {
     const supabase = createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-
     for (const [itemId, lista] of registrosMap.entries()) {
       for (const reg of lista) {
         await registrarExecucaoWeb(supabase, user.id, {
@@ -107,14 +67,13 @@ export default function PainelAlunoPage() {
         })
       }
     }
-
     setFichaEmExecucao(null)
     void queryClient.invalidateQueries({ queryKey: ['registros-aluno'] })
   }
 
   return (
     <div className="space-y-8">
-      <header>
+      <header className="animate-fade-in">
         <h1 className="text-2xl font-bold tracking-tight">Painel do Aluno</h1>
         <p className="text-muted-foreground text-sm">
           Sua ficha ativa e seu progresso — atualizado pelo seu personal.
@@ -124,13 +83,8 @@ export default function PainelAlunoPage() {
       {fichaEmExecucao ? (
         <ModoExecucao
           exercicios={fichaEmExecucao.itens.map((item) => ({
-            id: item.id,
-            nome: item.exercicio.nome,
-            grupo_muscular: item.exercicio.grupo_muscular,
-            series: item.series,
-            repeticoes: item.repeticoes,
-            descanso_segundos: item.descanso_segundos,
-            ordem: item.ordem,
+            id: item.id, nome: item.exercicio.nome, grupo_muscular: item.exercicio.grupo_muscular,
+            series: item.series, repeticoes: item.repeticoes, descanso_segundos: item.descanso_segundos, ordem: item.ordem,
           }))}
           onFinalizar={finalizarExecucao}
           onCancelar={() => setFichaEmExecucao(null)}
@@ -138,143 +92,124 @@ export default function PainelAlunoPage() {
       ) : (
         <>
           <section className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <h2 className="flex items-center gap-2 text-lg font-semibold animate-fade-in stagger-1">
               <ClipboardList className="h-5 w-5 text-primary" /> Ficha ativa
             </h2>
 
-        {fichas.isLoading ? (
-          <div className="h-48 animate-pulse rounded-lg bg-muted" />
-        ) : fichas.data?.length === 0 || !fichas.data ? (
-          <Card>
-            <CardContent className="flex flex-col items-center gap-2 py-12 text-center">
-              <Dumbbell className="text-muted-foreground h-10 w-10" />
-              <p className="font-medium">Nenhuma ficha ativa no momento</p>
-              <p className="text-muted-foreground max-w-md text-sm">
-                Seu personal ainda não montou sua ficha. Aguarde ou entre em
-                contato com ele.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          fichas.data.map((ficha) => (
-            <Card key={ficha.id}>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <CardTitle className="text-lg">{ficha.titulo}</CardTitle>
-                    <CardDescription>Ativa desde {formatarData(ficha.criado_em)}</CardDescription>
+            {fichas.isLoading ? (
+              <div className="space-y-3">
+                {[0, 1].map((i) => <div key={i} className="h-32 skeleton" />)}
+              </div>
+            ) : fichas.data?.length === 0 || !fichas.data ? (
+              <Card className="border-dashed">
+                <CardContent className="py-12 text-center">
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+                    <Dumbbell className="h-7 w-7 text-muted-foreground" />
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={() => setFichaEmExecucao(ficha)}
-                  >
-                    <Play className="mr-1 h-3.5 w-3.5" /> Iniciar Treino
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {ficha.itens.map((item) => {
-                  const campo = campos[item.id] ?? { carga: '', reps: '' }
-                  return (
-                    <div
-                      key={item.id}
-                      className="rounded-lg border border-border p-4"
-                    >
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <p className="font-medium">{item.exercicio.nome}</p>
-                        <span className="text-muted-foreground shrink-0 text-xs">
-                          {item.series} × {item.repeticoes} · descanso{' '}
-                          {item.descanso_segundos}s
-                        </span>
+                  <p className="font-semibold">Nenhuma ficha ativa no momento</p>
+                  <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
+                    Seu personal ainda nao montou sua ficha. Aguarde ou entre em contato.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              fichas.data.map((ficha) => (
+                <Card key={ficha.id} className="animate-slide-up stagger-2 hover:shadow-md transition-all duration-200">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-lg">{ficha.titulo}</CardTitle>
+                        <CardDescription>Ativa desde {formatarData(ficha.criado_em)}</CardDescription>
                       </div>
-                      <div className="flex items-end gap-2">
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.5"
-                          placeholder="Carga (kg)"
-                          value={campo.carga}
-                          onChange={(e) =>
-                            setCampos((atual) => ({
-                              ...atual,
-                              [item.id]: { ...campo, carga: e.target.value },
-                            }))
-                          }
-                        />
-                        <Input
-                          type="number"
-                          min={1}
-                          placeholder="Reps"
-                          value={campo.reps}
-                          onChange={(e) =>
-                            setCampos((atual) => ({
-                              ...atual,
-                              [item.id]: { ...campo, reps: e.target.value },
-                            }))
-                          }
-                        />
-                        <Button
-                          size="icon"
-                          aria-label={`Registrar execução de ${item.exercicio.nome}`}
-                          disabled={
-                            registrar.isPending &&
-                            registrar.variables?.itemTreinoId === item.id
-                          }
-                          onClick={() =>
-                            registrar.mutate({
-                              itemTreinoId: item.id,
-                              carga: campo.carga
-                                ? Number(campo.carga.replace(',', '.'))
-                                : null,
-                              reps: campo.reps ? Number(campo.reps) : null,
-                            })
-                          }
-                        >
-                          <Send className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <Button onClick={() => setFichaEmExecucao(ficha)} className="shadow-sm shrink-0">
+                        <Play className="mr-1.5 h-3.5 w-3.5" /> Iniciar Treino
+                      </Button>
                     </div>
-                  )
-                })}
-                {registrar.error ? (
-                  <p className="text-destructive text-sm">{registrar.error.message}</p>
-                ) : null}
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </section>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {ficha.itens.map((item) => {
+                      const campo = campos[item.id] ?? { carga: '', reps: '' }
+                      return (
+                        <div key={item.id} className="rounded-xl border border-border p-4 hover:border-border/80 transition-colors">
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2">
+                              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                <TrendingUp className="h-3.5 w-3.5" />
+                              </div>
+                              <p className="font-medium text-sm">{item.exercicio.nome}</p>
+                            </div>
+                            <span className="text-muted-foreground shrink-0 text-xs font-mono">
+                              {item.series} × {item.repeticoes} · {item.descanso_segundos}s
+                            </span>
+                          </div>
+                          <div className="flex items-end gap-2">
+                            <div className="flex-1">
+                              <Input type="number" min={0} step="0.5" placeholder="Carga (kg)" value={campo.carga}
+                                onChange={(e) => setCampos((atual) => ({ ...atual, [item.id]: { ...campo, carga: e.target.value } }))}
+                                className="h-9 text-sm" />
+                            </div>
+                            <div className="flex-1">
+                              <Input type="number" min={1} placeholder="Reps" value={campo.reps}
+                                onChange={(e) => setCampos((atual) => ({ ...atual, [item.id]: { ...campo, reps: e.target.value } }))}
+                                className="h-9 text-sm" />
+                            </div>
+                            <Button size="icon" className="h-9 w-9 shrink-0 rounded-xl shadow-sm"
+                              aria-label={`Registrar execucao de ${item.exercicio.nome}`}
+                              disabled={registrar.isPending && registrar.variables?.itemTreinoId === item.id}
+                              onClick={() => registrar.mutate({
+                                itemTreinoId: item.id,
+                                carga: campo.carga ? Number(campo.carga.replace(',', '.')) : null,
+                                reps: campo.reps ? Number(campo.reps) : null,
+                              })}>
+                              {registrar.isPending && registrar.variables?.itemTreinoId === item.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Send className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                    {registrar.error ? (
+                      <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+                        <p className="text-destructive text-sm">{registrar.error.message}</p>
+                      </div>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </section>
 
-      <section className="space-y-4">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <History className="h-5 w-5 text-primary" /> Meu histórico
-        </h2>
-        {registros.isLoading ? (
-          <div className="h-24 animate-pulse rounded-lg bg-muted" />
-        ) : registros.data?.length === 0 || !registros.data ? (
-          <Card>
-            <CardContent className="py-8 text-center text-muted-foreground">
-              Nenhum registro ainda. Registre sua primeira série na ficha acima!
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent className="divide-y divide-border p-0">
-              {registros.data.map((r, i) => (
-                <div key={i} className="flex items-center justify-between px-4 py-3 text-sm">
-                  <span className="font-medium">{r.exercicio_nome}</span>
-                  <span className="text-muted-foreground">
-                    {[r.carga_utilizada != null ? `${r.carga_utilizada} kg` : null, r.repeticoes_feitas != null ? `${r.repeticoes_feitas} reps` : null]
-                      .filter(Boolean)
-                      .join(' · ') || '—'}{' '}
-                    · {formatarData(r.data_registro)}
-                  </span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
-      </section>
+          <section className="space-y-4">
+            <h2 className="flex items-center gap-2 text-lg font-semibold animate-fade-in stagger-3">
+              <History className="h-5 w-5 text-primary" /> Meu historico
+            </h2>
+            {registros.isLoading ? (
+              <div className="h-24 skeleton" />
+            ) : registros.data?.length === 0 || !registros.data ? (
+              <Card className="border-dashed">
+                <CardContent className="py-10 text-center text-muted-foreground">
+                  Nenhum registro ainda. Registre sua primeira serie na ficha acima!
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="overflow-hidden">
+                <CardContent className="divide-y divide-border p-0">
+                  {registros.data.slice(0, 20).map((r, i) => (
+                    <div key={i} className="flex items-center justify-between px-5 py-3 text-sm hover:bg-muted/30 transition-colors">
+                      <span className="font-medium">{r.exercicio_nome}</span>
+                      <span className="text-muted-foreground text-xs">
+                        {[r.carga_utilizada != null ? `${r.carga_utilizada} kg` : null, r.repeticoes_feitas != null ? `${r.repeticoes_feitas} reps` : null]
+                          .filter(Boolean).join(' · ') || '—'} · {formatarData(r.data_registro)}
+                      </span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </section>
         </>
       )}
     </div>

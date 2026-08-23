@@ -36,7 +36,7 @@ export default function IndexRedirect() {
 const estilos = StyleSheet.create({
   centro: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#0a0f1a',
     justifyContent: 'center',
     alignItems: 'center',
   },

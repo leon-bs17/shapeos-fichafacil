@@ -7,12 +7,20 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#10b981',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarInactiveTintColor: '#475569',
         tabBarStyle: {
           backgroundColor: '#0f172a',
           borderTopColor: '#1e293b',
+          borderTopWidth: 1,
+          paddingTop: 6,
+          paddingBottom: 6,
+          height: 60,
         },
-        sceneStyle: { backgroundColor: '#0f172a' },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+        },
+        sceneStyle: { backgroundColor: '#0a0f1a' },
       }}
     >
       <Tabs.Screen
@@ -27,7 +35,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="historico"
         options={{
-          title: 'Histórico',
+          title: 'Historico',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time" size={size} color={color} />
           ),
