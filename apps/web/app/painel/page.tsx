@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ClipboardList, Dumbbell, History, Send } from 'lucide-react'
+import { ClipboardList, Dumbbell, History, Play, Send } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -19,10 +19,26 @@ import {
   registrarExecucaoWeb,
 } from '@/services/aluno'
 import { formatarData } from '@/lib/utils'
+import { ModoExecucao } from '@/components/aluno/modo-execucao'
+
+interface FichaAluno {
+  id: string
+  titulo: string
+  criado_em: string
+  itens: {
+    id: string
+    exercicio: { id: string; nome: string; grupo_muscular: string }
+    series: number
+    repeticoes: string
+    descanso_segundos: number
+    ordem: number
+  }[]
+}
 
 export default function PainelAlunoPage() {
   const queryClient = useQueryClient()
   const [campos, setCampos] = useState<Record<string, { carga: string; reps: string }>>({})
+  const [fichaEmExecucao, setFichaEmExecucao] = useState<FichaAluno | null>(null)
 
   const fichas = useQuery({
     queryKey: ['ficha-aluno'],
@@ -75,6 +91,27 @@ export default function PainelAlunoPage() {
     },
   })
 
+  async function finalizarExecucao(registrosMap: Map<string, { carga: string; reps: string }[]>) {
+    const supabase = createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return
+
+    for (const [itemId, lista] of registrosMap.entries()) {
+      for (const reg of lista) {
+        await registrarExecucaoWeb(supabase, user.id, {
+          item_treino_id: itemId,
+          carga_utilizada: reg.carga ? Number(reg.carga.replace(',', '.')) : null,
+          repeticoes_feitas: reg.reps ? Number(reg.reps) : null,
+        })
+      }
+    }
+
+    setFichaEmExecucao(null)
+    void queryClient.invalidateQueries({ queryKey: ['registros-aluno'] })
+  }
+
   return (
     <div className="space-y-8">
       <header>
@@ -84,10 +121,26 @@ export default function PainelAlunoPage() {
         </p>
       </header>
 
-      <section className="space-y-4">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <ClipboardList className="h-5 w-5 text-primary" /> Ficha ativa
-        </h2>
+      {fichaEmExecucao ? (
+        <ModoExecucao
+          exercicios={fichaEmExecucao.itens.map((item) => ({
+            id: item.id,
+            nome: item.exercicio.nome,
+            grupo_muscular: item.exercicio.grupo_muscular,
+            series: item.series,
+            repeticoes: item.repeticoes,
+            descanso_segundos: item.descanso_segundos,
+            ordem: item.ordem,
+          }))}
+          onFinalizar={finalizarExecucao}
+          onCancelar={() => setFichaEmExecucao(null)}
+        />
+      ) : (
+        <>
+          <section className="space-y-4">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
+              <ClipboardList className="h-5 w-5 text-primary" /> Ficha ativa
+            </h2>
 
         {fichas.isLoading ? (
           <div className="h-48 animate-pulse rounded-lg bg-muted" />
@@ -106,8 +159,18 @@ export default function PainelAlunoPage() {
           fichas.data.map((ficha) => (
             <Card key={ficha.id}>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{ficha.titulo}</CardTitle>
-                <CardDescription>Ativa desde {formatarData(ficha.criado_em)}</CardDescription>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-lg">{ficha.titulo}</CardTitle>
+                    <CardDescription>Ativa desde {formatarData(ficha.criado_em)}</CardDescription>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => setFichaEmExecucao(ficha)}
+                  >
+                    <Play className="mr-1 h-3.5 w-3.5" /> Iniciar Treino
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-3">
                 {ficha.itens.map((item) => {
@@ -212,6 +275,8 @@ export default function PainelAlunoPage() {
           </Card>
         )}
       </section>
+        </>
+      )}
     </div>
   )
 }
