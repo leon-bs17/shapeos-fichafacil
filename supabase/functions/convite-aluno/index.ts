@@ -32,6 +32,25 @@ Deno.serve(async (req: Request) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
   )
 
+  const token = authHeader.replace('Bearer ', '')
+  const { data: chamador } = await admin.auth.getUser(token)
+  if (!chamador.user) {
+    return Response.json({ error: 'Sessão inválida' }, { status: 401 })
+  }
+
+  const { data: perfilChamador } = await admin
+    .from('usuarios')
+    .select('tipo')
+    .eq('id', chamador.user.id)
+    .maybeSingle()
+
+  if (perfilChamador?.tipo !== 'PERSONAL') {
+    return Response.json(
+      { error: 'Apenas personal trainers podem convidar alunos.' },
+      { status: 403 }
+    )
+  }
+
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
     redirectTo: `${Deno.env.get('WEB_APP_URL') ?? ''}/login`,
     data: { nome: payload.nome, tipo: 'ALUNO' },
