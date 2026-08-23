@@ -58,17 +58,36 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  let tipo: 'PERSONAL' | 'ALUNO' | null = null
+  let tipo: 'PERSONAL' | 'ALUNO' | 'ADMIN' | null = null
   if (user) {
     const { data: perfil } = await supabase
       .from('usuarios')
       .select('tipo')
       .eq('id', user.id)
       .single()
-    tipo = perfil?.tipo ?? null
+    tipo = (perfil?.tipo as 'PERSONAL' | 'ALUNO' | 'ADMIN') ?? null
   }
 
+  const isAdmin = pathname.startsWith('/admin')
   const isPainelAluno = pathname.startsWith('/painel')
+
+  if (user && tipo === 'ADMIN' && !isAdmin && pathname !== '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && tipo === 'ADMIN' && !isAdmin && pathname === '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && tipo !== 'ADMIN' && isAdmin) {
+    const url = request.nextUrl.clone()
+    url.pathname = tipo === 'ALUNO' ? '/painel' : '/'
+    return NextResponse.redirect(url)
+  }
 
   if (user && tipo === 'ALUNO' && !isPainelAluno && pathname !== '/login') {
     const url = request.nextUrl.clone()
@@ -84,7 +103,9 @@ export async function updateSession(request: NextRequest) {
 
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
-    url.pathname = tipo === 'ALUNO' ? '/painel' : '/'
+    if (tipo === 'ADMIN') url.pathname = '/admin'
+    else if (tipo === 'ALUNO') url.pathname = '/painel'
+    else url.pathname = '/'
     return NextResponse.redirect(url)
   }
 
