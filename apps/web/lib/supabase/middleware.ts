@@ -6,7 +6,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
+    pathname.startsWith('/favicon') ||
     /\.(js|css|woff2?|png|jpg|jpeg|svg|gif|ico|webp)$/.test(pathname)
   ) {
     return NextResponse.next()
@@ -48,6 +48,7 @@ export async function updateSession(request: NextRequest) {
   const isPublic =
     pathname === '/login' ||
     pathname === '/cadastro' ||
+    pathname.startsWith('/auth/callback') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon')
 
