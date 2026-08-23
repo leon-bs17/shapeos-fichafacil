@@ -20,11 +20,12 @@ function DashboardConteudo() {
     queryFn: async () => {
       const supabase = createClient()
 
-      const [usuarios, treinos, execucoes, vinculos] = await Promise.all([
-        supabase.from('usuarios').select('id, tipo, criado_em'),
+      const [usuarios, treinos, execucoes, vinculos, exercicios] = await Promise.all([
+        supabase.from('usuarios').select('id, nome, tipo, criado_em'),
         supabase.from('treinos').select('id, ativo, criado_em'),
         supabase.from('registro_execucao').select('id, data_registro'),
         supabase.from('personal_alunos').select('id, status'),
+        supabase.from('exercicios').select('id', { count: 'exact', head: true }),
       ])
 
       const todos = usuarios.data ?? []
@@ -90,6 +91,7 @@ function DashboardConteudo() {
         totalTreinos: treinosData.length,
         totalExecucoes: execucoesData.length,
         vinculosAtivos: vinculosData.filter((v) => v.status === 'ATIVO').length,
+        totalExercicios: exercicios.count ?? 0,
         usuariosPorMes,
         treinosPorMes,
         execucoesPorDia,
@@ -137,7 +139,7 @@ function DashboardConteudo() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MiniStat titulo="Treinos ativos" valor={metricas?.treinosAtivos ?? 0} subtitulo={`de ${metricas?.totalTreinos ?? 0} total`} />
         <MiniStat titulo="Vinculos ativos" valor={metricas?.vinculosAtivos ?? 0} subtitulo="personal-aluno" />
-        <MiniStat titulo="Exercicios cadastrados" valor={0} subtitulo="biblioteca global" />
+        <MiniStat titulo="Exercicios cadastrados" valor={metricas?.totalExercicios ?? 0} subtitulo="biblioteca global" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -223,8 +225,8 @@ function DashboardConteudo() {
                     {u.tipo === 'ADMIN' ? '★' : u.tipo === 'PERSONAL' ? 'P' : 'A'}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{u.tipo}</p>
-                    <p className="truncate text-xs text-muted-foreground">{formatarData(u.criado_em)}</p>
+                    <p className="truncate text-sm font-medium">{u.nome ?? 'Usuario'}</p>
+                    <p className="truncate text-xs text-muted-foreground">{u.tipo} · {formatarData(u.criado_em)}</p>
                   </div>
                 </div>
               ))}
