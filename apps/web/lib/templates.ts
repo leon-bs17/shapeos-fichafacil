@@ -12,6 +12,71 @@ export interface TemplateFicha {
   exercicios: ExercicioTemplate[]
 }
 
+export type TipoTreino = 'hipertrofia' | 'emagrecer' | 'condicionamento'
+
+export interface InfoTipoTreino {
+  id: TipoTreino
+  titulo: string
+  descricao: string
+  icone: string
+  ajustes: {
+    seriesDelta: number
+    repeticoes: string
+    descanso_segundos: number
+  }
+}
+
+export const TIPOS_TREINO: InfoTipoTreino[] = [
+  {
+    id: 'hipertrofia',
+    titulo: 'Hipertrofia',
+    descricao: 'Carga moderada-alta, 8-12 reps, descanso médio',
+    icone: '💪',
+    ajustes: {
+      seriesDelta: 0,
+      repeticoes: '',
+      descanso_segundos: 0,
+    },
+  },
+  {
+    id: 'emagrecer',
+    titulo: 'Emagrecimento',
+    descricao: 'Carga leve, 12-20 reps, descanso curto, mais series',
+    icone: '🔥',
+    ajustes: {
+      seriesDelta: 1,
+      repeticoes: '12-20',
+      descanso_segundos: -30,
+    },
+  },
+  {
+    id: 'condicionamento',
+    titulo: 'Condicionamento',
+    descricao: 'Carga leve, muitas reps, descanso mínimo',
+    icone: '🫀',
+    ajustes: {
+      seriesDelta: 0,
+      repeticoes: '15-25',
+      descanso_segundos: -45,
+    },
+  },
+]
+
+export function aplicarTipoTreino(
+  exercicios: ExercicioTemplate[],
+  tipo: TipoTreino
+): ExercicioTemplate[] {
+  const info = TIPOS_TREINO.find((t) => t.id === tipo)
+  if (!info || tipo === 'hipertrofia') return exercicios
+
+  return exercicios.map((ex) => ({
+    ...ex,
+    series: Math.max(2, ex.series + info.ajustes.seriesDelta),
+    repeticoes: info.ajustes.repeticoes || ex.repeticoes,
+    descanso_segundos: Math.max(15, ex.descanso_segundos + info.ajustes.descanso_segundos),
+  }))
+}
+
 export const TEMPLATES: TemplateFicha[] = [
   {
     id: 'push-pull-legs',

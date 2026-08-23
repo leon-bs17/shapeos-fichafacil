@@ -12,7 +12,7 @@ import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { formatarData } from '@/lib/utils'
-import { TEMPLATES, type TemplateFicha } from '@/lib/templates'
+import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
 import type { FichaResumo } from '@/services/treinos'
 
 interface LinhaItem {
@@ -43,6 +43,7 @@ function TreinosConteudo() {
   const [modalAberto, setModalAberto] = useState(false)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
   const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
+  const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
 
   return (
     <div className="space-y-6">
@@ -171,11 +172,13 @@ function TreinosConteudo() {
 
       <ModalNovaFicha
         open={modalAberto}
-        onClose={() => { setModalAberto(false); setTemplateSelecionado(null) }}
+        onClose={() => { setModalAberto(false); setTemplateSelecionado(null); setTipoTreino('hipertrofia') }}
         erro={acoes.criar.error?.message ?? null}
         ocupado={acoes.criar.isPending}
         template={templateSelecionado}
         onSelecionarTemplate={setTemplateSelecionado}
+        tipoTreino={tipoTreino}
+        onSelecionarTipo={setTipoTreino}
       />
 
       {fichaEditando ? (
@@ -198,6 +201,8 @@ function ModalNovaFicha({
   ocupado,
   template,
   onSelecionarTemplate,
+  tipoTreino,
+  onSelecionarTipo,
 }: {
   open: boolean
   onClose: () => void
@@ -205,6 +210,8 @@ function ModalNovaFicha({
   ocupado: boolean
   template: TemplateFicha | null
   onSelecionarTemplate: (t: TemplateFicha | null) => void
+  tipoTreino: TipoTreino
+  onSelecionarTipo: (t: TipoTreino) => void
 }) {
   const { data: alunos } = useAlunos()
   const { data: exercicios } = useExercicios()
@@ -219,8 +226,9 @@ function ModalNovaFicha({
     onSelecionarTemplate(t)
     if (t && exercicios) {
       setTitulo(t.titulo)
+      const comTipo = aplicarTipoTreino(t.exercicios, tipoTreino)
       setItens(
-        t.exercicios.map((ex) => {
+        comTipo.map((ex) => {
           const encontrado = exercicios.find((e) => e.nome === ex.nome)
           return {
             exercicio_id: encontrado?.id ?? '',
@@ -303,32 +311,58 @@ function ModalNovaFicha({
     >
       <div className="space-y-4">
         {!template ? (
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Comece de um template pronto ou crie do zero.
-            </p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <button
-                onClick={() => aplicarTemplate(null)}
-                className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
-              >
-                <span className="font-medium">Em branco</span>
-                <span className="text-muted-foreground text-xs">
-                  Monte do zero
-                </span>
-              </button>
-              {TEMPLATES.map((t) => (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Tipo de Treino</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {TIPOS_TREINO.map((tipo) => (
+                  <button
+                    key={tipo.id}
+                    onClick={() => onSelecionarTipo(tipo.id)}
+                    className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-center text-sm transition-colors ${
+                      tipoTreino === tipo.id
+                        ? 'border-primary bg-primary/10 text-foreground'
+                        : 'border-border hover:bg-accent'
+                    }`}
+                  >
+                    <span className="text-lg">{tipo.icone}</span>
+                    <span className="font-medium">{tipo.titulo}</span>
+                    <span className="text-muted-foreground text-xs leading-tight">
+                      {tipo.descricao}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Template</Label>
+              <p className="text-muted-foreground text-xs">
+                Escolha a estrutura do treino ou comece do zero.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
                 <button
-                  key={t.id}
-                  onClick={() => aplicarTemplate(t)}
+                  onClick={() => aplicarTemplate(null)}
                   className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
                 >
-                  <span className="font-medium">{t.titulo}</span>
+                  <span className="font-medium">Em branco</span>
                   <span className="text-muted-foreground text-xs">
-                    {t.descricao}
+                    Monte do zero
                   </span>
                 </button>
-              ))}
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => aplicarTemplate(t)}
+                    className="flex flex-col items-start gap-1 rounded-lg border border-border p-3 text-left text-sm transition-colors hover:bg-accent"
+                  >
+                    <span className="font-medium">{t.titulo}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t.descricao}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         ) : (
