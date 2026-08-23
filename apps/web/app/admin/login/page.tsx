@@ -17,6 +17,8 @@ export default function AdminLoginPage() {
   const [erro, setErro] = useState<string | null>(null)
   const [carregando, setCarregando] = useState(false)
   const [limpandoSessao, setLimpandoSessao] = useState(true)
+  const [modoEsqueci, setModoEsqueci] = useState(false)
+  const [avisoEnviado, setAvisoEnviado] = useState(false)
 
   useEffect(() => {
     async function limpar() {
@@ -27,6 +29,25 @@ export default function AdminLoginPage() {
     }
     void limpar()
   }, [])
+
+  async function enviarLinkRedefinicao() {
+    setErro(null)
+    if (!email.includes('@')) {
+      setErro('Digite seu e-mail para receber o link.')
+      return
+    }
+    setCarregando(true)
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/auth/callback?next=/admin/redefinir-senha`,
+    })
+    setCarregando(false)
+    if (error) {
+      setErro('Nao foi possivel enviar o e-mail. Tente novamente.')
+      return
+    }
+    setAvisoEnviado(true)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -93,7 +114,57 @@ export default function AdminLoginPage() {
 
         <Card className="border-border/50 bg-card shadow-lg shadow-black/20">
           <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
+            {avisoEnviado ? (
+              <div className="space-y-4 text-center py-2">
+                <p className="font-medium">E-mail enviado!</p>
+                <p className="text-sm text-muted-foreground">
+                  Enviamos um link de redefinicao para{' '}
+                  <span className="font-medium text-foreground">{email}</span>.
+                  Abra o Gmail, clique no link e defina uma senha forte.
+                </p>
+                <Button variant="outline" className="w-full rounded-xl" onClick={() => { setAvisoEnviado(false); setModoEsqueci(false) }}>
+                  Voltar ao login
+                </Button>
+              </div>
+            ) : modoEsqueci ? (
+              <div className="space-y-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="recuperar-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    E-mail administrativo
+                  </Label>
+                  <Input
+                    id="recuperar-email"
+                    type="email"
+                    placeholder="seu@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    required
+                    className="h-11"
+                  />
+                </div>
+
+                {erro ? (
+                  <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+                    <p className="text-sm text-destructive" role="alert">{erro}</p>
+                  </div>
+                ) : null}
+
+                <Button onClick={enviarLinkRedefinicao} className="w-full h-11 font-medium rounded-xl" disabled={carregando}>
+                  {carregando ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Enviar link de redefinicao
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => { setModoEsqueci(false); setErro(null) }}
+                  className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Voltar ao login
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1.5">
                 <Label htmlFor="admin-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   E-mail administrativo
@@ -146,7 +217,16 @@ export default function AdminLoginPage() {
                   </>
                 )}
               </Button>
-            </form>
+
+                <button
+                  type="button"
+                  onClick={() => { setModoEsqueci(true); setErro(null) }}
+                  className="w-full text-center text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Esqueci minha senha — receber link no Gmail
+                </button>
+              </form>
+            )}
           </CardContent>
         </Card>
 

@@ -10,6 +10,11 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Fluxo de redefinicao de senha: respeita o destino do link
+      if (next !== '/') {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data: perfil } = await supabase

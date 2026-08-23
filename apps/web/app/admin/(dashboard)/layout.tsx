@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Shield, LayoutDashboard, Users, Dumbbell, ArrowLeft, LogOut } from 'lucide-react'
+import { Shield, LayoutDashboard, Users, Dumbbell, ArrowLeft, LogOut, KeyRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 
@@ -12,6 +12,7 @@ const links = [
   { href: '/admin/usuarios', label: 'Usuarios', icone: Users },
   { href: '/admin/personais', label: 'Personais', icone: Users },
   { href: '/admin/exercicios', label: 'Exercicios', icone: Dumbbell },
+  { href: '/admin/conta', label: 'Minha conta', icone: KeyRound },
 ]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
