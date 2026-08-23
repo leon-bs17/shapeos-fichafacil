@@ -30,8 +30,10 @@ jobs:
       - name: Run E2E tests
         run: pnpm exec playwright test --reporter=list
         env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_PAT: ${{ secrets.SUPABASE_PAT }}
+          SUPABASE_CAPTCHA_SECRET: ${{ secrets.SUPABASE_CAPTCHA_SECRET }}
 
       - name: Upload test results
         if: failure()
