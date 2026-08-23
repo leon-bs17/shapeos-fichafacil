@@ -46,7 +46,7 @@ export default function LoginPage() {
     const { data, error: erroAuth } = await supabase.auth.signInWithPassword({
       email: parsed.data.email,
       password: parsed.data.senha,
-      captchaToken: captchaToken || undefined,
+      options: { captchaToken: captchaToken || undefined },
     })
 
     if (erroAuth) {
