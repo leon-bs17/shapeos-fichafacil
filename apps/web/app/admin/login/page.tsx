@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, Loader2, ArrowRight } from 'lucide-react'
+import { Shield, Loader2, ArrowRight, Mail } from 'lucide-react'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -218,13 +218,15 @@ export default function AdminLoginPage() {
                 )}
               </Button>
 
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => { setModoEsqueci(true); setErro(null) }}
-                  className="w-full text-center text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="w-full h-11 rounded-xl font-medium hover:border-primary/40 hover:bg-primary/5 transition-all"
                 >
-                  Esqueci minha senha — receber link no Gmail
-                </button>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Esqueci minha senha
+                </Button>
               </form>
             )}
           </CardContent>
