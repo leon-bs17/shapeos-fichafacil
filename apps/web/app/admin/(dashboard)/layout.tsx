@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   async function sair() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/admin/login')
   }
 
   return (
