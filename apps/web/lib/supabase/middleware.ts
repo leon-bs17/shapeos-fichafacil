@@ -71,13 +71,7 @@ export async function updateSession(request: NextRequest) {
   const isAdmin = pathname.startsWith('/admin')
   const isPainelAluno = pathname.startsWith('/painel')
 
-  if (user && tipo === 'ADMIN' && !isAdmin && pathname !== '/login') {
-    const url = request.nextUrl.clone()
-    url.pathname = '/admin'
-    return NextResponse.redirect(url)
-  }
-
-  if (user && tipo === 'ADMIN' && !isAdmin && pathname === '/login') {
+  if (user && tipo === 'ADMIN' && !isAdmin) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin'
     return NextResponse.redirect(url)

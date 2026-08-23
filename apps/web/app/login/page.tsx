@@ -72,12 +72,9 @@ export default function LoginPage() {
 
     const tipoReal = perfil?.tipo
 
-    if (tipoReal && tipoReal !== tipo) {
-      await supabase.auth.signOut()
-      setCarregando(false)
-      setErro(
-        `Esta conta e ${tipoReal === 'PERSONAL' ? 'de Personal Trainer' : 'de Aluno'}. Selecione "${tipoReal === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}" para entrar.`
-      )
+    if (tipoReal === 'ADMIN') {
+      router.push('/admin')
+      router.refresh()
       return
     }
 

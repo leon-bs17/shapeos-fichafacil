@@ -21,6 +21,9 @@ export async function GET(request: Request) {
         if (perfil?.tipo === 'ALUNO') {
           return NextResponse.redirect(`${origin}/painel`)
         }
+        if (perfil?.tipo === 'ADMIN') {
+          return NextResponse.redirect(`${origin}/admin`)
+        }
       }
       return NextResponse.redirect(`${origin}${next}`)
     }
