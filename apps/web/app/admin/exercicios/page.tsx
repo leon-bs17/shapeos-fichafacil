@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { AdminShell } from '../layout'
 import { Dumbbell, Search, Plus, Trash2, X, Loader2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -17,11 +16,7 @@ const GRUPOS_MUSCULAREIS = [
 ]
 
 export default function AdminExerciciosPage() {
-  return (
-    <AdminShell>
-      <ExerciciosConteudo />
-    </AdminShell>
-  )
+  return <ExerciciosConteudo />
 }
 
 function ExerciciosConteudo() {

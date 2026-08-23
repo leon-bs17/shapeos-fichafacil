@@ -3,18 +3,13 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { AdminShell } from '../layout'
 import { Users, Search, Filter, Mail, Calendar, Shield, UserCheck, GraduationCap } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatarData } from '@/lib/utils'
 
 export default function AdminUsuariosPage() {
-  return (
-    <AdminShell>
-      <UsuariosConteudo />
-    </AdminShell>
-  )
+  return <UsuariosConteudo />
 }
 
 function UsuariosConteudo() {

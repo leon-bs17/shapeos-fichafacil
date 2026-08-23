@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { AdminShell } from '../layout'
 import { UserCheck, Search, Users, ChevronDown, ChevronRight, Mail, Calendar, Dumbbell } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -20,11 +19,7 @@ interface PersonalComAlunos {
 }
 
 export default function AdminPersonaisPage() {
-  return (
-    <AdminShell>
-      <PersonaisConteudo />
-    </AdminShell>
-  )
+  return <PersonaisConteudo />
 }
 
 function PersonaisConteudo() {

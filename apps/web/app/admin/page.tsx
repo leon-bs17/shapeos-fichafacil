@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { AdminShell } from './layout'
 import { Users, UserCheck, ClipboardList, Activity, TrendingUp, Dumbbell } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatarData } from '@/lib/utils'
@@ -12,11 +11,7 @@ import {
 } from 'recharts'
 
 export default function AdminDashboardPage() {
-  return (
-    <AdminShell>
-      <DashboardConteudo />
-    </AdminShell>
-  )
+  return <DashboardConteudo />
 }
 
 function DashboardConteudo() {

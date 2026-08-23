@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Shield, LayoutDashboard, Users, Dumbbell, ArrowLeft, LogOut } from 'lucide-react'
@@ -13,7 +14,7 @@ const links = [
   { href: '/admin/exercicios', label: 'Exercicios', icone: Dumbbell },
 ]
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
 
