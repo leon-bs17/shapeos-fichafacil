@@ -13,9 +13,12 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test:shared": "tsx scripts/test-shared.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "gen:types": "supabase gen types typescript --local > packages/shared/src/types/database.generated.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "playwright": "^1.62.1",
     "supabase": "^2.9.6",
     "tsx": "^4.19.2",
