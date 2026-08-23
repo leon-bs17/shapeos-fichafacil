@@ -11,7 +11,7 @@ test.describe('Painel do Aluno', () => {
   test('seção ficha ativa existe', async ({ page }) => {
     await loginComoAluno(page)
     await page.goto('/painel')
-    await expect(page.getByText(/ficha ativa/i)).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Ficha ativa' })).toBeVisible()
   })
 
   test('seção histórico existe', async ({ page }) => {

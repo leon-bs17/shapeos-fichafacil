@@ -3,57 +3,63 @@ import type { Page } from '@playwright/test'
 const PERSONAL_EMAIL = 'personal_1787426424337@shapeosteste.com'
 const ALUNO_EMAIL = 'aluno_1787426424337@shapeosteste.com'
 const SENHA = 'senha123456'
-const SUPABASE_URL = 'https://xzxdcjvfapzkpjqnyzzj.supabase.co'
-const PROJECT_REF = 'xzxdcjvfapzkpjqnyzzj'
 
-async function obterSession(email: string, senha: string) {
-  const apiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!apiKey) throw new Error('NEXT_PUBLIC_SUPABASE_ANON_KEY não definida')
+async function loginViaPageAuth(page: Page, email: string) {
+  await page.goto('/')
+  await page.waitForLoadState('domcontentloaded')
 
-  const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-    method: 'POST',
-    headers: {
-      apikey: apiKey,
-      'Content-Type': 'application/json',
+  // Use the Supabase auth REST API from the browser context
+  // This sets cookies on the correct domain automatically
+  await page.evaluate(
+    async ({ email, senha }) => {
+      const url = 'https://xzxdcjvfapzkpjqnyzzj.supabase.co'
+      const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6eGRjanZmYXB6a3BqcW55enpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MTk2MzQsImV4cCI6MjEwMjk5NTYzNH0.K7A-oNK6603KwI_Fh6qCixpF4UWn30GNvUIyxq6GRp4'
+
+      const r = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          apikey: key,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password: senha }),
+      })
+      const data = await r.json()
+      if (!data.access_token) throw new Error('Auth failed')
+
+      // Store session in localStorage for the Supabase browser client
+      const session = {
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_in: data.expires_in,
+        expires_at: data.expires_at,
+        token_type: 'bearer',
+        user: data.user,
+      }
+
+      // Set the cookie in the format @supabase/ssr expects
+      // Also store in localStorage as a fallback
+      localStorage.setItem(
+        'sb-xzxdcjvfapzkpjqnyzzj-auth-token',
+        JSON.stringify(session)
+      )
+
+      // Set the cookie that the middleware reads
+      document.cookie = `sb-xzxdcjvfapzkpjqnyzzj-auth-token=${encodeURIComponent(JSON.stringify(session))}; path=/; max-age=${data.expires_in}; SameSite=Lax`
     },
-    body: JSON.stringify({ email, password: senha }),
-  })
-  const data = await r.json()
-  if (!data.access_token) throw new Error(`Auth falhou: ${JSON.stringify(data).slice(0, 200)}`)
-  return data
-}
+    { email, senha: SENHA }
+  )
 
-async function loginViaCookie(page: Page, email: string) {
-  const sessao = await obterSession(email, SENHA)
-
-  await page.context().addCookies([
-    {
-      name: `sb-${PROJECT_REF}-auth-token`,
-      value: JSON.stringify({
-        access_token: sessao.access_token,
-        refresh_token: sessao.refresh_token,
-      }),
-      domain: '.vercel.app',
-      path: '/',
-    },
-    {
-      name: `sb-${PROJECT_REF}-auth-token`,
-      value: JSON.stringify({
-        access_token: sessao.access_token,
-        refresh_token: sessao.refresh_token,
-      }),
-      domain: 'shapeos-fichafacil.vercel.app',
-      path: '/',
-    },
-  ])
+  // Reload so the app picks up the session
+  await page.reload()
+  await page.waitForLoadState('networkidle')
 }
 
 export async function loginComoPersonal(page: Page) {
-  await loginViaCookie(page, PERSONAL_EMAIL)
+  await loginViaPageAuth(page, PERSONAL_EMAIL)
 }
 
 export async function loginComoAluno(page: Page) {
-  await loginViaCookie(page, ALUNO_EMAIL)
+  await loginViaPageAuth(page, ALUNO_EMAIL)
 }
 
 export async function desabilitarCaptcha() {

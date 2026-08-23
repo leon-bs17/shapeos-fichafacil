@@ -5,7 +5,7 @@ test.describe('Biblioteca de Exercícios', () => {
   test('página carrega com lista de exercícios', async ({ page }) => {
     await loginComoPersonal(page)
     await page.goto('/exercicios')
-    await expect(page.getByRole('heading', { name: /exercícios/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /biblioteca/i })).toBeVisible()
   })
 
   test('campo de busca existe', async ({ page }) => {
