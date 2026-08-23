@@ -1,12 +1,28 @@
 'use client'
 
 import { useState } from 'react'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
+import { LinhaItemArrastavel } from '@/components/ui/linha-item-arrastavel'
 import { useAcoesFichas, useFichas } from '@/hooks/use-fichas'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
@@ -302,6 +318,24 @@ function ModalNovaFicha({
     grupos.set(e.grupo_muscular, lista)
   })
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    setItens((atual) => {
+      const antigoIndex = atual.findIndex((_, i) => `item-${i}` === active.id)
+      const novoIndex = atual.findIndex((_, i) => `item-${i}` === over.id)
+      return arrayMove(atual, antigoIndex, novoIndex)
+    })
+  }
+
   return (
     <Modal
       open={open}
@@ -407,70 +441,33 @@ function ModalNovaFicha({
                   Trocar template
                 </Button>
               </div>
-              {itens.map((item, indice) => (
-                <div key={indice} className="flex items-end gap-2">
-                  <select
-                    value={item.exercicio_id}
-                    onChange={(e) =>
-                      atualizarItem(indice, 'exercicio_id', e.target.value)
-                    }
-                    className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="">Exercício...</option>
-                    {[...grupos.entries()].map(([grupo, lista]) => (
-                      <optgroup key={grupo} label={grupo}>
-                        {(lista ?? []).map((e) => (
-                          <option key={e.id} value={e.id}>
-                            {e.nome}
-                          </option>
-                        ))}
-                      </optgroup>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={itens.map((_, i) => `item-${i}`)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2">
+                    {itens.map((item, indice) => (
+                      <LinhaItemArrastavel
+                        key={`item-${indice}`}
+                        id={`item-${indice}`}
+                        indice={indice}
+                        item={item}
+                        grupos={grupos}
+                        totalItens={itens.length}
+                        onAtualizar={atualizarItem}
+                        onRemover={(i) =>
+                          setItens((atual) => atual.filter((_, idx) => idx !== i))
+                        }
+                      />
                     ))}
-                  </select>
-                  <Input
-                    className="w-16"
-                    type="number"
-                    min={1}
-                    max={30}
-                    aria-label={`Séries do exercício ${indice + 1}`}
-                    value={item.series}
-                    onChange={(e) =>
-                      atualizarItem(indice, 'series', e.target.value)
-                    }
-                  />
-                  <Input
-                    className="w-20"
-                    placeholder="Reps"
-                    aria-label={`Repetições do exercício ${indice + 1}`}
-                    value={item.repeticoes}
-                    onChange={(e) =>
-                      atualizarItem(indice, 'repeticoes', e.target.value)
-                    }
-                  />
-                  <Input
-                    className="w-20"
-                    type="number"
-                    min={0}
-                    max={900}
-                    aria-label={`Descanso do exercício ${indice + 1}`}
-                    value={item.descanso_segundos}
-                    onChange={(e) =>
-                      atualizarItem(indice, 'descanso_segundos', e.target.value)
-                    }
-                  />
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    aria-label={`Remover exercício ${indice + 1}`}
-                    onClick={() =>
-                      setItens((atual) => atual.filter((_, i) => i !== indice))
-                    }
-                    disabled={itens.length === 1}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
 
               <Button
                 size="sm"
@@ -580,6 +577,24 @@ function ModalEditarFicha({
     grupos.set(e.grupo_muscular, lista)
   })
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    setItens((atual) => {
+      const antigoIndex = atual.findIndex((_, i) => `item-${i}` === active.id)
+      const novoIndex = atual.findIndex((_, i) => `item-${i}` === over.id)
+      return arrayMove(atual, antigoIndex, novoIndex)
+    })
+  }
+
   return (
     <Modal
       open={open}
@@ -605,64 +620,33 @@ function ModalEditarFicha({
 
         <div className="space-y-2">
           <Label>Exercícios</Label>
-          {itens.map((item, indice) => (
-            <div key={indice} className="flex items-end gap-2">
-              <select
-                value={item.exercicio_id}
-                onChange={(e) => atualizarItem(indice, 'exercicio_id', e.target.value)}
-                className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <option value="">Exercício...</option>
-                {[...grupos.entries()].map(([grupo, lista]) => (
-                  <optgroup key={grupo} label={grupo}>
-                    {(lista ?? []).map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.nome}
-                      </option>
-                    ))}
-                  </optgroup>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={itens.map((_, i) => `item-${i}`)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-2">
+                {itens.map((item, indice) => (
+                  <LinhaItemArrastavel
+                    key={`item-${indice}`}
+                    id={`item-${indice}`}
+                    indice={indice}
+                    item={item}
+                    grupos={grupos}
+                    totalItens={itens.length}
+                    onAtualizar={atualizarItem}
+                    onRemover={(i) =>
+                      setItens((atual) => atual.filter((_, idx) => idx !== i))
+                    }
+                  />
                 ))}
-              </select>
-              <Input
-                className="w-16"
-                type="number"
-                min={1}
-                max={30}
-                aria-label={`Séries do exercício ${indice + 1}`}
-                value={item.series}
-                onChange={(e) => atualizarItem(indice, 'series', e.target.value)}
-              />
-              <Input
-                className="w-20"
-                placeholder="Reps"
-                aria-label={`Repetições do exercício ${indice + 1}`}
-                value={item.repeticoes}
-                onChange={(e) => atualizarItem(indice, 'repeticoes', e.target.value)}
-              />
-              <Input
-                className="w-20"
-                type="number"
-                min={0}
-                max={900}
-                aria-label={`Descanso do exercício ${indice + 1}`}
-                value={item.descanso_segundos}
-                onChange={(e) =>
-                  atualizarItem(indice, 'descanso_segundos', e.target.value)
-                }
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                aria-label={`Remover exercício ${indice + 1}`}
-                onClick={() =>
-                  setItens((atual) => atual.filter((_, i) => i !== indice))
-                }
-                disabled={itens.length === 1}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
+              </div>
+            </SortableContext>
+          </DndContext>
 
           <Button
             size="sm"
