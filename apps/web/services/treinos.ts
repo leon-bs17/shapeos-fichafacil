@@ -171,3 +171,31 @@ export async function excluirFicha(
   const { error } = await supabase.from('treinos').delete().eq('id', fichaId)
   if (error) throw error
 }
+
+export async function editarFicha(
+  supabase: SupabaseClient,
+  fichaId: string,
+  ficha: Omit<NovaFicha, 'aluno_id'>
+): Promise<void> {
+  const { error: erroTitulo } = await supabase
+    .from('treinos')
+    .update({ titulo: ficha.titulo.trim() })
+    .eq('id', fichaId)
+
+  if (erroTitulo) throw erroTitulo
+
+  const { error: erroDelete } = await supabase
+    .from('itens_treino')
+    .delete()
+    .eq('treino_id', fichaId)
+
+  if (erroDelete) throw erroDelete
+
+  if (ficha.itens.length > 0) {
+    await inserirItens(supabase, fichaId, {
+      aluno_id: '',
+      titulo: ficha.titulo,
+      itens: ficha.itens,
+    })
+  }
+}

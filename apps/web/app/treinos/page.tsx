@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Dumbbell, Pause, Play, Plus, Trash2 } from 'lucide-react'
+import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -12,6 +12,7 @@ import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { formatarData } from '@/lib/utils'
+import type { FichaResumo } from '@/services/treinos'
 
 interface LinhaItem {
   exercicio_id: string
@@ -39,6 +40,7 @@ function TreinosConteudo() {
   const { data: fichas, isLoading } = useFichas()
   const acoes = useAcoesFichas()
   const [modalAberto, setModalAberto] = useState(false)
+  const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
 
   return (
     <div className="space-y-6">
@@ -120,6 +122,13 @@ function TreinosConteudo() {
                   <Button
                     size="sm"
                     variant="outline"
+                    onClick={() => setFichaEditando(ficha)}
+                  >
+                    <Pencil className="mr-1 h-3.5 w-3.5" /> Editar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
                     disabled={acoes.alternar.isPending}
                     onClick={() =>
                       acoes.alternar.mutate({
@@ -164,6 +173,16 @@ function TreinosConteudo() {
         erro={acoes.criar.error?.message ?? null}
         ocupado={acoes.criar.isPending}
       />
+
+      {fichaEditando ? (
+        <ModalEditarFicha
+          ficha={fichaEditando}
+          open={!!fichaEditando}
+          onClose={() => setFichaEditando(null)}
+          erro={acoes.editar.error?.message ?? null}
+          ocupado={acoes.editar.isPending}
+        />
+      ) : null}
     </div>
   )
 }
@@ -361,6 +380,194 @@ function ModalNovaFicha({
           </Button>
           <Button onClick={salvar} disabled={ocupado}>
             {ocupado ? 'Salvando...' : 'Criar Ficha'}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+function ModalEditarFicha({
+  ficha,
+  open,
+  onClose,
+  erro,
+  ocupado,
+}: {
+  ficha: FichaResumo
+  open: boolean
+  onClose: () => void
+  erro: string | null
+  ocupado: boolean
+}) {
+  const { data: exercicios } = useExercicios()
+  const { editar } = useAcoesFichas()
+
+  const [titulo, setTitulo] = useState(ficha.titulo)
+  const [itens, setItens] = useState<LinhaItem[]>(
+    ficha.itens.length > 0
+      ? ficha.itens.map((item) => ({
+          exercicio_id: item.exercicio.id,
+          series: String(item.series),
+          repeticoes: item.repeticoes,
+          descanso_segundos: String(item.descanso_segundos),
+        }))
+      : [{ ...ITEM_VAZIO }]
+  )
+  const [erroLocal, setErroLocal] = useState<string | null>(null)
+
+  function atualizarItem(indice: number, campo: keyof LinhaItem, valor: string) {
+    setItens((atual) =>
+      atual.map((item, i) => (i === indice ? { ...item, [campo]: valor } : item))
+    )
+  }
+
+  async function salvar() {
+    setErroLocal(null)
+
+    if (titulo.trim().length < 3) {
+      setErroLocal('Dê um título com pelo menos 3 letras.')
+      return
+    }
+
+    const itensValidos = itens.filter(
+      (i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim()
+    )
+    if (itensValidos.length === 0) {
+      setErroLocal('Adicione ao menos um exercício completo.')
+      return
+    }
+
+    try {
+      await editar.mutateAsync({
+        fichaId: ficha.id,
+        ficha: {
+          titulo: titulo.trim(),
+          itens: itensValidos.map((i, indice) => ({
+            exercicio_id: i.exercicio_id,
+            series: Number(i.series),
+            repeticoes: i.repeticoes.trim(),
+            descanso_segundos: Number(i.descanso_segundos) || 60,
+            ordem: indice,
+          })),
+        },
+      })
+      onClose()
+    } catch (e) {
+      setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar alterações')
+    }
+  }
+
+  const grupos = new Map<string, typeof exercicios>()
+  exercicios?.forEach((e) => {
+    const lista = grupos.get(e.grupo_muscular) ?? []
+    lista.push(e)
+    grupos.set(e.grupo_muscular, lista)
+  })
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      titulo="Editar Ficha de Treino"
+      className="max-w-2xl"
+    >
+      <div className="space-y-4">
+        <div className="space-y-1.5">
+          <Label>Aluno</Label>
+          <p className="text-sm text-muted-foreground">{ficha.aluno_nome}</p>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="editar-titulo">Título</Label>
+          <Input
+            id="editar-titulo"
+            placeholder="Ex.: Push A - Peito e Tríceps"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Exercícios</Label>
+          {itens.map((item, indice) => (
+            <div key={indice} className="flex items-end gap-2">
+              <select
+                value={item.exercicio_id}
+                onChange={(e) => atualizarItem(indice, 'exercicio_id', e.target.value)}
+                className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <option value="">Exercício...</option>
+                {[...grupos.entries()].map(([grupo, lista]) => (
+                  <optgroup key={grupo} label={grupo}>
+                    {(lista ?? []).map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.nome}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <Input
+                className="w-16"
+                type="number"
+                min={1}
+                max={30}
+                aria-label={`Séries do exercício ${indice + 1}`}
+                value={item.series}
+                onChange={(e) => atualizarItem(indice, 'series', e.target.value)}
+              />
+              <Input
+                className="w-20"
+                placeholder="Reps"
+                aria-label={`Repetições do exercício ${indice + 1}`}
+                value={item.repeticoes}
+                onChange={(e) => atualizarItem(indice, 'repeticoes', e.target.value)}
+              />
+              <Input
+                className="w-20"
+                type="number"
+                min={0}
+                max={900}
+                aria-label={`Descanso do exercício ${indice + 1}`}
+                value={item.descanso_segundos}
+                onChange={(e) =>
+                  atualizarItem(indice, 'descanso_segundos', e.target.value)
+                }
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label={`Remover exercício ${indice + 1}`}
+                onClick={() =>
+                  setItens((atual) => atual.filter((_, i) => i !== indice))
+                }
+                disabled={itens.length === 1}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setItens((atual) => [...atual, { ...ITEM_VAZIO }])}
+          >
+            <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar exercício
+          </Button>
+        </div>
+
+        {erroLocal || erro ? (
+          <p className="text-sm text-destructive">{erroLocal ?? erro}</p>
+        ) : null}
+
+        <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <Button variant="outline" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button onClick={salvar} disabled={ocupado}>
+            {ocupado ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
       </div>

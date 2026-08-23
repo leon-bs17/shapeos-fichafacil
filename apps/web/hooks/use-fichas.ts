@@ -6,6 +6,7 @@ import {
   alternarFichaAtiva,
   criarFicha,
   duplicarFicha,
+  editarFicha,
   excluirFicha,
   listarFichas,
   type FichaResumo,
@@ -54,11 +55,22 @@ export function useAcoesFichas() {
     onSuccess: invalidate,
   })
 
+  const editar = useMutation({
+    mutationFn: ({
+      fichaId,
+      ficha,
+    }: {
+      fichaId: string
+      ficha: Omit<NovaFicha, 'aluno_id'>
+    }) => comSessao(() => editarFicha(createClient(), fichaId, ficha)),
+    onSuccess: invalidate,
+  })
+
   const excluir = useMutation({
     mutationFn: (fichaId: string) =>
       comSessao(() => excluirFicha(createClient(), fichaId)),
     onSuccess: invalidate,
   })
 
-  return { criar, duplicar, alternar, excluir }
+  return { criar, duplicar, alternar, editar, excluir }
 }
