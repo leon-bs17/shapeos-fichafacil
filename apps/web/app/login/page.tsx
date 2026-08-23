@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
@@ -21,6 +22,7 @@ export default function LoginPage() {
   const [tipo, setTipo] = useState<'PERSONAL' | 'ALUNO'>('PERSONAL')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const [carregando, setCarregando] = useState(false)
 
@@ -34,14 +36,21 @@ export default function LoginPage() {
       return
     }
 
+    if (captchaAtivo() && !captchaToken) {
+      setErro('Confirme a verificação anti-robô antes de continuar.')
+      return
+    }
+
     setCarregando(true)
     const supabase = createClient()
     const { data, error: erroAuth } = await supabase.auth.signInWithPassword({
       email: parsed.data.email,
       password: parsed.data.senha,
+      captchaToken: captchaToken || undefined,
     })
 
     if (erroAuth) {
+      setCaptchaToken('')
       if (erroAuth.message.includes('not confirmed')) {
         setErro(
           'Seu e-mail ainda não foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
@@ -142,13 +151,19 @@ export default function LoginPage() {
               />
             </div>
 
+            <Captcha onToken={setCaptchaToken} />
+
             {erro ? (
               <p className="text-sm text-destructive" role="alert">
                 {erro}
               </p>
             ) : null}
 
-            <Button type="submit" className="w-full" disabled={carregando}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={carregando || (captchaAtivo() && !captchaToken)}
+            >
               {carregando ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>

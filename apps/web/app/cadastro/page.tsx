@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 
 export default function CadastroPage() {
@@ -21,6 +22,7 @@ export default function CadastroPage() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const [aguardandoEmail, setAguardandoEmail] = useState(false)
   const [carregando, setCarregando] = useState(false)
@@ -39,21 +41,32 @@ export default function CadastroPage() {
       return
     }
 
+    if (captchaAtivo() && !captchaToken) {
+      setErro('Confirme a verificação anti-robô antes de continuar.')
+      return
+    }
+
     setCarregando(true)
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.senha,
-      options: { data: { nome: nome.trim(), tipo: 'PERSONAL' } },
+      options: {
+        data: { nome: nome.trim(), tipo: 'PERSONAL' },
+        captchaToken: captchaToken || undefined,
+      },
     })
 
     if (error) {
       setErro(
         error.message.includes('already')
           ? 'Este e-mail já possui conta. Faça login.'
-          : 'Não foi possível criar a conta. Tente novamente.'
+          : error.message.includes('captcha')
+            ? 'Verificação anti-robô falhou. Recarregue e tente de novo.'
+            : 'Não foi possível criar a conta. Tente novamente.'
       )
       setCarregando(false)
+      setCaptchaToken('')
       return
     }
 
@@ -134,13 +147,19 @@ export default function CadastroPage() {
                 />
               </div>
 
+              <Captcha onToken={setCaptchaToken} />
+
               {erro ? (
                 <p className="text-destructive text-sm" role="alert">
                   {erro}
                 </p>
               ) : null}
 
-              <Button type="submit" className="w-full" disabled={carregando}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={carregando || (captchaAtivo() && !captchaToken)}
+              >
                 {carregando ? 'Criando...' : 'Criar conta gratuita'}
               </Button>
 
