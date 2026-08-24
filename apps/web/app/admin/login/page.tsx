@@ -191,7 +191,7 @@ export default function AdminLoginPage() {
                   placeholder="Sua senha"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   className="h-11"
                 />

@@ -127,25 +127,33 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <Button
-              variant="outline"
-              className="w-full h-11 font-medium"
-              onClick={handleGoogleLogin}
-            >
-              <GoogleIcon className="mr-2 h-4 w-4" />
-              Entrar com Google
-            </Button>
+            {tipo === 'PERSONAL' ? (
+              <>
+                <Button
+                  variant="outline"
+                  className="w-full h-11 font-medium"
+                  onClick={handleGoogleLogin}
+                >
+                  <GoogleIcon className="mr-2 h-4 w-4" />
+                  Entrar com Google
+                </Button>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-3 text-muted-foreground tracking-wider">
-                  ou
-                </span>
-              </div>
-            </div>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-3 text-muted-foreground tracking-wider">
+                      ou
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p className="rounded-xl bg-primary/5 border border-primary/10 px-4 py-3 text-center text-xs text-muted-foreground">
+                Use o e-mail e a senha definidos no seu convite.
+              </p>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-1.5 p-1 bg-muted rounded-xl" role="radiogroup" aria-label="Tipo de conta">
@@ -195,7 +203,7 @@ export default function LoginPage() {
                   placeholder="Sua senha"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   className="h-11"
                 />
