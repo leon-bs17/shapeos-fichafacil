@@ -1,0 +1,74 @@
+<!-- ============================================================
+  SHAPEOS · Convite de Aluno
+  Colar em: Dashboard > Authentication > Emails > Magic Link
+  (usado pelo Edge Function convite-aluno via inviteUserByEmail)
+  Subject sugerido: ShapeOS · Seu acesso como aluno chegou
+============================================================= -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="margin:0;padding:0;background-color:#0a0f1a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0a0f1a;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+
+          <!-- Marca -->
+          <tr>
+            <td align="center" style="padding-bottom:28px;">
+              <span style="font-size:26px;font-weight:800;color:#f8fafc;letter-spacing:-0.5px;">Shape<span style="color:#10b981;">OS</span></span>
+            </td>
+          </tr>
+
+          <!-- Cartao -->
+          <tr>
+            <td style="background-color:#111827;border:1px solid #1f2937;border-radius:20px;padding:40px 36px;">
+              <div style="width:56px;height:56px;background-color:rgba(16,185,129,0.12);border-radius:16px;text-align:center;line-height:56px;font-size:26px;margin-bottom:24px;">🏋️</div>
+
+              <h1 style="margin:0 0 10px;font-size:22px;font-weight:700;color:#f8fafc;">Seu treino chegou!</h1>
+
+              <p style="margin:0 0 28px;font-size:15px;line-height:24px;color:#94a3b8;">
+                Seu personal acabou de criar seu acesso na ShapeOS.
+                Clique no botão abaixo para ativar sua conta e ver sua ficha de treino.
+              </p>
+
+              <!-- Botao -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="border-radius:14px;background-color:#10b981;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;padding:16px 32px;font-size:16px;font-weight:700;color:#052e16;text-decoration:none;border-radius:14px;">
+                      Ativar minha conta
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:28px 0 0;font-size:13px;line-height:20px;color:#64748b;">
+                E-mail da conta: <strong style="color:#e2e8f0;">{{ .Email }}</strong>.
+                Você definirá sua senha no primeiro acesso.
+              </p>
+              <p style="margin:16px 0 0;font-size:12px;line-height:18px;color:#475569;">
+                Não esperava este convite? Apenas ignore este e-mail.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Rodape -->
+          <tr>
+            <td align="center" style="padding-top:24px;">
+              <p style="margin:0;font-size:12px;color:#334155;">
+                Este é um e-mail automático da plataforma ShapeOS · Ficha Fácil
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
