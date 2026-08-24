@@ -1,47 +1,24 @@
 import { useState } from 'react'
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { ItemTreinoLocal } from '@/database'
+import { useQuery } from '@tanstack/react-query'
 import { useTreinoHoje } from '@/hooks/use-treino-hoje'
-import {
-  contarRegistrosPendentes,
-  type NovoRegistro,
-} from '@/sync/registros'
-import { salvarRegistroSincronizando } from '@/sync/engine'
-
-interface ValorSerie {
-  carga: string
-  reps: string
-}
+import { contarRegistrosPendentes } from '@/sync/registros'
+import { TreinoGuiado } from '@/components/treino-guiado'
 
 export default function TreinoScreen() {
   const { treino, itens, carregando } = useTreinoHoje()
-  const [valores, setValores] = useState<Record<string, ValorSerie>>({})
-  const queryClient = useQueryClient()
+  const [emSessao, setEmSessao] = useState(false)
 
   const pendentes = useQuery({
     queryKey: ['registros-pendentes'],
     queryFn: contarRegistrosPendentes,
-  })
-
-  const mutacao = useMutation({
-    mutationFn: (novo: NovoRegistro) => salvarRegistroSincronizando(novo),
-    onSuccess: (_data, novo) => {
-      setValores((atual) => ({
-        ...atual,
-        [novo.itemTreinoRemoteId]: { carga: '', reps: '' },
-      }))
-      void pendentes.refetch()
-    },
   })
 
   if (carregando) {
@@ -55,8 +32,8 @@ export default function TreinoScreen() {
   if (!treino) {
     return (
       <SafeAreaView style={estilos.centro}>
-        <View style={estilos.vazioIcon}>
-          <Text style={estilos.vazioEmoji}>📋</Text>
+        <View style={estilos.vazioIcone}>
+          <Text style={{ fontSize: 36 }}>📋</Text>
         </View>
         <Text style={estilos.tituloVazio}>Nenhum treino ativo</Text>
         <Text style={estilos.textoVazio}>
@@ -64,6 +41,12 @@ export default function TreinoScreen() {
           offline depois.
         </Text>
       </SafeAreaView>
+    )
+  }
+
+  if (emSessao) {
+    return (
+      <TreinoGuiado titulo={treino.titulo} itens={itens} onSair={() => setEmSessao(false)} />
     )
   }
 
@@ -78,126 +61,42 @@ export default function TreinoScreen() {
         </View>
         {(pendentes.data ?? 0) > 0 ? (
           <View style={estilos.badgePendente}>
-            <Text style={estilos.badgeTexto}>
-              {pendentes.data} pendente(s)
-            </Text>
+            <Text style={estilos.badgeTexto}>{pendentes.data} pendente(s)</Text>
           </View>
         ) : null}
       </View>
 
-      <FlatList
-        data={itens}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 32 }}
-        renderItem={({ item, index }) => (
-          <CartaoExercicio
-            item={item}
-            index={index}
-            valor={valores[item.id] ?? { carga: '', reps: '' }}
-            onChange={(v) =>
-              setValores((atual) => ({ ...atual, [item.id]: v }))
-            }
-            onRegistrar={() =>
-              mutacao.mutate({
-                itemTreinoRemoteId: item.remoteId,
-                cargaUtilizada: valores[item.id]?.carga
-                  ? Number(valores[item.id].carga.replace(',', '.'))
-                  : null,
-                repeticoesFeitas: valores[item.id]?.reps
-                  ? Number(valores[item.id].reps)
-                  : null,
-              })
-            }
-            ocupado={
-              mutacao.isPending &&
-              mutacao.variables?.itemTreinoRemoteId === item.remoteId
-            }
-          />
-        )}
-      />
+      <View style={estilos.listaResumo}>
+        <Text style={estilos.listaTitulo}>
+          {itens.length} exercicio{itens.length === 1 ? '' : 's'} na ficha de hoje
+        </Text>
+        {itens.slice(0, 5).map((item, i) => (
+          <View key={item.id} style={estilos.listaLinha}>
+            <Text style={estilos.listaIndex}>{i + 1}</Text>
+            <Text style={estilos.listaNome} numberOfLines={1}>{item.exercicioNome}</Text>
+            <Text style={estilos.listaSerie}>{item.series}×{item.repeticoes}</Text>
+          </View>
+        ))}
+        {itens.length > 5 ? (
+          <Text style={estilos.listaMais}>+ {itens.length - 5} outros</Text>
+        ) : null}
+      </View>
+
+      <Pressable
+        style={({ pressed }) => [
+          estilos.botaoIniciar,
+          pressed && { transform: [{ scale: 0.98 }], opacity: 0.9 },
+        ]}
+        onPress={() => setEmSessao(true)}
+      >
+        <Text style={estilos.botaoIniciarEmoji}>▶</Text>
+        <Text style={estilos.botaoIniciarTexto}>Iniciar treino</Text>
+      </Pressable>
+
+      <Text style={estilos.dica}>
+        Modo guiado: um exercicio por vez, com descanso cronometrado entre as series.
+      </Text>
     </SafeAreaView>
-  )
-}
-
-function CartaoExercicio({
-  item,
-  index,
-  valor,
-  onChange,
-  onRegistrar,
-  ocupado,
-}: {
-  item: ItemTreinoLocal
-  index: number
-  valor: ValorSerie
-  onChange: (v: ValorSerie) => void
-  onRegistrar: () => void
-  ocupado: boolean
-}) {
-  return (
-    <View style={estilos.cartao}>
-      <View style={estilos.cartaoHeader}>
-        <View style={estilos.cartaoIndex}>
-          <Text style={estilos.cartaoIndexTexto}>{index + 1}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={estilos.nomeExercicio}>{item.exercicioNome}</Text>
-          <Text style={estilos.grupoMuscular}>
-            {item.exercicioGrupoMuscular}
-          </Text>
-        </View>
-      </View>
-
-      <View style={estilos.seriesInfo}>
-        <View style={estilos.seriesItem}>
-          <Text style={estilos.seriesLabel}>Series</Text>
-          <Text style={estilos.seriesValue}>{item.series}</Text>
-        </View>
-        <View style={estilos.seriesDivider} />
-        <View style={estilos.seriesItem}>
-          <Text style={estilos.seriesLabel}>Reps</Text>
-          <Text style={estilos.seriesValue}>{item.repeticoes}</Text>
-        </View>
-        <View style={estilos.seriesDivider} />
-        <View style={estilos.seriesItem}>
-          <Text style={estilos.seriesLabel}>Descanso</Text>
-          <Text style={estilos.seriesValue}>{item.descansoSegundos}s</Text>
-        </View>
-      </View>
-
-      <View style={estilos.linhaInputs}>
-        <TextInput
-          style={estilos.input}
-          placeholder="Carga (kg)"
-          placeholderTextColor="#475569"
-          keyboardType="decimal-pad"
-          value={valor.carga}
-          onChangeText={(carga) => onChange({ ...valor, carga })}
-        />
-        <TextInput
-          style={estilos.input}
-          placeholder="Reps"
-          placeholderTextColor="#475569"
-          keyboardType="number-pad"
-          value={valor.reps}
-          onChangeText={(reps) => onChange({ ...valor, reps })}
-        />
-        <Pressable
-          style={({ pressed }) => [
-            estilos.botaoRegistrar,
-            pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] },
-          ]}
-          onPress={onRegistrar}
-          disabled={ocupado}
-        >
-          {ocupado ? (
-            <ActivityIndicator size="small" color="#052e16" />
-          ) : (
-            <Text style={estilos.botaoRegistrarTexto}>✓</Text>
-          )}
-        </Pressable>
-      </View>
-    </View>
   )
 }
 
@@ -205,6 +104,9 @@ const estilos = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0a0f1a',
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    gap: 18,
   },
   centro: {
     flex: 1,
@@ -212,144 +114,9 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
-    gap: 8,
-  },
-  cabecalho: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 4,
-  },
-  tituloRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 10,
-    flexShrink: 1,
   },
-  tituloBadge: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  tituloBadgeTexto: {
-    color: '#10b981',
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  tituloTreino: {
-    color: '#f8fafc',
-    fontSize: 22,
-    fontWeight: '800',
-    flexShrink: 1,
-  },
-  badgePendente: {
-    backgroundColor: 'rgba(245, 158, 11, 0.15)',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  badgeTexto: {
-    color: '#f59e0b',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  cartao: {
-    backgroundColor: '#111827',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#1f2937',
-    padding: 16,
-    gap: 12,
-  },
-  cartaoHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  cartaoIndex: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cartaoIndexTexto: {
-    color: '#10b981',
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  nomeExercicio: {
-    color: '#f8fafc',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  grupoMuscular: {
-    color: '#64748b',
-    fontSize: 12,
-    marginTop: 1,
-  },
-  seriesInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#0f172a',
-    borderRadius: 12,
-    padding: 12,
-  },
-  seriesItem: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 2,
-  },
-  seriesLabel: {
-    color: '#475569',
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  seriesValue: {
-    color: '#f8fafc',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  seriesDivider: {
-    width: 1,
-    height: 28,
-    backgroundColor: '#1e293b',
-  },
-  linhaInputs: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#0f172a',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#1e293b',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: '#f8fafc',
-    fontSize: 15,
-  },
-  botaoRegistrar: {
-    width: 52,
-    backgroundColor: '#10b981',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  botaoRegistrarTexto: {
-    color: '#052e16',
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  vazioIcon: {
+  vazioIcone: {
     width: 72,
     height: 72,
     borderRadius: 20,
@@ -358,20 +125,65 @@ const estilos = StyleSheet.create({
     borderColor: '#1f2937',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  vazioEmoji: {
-    fontSize: 36,
+  tituloVazio: { color: '#f8fafc', fontSize: 20, fontWeight: '700' },
+  textoVazio: { color: '#64748b', textAlign: 'center', lineHeight: 22, fontSize: 14 },
+  cabecalho: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  tituloRow: { flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 },
+  tituloBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
-  tituloVazio: {
-    color: '#f8fafc',
-    fontSize: 20,
-    fontWeight: '700',
+  tituloBadgeTexto: { color: '#10b981', fontSize: 10, fontWeight: '800', letterSpacing: 0.5 },
+  tituloTreino: { color: '#f8fafc', fontSize: 24, fontWeight: '800', flexShrink: 1 },
+  badgePendente: {
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   },
-  textoVazio: {
-    color: '#64748b',
+  badgeTexto: { color: '#f59e0b', fontSize: 11, fontWeight: '700' },
+  listaResumo: {
+    backgroundColor: '#111827',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#1f2937',
+    padding: 16,
+    gap: 8,
+  },
+  listaTitulo: { color: '#64748b', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
+  listaLinha: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  listaIndex: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    color: '#10b981',
     textAlign: 'center',
-    lineHeight: 22,
-    fontSize: 14,
+    lineHeight: 24,
+    fontSize: 12,
+    fontWeight: '800',
   },
+  listaNome: { color: '#e2e8f0', fontSize: 14, fontWeight: '600', flex: 1 },
+  listaSerie: { color: '#64748b', fontSize: 12, fontVariant: ['tabular-nums'] },
+  listaMais: { color: '#475569', fontSize: 12, paddingLeft: 34 },
+  botaoIniciar: {
+    flexDirection: 'row',
+    backgroundColor: '#10b981',
+    borderRadius: 18,
+    paddingVertical: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    shadowColor: '#10b981',
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  botaoIniciarEmoji: { color: '#052e16', fontSize: 16, fontWeight: '900' },
+  botaoIniciarTexto: { color: '#052e16', fontSize: 17, fontWeight: '800' },
+  dica: { color: '#334155', fontSize: 12, textAlign: 'center', lineHeight: 18, paddingHorizontal: 8 },
 })

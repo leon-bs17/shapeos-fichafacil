@@ -54,20 +54,15 @@ export default function PainelAlunoPage() {
     },
   })
 
-  async function finalizarExecucao(registrosMap: Map<string, { carga: string; reps: string }[]>) {
+  async function salvarSerie(itemTreinoId: string, carga: number | null, reps: number | null) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    for (const [itemId, lista] of registrosMap.entries()) {
-      for (const reg of lista) {
-        await registrarExecucaoWeb(supabase, user.id, {
-          item_treino_id: itemId,
-          carga_utilizada: reg.carga ? Number(reg.carga.replace(',', '.')) : null,
-          repeticoes_feitas: reg.reps ? Number(reg.reps) : null,
-        })
-      }
-    }
-    setFichaEmExecucao(null)
+    if (!user) throw new Error('Sessao expirada')
+    await registrarExecucaoWeb(supabase, user.id, {
+      item_treino_id: itemTreinoId,
+      carga_utilizada: carga,
+      repeticoes_feitas: reps,
+    })
     void queryClient.invalidateQueries({ queryKey: ['registros-aluno'] })
   }
 
@@ -86,7 +81,8 @@ export default function PainelAlunoPage() {
             id: item.id, nome: item.exercicio.nome, grupo_muscular: item.exercicio.grupo_muscular,
             series: item.series, repeticoes: item.repeticoes, descanso_segundos: item.descanso_segundos, ordem: item.ordem,
           }))}
-          onFinalizar={finalizarExecucao}
+          onRegistrarSerie={salvarSerie}
+          onFinalizar={() => setFichaEmExecucao(null)}
           onCancelar={() => setFichaEmExecucao(null)}
         />
       ) : (
