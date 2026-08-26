@@ -25,5 +25,9 @@ web-build/
 test-results/
 playwright-report/
 
+# PWA (gerado no build)
+apps/web/public/sw.js
+apps/web/public/swe-worker*.js
+
 # E2E runtime accounts
 e2e/.e2e-accounts.json

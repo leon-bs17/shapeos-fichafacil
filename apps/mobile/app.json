@@ -21,7 +21,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-dev-client"
+      "expo-dev-client",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "O ShapeOS usa Face ID para voce entrar com biometria."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
