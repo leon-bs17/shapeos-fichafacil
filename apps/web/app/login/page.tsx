@@ -17,8 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 import { GoogleIcon } from '@/components/ui/google-icon'
-import { ArrowRight, Loader2 } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
+import { ArrowRight, Dumbbell, Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -95,8 +94,6 @@ export default function LoginPage() {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        // @ts-expect-error - data option is supported but not in types
-        data: { tipo },
       },
     })
   }
@@ -106,10 +103,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
-            <Logo size="xl" />
+            <Dumbbell className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            <Logo size="xl" variant="inverse" />
+            Shape<span className="text-primary">OS</span>
           </h1>
           <p className="text-muted-foreground text-sm">
             Ficha Fácil para Personal Trainers

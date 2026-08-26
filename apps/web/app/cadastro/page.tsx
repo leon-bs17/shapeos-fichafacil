@@ -10,8 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, Loader2, CheckCircle2 } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
+import { ArrowRight, Dumbbell, Loader2, CheckCircle2 } from 'lucide-react'
 
 export default function CadastroPage() {
   const router = useRouter()
@@ -52,10 +51,10 @@ export default function CadastroPage() {
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
-            <Logo size="xl" />
+            <Dumbbell className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            <Logo size="xl" variant="inverse" />
+            Shape<span className="text-primary">OS</span>
           </h1>
           <p className="text-muted-foreground text-sm">Crie sua conta de Personal Trainer</p>
         </div>
