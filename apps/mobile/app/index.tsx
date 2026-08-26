@@ -59,7 +59,7 @@ export default function IndexRedirect() {
           <Text style={estilos.logoIcon}>💪</Text>
         </View>
         <Text style={estilos.logo}>
-          Shape<Text style={{ color: '#10b981' }}>OS</Text>
+          Shape<Text style={estilos.logoOS}>OS</Text>
         </Text>
         <Text style={estilos.mensagem}>Desbloqueie para acessar seus treinos</Text>
         <Pressable
@@ -110,6 +110,11 @@ const estilos = StyleSheet.create({
     fontWeight: '800',
     color: '#f8fafc',
     letterSpacing: -0.5,
+  },
+  logoOS: {
+    fontWeight: '500',
+    color: '#10b981',
+    letterSpacing: -0.2,
   },
   mensagem: {
     color: '#64748b',

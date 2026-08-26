@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { ThemeToggle } from './theme-toggle'
+import { Logo } from './logo'
 
 const NAV_ITEMS = [
   { href: '/', label: 'Visão Geral', icon: LayoutDashboard },
@@ -30,12 +31,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-60 flex-col glass border-r border-border/50">
       <div className="flex h-16 items-center gap-2.5 border-b border-border/30 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 glow-primary-subtle">
-          <Dumbbell className="h-4.5 w-4.5 text-primary" />
-        </div>
-        <span className="text-lg font-bold tracking-tight">
-          Shape<span className="text-primary">OS</span>
-        </span>
+        <Logo size="lg" />
       </div>
 
       <nav className="flex-1 space-y-1 p-3">

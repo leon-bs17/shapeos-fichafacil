@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
 import { Shield, Loader2, ArrowRight, Mail } from 'lucide-react'
+import { Logo } from '@/components/layout/logo'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -104,12 +105,12 @@ export default function AdminLoginPage() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/10">
             <Shield className="h-8 w-8 text-destructive" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Acesso Restrito</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Area exclusiva dos administradores ShapeOS
-            </p>
-          </div>
+<div>
+          <h1 className="text-2xl font-bold tracking-tight">Acesso Restrito</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Área exclusiva dos administradores <Logo size="sm" variant="inverse" />
+          </p>
+        </div>
         </div>
 
         <Card className="border-border/50 bg-card shadow-lg shadow-black/20">

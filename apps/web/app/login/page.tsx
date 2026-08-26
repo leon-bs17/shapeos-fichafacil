@@ -17,7 +17,8 @@ import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 import { GoogleIcon } from '@/components/ui/google-icon'
-import { Dumbbell, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
+import { Logo } from '@/components/layout/logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -103,13 +104,13 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
-            <Dumbbell className="h-8 w-8 text-primary" />
+            <Logo size="xl" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Shape<span className="text-primary">OS</span>
+            <Logo size="xl" variant="inverse" />
           </h1>
           <p className="text-muted-foreground text-sm">
-            Ficha Facil para Personal Trainers
+            Ficha Fácil para Personal Trainers
           </p>
         </div>
 

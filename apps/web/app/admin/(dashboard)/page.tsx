@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Users, UserCheck, ClipboardList, Activity, TrendingUp, Dumbbell } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatarData } from '@/lib/utils'
+import { Logo } from '@/components/layout/logo'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend
@@ -132,7 +133,7 @@ function DashboardConteudo() {
       <header className="animate-fade-in">
         <h1 className="text-2xl font-bold tracking-tight text-gradient">Dashboard Admin</h1>
         <p className="text-muted-foreground text-sm">
-          Visão geral da plataforma ShapeOS.
+          Visão geral da plataforma <Logo size="sm" variant="inverse" />.
         </p>
       </header>
 
