@@ -95,6 +95,8 @@ export default function LoginPage() {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        // @ts-expect-error - data option is supported but not in types
+        data: { tipo },
       },
     })
   }
