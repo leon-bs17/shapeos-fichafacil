@@ -6,7 +6,7 @@ create table public.usuarios (
   id uuid primary key references auth.users (id) on delete cascade,
   nome text not null,
   email text not null unique,
-  tipo public.tipo_usuario not null default 'ALUNO',
+  tipo public.tipo_usuario not null,
   criado_em timestamptz not null default now()
 );
 
@@ -81,19 +81,24 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  v_tipo public.tipo_usuario;
 begin
+  v_tipo := case
+    when new.raw_user_meta_data ->> 'tipo' in ('PERSONAL', 'ALUNO')
+      then (new.raw_user_meta_data ->> 'tipo')::public.tipo_usuario
+  end;
+
+  if v_tipo is null then
+    raise exception 'Tipo de usuário não informado nos metadados (esperado: PERSONAL ou ALUNO)';
+  end if;
+
   insert into public.usuarios (id, nome, email, tipo)
   values (
     new.id,
     coalesce(new.raw_user_meta_data ->> 'nome', split_part(new.email, '@', 1)),
     new.email,
-    coalesce(
-      case
-        when new.raw_user_meta_data ->> 'tipo' in ('PERSONAL', 'ALUNO')
-          then (new.raw_user_meta_data ->> 'tipo')::public.tipo_usuario
-      end,
-      'ALUNO'
-    )
+    v_tipo
   );
   return new;
 end;

@@ -69,8 +69,8 @@ export default function PainelAlunoPage() {
   return (
     <div className="space-y-8">
       <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight">Painel do Aluno</h1>
-        <p className="text-muted-foreground text-sm">
+        <h1 className="text-2xl font-bold tracking-tight text-gradient">Painel do Aluno</h1>
+        <p className="text-muted-foreground text-sm mt-1">
           Sua ficha ativa e seu progresso — atualizado pelo seu personal.
         </p>
       </header>
@@ -97,27 +97,27 @@ export default function PainelAlunoPage() {
                 {[0, 1].map((i) => <div key={i} className="h-32 skeleton" />)}
               </div>
             ) : fichas.data?.length === 0 || !fichas.data ? (
-              <Card className="border-dashed">
+              <Card className="card-tech-glow border-dashed">
                 <CardContent className="py-12 text-center">
-                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-                    <Dumbbell className="h-7 w-7 text-muted-foreground" />
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 glow-primary-subtle">
+                    <Dumbbell className="h-7 w-7 text-primary" />
                   </div>
                   <p className="font-semibold">Nenhuma ficha ativa no momento</p>
                   <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-                    Seu personal ainda nao montou sua ficha. Aguarde ou entre em contato.
+                    Seu personal ainda não montou sua ficha. Aguarde ou entre em contato.
                   </p>
                 </CardContent>
               </Card>
             ) : (
-              fichas.data.map((ficha) => (
-                <Card key={ficha.id} className="animate-slide-up stagger-2 hover:shadow-md transition-all duration-200">
+              fichas.data.map((ficha, idx) => (
+                <Card key={ficha.id} className="card-tech card-tech-glow animate-slide-up stagger-2 hover:shadow-md transition-all duration-300">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <CardTitle className="text-lg">{ficha.titulo}</CardTitle>
                         <CardDescription>Ativa desde {formatarData(ficha.criado_em)}</CardDescription>
                       </div>
-                      <Button onClick={() => setFichaEmExecucao(ficha)} className="shadow-sm shrink-0">
+                      <Button onClick={() => setFichaEmExecucao(ficha)} className="shadow-sm shrink-0 btn-tech">
                         <Play className="mr-1.5 h-3.5 w-3.5" /> Iniciar Treino
                       </Button>
                     </div>
@@ -126,7 +126,7 @@ export default function PainelAlunoPage() {
                     {ficha.itens.map((item) => {
                       const campo = campos[item.id] ?? { carga: '', reps: '' }
                       return (
-                        <div key={item.id} className="rounded-xl border border-border p-4 hover:border-border/80 transition-colors">
+                        <div key={item.id} className="card-tech rounded-xl p-4 hover:border-primary/20 transition-all duration-200">
                           <div className="mb-3 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2">
                               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -142,14 +142,14 @@ export default function PainelAlunoPage() {
                             <div className="flex-1">
                               <Input type="number" min={0} step="0.5" placeholder="Carga (kg)" value={campo.carga}
                                 onChange={(e) => setCampos((atual) => ({ ...atual, [item.id]: { ...campo, carga: e.target.value } }))}
-                                className="h-9 text-sm" />
+                                className="h-9 text-sm input-tech" />
                             </div>
                             <div className="flex-1">
                               <Input type="number" min={1} placeholder="Reps" value={campo.reps}
                                 onChange={(e) => setCampos((atual) => ({ ...atual, [item.id]: { ...campo, reps: e.target.value } }))}
-                                className="h-9 text-sm" />
+                                className="h-9 text-sm input-tech" />
                             </div>
-                            <Button size="icon" className="h-9 w-9 shrink-0 rounded-xl shadow-sm"
+                            <Button size="icon" className="h-9 w-9 shrink-0 rounded-xl shadow-sm btn-tech"
                               aria-label={`Registrar execucao de ${item.exercicio.nome}`}
                               disabled={registrar.isPending && registrar.variables?.itemTreinoId === item.id}
                               onClick={() => registrar.mutate({
@@ -168,7 +168,7 @@ export default function PainelAlunoPage() {
                       )
                     })}
                     {registrar.error ? (
-                      <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+                      <div className="card-tech rounded-xl bg-destructive/10 border-destructive/20 px-4 py-3">
                         <p className="text-destructive text-sm">{registrar.error.message}</p>
                       </div>
                     ) : null}
@@ -180,21 +180,21 @@ export default function PainelAlunoPage() {
 
           <section className="space-y-4">
             <h2 className="flex items-center gap-2 text-lg font-semibold animate-fade-in stagger-3">
-              <History className="h-5 w-5 text-primary" /> Meu historico
+              <History className="h-5 w-5 text-primary" /> Meu histórico
             </h2>
             {registros.isLoading ? (
               <div className="h-24 skeleton" />
             ) : registros.data?.length === 0 || !registros.data ? (
-              <Card className="border-dashed">
+              <Card className="card-tech-glow border-dashed">
                 <CardContent className="py-10 text-center text-muted-foreground">
-                  Nenhum registro ainda. Registre sua primeira serie na ficha acima!
+                  Nenhum registro ainda. Registre sua primeira série na ficha acima!
                 </CardContent>
               </Card>
             ) : (
-              <Card className="overflow-hidden">
+              <Card className="card-tech overflow-hidden">
                 <CardContent className="divide-y divide-border p-0">
                   {registros.data.slice(0, 20).map((r, i) => (
-                    <div key={i} className="flex items-center justify-between px-5 py-3 text-sm hover:bg-muted/30 transition-colors">
+                    <div key={i} className="card-tech flex items-center justify-between px-5 py-3 text-sm hover:bg-accent/50 hover:border-primary/10 transition-all duration-200">
                       <span className="font-medium">{r.exercicio_nome}</span>
                       <span className="text-muted-foreground text-xs">
                         {[r.carga_utilizada != null ? `${r.carga_utilizada} kg` : null, r.repeticoes_feitas != null ? `${r.repeticoes_feitas} reps` : null]

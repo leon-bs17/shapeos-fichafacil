@@ -120,54 +120,82 @@ function DashboardConteudo() {
     )
   }
 
+  const GRADIENT_IDS = {
+    primary: 'grad-primary',
+    success: 'grad-success',
+    info: 'grad-info',
+    warning: 'grad-warning',
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 scrollbar-thin">
       <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard Admin</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-gradient">Dashboard Admin</h1>
         <p className="text-muted-foreground text-sm">
-          Visao geral da plataforma ShapeOS.
+          Visão geral da plataforma ShapeOS.
         </p>
       </header>
 
+      <svg className="h-0 w-0" aria-hidden="true">
+        <defs>
+          <linearGradient id={GRADIENT_IDS.primary} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id={GRADIENT_IDS.success} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id={GRADIENT_IDS.info} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(var(--info))" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="hsl(var(--info))" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id={GRADIENT_IDS.warning} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity={0.8} />
+            <stop offset="100%" stopColor="hsl(var(--warning))" stopOpacity={0.1} />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard titulo="Usuarios totais" valor={metricas?.totalUsuarios ?? 0} icone={<Users className="h-5 w-5" />} cor="primary" atraso={1} />
-        <MetricCard titulo="Personais" valor={metricas?.totalPersonals ?? 0} icone={<UserCheck className="h-5 w-5" />} cor="success" atraso={2} />
-        <MetricCard titulo="Alunos" valor={metricas?.totalAlunos ?? 0} icone={<Users className="h-5 w-5" />} cor="info" atraso={3} />
-        <MetricCard titulo="Execucoes" valor={metricas?.totalExecucoes ?? 0} icone={<Activity className="h-5 w-5" />} cor="warning" atraso={4} />
+        <MetricCard titulo="Usuários totais" valor={metricas?.totalUsuarios ?? 0} icone={<Users className="h-5 w-5" />} gradId={GRADIENT_IDS.primary} atraso={1} />
+        <MetricCard titulo="Personais" valor={metricas?.totalPersonals ?? 0} icone={<UserCheck className="h-5 w-5" />} gradId={GRADIENT_IDS.success} atraso={2} />
+        <MetricCard titulo="Alunos" valor={metricas?.totalAlunos ?? 0} icone={<Users className="h-5 w-5" />} gradId={GRADIENT_IDS.info} atraso={3} />
+        <MetricCard titulo="Execuções" valor={metricas?.totalExecucoes ?? 0} icone={<Activity className="h-5 w-5" />} gradId={GRADIENT_IDS.warning} atraso={4} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MiniStat titulo="Treinos ativos" valor={metricas?.treinosAtivos ?? 0} subtitulo={`de ${metricas?.totalTreinos ?? 0} total`} />
-        <MiniStat titulo="Vinculos ativos" valor={metricas?.vinculosAtivos ?? 0} subtitulo="personal-aluno" />
-        <MiniStat titulo="Exercicios cadastrados" valor={metricas?.totalExercicios ?? 0} subtitulo="biblioteca global" />
+        <MiniStat titulo="Vínculos ativos" valor={metricas?.vinculosAtivos ?? 0} subtitulo="personal-aluno" />
+        <MiniStat titulo="Exercícios cadastrados" valor={metricas?.totalExercicios ?? 0} subtitulo="biblioteca global" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="animate-slide-up stagger-5">
+        <Card className="card-tech card-tech-glow animate-slide-up stagger-5">
           <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Novos usuarios (6 meses)</h3>
+            <h3 className="text-sm font-semibold mb-4">Novos usuários (6 meses)</h3>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={metricas?.usuariosPorMes ?? []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="mes" tick={{ fill: '#64748b', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f8fafc' }} />
-                <Bar dataKey="usuarios" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <BarChart data={metricas?.usuariosPorMes ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
+                <Bar dataKey="usuarios" fill={`url(#${GRADIENT_IDS.primary})`} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="animate-slide-up stagger-6">
+        <Card className="card-tech card-tech-glow animate-slide-up stagger-6">
           <CardContent className="p-5">
             <h3 className="text-sm font-semibold mb-4">Treinos criados (6 meses)</h3>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={metricas?.treinosPorMes ?? []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="mes" tick={{ fill: '#64748b', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f8fafc' }} />
-                <Line type="monotone" dataKey="treinos" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6' }} />
+              <LineChart data={metricas?.treinosPorMes ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
+                <Line type="monotone" dataKey="treinos" stroke="hsl(var(--info))" strokeWidth={3} dot={{ fill: 'hsl(var(--info))', strokeWidth: 2, r: 5 }} activeDot={{ r: 7, strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -175,24 +203,24 @@ function DashboardConteudo() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="animate-slide-up stagger-7">
+        <Card className="card-tech card-tech-glow animate-slide-up stagger-7">
           <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Execucoes (7 dias)</h3>
+            <h3 className="text-sm font-semibold mb-4">Execuções (7 dias)</h3>
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={metricas?.execucoesPorDia ?? []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="dia" tick={{ fill: '#64748b', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f8fafc' }} />
-                <Bar dataKey="execucoes" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+              <BarChart data={metricas?.execucoesPorDia ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="dia" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
+                <Bar dataKey="execucoes" fill={`url(#${GRADIENT_IDS.warning})`} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="animate-slide-up stagger-8">
+        <Card className="card-tech card-tech-glow animate-slide-up stagger-8">
           <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Distribuicao</h3>
+            <h3 className="text-sm font-semibold mb-4">Distribuição</h3>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
@@ -208,24 +236,24 @@ function DashboardConteudo() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#f8fafc' }} />
-                <Legend wrapperStyle={{ fontSize: 12, color: '#64748b' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: 'hsl(var(--muted-foreground))' }} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="animate-slide-up stagger-9">
+        <Card className="card-tech card-tech-glow animate-slide-up stagger-9">
           <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Ultimos usuarios</h3>
+            <h3 className="text-sm font-semibold mb-4">Últimos usuários</h3>
             <div className="space-y-3">
               {metricas?.ultimosUsuarios.map((u) => (
-                <div key={u.id} className="flex items-center gap-3">
+                <div key={u.id} className="card-tech flex items-center gap-3 p-3 hover:border-primary/20 transition-all duration-200">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                     {u.tipo === 'ADMIN' ? '★' : u.tipo === 'PERSONAL' ? 'P' : 'A'}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{u.nome ?? 'Usuario'}</p>
+                    <p className="truncate text-sm font-medium">{u.nome ?? 'Usuário'}</p>
                     <p className="truncate text-xs text-muted-foreground">{u.tipo} · {formatarData(u.criado_em)}</p>
                   </div>
                 </div>
@@ -238,20 +266,15 @@ function DashboardConteudo() {
   )
 }
 
-function MetricCard({ titulo, valor, icone, cor, atraso }: {
-  titulo: string; valor: number; icone: React.ReactNode; cor: string; atraso: number
+function MetricCard({ titulo, valor, icone, gradId, atraso }: {
+  titulo: string; valor: number; icone: React.ReactNode; gradId: string; atraso: number
 }) {
-  const cores: Record<string, string> = {
-    primary: 'bg-primary/10 text-primary',
-    success: 'bg-success/10 text-success',
-    info: 'bg-info/10 text-info',
-    warning: 'bg-warning/10 text-warning',
-  }
   return (
-    <Card className={`animate-slide-up stagger-${atraso} hover:shadow-md transition-shadow duration-200`}>
+    <Card className={`card-tech metric-card animate-slide-up stagger-${atraso}`}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor] ?? cores.primary}`}>
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--info)))] opacity-20" />
             {icone}
           </div>
           <TrendingUp className="h-4 w-4 text-muted-foreground/50" />
@@ -267,7 +290,7 @@ function MetricCard({ titulo, valor, icone, cor, atraso }: {
 
 function MiniStat({ titulo, valor, subtitulo }: { titulo: string; valor: number; subtitulo: string }) {
   return (
-    <Card>
+    <Card className="card-tech card-tech-glow">
       <CardContent className="p-4">
         <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{titulo}</p>
         <p className="text-2xl font-bold mt-1">{valor}</p>
