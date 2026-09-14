@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { GoogleIcon } from '@/components/ui/google-icon'
 import { ArrowRight, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { Logo } from '@/components/layout/logo'
 
@@ -89,16 +88,6 @@ export default function LoginPage() {
 
     router.push('/')
     router.refresh()
-  }
-
-  async function handleGoogleLogin() {
-    const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
   }
 
   return (
@@ -228,32 +217,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            {/* Google OAuth */}
-            {tipo === 'PERSONAL' && (
-              <>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-3 text-muted-foreground tracking-wider">
-                      ou continue com
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="w-full h-11 font-medium rounded-xl gap-2 transition-all hover:bg-accent/50"
-                  onClick={handleGoogleLogin}
-                  disabled={carregando}
-                >
-                  <GoogleIcon className="h-4.5 w-4.5" />
-                  <span>Entrar com Google</span>
-                </Button>
-              </>
-            )}
 
             <CardFooter className="flex flex-col space-y-3 pt-4">
               <p className="text-center text-sm text-muted-foreground">
