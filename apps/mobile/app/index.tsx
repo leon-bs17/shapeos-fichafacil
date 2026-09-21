@@ -6,6 +6,7 @@ import {
   iniciarSincronizacaoAutomatica,
   pararSincronizacaoAutomatica,
 } from '@/sync/engine'
+import { prepararDadosLocaisParaUsuario } from '@/sync/local-user'
 import { supabase } from '@/services/supabase/client'
 import {
   autenticarPorBiometria,
@@ -15,32 +16,41 @@ import {
 export default function IndexRedirect() {
   const router = useRouter()
   const [travado, setTravado] = useState(false)
-  const [carregando, setCarregando] = useState(true)
 
-  const liberarAcesso = useCallback(() => {
-    setTravado(false)
-    void iniciarSincronizacaoAutomatica()
-    router.replace('/(tabs)')
-  }, [router])
+  const liberarAcesso = useCallback(
+    async (userId: string) => {
+      await prepararDadosLocaisParaUsuario(userId, true)
+      setTravado(false)
+      await iniciarSincronizacaoAutomatica()
+      router.replace('/(tabs)')
+    },
+    [router]
+  )
 
-  const desbloquear = useCallback(async () => {
-    const autenticou = await autenticarPorBiometria()
-    if (autenticou) liberarAcesso()
-  }, [liberarAcesso])
+  const desbloquear = useCallback(
+    async (userId: string) => {
+      const autenticou = await autenticarPorBiometria()
+      if (autenticou) {
+        await liberarAcesso(userId)
+      }
+    },
+    [liberarAcesso]
+  )
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_evento, sessao) => {
-      setCarregando(false)
       if (sessao) {
+        const userId = sessao.user.id
+
         void (async () => {
           const ativada = await biometriaAtivada()
           if (ativada) {
             setTravado(true)
-            void desbloquear()
+            await desbloquear(userId)
           } else {
-            liberarAcesso()
+            await liberarAcesso(userId)
           }
         })()
       } else {
@@ -61,13 +71,19 @@ export default function IndexRedirect() {
         <Text style={estilos.logo}>
           Shape<Text style={estilos.logoOS}>OS</Text>
         </Text>
-        <Text style={estilos.mensagem}>Desbloqueie para acessar seus treinos</Text>
+        <Text style={estilos.mensagem}>
+          Desbloqueie para acessar seus treinos
+        </Text>
         <Pressable
           style={({ pressed }) => [
             estilos.botao,
             pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
           ]}
-          onPress={() => void desbloquear()}
+          onPress={() => {
+            void supabase.auth.getUser().then(({ data }) => {
+              if (data.user) void desbloquear(data.user.id)
+            })
+          }}
         >
           <Ionicons name="finger-print-outline" size={22} color="#052e16" />
           <Text style={estilos.botaoTexto}>Desbloquear</Text>
