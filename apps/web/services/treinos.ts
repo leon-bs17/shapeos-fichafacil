@@ -48,12 +48,12 @@ export async function listarFichas(
   const { data, error } = await supabase
     .from('treinos')
     .select(
-      \`id, titulo, ativo, criado_em, aluno_id,
+      `id, titulo, ativo, criado_em, aluno_id,
        aluno:usuarios!treinos_aluno_id_fkey ( nome ),
        itens_treino (
          id, ordem, series, repeticoes, descanso_segundos,
          exercicio:exercicios ( id, nome, grupo_muscular )
-       )\`
+       )`
     )
     .eq('personal_id', personalId)
     .order('criado_em', { ascending: false })
