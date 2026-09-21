@@ -14,9 +14,8 @@ export async function baixarFichasDoAluno(alunoId: string): Promise<number> {
     .order('criado_em', { ascending: false })
 
   if (error) throw new Error(error.message)
-  if (!data?.length) return 0
 
-  const fichas = data as unknown as FichaCompleta[]
+  const fichas = (data ?? []) as unknown as FichaCompleta[]
   await gravarFichasLocalmente(fichas)
   return fichas.length
 }
@@ -31,39 +30,41 @@ async function gravarFichasLocalmente(fichas: FichaCompleta[]): Promise<void> {
     ])
 
     const acoes = [
-      ...itensLocais.map((i) => i.prepareDestroyPermanently()),
-      ...treinosLocais.map((t) => t.prepareDestroyPermanently()),
+      ...itensLocais.map((item) => item.prepareDestroyPermanently()),
+      ...treinosLocais.map((treino) => treino.prepareDestroyPermanently()),
     ]
 
     for (const ficha of fichas) {
       acoes.push(
-        colTreinos.prepareCreate((t) => {
-          t._raw.id = ficha.id
-          t.remoteId = ficha.id
-          t.titulo = ficha.titulo
-          t.ativo = ficha.ativo
-          t.criadoEm = new Date(ficha.criado_em)
+        colTreinos.prepareCreate((treino) => {
+          treino._raw.id = ficha.id
+          treino.remoteId = ficha.id
+          treino.titulo = ficha.titulo
+          treino.ativo = ficha.ativo
+          treino.criadoEm = new Date(ficha.criado_em)
         })
       )
 
       for (const item of [...ficha.itens].sort((a, b) => a.ordem - b.ordem)) {
         acoes.push(
-          colItens.prepareCreate((i) => {
-            i._raw.id = item.id
-            i.remoteId = item.id
-            i.treinoRemoteId = ficha.id
-            i.exercicioNome = item.exercicio.nome
-            i.exercicioGrupoMuscular = item.exercicio.grupo_muscular
-            i.exercicioVideoUrl = item.exercicio.video_url
-            i.series = item.series
-            i.repeticoes = item.repeticoes
-            i.descansoSegundos = item.descanso_segundos
-            i.ordem = item.ordem
+          colItens.prepareCreate((registro) => {
+            registro._raw.id = item.id
+            registro.remoteId = item.id
+            registro.treinoRemoteId = ficha.id
+            registro.exercicioNome = item.exercicio.nome
+            registro.exercicioGrupoMuscular = item.exercicio.grupo_muscular
+            registro.exercicioVideoUrl = item.exercicio.video_url
+            registro.series = item.series
+            registro.repeticoes = item.repeticoes
+            registro.descansoSegundos = item.descanso_segundos
+            registro.ordem = item.ordem
           })
         )
       }
     }
 
-    await database.batch(...acoes)
+    if (acoes.length > 0) {
+      await database.batch(...acoes)
+    }
   })
 }
