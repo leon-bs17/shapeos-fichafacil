@@ -1,4 +1,4 @@
-name: E2E Tests
+name: CI
 
 on:
   push:
@@ -7,9 +7,10 @@ on:
     branches: [main]
 
 jobs:
-  e2e:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,23 +23,53 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
+      - name: Start isolated Supabase
+        run: pnpm exec supabase start
+
+      - name: Export local Supabase credentials
+        shell: bash
+        run: |
+          eval "$(pnpm exec supabase status -o env)"
+          ANON_VALUE="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          SERVICE_VALUE="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          test -n "$API_URL"
+          test -n "$ANON_VALUE"
+          test -n "$SERVICE_VALUE"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_VALUE"
+            echo "E2E_SUPABASE_URL=$API_URL"
+            echo "E2E_SUPABASE_SERVICE_ROLE_KEY=$SERVICE_VALUE"
+          } >> "$GITHUB_ENV"
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Shared package tests
+        run: pnpm test:shared
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm exec playwright test --reporter=list
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_PAT: ${{ secrets.SUPABASE_PAT }}
-          SUPABASE_CAPTCHA_SECRET: ${{ secrets.SUPABASE_CAPTCHA_SECRET }}
+        run: pnpm test:e2e -- --reporter=list
 
-      - name: Upload test results
+      - name: Upload Playwright failures
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-results
-          path: test-results/
+          path: |
+            test-results/
+            playwright-report/
           retention-days: 7
+
+      - name: Stop Supabase
+        if: always()
+        run: pnpm exec supabase stop --no-backup || true
