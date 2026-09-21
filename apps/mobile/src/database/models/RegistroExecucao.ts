@@ -5,6 +5,7 @@ export default class RegistroExecucao extends Model {
   static table = 'registros_execucao'
 
   @field('remote_id') remoteId!: string | null
+  @field('aluno_id') alunoId!: string | null
   @field('item_treino_remote_id') itemTreinoRemoteId!: string
   @field('carga_utilizada') cargaUtilizada!: number | null
   @field('repeticoes_feitas') repeticoesFeitas!: number | null
