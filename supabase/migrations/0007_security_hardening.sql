@@ -17,7 +17,14 @@ begin
     or new.criado_em is distinct from old.criado_em
   then
     if current_user not in ('postgres', 'service_role')
-      and not public.eh_admin()
+      and not coalesce(
+        (
+          select u.tipo = 'ADMIN'
+          from public.usuarios u
+          where u.id = auth.uid()
+        ),
+        false
+      )
     then
       raise exception 'Campos sensiveis do usuario nao podem ser alterados';
     end if;
