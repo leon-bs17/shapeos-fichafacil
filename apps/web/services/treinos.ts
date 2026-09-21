@@ -31,6 +31,16 @@ export interface NovaFicha {
   }[]
 }
 
+function itensParaRpc(itens: NovaFicha['itens']) {
+  return itens.map((item) => ({
+    exercicio_id: item.exercicio_id,
+    series: item.series,
+    repeticoes: item.repeticoes,
+    descanso_segundos: item.descanso_segundos,
+    ordem: item.ordem,
+  }))
+}
+
 export async function listarFichas(
   supabase: SupabaseClient,
   personalId: string
@@ -38,12 +48,12 @@ export async function listarFichas(
   const { data, error } = await supabase
     .from('treinos')
     .select(
-      `id, titulo, ativo, criado_em, aluno_id,
+      \`id, titulo, ativo, criado_em, aluno_id,
        aluno:usuarios!treinos_aluno_id_fkey ( nome ),
        itens_treino (
          id, ordem, series, repeticoes, descanso_segundos,
          exercicio:exercicios ( id, nome, grupo_muscular )
-       )`
+       )\`
     )
     .eq('personal_id', personalId)
     .order('criado_em', { ascending: false })
@@ -69,86 +79,32 @@ export async function listarFichas(
   }))
 }
 
-async function inserirItens(
-  supabase: SupabaseClient,
-  treinoId: string,
-  ficha: NovaFicha
-): Promise<void> {
-  const { error } = await supabase.from('itens_treino').insert(
-    ficha.itens.map((i) => ({
-      treino_id: treinoId,
-      exercicio_id: i.exercicio_id,
-      series: i.series,
-      repeticoes: i.repeticoes,
-      descanso_segundos: i.descanso_segundos,
-      ordem: i.ordem,
-    }))
-  )
-  if (error) throw error
-}
-
 export async function criarFicha(
   supabase: SupabaseClient,
-  personalId: string,
+  _personalId: string,
   ficha: NovaFicha
 ): Promise<string> {
-  const { data, error } = await supabase
-    .from('treinos')
-    .insert({
-      aluno_id: ficha.aluno_id,
-      personal_id: personalId,
-      titulo: ficha.titulo.trim(),
-    })
-    .select('id')
-    .single()
+  const { data, error } = await supabase.rpc('criar_ficha_atomica', {
+    p_aluno_id: ficha.aluno_id,
+    p_titulo: ficha.titulo.trim(),
+    p_itens: itensParaRpc(ficha.itens),
+  })
 
   if (error) throw error
+  if (!data) throw new Error('Nao foi possivel criar a ficha.')
 
-  await inserirItens(supabase, data.id, ficha)
-  return data.id as string
+  return data as string
 }
 
 export async function duplicarFicha(
   supabase: SupabaseClient,
   fichaId: string
 ): Promise<void> {
-  const { data, error } = await supabase
-    .from('treinos')
-    .select(
-      `id, aluno_id, personal_id, titulo,
-       itens_treino ( exercicio_id, series, repeticoes, descanso_segundos, ordem )`
-    )
-    .eq('id', fichaId)
-    .single()
+  const { error } = await supabase.rpc('duplicar_ficha_atomica', {
+    p_ficha_id: fichaId,
+  })
 
   if (error) throw error
-
-  const origem = data as unknown as {
-    id: string
-    aluno_id: string
-    personal_id: string
-    titulo: string
-    itens_treino: NovaFicha['itens']
-  }
-
-  const { data: nova, error: erroNova } = await supabase
-    .from('treinos')
-    .insert({
-      aluno_id: origem.aluno_id,
-      personal_id: origem.personal_id,
-      titulo: `${origem.titulo} (cópia)`,
-      ativo: false,
-    })
-    .select('id')
-    .single()
-
-  if (erroNova) throw erroNova
-
-  await inserirItens(supabase, nova.id as string, {
-    aluno_id: origem.aluno_id,
-    titulo: origem.titulo,
-    itens: origem.itens_treino,
-  })
 }
 
 export async function alternarFichaAtiva(
@@ -177,25 +133,11 @@ export async function editarFicha(
   fichaId: string,
   ficha: Omit<NovaFicha, 'aluno_id'>
 ): Promise<void> {
-  const { error: erroTitulo } = await supabase
-    .from('treinos')
-    .update({ titulo: ficha.titulo.trim() })
-    .eq('id', fichaId)
+  const { error } = await supabase.rpc('editar_ficha_atomica', {
+    p_ficha_id: fichaId,
+    p_titulo: ficha.titulo.trim(),
+    p_itens: itensParaRpc(ficha.itens),
+  })
 
-  if (erroTitulo) throw erroTitulo
-
-  const { error: erroDelete } = await supabase
-    .from('itens_treino')
-    .delete()
-    .eq('treino_id', fichaId)
-
-  if (erroDelete) throw erroDelete
-
-  if (ficha.itens.length > 0) {
-    await inserirItens(supabase, fichaId, {
-      aluno_id: '',
-      titulo: ficha.titulo,
-      itens: ficha.itens,
-    })
-  }
+  if (error) throw error
 }
