@@ -24,6 +24,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Shared package tests
+        run: pnpm test:shared
+
       - name: Start isolated Supabase
         run: pnpm exec supabase start
 
@@ -42,12 +48,6 @@ jobs:
             echo "E2E_SUPABASE_URL=$API_URL"
             echo "E2E_SUPABASE_SERVICE_ROLE_KEY=$SERVICE_VALUE"
           } >> "$GITHUB_ENV"
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Shared package tests
-        run: pnpm test:shared
 
       - name: Build
         run: pnpm build
