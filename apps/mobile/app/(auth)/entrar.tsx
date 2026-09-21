@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
@@ -11,17 +11,14 @@ import {
   View,
 } from 'react-native'
 import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { loginSchema } from '@shapeos/shared'
 import { iniciarSincronizacaoAutomatica } from '@/sync/engine'
+import { prepararDadosLocaisParaUsuario } from '@/sync/local-user'
 import { supabase } from '@/services/supabase/client'
 import {
   ativarBiometria,
-  autenticarPorBiometria,
   biometriaAtivada,
   biometriaDisponivel,
-  credenciaisBiometria,
-  desativarBiometria,
 } from '@/services/biometria'
 
 export default function EntrarScreen() {
@@ -30,69 +27,27 @@ export default function EntrarScreen() {
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const [carregando, setCarregando] = useState(false)
-  const [biometriaPronta, setBiometriaPronta] = useState(false)
   const biometriaJaSugerida = useRef(false)
 
-  useEffect(() => {
-    void (async () => {
-      const disponivel = await biometriaDisponivel()
-      const ativada = await biometriaAtivada()
-      if (disponivel && ativada) {
-        setBiometriaPronta(true)
-        void entrarComBiometria(true)
-      }
-    })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  async function entrarComBiometria(auto = false) {
-    setErro(null)
-    const autenticou = await autenticarPorBiometria()
-    if (!autenticou) return
-    const credenciais = await credenciaisBiometria()
-    if (!credenciais) {
-      setBiometriaPronta(false)
-      return
-    }
-    setCarregando(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: credenciais.email,
-      password: credenciais.senha,
-    })
-    if (error) {
-      setCarregando(false)
-      if (error.status === 400) {
-        setBiometriaPronta(false)
-        await desativarBiometria()
-        if (!auto) {
-          setErro('Sua senha mudou. Entre com e-mail e senha novamente.')
-        }
-      } else {
-        setErro('Sem conexao com a internet. Tente novamente quando estiver online.')
-      }
-      return
-    }
-    void iniciarSincronizacaoAutomatica()
-    router.replace('/(tabs)')
-  }
-
-  function sugerirBiometria(emailSalvo: string, senhaSalva: string) {
+  function sugerirBiometria() {
     if (biometriaJaSugerida.current) return
     biometriaJaSugerida.current = true
+
     void (async () => {
       const disponivel = await biometriaDisponivel()
       const ativada = await biometriaAtivada()
       if (!disponivel || ativada) return
+
       Alert.alert(
         'Entrar por biometria',
-        'Deseja usar digital ou Face ID na proxima vez que abrir o app?',
+        'Deseja usar digital ou Face ID para desbloquear sua sessao nas proximas vezes?',
         [
           { text: 'Agora nao', style: 'cancel' },
           {
             text: 'Ativar',
             style: 'default',
             onPress: () => {
-              void ativarBiometria(emailSalvo, senhaSalva)
+              void ativarBiometria()
             },
           },
         ]
@@ -107,22 +62,26 @@ export default function EntrarScreen() {
       setErro(parsed.error.issues[0]?.message ?? 'Dados invalidos')
       return
     }
+
     setCarregando(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: parsed.data.email,
       password: parsed.data.senha,
     })
-    if (error) {
+
+    if (error || !data.user) {
       setErro(
-        error.status === 400
+        error?.status === 400
           ? 'E-mail ou senha incorretos.'
           : 'Sem conexao com a internet. Tente novamente.'
       )
       setCarregando(false)
       return
     }
-    sugerirBiometria(parsed.data.email, parsed.data.senha)
-    void iniciarSincronizacaoAutomatica()
+
+    await prepararDadosLocaisParaUsuario(data.user.id, false)
+    sugerirBiometria()
+    await iniciarSincronizacaoAutomatica()
     router.replace('/(tabs)')
   }
 
@@ -172,21 +131,6 @@ export default function EntrarScreen() {
           <View style={estilos.erroBox}>
             <Text style={estilos.erro}>{erro}</Text>
           </View>
-        ) : null}
-
-        {biometriaPronta ? (
-          <Pressable
-            style={({ pressed }) => [
-              estilos.botaoBiometria,
-              pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
-            ]}
-            onPress={() => void entrarComBiometria()}
-          >
-            <Ionicons name="finger-print-outline" size={22} color="#10b981" />
-            <Text style={estilos.botaoBiometriaTexto}>
-              Entrar com biometria
-            </Text>
-          </Pressable>
         ) : null}
 
         <Pressable
@@ -307,22 +251,6 @@ const estilos = StyleSheet.create({
     color: '#052e16',
     fontWeight: '700',
     fontSize: 16,
-  },
-  botaoBiometria: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: 'rgba(16, 185, 129, 0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.3)',
-    borderRadius: 12,
-    paddingVertical: 14,
-  },
-  botaoBiometriaTexto: {
-    color: '#10b981',
-    fontWeight: '700',
-    fontSize: 15,
   },
   footer: {
     color: '#334155',
