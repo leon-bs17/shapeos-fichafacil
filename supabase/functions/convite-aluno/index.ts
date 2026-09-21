@@ -8,6 +8,7 @@ interface ConvitePayload {
 const ALLOWED_ORIGINS = [
   'https://shapeos-fichafacil.vercel.app',
   'http://localhost:3000',
+  'http://127.0.0.1:3000',
 ]
 
 function corsHeaders(origin: string | null) {
@@ -17,19 +18,8 @@ function corsHeaders(origin: string | null) {
     'Access-Control-Allow-Headers':
       'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    Vary: 'Origin',
   }
-}
-
-const rateLimitMap = new Map<string, number[]>()
-
-function checkRateLimit(ip: string, limit = 10, windowMs = 60_000): boolean {
-  const now = Date.now()
-  const timestamps = rateLimitMap.get(ip) ?? []
-  const recent = timestamps.filter((t) => now - t < windowMs)
-  if (recent.length >= limit) return false
-  recent.push(now)
-  rateLimitMap.set(ip, recent)
-  return true
 }
 
 Deno.serve(async (req: Request) => {
@@ -47,16 +37,8 @@ Deno.serve(async (req: Request) => {
     )
   }
 
-  const ip = req.headers.get('x-forwarded-for') ?? 'unknown'
-  if (!checkRateLimit(ip)) {
-    return Response.json(
-      { error: 'Rate limit excedido' },
-      { status: 429, headers }
-    )
-  }
-
   const authHeader = req.headers.get('Authorization')
-  if (!authHeader) {
+  if (!authHeader?.startsWith('Bearer ')) {
     return Response.json(
       { error: 'Nao autenticado' },
       { status: 401, headers }
@@ -74,7 +56,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const email = payload.email?.trim().toLowerCase()
-  if (!email || !email.includes('@')) {
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email ?? '')
+  if (!emailValido) {
     return Response.json(
       { error: 'E-mail invalido' },
       { status: 400, headers }
@@ -86,31 +69,55 @@ Deno.serve(async (req: Request) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
   )
 
-  const token = authHeader.replace('Bearer ', '')
-  const { data: chamador } = await admin.auth.getUser(token)
-  if (!chamador.user) {
+  const token = authHeader.slice('Bearer '.length)
+  const { data: chamador, error: erroUsuario } = await admin.auth.getUser(token)
+  if (erroUsuario || !chamador.user) {
     return Response.json(
       { error: 'Sessao invalida' },
       { status: 401, headers }
     )
   }
 
-  const { data: perfilChamador } = await admin
+  const { data: perfilChamador, error: erroPerfil } = await admin
     .from('usuarios')
     .select('tipo')
     .eq('id', chamador.user.id)
     .maybeSingle()
 
-  if (perfilChamador?.tipo !== 'PERSONAL') {
+  if (erroPerfil || perfilChamador?.tipo !== 'PERSONAL') {
     return Response.json(
       { error: 'Apenas personal trainers podem convidar alunos.' },
       { status: 403, headers }
     )
   }
 
-  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${Deno.env.get('WEB_APP_URL') ?? ''}/login`,
-    data: { nome: payload.nome, tipo: 'ALUNO' },
+  const { data: permitido, error: erroLimite } = await admin.rpc(
+    'consumir_limite_convite',
+    {
+      p_usuario_id: chamador.user.id,
+      p_limite: 10,
+      p_janela_segundos: 60,
+    }
+  )
+
+  if (erroLimite) {
+    console.error('Falha ao verificar rate limit', erroLimite)
+    return Response.json(
+      { error: 'Nao foi possivel validar o limite de convites.' },
+      { status: 503, headers }
+    )
+  }
+
+  if (!permitido) {
+    return Response.json(
+      { error: 'Rate limit excedido' },
+      { status: 429, headers }
+    )
+  }
+
+  const { data, error } = await admin.auth.admin.inviteUserByEmail(email!, {
+    redirectTo: \`\${Deno.env.get('WEB_APP_URL') ?? ''}/login\`,
+    data: { nome: payload.nome?.trim() || undefined, tipo: 'ALUNO' },
   })
 
   if (!error && data.user) {
@@ -125,16 +132,30 @@ Deno.serve(async (req: Request) => {
     (error.message.includes('already been registered') ||
       error.message.includes('already exists'))
   ) {
-    const { data: perfil } = await admin
+    const { data: perfil, error: erroBusca } = await admin
       .from('usuarios')
-      .select('id')
+      .select('id, tipo')
       .eq('email', email)
       .maybeSingle()
 
-    if (perfil?.id) {
+    if (erroBusca) {
+      return Response.json(
+        { error: 'Falha ao consultar usuario existente.' },
+        { status: 500, headers }
+      )
+    }
+
+    if (perfil?.id && perfil.tipo === 'ALUNO') {
       return Response.json(
         { data: { user: { id: perfil.id, novo: false } } },
         { status: 200, headers }
+      )
+    }
+
+    if (perfil?.id) {
+      return Response.json(
+        { error: 'Este e-mail pertence a uma conta que nao e de aluno.' },
+        { status: 409, headers }
       )
     }
   }
