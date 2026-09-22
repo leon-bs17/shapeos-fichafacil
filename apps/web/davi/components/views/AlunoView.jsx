@@ -28,9 +28,9 @@ const StatChip = ({ icon: Icon, label, value, accent }) => (
       border: "1px solid rgba(255,255,255,0.06)",
     }}
   >
-    <Icon className="w-3.5 h-3.5" style={{ color: accent || "#00D2D2" }} />
+    <Icon className="w-3.5 h-3.5" style={{ color: accent || "#22C7C7" }} />
     <span className="text-xs text-zinc-500">{label}</span>
-    <span className="text-xs text-[#F5F5F5] font-medium">{value}</span>
+    <span className="text-xs text-[#F5F7FA] font-medium">{value}</span>
   </div>
 );
 
@@ -42,9 +42,9 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
     }`}
     style={{
       background: "linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))",
-      border: `1px solid ${done ? "rgba(0,210,210,0.35)" : "rgba(255,255,255,0.07)"}`,
+      border: `1px solid ${done ? "rgba(34,199,199,0.35)" : "rgba(255,255,255,0.07)"}`,
       boxShadow: done
-        ? "0 0 0 1px rgba(0,210,210,0.15), 0 12px 30px rgba(0,0,0,0.35)"
+        ? "0 0 0 1px rgba(34,199,199,0.15), 0 12px 30px rgba(0,0,0,0.35)"
         : "0 12px 30px rgba(0,0,0,0.3)",
     }}
   >
@@ -53,9 +53,9 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
       <div
         className="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
         style={{
-          background: done ? "rgba(0,210,210,0.15)" : "rgba(0,210,210,0.06)",
-          color: "#00D2D2",
-          border: `1px solid ${done ? "rgba(0,210,210,0.4)" : "rgba(0,210,210,0.2)"}`,
+          background: done ? "rgba(34,199,199,0.15)" : "rgba(34,199,199,0.06)",
+          color: "#22C7C7",
+          border: `1px solid ${done ? "rgba(34,199,199,0.4)" : "rgba(34,199,199,0.2)"}`,
           fontFamily: "'Unbounded', sans-serif",
           fontWeight: 600,
           fontSize: "0.95rem",
@@ -73,7 +73,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
           {exercise.muscle} · {exercise.equipment}
         </div>
         <h3
-          className="text-lg md:text-xl text-[#F5F5F5] leading-tight mt-1 truncate"
+          className="text-lg md:text-xl text-[#F5F7FA] leading-tight mt-1 truncate"
           style={{
             fontFamily: "'Unbounded', sans-serif",
             fontWeight: 500,
@@ -93,7 +93,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
-              color: "#F5F5F5",
+              color: "#F5F7FA",
             }}
           >
             <Repeat className="w-3 h-3 text-zinc-500" /> {exercise.sets}
@@ -104,7 +104,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
-              color: "#F5F5F5",
+              color: "#F5F7FA",
             }}
           >
             <Dumbbell className="w-3 h-3 text-zinc-500" /> {exercise.reps}
@@ -113,9 +113,9 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
           <span
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs"
             style={{
-              background: "rgba(255,112,67,0.08)",
-              border: "1px solid rgba(255,112,67,0.25)",
-              color: "#FF7043",
+              background: "rgba(245,158,11,0.08)",
+              border: "1px solid rgba(245,158,11,0.25)",
+              color: "#F59E0B",
               fontWeight: 600,
             }}
           >
@@ -126,7 +126,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
-              color: "#F5F5F5",
+              color: "#F5F7FA",
             }}
           >
             <Timer className="w-3 h-3 text-zinc-500" /> {exercise.rest}
@@ -146,7 +146,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
         aria-label="Concluir exercício"
       >
         {done ? (
-          <CheckCircle2 className="w-7 h-7 text-[#00D2D2]" />
+          <CheckCircle2 className="w-7 h-7 text-[#22C7C7]" />
         ) : (
           <Circle className="w-7 h-7 text-zinc-600" />
         )}
@@ -167,15 +167,15 @@ const RestDayCard = () => (
     <div
       className="w-16 h-16 rounded-2xl flex items-center justify-center"
       style={{
-        background: "rgba(0,210,210,0.08)",
-        border: "1px solid rgba(0,210,210,0.25)",
+        background: "rgba(34,199,199,0.08)",
+        border: "1px solid rgba(34,199,199,0.25)",
       }}
     >
-      <Coffee className="w-7 h-7 text-[#00D2D2]" strokeWidth={1.6} />
+      <Coffee className="w-7 h-7 text-[#22C7C7]" strokeWidth={1.6} />
     </div>
     <div>
       <h3
-        className="text-2xl text-[#F5F5F5]"
+        className="text-2xl text-[#F5F7FA]"
         style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
       >
         Dia de Recuperação
@@ -239,7 +239,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
           <button
             data-testid="aluno-logout-button"
             onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F5F5] flex items-center gap-1.5 transition-colors"
+            className="text-xs text-zinc-500 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <LogOut className="w-3.5 h-3.5" /> Sair
@@ -254,20 +254,20 @@ export const AlunoView = ({ onLogout, workouts }) => {
             className="flex items-center gap-2 text-xs text-zinc-500 uppercase tracking-[0.3em]"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
-            <Flame className="w-3.5 h-3.5 text-[#FF7043]" />
+            <Flame className="w-3.5 h-3.5 text-[#F59E0B]" />
             {selectedDay === todayKey ? `Hoje · ${todayLabel}` : weekDays.find((d) => d.key === selectedDay)?.label}
           </div>
           <div className="mt-3 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <h1
-                className="text-4xl sm:text-5xl lg:text-6xl text-[#F5F5F5] leading-[0.95]"
+                className="text-4xl sm:text-5xl lg:text-6xl text-[#F5F7FA] leading-[0.95]"
                 style={{
                   fontFamily: "'Unbounded', sans-serif",
                   fontWeight: 600,
                   letterSpacing: "-0.03em",
                 }}
               >
-                Olá, <span className="text-[#00D2D2]">{student.name.split(" ")[0]}</span>
+                Olá, <span className="text-[#22C7C7]">{student.name.split(" ")[0]}</span>
               </h1>
               <p
                 className="mt-3 text-base md:text-lg text-zinc-400"
@@ -283,7 +283,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                 label="Duração"
                 value={isRest ? "—" : workout.duration}
               />
-              <StatChip icon={Trophy} label="Streak" value={`${student.streak} dias`} accent="#FF7043" />
+              <StatChip icon={Trophy} label="Streak" value={`${student.streak} dias`} accent="#F59E0B" />
               <StatChip
                 icon={Dumbbell}
                 label="Foco"
@@ -325,10 +325,10 @@ export const AlunoView = ({ onLogout, workouts }) => {
                   className="relative rounded-xl p-2 md:p-3 transition-all duration-200 hover:-translate-y-0.5"
                   style={{
                     background: isSelected
-                      ? "rgba(0,210,210,0.12)"
+                      ? "rgba(34,199,199,0.12)"
                       : "rgba(255,255,255,0.02)",
-                    border: `1px solid ${isSelected ? "rgba(0,210,210,0.5)" : "rgba(255,255,255,0.06)"}`,
-                    boxShadow: isSelected ? "0 0 20px rgba(0,210,210,0.2)" : "none",
+                    border: `1px solid ${isSelected ? "rgba(34,199,199,0.5)" : "rgba(255,255,255,0.06)"}`,
+                    boxShadow: isSelected ? "0 0 20px rgba(34,199,199,0.2)" : "none",
                   }}
                 >
                   <div
@@ -339,7 +339,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                   </div>
                   <div
                     className={`mt-1.5 text-xs md:text-sm ${
-                      isRestDay ? "text-zinc-500" : "text-[#F5F5F5]"
+                      isRestDay ? "text-zinc-500" : "text-[#F5F7FA]"
                     }`}
                     style={{
                       fontFamily: "'Unbounded', sans-serif",
@@ -351,7 +351,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                   {isToday && (
                     <span
                       className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-                      style={{ background: "#FF7043", boxShadow: "0 0 6px #FF7043" }}
+                      style={{ background: "#F59E0B", boxShadow: "0 0 6px #F59E0B" }}
                     />
                   )}
                 </button>
@@ -374,7 +374,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               <span className="text-xs text-zinc-500 uppercase tracking-widest">Progresso da sessão</span>
-              <span className="text-sm text-[#F5F5F5] font-semibold">
+              <span className="text-sm text-[#F5F7FA] font-semibold">
                 {doneCount}/{total}{" "}
                 <span className="text-zinc-500 font-normal">
                   exercícios · {progress}%
@@ -387,8 +387,8 @@ export const AlunoView = ({ onLogout, workouts }) => {
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${progress}%`,
-                  background: "linear-gradient(90deg, #00D2D2, #FF7043)",
-                  boxShadow: "0 0 12px rgba(0,210,210,0.5)",
+                  background: "linear-gradient(90deg, #22C7C7, #F59E0B)",
+                  boxShadow: "0 0 12px rgba(34,199,199,0.5)",
                 }}
               />
             </div>
@@ -424,12 +424,12 @@ export const AlunoView = ({ onLogout, workouts }) => {
             <button
               data-testid="finish-workout-button"
               onClick={handleFinish}
-              className="group w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-[#1A1A1A] font-semibold transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
+              className="group w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-[#0E1116] font-semibold transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
-                background: finished ? "#00D2D2" : "#FF7043",
+                background: finished ? "#22C7C7" : "#F59E0B",
                 boxShadow: finished
-                  ? "0 14px 32px rgba(0,210,210,0.4)"
-                  : "0 14px 32px rgba(255,112,67,0.4), inset 0 -3px 0 rgba(0,0,0,0.15)",
+                  ? "0 14px 32px rgba(34,199,199,0.4)"
+                  : "0 14px 32px rgba(245,158,11,0.4), inset 0 -3px 0 rgba(0,0,0,0.15)",
                 fontFamily: "'Sora', sans-serif",
                 letterSpacing: "0.03em",
               }}
