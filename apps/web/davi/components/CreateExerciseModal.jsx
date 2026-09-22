@@ -88,15 +88,15 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
           <div
             className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
             style={{
-              background: "rgba(0,210,210,0.1)",
-              border: "1px solid rgba(0,210,210,0.35)",
+              background: "rgba(34,199,199,0.1)",
+              border: "1px solid rgba(34,199,199,0.35)",
             }}
           >
-            <Sparkles className="w-5 h-5 text-[#00D2D2]" />
+            <Sparkles className="w-5 h-5 text-[#22C7C7]" />
           </div>
           <div className="flex-1">
             <h3
-              className="text-xl text-[#F5F5F5] leading-tight"
+              className="text-xl text-[#F5F7FA] leading-tight"
               style={{
                 fontFamily: "'Unbounded', sans-serif",
                 fontWeight: 600,
@@ -134,7 +134,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="ex: Supino Reto na Máquina"
-                className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                 style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
               />
             </div>
@@ -146,7 +146,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   value={muscle}
                   onChange={(e) => setMuscle(e.target.value)}
                   placeholder="ex: Peitoral"
-                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
                 />
               </div>
@@ -157,7 +157,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   value={equipment}
                   onChange={(e) => setEquipment(e.target.value)}
                   placeholder="ex: Máquina"
-                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
                 />
               </div>
@@ -179,10 +179,10 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 data-testid="source-tab-url"
                 onClick={() => setSource("url")}
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
-                  source === "url" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
+                  source === "url" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
                 }`}
                 style={{
-                  background: source === "url" ? "#00D2D2" : "transparent",
+                  background: source === "url" ? "#22C7C7" : "transparent",
                 }}
               >
                 <LinkIcon className="w-3.5 h-3.5" /> Colar URL
@@ -192,10 +192,10 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 data-testid="source-tab-upload"
                 onClick={() => setSource("upload")}
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
-                  source === "upload" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
+                  source === "upload" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
                 }`}
                 style={{
-                  background: source === "upload" ? "#00D2D2" : "transparent",
+                  background: source === "upload" ? "#22C7C7" : "transparent",
                 }}
               >
                 <Upload className="w-3.5 h-3.5" /> Enviar arquivo
@@ -215,7 +215,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                       value={gifUrl}
                       onChange={(e) => setGifUrl(e.target.value)}
                       placeholder="https://... .gif"
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                       style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
                     />
                   </div>
@@ -235,8 +235,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   data-testid="create-dropzone"
                   className="rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all"
                   style={{
-                    background: dragOver ? "rgba(0,210,210,0.08)" : "rgba(255,255,255,0.03)",
-                    border: `1.5px dashed ${dragOver ? "rgba(0,210,210,0.6)" : "rgba(255,255,255,0.12)"}`,
+                    background: dragOver ? "rgba(34,199,199,0.08)" : "rgba(255,255,255,0.03)",
+                    border: `1.5px dashed ${dragOver ? "rgba(34,199,199,0.6)" : "rgba(255,255,255,0.12)"}`,
                   }}
                 >
                   <input
@@ -249,18 +249,18 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   />
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ background: "rgba(0,210,210,0.1)", border: "1px solid rgba(0,210,210,0.25)" }}
+                    style={{ background: "rgba(34,199,199,0.1)", border: "1px solid rgba(34,199,199,0.25)" }}
                   >
-                    <Upload className="w-5 h-5 text-[#00D2D2]" />
+                    <Upload className="w-5 h-5 text-[#22C7C7]" />
                   </div>
-                  <div className="mt-3 text-sm text-[#F5F5F5]">
+                  <div className="mt-3 text-sm text-[#F5F7FA]">
                     {fileName ? (
                       <>
-                        Arquivo pronto: <span className="text-[#00D2D2]">{fileName}</span>
+                        Arquivo pronto: <span className="text-[#22C7C7]">{fileName}</span>
                       </>
                     ) : (
                       <>
-                        Arraste um <span className="text-[#00D2D2]">GIF</span> ou imagem aqui — ou clique para escolher
+                        Arraste um <span className="text-[#22C7C7]">GIF</span> ou imagem aqui — ou clique para escolher
                       </>
                     )}
                   </div>
@@ -309,7 +309,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   {muscle || "Grupo muscular"} · {equipment || "Equipamento"}
                 </div>
                 <div
-                  className="text-sm text-[#F5F5F5] mt-1 truncate"
+                  className="text-sm text-[#F5F7FA] mt-1 truncate"
                   style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
                 >
                   {name || "Nome do exercício"}
@@ -330,7 +330,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
           <button
             data-testid="create-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -342,11 +342,11 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             data-testid="create-save-button"
             onClick={handleSubmit}
             disabled={!canSave}
-            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A] transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
             style={{
-              background: "#00D2D2",
+              background: "#22C7C7",
               boxShadow: canSave
-                ? "0 10px 24px rgba(0,210,210,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)"
+                ? "0 10px 24px rgba(34,199,199,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)"
                 : "none",
             }}
           >
