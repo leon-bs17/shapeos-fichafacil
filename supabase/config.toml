@@ -33,3 +33,14 @@ enable_signup = true
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
+
+
+# Passkeys/WebAuthn for local development and CI.
+# Production must use the same feature in the hosted Supabase Auth settings.
+[auth.passkey]
+enabled = true
+
+[auth.webauthn]
+rp_display_name = "ShapeOS"
+rp_id = "localhost"
+rp_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]

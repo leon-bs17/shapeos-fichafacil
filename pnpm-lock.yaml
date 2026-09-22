@@ -127,7 +127,7 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1(@supabase/supabase-js@2.112.3(@opentelemetry/api@1.9.1))
       '@supabase/supabase-js':
-        specifier: ^2.47.10
+        specifier: ^2.105.0
         version: 2.112.3(@opentelemetry/api@1.9.1)
       '@tanstack/react-query':
         specifier: ^5.62.11

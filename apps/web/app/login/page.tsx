@@ -5,9 +5,60 @@ import { useRouter } from 'next/navigation'
 import LoginView from '@/davi/components/views/LoginView'
 import { createClient } from '@/lib/supabase/client'
 
+function estaNoMobile() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+}
+
+async function autenticadorDoDispositivoDisponivel() {
+  if (
+    typeof window === 'undefined' ||
+    !('PublicKeyCredential' in window) ||
+    typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable !== 'function'
+  ) {
+    return false
+  }
+
+  try {
+    return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+  } catch {
+    return false
+  }
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const [erro, setErro] = useState<string | null>(null)
+
+  async function redirecionarPorPerfil(supabase: ReturnType<typeof createClient>, userId: string) {
+    const { data: perfil } = await supabase
+      .from('usuarios')
+      .select('tipo')
+      .eq('id', userId)
+      .single()
+
+    if (perfil?.tipo === 'ADMIN') router.push('/admin')
+    else if (perfil?.tipo === 'ALUNO') router.push('/painel')
+    else router.push('/')
+
+    router.refresh()
+  }
+
+  async function tentarCadastrarBiometria(supabase: ReturnType<typeof createClient>) {
+    if (!estaNoMobile()) return
+    if (!(await autenticadorDoDispositivoDisponivel())) return
+
+    const chave = 'shapeos.passkey.enrollment-attempted'
+    if (window.localStorage.getItem(chave) === '1') return
+
+    try {
+      const { error } = await supabase.auth.registerPasskey()
+      if (!error || error.code === 'webauthn_credential_exists') {
+        window.localStorage.setItem(chave, '1')
+      }
+    } catch {
+      // A biometria é opcional: cancelar o cadastro não bloqueia o login normal.
+    }
+  }
 
   async function entrar(_role: string, email: string, password: string) {
     setErro(null)
@@ -23,31 +74,60 @@ export default function LoginPage() {
       password,
     })
 
-    if (error) {
+    if (error || !data.user) {
       setErro(
-        error.message.includes('not confirmed')
+        error?.message.includes('not confirmed')
           ? 'Seu e-mail ainda não foi confirmado.'
           : 'E-mail ou senha incorretos.'
       )
       return
     }
 
-    const { data: perfil } = await supabase
-      .from('usuarios')
-      .select('tipo')
-      .eq('id', data.user.id)
-      .single()
+    await tentarCadastrarBiometria(supabase)
+    await redirecionarPorPerfil(supabase, data.user.id)
+  }
 
-    if (perfil?.tipo === 'ADMIN') router.push('/admin')
-    else if (perfil?.tipo === 'ALUNO') router.push('/painel')
-    else router.push('/')
+  async function entrarComBiometria() {
+    setErro(null)
 
-    router.refresh()
+    if (!estaNoMobile()) {
+      throw new Error('A biometria está disponível apenas na versão mobile.')
+    }
+
+    if (!(await autenticadorDoDispositivoDisponivel())) {
+      throw new Error('Este aparelho ou navegador não oferece biometria compatível.')
+    }
+
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signInWithPasskey()
+
+    if (error) {
+      if (error.code === 'passkey_disabled') {
+        throw new Error('A biometria ainda não está habilitada no servidor do ShapeOS.')
+      }
+      if (error.code === 'webauthn_credential_not_found') {
+        throw new Error('Nenhuma biometria foi cadastrada neste aparelho. Entre uma vez com e-mail e senha.')
+      }
+      if (error.code === 'webauthn_verification_failed') {
+        throw new Error('Não foi possível confirmar sua biometria. Tente novamente.')
+      }
+      if (error.name === 'NotAllowedError') {
+        throw new Error('Autenticação biométrica cancelada.')
+      }
+      throw new Error(error.message || 'Não foi possível entrar com biometria.')
+    }
+
+    const user = data?.user ?? (await supabase.auth.getUser()).data.user
+    if (!user) {
+      throw new Error('A biometria foi validada, mas a sessão não pôde ser criada.')
+    }
+
+    await redirecionarPorPerfil(supabase, user.id)
   }
 
   return (
     <div className="relative">
-      <LoginView onEnter={entrar} />
+      <LoginView onEnter={entrar} onBiometric={entrarComBiometria} />
       {erro ? (
         <div className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#141414]/95 px-5 py-3 text-sm text-red-300 shadow-2xl">
           {erro}

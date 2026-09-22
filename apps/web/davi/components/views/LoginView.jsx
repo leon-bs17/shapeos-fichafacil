@@ -4,27 +4,30 @@ import React, { useState } from "react";
 import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Fingerprint, CheckCircle2 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
 
-export const LoginView = ({ onEnter }) => {
+export const LoginView = ({ onEnter, onBiometric }) => {
   const [role, setRole] = useState("aluno"); // "personal" | "aluno"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bioState, setBioState] = useState("idle"); // idle | scanning | success | error
+  const [bioError, setBioError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onEnter(role, email, password);
   };
 
-  const handleBiometric = () => {
-    if (bioState !== "idle") return;
+  const handleBiometric = async () => {
+    if (bioState === "scanning") return;
+    setBioError("");
     setBioState("scanning");
-    // Simulate scan: ~1.8s
-    setTimeout(() => {
+
+    try {
+      await onBiometric?.();
       setBioState("success");
-      setTimeout(() => {
-        onEnter(role, email, password);
-      }, 700);
-    }, 1800);
+    } catch (error) {
+      setBioState("error");
+      setBioError(error instanceof Error ? error.message : "Não foi possível autenticar com biometria.");
+    }
   };
 
   return (
@@ -188,7 +191,7 @@ export const LoginView = ({ onEnter }) => {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6 lg:my-4">
+          <div className="md:hidden flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
             <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-500" style={{ fontFamily: "'Sora', sans-serif" }}>
               ou entre com
@@ -197,12 +200,12 @@ export const LoginView = ({ onEnter }) => {
           </div>
 
           {/* Biometric */}
-          <div className="flex flex-col items-center">
+          <div className="md:hidden flex flex-col items-center">
             <button
               type="button"
               data-testid="biometric-login-button"
               onClick={handleBiometric}
-              disabled={bioState !== "idle"}
+              disabled={bioState === "scanning"}
               aria-label="Entrar com biometria"
               className="relative w-24 h-24 lg:w-16 lg:h-16 rounded-full flex items-center justify-center transition-all duration-300 group disabled:cursor-wait"
               style={{
@@ -262,7 +265,23 @@ export const LoginView = ({ onEnter }) => {
               {bioState === "idle" && "Toque para usar biometria"}
               {bioState === "scanning" && "Lendo digital..."}
               {bioState === "success" && "Identidade confirmada"}
+              {bioState === "error" && "Tentar novamente"}
             </p>
+            {bioError ? (
+              <p
+                className="mt-2 text-center text-[11px] leading-relaxed text-red-300 max-w-[280px]"
+                style={{ fontFamily: "'Sora', sans-serif" }}
+              >
+                {bioError}
+              </p>
+            ) : (
+              <p
+                className="mt-2 text-center text-[10px] leading-relaxed text-zinc-600 max-w-[280px]"
+                style={{ fontFamily: "'Sora', sans-serif" }}
+              >
+                Primeiro acesso neste celular? Entre com e-mail e senha para cadastrar a biometria.
+              </p>
+            )}
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-zinc-500">
