@@ -210,7 +210,6 @@ export default function AdminDashboardPage() {
     )
   }
 
-  const statusPulse = metricas.pulse >= 80 ? 'Excelente' : metricas.pulse >= 65 ? 'Saudável' : 'Atenção'
   const frasePulse = metricas.pulse >= 80
     ? <>O ShapeOS está <span className="text-[#00D2D2]">excelente</span>.</>
     : metricas.pulse >= 65
