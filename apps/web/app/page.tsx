@@ -143,7 +143,7 @@ function MetricCard({
       <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-20 blur-2xl" style={{ background: accent }} />
       <div className="relative">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-          <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
+          <span style={{ color: accent }}><Icon className="h-3.5 w-3.5" /></span>
           {label}
         </div>
         <div className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#F5F5F5] shapeos-display">{value}</div>
