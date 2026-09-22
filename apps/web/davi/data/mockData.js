@@ -17,8 +17,8 @@ export const weekDays = [
 export const jsDayToKey = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
 
 export const workoutTemplates = [
-  { id: "A", code: "Treino A", title: "Peito & Ombros", accent: "#00D2D2" },
-  { id: "B", code: "Treino B", title: "Costas & Bíceps", accent: "#FF7043" },
+  { id: "A", code: "Treino A", title: "Peito & Ombros", accent: "#22C7C7" },
+  { id: "B", code: "Treino B", title: "Costas & Bíceps", accent: "#F59E0B" },
   { id: "C", code: "Treino C", title: "Pernas", accent: "#a78bfa" },
   { id: "D", code: "Treino D", title: "Core & Full Body", accent: "#fbbf24" },
   { id: "rest", code: "Descanso", title: "Recuperação", accent: "#52525b" },
