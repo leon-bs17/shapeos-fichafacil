@@ -5,6 +5,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import PersonalView from '@/davi/components/views/PersonalView'
+
+const DaviPersonalView: any = PersonalView
 import { students as initialStudents, workoutsById as initialWorkouts } from '@/davi/data/mockData'
 import { createClient } from '@/lib/supabase/client'
 
@@ -26,7 +28,7 @@ export default function PersonalFrontendPage() {
   }
 
   return (
-    <PersonalView
+    <DaviPersonalView
       onLogout={sair}
       workouts={workouts}
       onUpdateWorkout={atualizarTreino}
