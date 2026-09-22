@@ -1,302 +1,511 @@
 'use client'
 
+import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Users, UserCheck, ClipboardList, Activity, TrendingUp, Dumbbell } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { formatarData } from '@/lib/utils'
-import { Logo } from '@/components/layout/logo'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend
-} from 'recharts'
+  Activity,
+  AlertTriangle,
+  ArrowUpRight,
+  BrainCircuit,
+  CheckCircle2,
+  ChevronRight,
+  Clock3,
+  Dumbbell,
+  Gauge,
+  GraduationCap,
+  Sparkles,
+  TrendingUp,
+  UserCheck,
+  Users,
+  Zap,
+} from 'lucide-react'
 
-export default function AdminDashboardPage() {
-  return <DashboardConteudo />
+type Usuario = {
+  id: string
+  nome: string
+  tipo: 'ADMIN' | 'PERSONAL' | 'ALUNO'
+  criado_em: string
 }
 
-function DashboardConteudo() {
+type Treino = {
+  id: string
+  ativo: boolean
+  criado_em: string
+}
+
+type Execucao = {
+  id: string
+  aluno_id: string
+  data_registro: string
+}
+
+type Vinculo = {
+  id: string
+  status: 'ATIVO' | 'INATIVO'
+  criado_em: string
+}
+
+const glass = {
+  background: 'linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))',
+  border: '1px solid rgba(255,255,255,0.07)',
+  boxShadow: '0 18px 48px rgba(0,0,0,0.28)',
+}
+
+const fmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' })
+
+function diasAtras(data: string) {
+  return (Date.now() - new Date(data).getTime()) / 86_400_000
+}
+
+function estaNosUltimos(data: string, dias: number) {
+  return diasAtras(data) <= dias
+}
+
+function contarPeriodo<T extends { data_registro?: string; criado_em?: string }>(
+  lista: T[],
+  inicioDiasAtras: number,
+  fimDiasAtras = 0
+) {
+  const agora = Date.now()
+  const inicio = agora - inicioDiasAtras * 86_400_000
+  const fim = agora - fimDiasAtras * 86_400_000
+  return lista.filter((item) => {
+    const valor = item.data_registro ?? item.criado_em
+    if (!valor) return false
+    const t = new Date(valor).getTime()
+    return t >= inicio && t <= fim
+  }).length
+}
+
+export default function AdminDashboardPage() {
   const { data: metricas, isLoading } = useQuery({
-    queryKey: ['admin-metricas'],
+    queryKey: ['admin-command-center'],
+    refetchInterval: 60_000,
     queryFn: async () => {
       const supabase = createClient()
 
-      const [usuarios, treinos, execucoes, vinculos, exercicios] = await Promise.all([
+      const [usuariosR, treinosR, execucoesR, vinculosR, exerciciosR] = await Promise.all([
         supabase.from('usuarios').select('id, nome, tipo, criado_em'),
         supabase.from('treinos').select('id, ativo, criado_em'),
-        supabase.from('registro_execucao').select('id, data_registro'),
-        supabase.from('personal_alunos').select('id, status'),
+        supabase.from('registro_execucao').select('id, aluno_id, data_registro').order('data_registro', { ascending: false }),
+        supabase.from('personal_alunos').select('id, status, criado_em'),
         supabase.from('exercicios').select('id', { count: 'exact', head: true }),
       ])
 
-      const todos = usuarios.data ?? []
-      const personals = todos.filter((u) => u.tipo === 'PERSONAL')
-      const alunos = todos.filter((u) => u.tipo === 'ALUNO')
-      const treinosData = treinos.data ?? []
-      const execucoesData = execucoes.data ?? []
-      const vinculosData = vinculos.data ?? []
+      const usuarios = (usuariosR.data ?? []) as Usuario[]
+      const treinos = (treinosR.data ?? []) as Treino[]
+      const execucoes = (execucoesR.data ?? []) as Execucao[]
+      const vinculos = (vinculosR.data ?? []) as Vinculo[]
 
-      // Usuarios por mes (ultimos 6 meses)
-      const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-      const agora = new Date()
-      const usuariosPorMes = []
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1)
-        const mes = d.getMonth()
-        const ano = d.getFullYear()
-        const count = todos.filter((u) => {
-          const cd = new Date(u.criado_em)
-          return cd.getMonth() === mes && cd.getFullYear() === ano
+      const personals = usuarios.filter((u) => u.tipo === 'PERSONAL')
+      const alunos = usuarios.filter((u) => u.tipo === 'ALUNO')
+      const vinculosAtivos = vinculos.filter((v) => v.status === 'ATIVO').length
+      const treinosAtivos = treinos.filter((t) => t.ativo).length
+      const execucoes7 = contarPeriodo(execucoes, 7)
+      const execucoes14a7 = contarPeriodo(execucoes, 14, 7)
+      const novos7 = usuarios.filter((u) => estaNosUltimos(u.criado_em, 7)).length
+      const novos30 = usuarios.filter((u) => estaNosUltimos(u.criado_em, 30)).length
+      const inativos = vinculos.filter((v) => v.status === 'INATIVO').length
+
+      const coberturaAlunos = alunos.length ? Math.min(100, (vinculosAtivos / alunos.length) * 100) : 100
+      const coberturaTreinos = treinos.length ? (treinosAtivos / treinos.length) * 100 : 100
+      const uso = Math.min(100, execucoes7 * 8)
+      const crescimento = usuarios.length ? Math.min(100, (novos30 / usuarios.length) * 300) : 60
+      const pulse = Math.max(
+        35,
+        Math.round(coberturaAlunos * 0.3 + coberturaTreinos * 0.25 + uso * 0.3 + crescimento * 0.15)
+      )
+
+      const variacaoExecucoes = execucoes14a7
+        ? Math.round(((execucoes7 - execucoes14a7) / execucoes14a7) * 100)
+        : execucoes7 > 0 ? 100 : 0
+
+      const ultimos14Dias = Array.from({ length: 14 }, (_, index) => {
+        const d = new Date()
+        d.setHours(0, 0, 0, 0)
+        d.setDate(d.getDate() - (13 - index))
+        const proximo = new Date(d)
+        proximo.setDate(proximo.getDate() + 1)
+        const valor = execucoes.filter((e) => {
+          const t = new Date(e.data_registro)
+          return t >= d && t < proximo
         }).length
-        usuariosPorMes.push({ mes: meses[mes], usuarios: count })
-      }
+        return { label: fmt.format(d), valor }
+      })
 
-      // Treinos por mes (ultimos 6 meses)
-      const treinosPorMes = []
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1)
-        const mes = d.getMonth()
-        const ano = d.getFullYear()
-        const count = treinosData.filter((t) => {
-          const cd = new Date(t.criado_em)
-          return cd.getMonth() === mes && cd.getFullYear() === ano
-        }).length
-        treinosPorMes.push({ mes: meses[mes], treinos: count })
-      }
+      const maxExec = Math.max(1, ...ultimos14Dias.map((d) => d.valor))
 
-      // Execucoes por dia (ultimos 7 dias)
-      const execucoesPorDia = []
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(agora)
-        d.setDate(d.getDate() - i)
-        const dia = d.getDate()
-        const mes = meses[d.getMonth()]
-        const count = execucoesData.filter((e) => {
-          const ed = new Date(e.data_registro)
-          return ed.toDateString() === d.toDateString()
-        }).length
-        execucoesPorDia.push({ dia: `${dia}/${mes}`, execucoes: count })
-      }
-
-      // Distribuicao por tipo
-      const distribuicao = [
-        { name: 'Personais', value: personals.length, color: '#10b981' },
-        { name: 'Alunos', value: alunos.length, color: '#3b82f6' },
+      const insights = [
+        execucoes7 === 0
+          ? { tone: 'danger', title: 'Uso sem atividade', text: 'Nenhuma execução foi registrada nos últimos 7 dias.', action: '/admin/usuarios' }
+          : variacaoExecucoes < -20
+            ? { tone: 'warning', title: 'Queda de atividade', text: `Execuções caíram ${Math.abs(variacaoExecucoes)}% contra a semana anterior.`, action: '/admin/usuarios' }
+            : { tone: 'success', title: 'Ritmo de treino saudável', text: `${execucoes7} execuções nos últimos 7 dias.`, action: '/admin/usuarios' },
+        inativos > 0
+          ? { tone: 'warning', title: 'Vínculos pedem atenção', text: `${inativos} vínculo(s) personal-aluno estão inativos.`, action: '/admin/personais' }
+          : { tone: 'success', title: 'Base conectada', text: 'Todos os vínculos cadastrados estão ativos.', action: '/admin/personais' },
+        treinos.length > 0 && coberturaTreinos < 70
+          ? { tone: 'warning', title: 'Treinos inativos', text: `Só ${Math.round(coberturaTreinos)}% dos treinos estão ativos.`, action: '/admin/personais' }
+          : { tone: 'info', title: 'Biblioteca pronta', text: `${exerciciosR.count ?? 0} exercícios disponíveis na base global.`, action: '/admin/exercicios' },
       ]
 
+      const nomes = new Map(usuarios.map((u) => [u.id, u.nome]))
+      const atividades = [
+        ...usuarios
+          .slice()
+          .sort((a, b) => +new Date(b.criado_em) - +new Date(a.criado_em))
+          .slice(0, 4)
+          .map((u) => ({
+            id: `user-${u.id}`,
+            tipo: 'usuario',
+            titulo: `${u.nome} entrou no ShapeOS`,
+            detalhe: u.tipo,
+            data: u.criado_em,
+          })),
+        ...execucoes.slice(0, 5).map((e) => ({
+          id: `exec-${e.id}`,
+          tipo: 'execucao',
+          titulo: `${nomes.get(e.aluno_id) ?? 'Aluno'} registrou uma execução`,
+          detalhe: 'atividade de treino',
+          data: e.data_registro,
+        })),
+      ]
+        .sort((a, b) => +new Date(b.data) - +new Date(a.data))
+        .slice(0, 6)
+
       return {
-        totalUsuarios: todos.length,
-        totalPersonals: personals.length,
-        totalAlunos: alunos.length,
-        treinosAtivos: treinosData.filter((t) => t.ativo).length,
-        totalTreinos: treinosData.length,
-        totalExecucoes: execucoesData.length,
-        vinculosAtivos: vinculosData.filter((v) => v.status === 'ATIVO').length,
-        totalExercicios: exercicios.count ?? 0,
-        usuariosPorMes,
-        treinosPorMes,
-        execucoesPorDia,
-        distribuicao,
-        ultimosUsuarios: todos
-          .sort((a, b) => new Date(b.criado_em).getTime() - new Date(a.criado_em).getTime())
-          .slice(0, 5),
+        pulse,
+        usuarios: usuarios.length,
+        personals: personals.length,
+        alunos: alunos.length,
+        novos7,
+        novos30,
+        treinosAtivos,
+        totalTreinos: treinos.length,
+        execucoes7,
+        variacaoExecucoes,
+        vinculosAtivos,
+        totalExercicios: exerciciosR.count ?? 0,
+        ultimos14Dias,
+        maxExec,
+        insights,
+        atividades,
       }
     },
   })
 
-  if (isLoading) {
+  if (isLoading || !metricas) {
     return (
-      <div className="space-y-8">
-        <div className="space-y-2">
-          <div className="h-8 w-48 skeleton" />
-          <div className="h-4 w-64 skeleton" />
+      <div className="space-y-5">
+        <div className="h-36 rounded-3xl skeleton" />
+        <div className="grid gap-4 md:grid-cols-4">
+          {[0, 1, 2, 3].map((n) => <div key={n} className="h-28 rounded-2xl skeleton" />)}
         </div>
-        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => <div key={i} className="h-28 skeleton" />)}
-        </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {[0, 1].map((i) => <div key={i} className="h-72 skeleton" />)}
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="lg:col-span-2 h-80 rounded-3xl skeleton" />
+          <div className="h-80 rounded-3xl skeleton" />
         </div>
       </div>
     )
   }
 
-  const GRADIENT_IDS = {
-    primary: 'grad-primary',
-    success: 'grad-success',
-    info: 'grad-info',
-    warning: 'grad-warning',
-  }
+  const statusPulse = metricas.pulse >= 80 ? 'Excelente' : metricas.pulse >= 65 ? 'Saudável' : 'Atenção'
 
   return (
-    <div className="space-y-8 scrollbar-thin">
-      <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight text-gradient">Dashboard Admin</h1>
-        <p className="text-muted-foreground text-sm">
-          Visão geral da plataforma <Logo size="sm" variant="inverse" />.
-        </p>
-      </header>
+    <div className="relative space-y-5 pb-10" data-testid="admin-command-center">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed right-[-120px] top-[-120px] h-[420px] w-[420px] rounded-full blur-3xl opacity-10"
+        style={{ background: '#00D2D2' }}
+      />
 
-      <svg className="h-0 w-0" aria-hidden="true">
-        <defs>
-          <linearGradient id={GRADIENT_IDS.primary} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id={GRADIENT_IDS.success} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id={GRADIENT_IDS.info} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--info))" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="hsl(var(--info))" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id={GRADIENT_IDS.warning} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity={0.8} />
-            <stop offset="100%" stopColor="hsl(var(--warning))" stopOpacity={0.1} />
-          </linearGradient>
-        </defs>
-      </svg>
+      <section className="relative overflow-hidden rounded-3xl p-5 md:p-7" style={glass}>
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.45) 1px,transparent 1px)',
+            backgroundSize: '38px 38px',
+          }}
+        />
+        <div className="relative flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-zinc-500">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00D2D2] opacity-50" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00D2D2]" />
+              </span>
+              Command Center · dados atualizados automaticamente
+            </div>
+            <h1
+              className="mt-4 text-3xl font-semibold leading-tight text-[#F5F5F5] md:text-5xl"
+              style={{ fontFamily: "'Unbounded', sans-serif", letterSpacing: '-0.045em' }}
+            >
+              O ShapeOS está <span className="text-[#00D2D2]">{statusPulse.toLowerCase()}</span>.
+            </h1>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 md:text-base">
+              Uma visão operacional da plataforma para saber o que está crescendo, o que está sendo usado e onde você precisa agir.
+            </p>
+          </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard titulo="Usuários totais" valor={metricas?.totalUsuarios ?? 0} icone={<Users className="h-5 w-5" />} gradId={GRADIENT_IDS.primary} atraso={1} />
-        <MetricCard titulo="Personais" valor={metricas?.totalPersonals ?? 0} icone={<UserCheck className="h-5 w-5" />} gradId={GRADIENT_IDS.success} atraso={2} />
-        <MetricCard titulo="Alunos" valor={metricas?.totalAlunos ?? 0} icone={<Users className="h-5 w-5" />} gradId={GRADIENT_IDS.info} atraso={3} />
-        <MetricCard titulo="Execuções" valor={metricas?.totalExecucoes ?? 0} icone={<Activity className="h-5 w-5" />} gradId={GRADIENT_IDS.warning} atraso={4} />
+          <div className="flex items-center gap-5 rounded-2xl px-5 py-4" style={{ background: 'rgba(0,210,210,.04)', border: '1px solid rgba(0,210,210,.16)' }}>
+            <div
+              className="relative grid h-24 w-24 place-items-center rounded-full"
+              style={{
+                background: `conic-gradient(#00D2D2 ${metricas.pulse * 3.6}deg, rgba(255,255,255,.07) 0deg)`,
+                boxShadow: '0 0 35px rgba(0,210,210,.12)',
+              }}
+            >
+              <div className="absolute inset-[7px] rounded-full bg-[#1A1A1A]" />
+              <div className="relative text-center">
+                <div className="text-2xl font-bold text-[#F5F5F5]">{metricas.pulse}</div>
+                <div className="text-[9px] uppercase tracking-widest text-zinc-500">Pulse</div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#F5F5F5]">
+                <Gauge className="h-4 w-4 text-[#00D2D2]" /> ShapeOS Pulse
+              </div>
+              <p className="mt-1 max-w-[190px] text-xs leading-relaxed text-zinc-500">
+                Combina uso, vínculos, treinos ativos e crescimento recente.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard icon={Users} label="Usuários" value={metricas.usuarios} detail={`+${metricas.novos7} esta semana`} accent="#00D2D2" />
+        <KpiCard icon={UserCheck} label="Personais" value={metricas.personals} detail={`${metricas.vinculosAtivos} vínculos ativos`} accent="#8BE9A8" />
+        <KpiCard icon={GraduationCap} label="Alunos" value={metricas.alunos} detail={`+${metricas.novos30} nos últimos 30d`} accent="#70A5FF" />
+        <KpiCard
+          icon={Activity}
+          label="Execuções · 7d"
+          value={metricas.execucoes7}
+          detail={`${metricas.variacaoExecucoes >= 0 ? '+' : ''}${metricas.variacaoExecucoes}% vs. semana anterior`}
+          accent={metricas.variacaoExecucoes >= 0 ? '#FF7043' : '#FF8B8B'}
+        />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <MiniStat titulo="Treinos ativos" valor={metricas?.treinosAtivos ?? 0} subtitulo={`de ${metricas?.totalTreinos ?? 0} total`} />
-        <MiniStat titulo="Vínculos ativos" valor={metricas?.vinculosAtivos ?? 0} subtitulo="personal-aluno" />
-        <MiniStat titulo="Exercícios cadastrados" valor={metricas?.totalExercicios ?? 0} subtitulo="biblioteca global" />
-      </div>
+      <div className="grid gap-4 xl:grid-cols-[1.45fr_.85fr]">
+        <section className="rounded-3xl p-5 md:p-6" style={glass}>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#F5F5F5]">
+                <Zap className="h-4 w-4 text-[#FF7043]" /> Pulso de atividade
+              </div>
+              <p className="mt-1 text-xs text-zinc-500">Execuções registradas nos últimos 14 dias.</p>
+            </div>
+            <div className="rounded-full px-3 py-1 text-[10px] font-medium text-[#00D2D2]" style={{ background: 'rgba(0,210,210,.08)', border: '1px solid rgba(0,210,210,.18)' }}>
+              ao vivo
+            </div>
+          </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="card-tech card-tech-glow animate-slide-up stagger-5">
-          <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Novos usuários (6 meses)</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={metricas?.usuariosPorMes ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
-                <Bar dataKey="usuarios" fill={`url(#${GRADIENT_IDS.primary})`} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          <div className="mt-8 flex h-44 items-end gap-2">
+            {metricas.ultimos14Dias.map((dia, index) => {
+              const altura = dia.valor === 0 ? 5 : Math.max(12, (dia.valor / metricas.maxExec) * 100)
+              const recente = index >= 7
+              return (
+                <div key={dia.label + index} className="group flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
+                  <div className="relative flex h-36 w-full items-end">
+                    <div
+                      className="w-full rounded-t-lg transition-all duration-300 group-hover:opacity-100"
+                      title={`${dia.valor} execuções em ${dia.label}`}
+                      style={{
+                        height: `${altura}%`,
+                        minHeight: 5,
+                        background: recente
+                          ? 'linear-gradient(180deg,#00D2D2,rgba(0,210,210,.16))'
+                          : 'linear-gradient(180deg,rgba(255,112,67,.7),rgba(255,112,67,.1))',
+                        opacity: dia.valor ? 0.82 : 0.25,
+                        boxShadow: recente && dia.valor ? '0 -8px 22px rgba(0,210,210,.08)' : 'none',
+                      }}
+                    />
+                  </div>
+                  <span className="hidden text-[9px] text-zinc-600 md:block">{index % 2 === 0 ? dia.label : ''}</span>
+                </div>
+              )
+            })}
+          </div>
 
-        <Card className="card-tech card-tech-glow animate-slide-up stagger-6">
-          <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Treinos criados (6 meses)</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={metricas?.treinosPorMes ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
-                <Line type="monotone" dataKey="treinos" stroke="hsl(var(--info))" strokeWidth={3} dot={{ fill: 'hsl(var(--info))', strokeWidth: 2, r: 5 }} activeDot={{ r: 7, strokeWidth: 2 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <MiniSignal icon={Dumbbell} value={metricas.treinosAtivos} label={`treinos ativos de ${metricas.totalTreinos}`} />
+            <MiniSignal icon={UserCheck} value={metricas.vinculosAtivos} label="relações personal-aluno ativas" />
+            <MiniSignal icon={Sparkles} value={metricas.totalExercicios} label="exercícios na biblioteca global" />
+          </div>
+        </section>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="card-tech card-tech-glow animate-slide-up stagger-7">
-          <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Execuções (7 dias)</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={metricas?.execucoesPorDia ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="dia" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
-                <Bar dataKey="execucoes" fill={`url(#${GRADIENT_IDS.warning})`} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <section className="rounded-3xl p-5 md:p-6" style={glass}>
+          <div className="flex items-center gap-2">
+            <BrainCircuit className="h-4 w-4 text-[#00D2D2]" />
+            <h2 className="text-sm font-semibold text-[#F5F5F5]">Shape Intelligence</h2>
+          </div>
+          <p className="mt-1 text-xs text-zinc-500">Sinais calculados automaticamente com os dados atuais.</p>
 
-        <Card className="card-tech card-tech-glow animate-slide-up stagger-8">
-          <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Distribuição</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={metricas?.distribuicao ?? []}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={4}
-                  dataKey="value"
-                >
-                  {(metricas?.distribuicao ?? []).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, color: 'hsl(var(--card-foreground))', boxShadow: '0 8px 24px hsl(var(--border)/0.3)' }} />
-                <Legend wrapperStyle={{ fontSize: 12, color: 'hsl(var(--muted-foreground))' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="card-tech card-tech-glow animate-slide-up stagger-9">
-          <CardContent className="p-5">
-            <h3 className="text-sm font-semibold mb-4">Últimos usuários</h3>
-            <div className="space-y-3">
-              {metricas?.ultimosUsuarios.map((u) => (
-                <div key={u.id} className="card-tech flex items-center gap-3 p-3 hover:border-primary/20 transition-all duration-200">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                    {u.tipo === 'ADMIN' ? '★' : u.tipo === 'PERSONAL' ? 'P' : 'A'}
+          <div className="mt-5 space-y-3">
+            {metricas.insights.map((item, index) => (
+              <Link
+                key={item.title}
+                href={item.action}
+                className="group block rounded-2xl p-4 transition-all hover:-translate-y-0.5"
+                style={{
+                  background: index === 0 ? 'rgba(0,210,210,.045)' : 'rgba(255,255,255,.025)',
+                  border: `1px solid ${item.tone === 'warning' || item.tone === 'danger' ? 'rgba(255,112,67,.2)' : 'rgba(255,255,255,.065)'}`,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="mt-0.5 grid h-8 w-8 flex-shrink-0 place-items-center rounded-xl"
+                    style={{ background: item.tone === 'warning' || item.tone === 'danger' ? 'rgba(255,112,67,.1)' : 'rgba(0,210,210,.08)' }}
+                  >
+                    {item.tone === 'warning' || item.tone === 'danger'
+                      ? <AlertTriangle className="h-3.5 w-3.5 text-[#FF7043]" />
+                      : <CheckCircle2 className="h-3.5 w-3.5 text-[#00D2D2]" />}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{u.nome ?? 'Usuário'}</p>
-                    <p className="truncate text-xs text-muted-foreground">{u.tipo} · {formatarData(u.criado_em)}</p>
+                    <p className="text-xs font-semibold text-[#F5F5F5]">{item.title}</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-zinc-500">{item.text}</p>
                   </div>
+                  <ChevronRight className="h-4 w-4 text-zinc-700 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-400" />
                 </div>
-              ))}
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
+        <section className="rounded-3xl p-5 md:p-6" style={glass}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-[#F5F5F5]">Agora no ShapeOS</h2>
+              <p className="mt-1 text-xs text-zinc-500">Atividade recente da plataforma.</p>
             </div>
-          </CardContent>
-        </Card>
+            <Clock3 className="h-4 w-4 text-zinc-600" />
+          </div>
+
+          <div className="mt-5 space-y-1">
+            {metricas.atividades.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-xs text-zinc-500">
+                A atividade recente aparecerá aqui.
+              </div>
+            ) : metricas.atividades.map((item, index) => (
+              <div key={item.id} className="relative flex gap-3 py-3">
+                {index < metricas.atividades.length - 1 && <div className="absolute left-[15px] top-9 h-[calc(100%-15px)] w-px bg-white/[0.06]" />}
+                <div
+                  className="relative z-10 grid h-8 w-8 flex-shrink-0 place-items-center rounded-full"
+                  style={{ background: item.tipo === 'execucao' ? 'rgba(0,210,210,.09)' : 'rgba(255,112,67,.09)', border: '1px solid rgba(255,255,255,.07)' }}
+                >
+                  {item.tipo === 'execucao'
+                    ? <Activity className="h-3.5 w-3.5 text-[#00D2D2]" />
+                    : <Users className="h-3.5 w-3.5 text-[#FF7043]" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-medium text-zinc-200">{item.titulo}</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-wider text-zinc-600">{item.detalhe}</p>
+                </div>
+                <span className="text-[10px] text-zinc-600">{tempoRelativo(item.data)}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl p-5 md:p-6" style={glass}>
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-[#FF7043]" />
+            <h2 className="text-sm font-semibold text-[#F5F5F5]">Ações rápidas</h2>
+          </div>
+          <p className="mt-1 text-xs text-zinc-500">Entre direto nos pontos mais importantes da operação.</p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <QuickAction href="/admin/usuarios" icon={Users} title="Usuários" text="Auditar base e perfis" accent="#00D2D2" />
+            <QuickAction href="/admin/personais" icon={UserCheck} title="Personais" text="Ver alunos e vínculos" accent="#8BE9A8" />
+            <QuickAction href="/admin/exercicios" icon={Dumbbell} title="Biblioteca" text="Gerenciar exercícios" accent="#FF7043" />
+            <QuickAction href="/admin/conta" icon={Gauge} title="Conta" text="Segurança e acesso" accent="#70A5FF" />
+          </div>
+        </section>
       </div>
     </div>
   )
 }
 
-function MetricCard({ titulo, valor, icone, gradId, atraso }: {
-  titulo: string; valor: number; icone: React.ReactNode; gradId: string; atraso: number
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  accent,
+}: {
+  icon: typeof Users
+  label: string
+  value: number
+  detail: string
+  accent: string
 }) {
   return (
-    <Card className={`card-tech metric-card animate-slide-up stagger-${atraso}`}>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--info)))] opacity-20" />
-            {icone}
-          </div>
-          <TrendingUp className="h-4 w-4 text-muted-foreground/50" />
+    <div className="group relative overflow-hidden rounded-2xl p-4 transition-transform hover:-translate-y-0.5" style={glass}>
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl opacity-10" style={{ background: accent }} />
+      <div className="relative flex items-start justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-600">{label}</p>
+          <p className="mt-2 text-3xl font-semibold text-[#F5F5F5]" style={{ fontFamily: "'Unbounded', sans-serif" }}>{value}</p>
+          <p className="mt-1 text-[11px] text-zinc-500">{detail}</p>
         </div>
-        <div className="mt-4">
-          <p className="text-3xl font-bold tracking-tight">{valor}</p>
-          <p className="text-muted-foreground text-sm mt-0.5">{titulo}</p>
+        <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: `${accent}14`, border: `1px solid ${accent}2c` }}>
+          <Icon className="h-4 w-4" style={{ color: accent }} />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
-function MiniStat({ titulo, valor, subtitulo }: { titulo: string; valor: number; subtitulo: string }) {
+function MiniSignal({ icon: Icon, value, label }: { icon: typeof Dumbbell; value: number; label: string }) {
   return (
-    <Card className="card-tech card-tech-glow">
-      <CardContent className="p-4">
-        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{titulo}</p>
-        <p className="text-2xl font-bold mt-1">{valor}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{subtitulo}</p>
-      </CardContent>
-    </Card>
+    <div className="rounded-2xl p-3" style={{ background: 'rgba(255,255,255,.022)', border: '1px solid rgba(255,255,255,.055)' }}>
+      <div className="flex items-center gap-2">
+        <Icon className="h-3.5 w-3.5 text-[#00D2D2]" />
+        <span className="text-lg font-semibold text-zinc-100">{value}</span>
+      </div>
+      <p className="mt-1 text-[10px] leading-relaxed text-zinc-600">{label}</p>
+    </div>
   )
+}
+
+function QuickAction({
+  href,
+  icon: Icon,
+  title,
+  text,
+  accent,
+}: {
+  href: string
+  icon: typeof Users
+  title: string
+  text: string
+  accent: string
+}) {
+  return (
+    <Link href={href} className="group rounded-2xl p-4 transition-all hover:-translate-y-0.5" style={{ background: 'rgba(255,255,255,.025)', border: '1px solid rgba(255,255,255,.065)' }}>
+      <div className="flex items-start justify-between">
+        <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: `${accent}12`, border: `1px solid ${accent}25` }}>
+          <Icon className="h-4 w-4" style={{ color: accent }} />
+        </div>
+        <ArrowUpRight className="h-4 w-4 text-zinc-700 transition-colors group-hover:text-zinc-400" />
+      </div>
+      <p className="mt-4 text-sm font-semibold text-zinc-200">{title}</p>
+      <p className="mt-1 text-[11px] text-zinc-600">{text}</p>
+    </Link>
+  )
+}
+
+function tempoRelativo(data: string) {
+  const diff = Date.now() - new Date(data).getTime()
+  const min = Math.floor(diff / 60_000)
+  if (min < 1) return 'agora'
+  if (min < 60) return `${min}min`
+  const h = Math.floor(min / 60)
+  if (h < 24) return `${h}h`
+  const d = Math.floor(h / 24)
+  return `${d}d`
 }

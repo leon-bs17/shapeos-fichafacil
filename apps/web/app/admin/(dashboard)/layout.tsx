@@ -3,15 +3,25 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Shield, LayoutDashboard, Users, Dumbbell, ArrowLeft, LogOut, KeyRound } from 'lucide-react'
+import {
+  ArrowLeft,
+  Dumbbell,
+  KeyRound,
+  LayoutDashboard,
+  LogOut,
+  ShieldCheck,
+  UserCheck,
+  Users,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
+import Logo from '@/davi/components/Logo'
 
 const links = [
-  { href: '/admin', label: 'Dashboard', icone: LayoutDashboard },
-  { href: '/admin/usuarios', label: 'Usuarios', icone: Users },
-  { href: '/admin/personais', label: 'Personais', icone: Users },
-  { href: '/admin/exercicios', label: 'Exercicios', icone: Dumbbell },
+  { href: '/admin', label: 'Command Center', icone: LayoutDashboard },
+  { href: '/admin/usuarios', label: 'Usuários', icone: Users },
+  { href: '/admin/personais', label: 'Personais', icone: UserCheck },
+  { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },
   { href: '/admin/conta', label: 'Minha conta', icone: KeyRound },
 ]
 
@@ -24,7 +34,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     queryFn: async () => {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Nao autenticado')
+      if (!user) throw new Error('Não autenticado')
       const { data } = await supabase.from('usuarios').select('nome, email, tipo').eq('id', user.id).single()
       return data
     },
@@ -34,75 +44,110 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/admin/login')
+    router.refresh()
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card/80 backdrop-blur-xl">
-        <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10">
-            <Shield className="h-4 w-4 text-destructive" />
-          </div>
-          <div>
-            <p className="text-sm font-bold tracking-tight">Admin</p>
-            <p className="text-[10px] text-muted-foreground">Painel de gestao</p>
+    <div className="min-h-screen bg-[#1A1A1A] text-[#F5F5F5]" style={{ fontFamily: "'Sora', sans-serif" }}>
+      <aside
+        className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
+        style={{
+          background: 'linear-gradient(180deg,rgba(22,22,22,.96),rgba(18,18,18,.96))',
+          borderRight: '1px solid rgba(255,255,255,.06)',
+          boxShadow: '18px 0 50px rgba(0,0,0,.18)',
+        }}
+      >
+        <div className="flex h-20 items-center px-5" style={{ borderBottom: '1px solid rgba(255,255,255,.055)' }}>
+          <Logo size="sm" />
+        </div>
+
+        <div className="px-4 pt-5">
+          <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(0,210,210,.045)', border: '1px solid rgba(0,210,210,.12)' }}>
+            <ShieldCheck className="h-3.5 w-3.5 text-[#00D2D2]" />
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Admin OS</p>
+              <p className="mt-0.5 text-[9px] text-zinc-600">controle da plataforma</p>
+            </div>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 p-3">
+        <nav className="flex-1 space-y-1 p-4 pt-5">
           {links.map(({ href, label, icone: Icon }) => {
-            const ativo = pathname === href
+            const ativo = href === '/admin' ? pathname === href : pathname.startsWith(href)
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  ativo
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                }`}
+                className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all"
+                style={{
+                  color: ativo ? '#F5F5F5' : '#71717a',
+                  background: ativo ? 'rgba(0,210,210,.075)' : 'transparent',
+                  border: ativo ? '1px solid rgba(0,210,210,.14)' : '1px solid transparent',
+                }}
               >
-                <Icon className="h-4 w-4" />
-                {label}
-                {ativo && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />}
+                {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#00D2D2]" />}
+                <Icon className="h-4 w-4" style={{ color: ativo ? '#00D2D2' : undefined }} />
+                <span>{label}</span>
               </Link>
             )
           })}
         </nav>
 
-        <div className="border-t border-border p-3 space-y-2">
-          <Link
-            href="/"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar ao app
+        <div className="space-y-1 p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
+          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-zinc-500 transition-colors hover:bg-white/[.03] hover:text-zinc-300">
+            <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao app
           </Link>
-          <button
-            onClick={sair}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
-          >
-            <LogOut className="h-4 w-4" />
-            Sair
+          <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-zinc-500 transition-colors hover:bg-red-400/[.05] hover:text-red-300">
+            <LogOut className="h-3.5 w-3.5" /> Sair
           </button>
         </div>
 
         {user && (
-          <div className="border-t border-border p-4">
+          <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-xs font-bold text-destructive">
+              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#1A1A1A]" style={{ background: '#00D2D2', boxShadow: '0 0 20px rgba(0,210,210,.15)' }}>
                 {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{user.nome}</p>
-                <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                <p className="truncate text-xs font-semibold text-zinc-200">{user.nome}</p>
+                <p className="mt-0.5 truncate text-[10px] text-zinc-600">{user.email}</p>
               </div>
             </div>
           </div>
         )}
       </aside>
 
-      <main className="ml-64 flex-1 p-8">{children}</main>
+      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#1A1A1A]/90 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <div className="flex items-center justify-between">
+          <Logo size="sm" />
+          <button onClick={sair} className="rounded-xl p-2 text-zinc-500" aria-label="Sair">
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+        <nav className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          {links.map(({ href, label, icone: Icon }) => {
+            const ativo = href === '/admin' ? pathname === href : pathname.startsWith(href)
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px]"
+                style={{
+                  background: ativo ? 'rgba(0,210,210,.09)' : 'rgba(255,255,255,.025)',
+                  border: ativo ? '1px solid rgba(0,210,210,.16)' : '1px solid rgba(255,255,255,.05)',
+                  color: ativo ? '#00D2D2' : '#71717a',
+                }}
+              >
+                <Icon className="h-3.5 w-3.5" /> {label}
+              </Link>
+            )
+          })}
+        </nav>
+      </div>
+
+      <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
+        <div className="mx-auto max-w-[1500px]">{children}</div>
+      </main>
     </div>
   )
 }
