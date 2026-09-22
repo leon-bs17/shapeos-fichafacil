@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Users,
   ClipboardList,
@@ -22,6 +22,9 @@ import {
   ChevronUp,
   Dumbbell,
   UserPlus,
+  LayoutDashboard,
+  PanelLeft,
+  ChevronRight,
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
 import WorkoutEditor from "@/davi/components/WorkoutEditor";
@@ -707,6 +710,38 @@ export const PersonalView = ({
   const [deleting, setDeleting] = useState(null);
   const [toast, setToast] = useState(null);
   const [editingTemplate, setEditingTemplate] = useState(null);
+  const [activeSection, setActiveSection] = useState("overview");
+
+  const menuItems = [
+    { id: "overview", label: "Visão geral", icon: LayoutDashboard },
+    { id: "workouts", label: "Meus treinos", icon: Dumbbell },
+    { id: "students", label: "Alunos", icon: Users },
+  ];
+
+  const goToSection = (id) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  useEffect(() => {
+    const ids = ["overview", "workouts", "students"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -65% 0px", threshold: [0.05, 0.2, 0.5] }
+    );
+
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const filtered = students.filter((s) =>
     s.name.toLowerCase().includes(query.toLowerCase())
@@ -763,30 +798,152 @@ export const PersonalView = ({
   };
 
   return (
-    <div className="min-h-screen" data-testid="personal-view">
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-30 backdrop-blur-xl"
+    <div className="min-h-screen bg-[#0E1116]" data-testid="personal-view">
+      {/* Desktop navigation */}
+      <aside
+        className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col lg:flex"
         style={{
-          background: "rgba(26,26,26,0.7)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "linear-gradient(180deg, #12161D 0%, #0F1319 100%)",
+          borderRight: "1px solid #273142",
+          boxShadow: "18px 0 50px rgba(0,0,0,0.18)",
         }}
       >
-        <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid #273142" }}>
           <Logo size="sm" />
+        </div>
+
+        <div className="px-4 pt-5">
+          <div
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5"
+            style={{ background: "rgba(34,199,199,0.08)", border: "1px solid rgba(34,199,199,0.16)" }}
+          >
+            <PanelLeft className="h-3.5 w-3.5 text-[#22C7C7]" />
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-200">Personal OS</p>
+              <p className="mt-0.5 truncate text-[9px] text-[#6F7B8C]">gestão da sua base</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-1 p-4 pt-5">
+          {menuItems.map(({ id, label, icon: Icon }) => {
+            const active = activeSection === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => goToSection(id)}
+                className="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all"
+                style={{
+                  color: active ? "#F5F7FA" : "#6F7B8C",
+                  background: active ? "rgba(34,199,199,0.10)" : "transparent",
+                  border: active ? "1px solid rgba(34,199,199,0.18)" : "1px solid transparent",
+                }}
+              >
+                {active && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#22C7C7]" />}
+                <Icon className="h-4 w-4" style={{ color: active ? "#22C7C7" : undefined }} />
+                <span className="flex-1">{label}</span>
+                <ChevronRight
+                  className="h-3.5 w-3.5 transition-all"
+                  style={{ color: active ? "#22C7C7" : "#3F4A59", opacity: active ? 1 : 0.55 }}
+                />
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="px-4 pb-4">
+          <button
+            type="button"
+            onClick={() => setCreating(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5"
+            style={{
+              background: "#22C7C7",
+              color: "#0E1116",
+              boxShadow: "0 10px 24px rgba(34,199,199,0.16)",
+            }}
+          >
+            <UserPlus className="h-4 w-4" /> Novo aluno
+          </button>
+          <div className="mt-3 rounded-xl px-3 py-3" style={{ background: "#171C24", border: "1px solid #273142" }}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#6F7B8C]">Sua base</p>
+                <p className="mt-1 text-sm font-semibold text-[#F5F7FA]">{students.length} alunos ativos</p>
+              </div>
+              <div className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: "rgba(34,199,199,0.10)" }}>
+                <Users className="h-3.5 w-3.5 text-[#22C7C7]" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4" style={{ borderTop: "1px solid #273142" }}>
           <button
             data-testid="personal-logout-button"
             onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-[#6F7B8C] transition-colors hover:bg-red-400/[0.05] hover:text-red-300"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
-            <LogOut className="w-3.5 h-3.5" /> Sair
+            <LogOut className="h-3.5 w-3.5" /> Sair da conta
           </button>
         </div>
+      </aside>
+
+      {/* Mobile navigation */}
+      <div
+        className="sticky top-0 z-40 lg:hidden"
+        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid #273142", backdropFilter: "blur(18px)" }}
+      >
+        <div className="flex items-center justify-between px-4 py-3">
+          <Logo size="sm" />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCreating(true)}
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#0E1116]"
+              style={{ background: "#22C7C7" }}
+              aria-label="Novo aluno"
+            >
+              <UserPlus className="h-4 w-4" />
+            </button>
+            <button
+              data-testid="personal-logout-button-mobile"
+              onClick={onLogout}
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#6F7B8C]"
+              style={{ background: "#171C24", border: "1px solid #273142" }}
+              aria-label="Sair"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        <nav className="flex gap-2 overflow-x-auto px-4 pb-3">
+          {menuItems.map(({ id, label, icon: Icon }) => {
+            const active = activeSection === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => goToSection(id)}
+                className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
+                style={{
+                  background: active ? "rgba(34,199,199,0.11)" : "#171C24",
+                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #273142",
+                  color: active ? "#22C7C7" : "#A7B0BE",
+                }}
+              >
+                <Icon className="h-3.5 w-3.5" /> {label}
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
-      <div className="max-w-6xl mx-auto px-5 pt-10 pb-16">
+      <main className="lg:ml-64">
+        <div className="mx-auto max-w-6xl px-5 pt-8 pb-16 md:pt-10">
         {/* Header */}
+        <section id="overview" className="scroll-mt-32 lg:scroll-mt-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
             <div
@@ -851,9 +1008,10 @@ export const PersonalView = ({
             accent="#22C7C7"
           />
         </div>
+        </section>
 
         {/* My Workouts (templates) */}
-        <div className="mb-10" data-testid="workout-templates-section">
+        <section id="workouts" className="scroll-mt-32 lg:scroll-mt-8 mb-10" data-testid="workout-templates-section">
           <div className="flex items-center justify-between mb-4">
             <h2
               className="text-lg text-[#F5F7FA]"
@@ -936,8 +1094,9 @@ export const PersonalView = ({
                 );
               })}
           </div>
-        </div>
+        </section>
 
+        <section id="students" className="scroll-mt-32 lg:scroll-mt-8">
         {/* Search + list header */}
         <div className="flex items-center justify-between mb-4">
           <h2
