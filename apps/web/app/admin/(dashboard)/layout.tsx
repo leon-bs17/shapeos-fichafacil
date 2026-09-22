@@ -48,7 +48,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] text-[#F5F5F5]" style={{ fontFamily: "'Sora', sans-serif" }}>
+    <div className="min-h-screen bg-[#0E1116] text-[#F5F7FA]" style={{ fontFamily: "'Sora', sans-serif" }}>
       <aside
         className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
         style={{
@@ -62,8 +62,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
 
         <div className="px-4 pt-5">
-          <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(0,210,210,.045)', border: '1px solid rgba(0,210,210,.12)' }}>
-            <ShieldCheck className="h-3.5 w-3.5 text-[#00D2D2]" />
+          <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(34,199,199,.045)', border: '1px solid rgba(34,199,199,.12)' }}>
+            <ShieldCheck className="h-3.5 w-3.5 text-[#22C7C7]" />
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Admin OS</p>
               <p className="mt-0.5 text-[9px] text-zinc-600">controle da plataforma</p>
@@ -80,13 +80,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 href={href}
                 className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all"
                 style={{
-                  color: ativo ? '#F5F5F5' : '#71717a',
-                  background: ativo ? 'rgba(0,210,210,.075)' : 'transparent',
-                  border: ativo ? '1px solid rgba(0,210,210,.14)' : '1px solid transparent',
+                  color: ativo ? '#F5F7FA' : '#71717a',
+                  background: ativo ? 'rgba(34,199,199,.075)' : 'transparent',
+                  border: ativo ? '1px solid rgba(34,199,199,.14)' : '1px solid transparent',
                 }}
               >
-                {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#00D2D2]" />}
-                <Icon className="h-4 w-4" style={{ color: ativo ? '#00D2D2' : undefined }} />
+                {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#22C7C7]" />}
+                <Icon className="h-4 w-4" style={{ color: ativo ? '#22C7C7' : undefined }} />
                 <span>{label}</span>
               </Link>
             )
@@ -105,7 +105,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {user && (
           <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
             <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#1A1A1A]" style={{ background: '#00D2D2', boxShadow: '0 0 20px rgba(0,210,210,.15)' }}>
+              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#0E1116]" style={{ background: '#22C7C7', boxShadow: '0 0 20px rgba(34,199,199,.15)' }}>
                 {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
               </div>
               <div className="min-w-0">
@@ -117,7 +117,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         )}
       </aside>
 
-      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#1A1A1A]/90 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#0E1116]/90 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between">
           <Logo size="sm" />
           <button onClick={sair} className="rounded-xl p-2 text-zinc-500" aria-label="Sair">
@@ -133,9 +133,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 href={href}
                 className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px]"
                 style={{
-                  background: ativo ? 'rgba(0,210,210,.09)' : 'rgba(255,255,255,.025)',
-                  border: ativo ? '1px solid rgba(0,210,210,.16)' : '1px solid rgba(255,255,255,.05)',
-                  color: ativo ? '#00D2D2' : '#71717a',
+                  background: ativo ? 'rgba(34,199,199,.09)' : 'rgba(255,255,255,.025)',
+                  border: ativo ? '1px solid rgba(34,199,199,.16)' : '1px solid rgba(255,255,255,.05)',
+                  color: ativo ? '#22C7C7' : '#71717a',
                 }}
               >
                 <Icon className="h-3.5 w-3.5" /> {label}
