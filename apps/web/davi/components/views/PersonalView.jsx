@@ -1149,7 +1149,9 @@ export const PersonalView = ({
             </div>
           )}
         </div>
-      </div>
+        </section>
+        </div>
+      </main>
 
       {/* Modals */}
       {creating && (
