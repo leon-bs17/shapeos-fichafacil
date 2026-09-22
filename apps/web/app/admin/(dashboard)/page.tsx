@@ -211,6 +211,11 @@ export default function AdminDashboardPage() {
   }
 
   const statusPulse = metricas.pulse >= 80 ? 'Excelente' : metricas.pulse >= 65 ? 'Saudável' : 'Atenção'
+  const frasePulse = metricas.pulse >= 80
+    ? <>O ShapeOS está <span className="text-[#00D2D2]">excelente</span>.</>
+    : metricas.pulse >= 65
+      ? <>O ShapeOS está <span className="text-[#00D2D2]">saudável</span>.</>
+      : <>O ShapeOS <span className="text-[#00D2D2]">precisa de atenção</span>.</>
 
   return (
     <div className="relative space-y-5 pb-10" data-testid="admin-command-center">
@@ -242,7 +247,7 @@ export default function AdminDashboardPage() {
               className="mt-4 text-3xl font-semibold leading-tight text-[#F5F5F5] md:text-5xl"
               style={{ fontFamily: "'Unbounded', sans-serif", letterSpacing: '-0.045em' }}
             >
-              O ShapeOS está <span className="text-[#00D2D2]">{statusPulse.toLowerCase()}</span>.
+{frasePulse}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 md:text-base">
               Uma visão operacional da plataforma para saber o que está crescendo, o que está sendo usado e onde você precisa agir.
