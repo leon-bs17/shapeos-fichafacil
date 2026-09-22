@@ -1,5 +1,7 @@
 'use client'
 
+// Renders the frontend authored by Davi directly.
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import PersonalView from '@/davi/components/views/PersonalView'
