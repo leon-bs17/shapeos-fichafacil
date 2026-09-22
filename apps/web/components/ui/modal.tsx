@@ -21,13 +21,13 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-fade-in"
       onClick={onClose}
       role="presentation"
     >
       <div
         className={cn(
-          'max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border/50 bg-card p-6 shadow-2xl animate-slide-up',
+          'shapeos-panel max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-2xl animate-slide-up',
           className
         )}
         onClick={(e) => e.stopPropagation()}
@@ -36,7 +36,7 @@ export function Modal({
         aria-label={titulo}
       >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight">{titulo}</h2>
+          <div><p className="shapeos-eyebrow mb-2">ShapeOS</p><h2 className="text-lg font-semibold tracking-tight text-[#F5F5F5]">{titulo}</h2></div>
           <button
             onClick={onClose}
             className="rounded-xl p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"

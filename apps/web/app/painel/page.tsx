@@ -69,9 +69,12 @@ export default function PainelAlunoPage() {
   return (
     <div className="space-y-8">
       <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight text-gradient">Painel do Aluno</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Sua ficha ativa e seu progresso — atualizado pelo seu personal.
+        <p className="shapeos-eyebrow">Treino de hoje</p>
+        <h1 className="shapeos-title mt-3 text-4xl md:text-5xl">
+          Sua ficha, <span className="text-[#00D2D2]">sem distrações.</span>
+        </h1>
+        <p className="mt-3 text-sm text-zinc-500">
+          Sua ficha ativa e seu progresso, atualizados pelo seu personal.
         </p>
       </header>
 
@@ -89,7 +92,7 @@ export default function PainelAlunoPage() {
         <>
           <section className="space-y-4">
             <h2 className="flex items-center gap-2 text-lg font-semibold animate-fade-in stagger-1">
-              <ClipboardList className="h-5 w-5 text-primary" /> Ficha ativa
+              <ClipboardList className="h-5 w-5 text-[#00D2D2]" /> Ficha ativa
             </h2>
 
             {fichas.isLoading ? (
@@ -99,8 +102,8 @@ export default function PainelAlunoPage() {
             ) : fichas.data?.length === 0 || !fichas.data ? (
               <Card className="card-tech-glow border-dashed">
                 <CardContent className="py-12 text-center">
-                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 glow-primary-subtle">
-                    <Dumbbell className="h-7 w-7 text-primary" />
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00D2D2]/10 glow-primary-subtle">
+                    <Dumbbell className="h-7 w-7 text-[#00D2D2]" />
                   </div>
                   <p className="font-semibold">Nenhuma ficha ativa no momento</p>
                   <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
@@ -129,7 +132,7 @@ export default function PainelAlunoPage() {
                         <div key={item.id} className="card-tech rounded-xl p-4 hover:border-primary/20 transition-all duration-200">
                           <div className="mb-3 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2">
-                              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#00D2D2]/10 text-[#00D2D2]">
                                 <TrendingUp className="h-3.5 w-3.5" />
                               </div>
                               <p className="font-medium text-sm">{item.exercicio.nome}</p>
@@ -180,7 +183,7 @@ export default function PainelAlunoPage() {
 
           <section className="space-y-4">
             <h2 className="flex items-center gap-2 text-lg font-semibold animate-fade-in stagger-3">
-              <History className="h-5 w-5 text-primary" /> Meu histórico
+              <History className="h-5 w-5 text-[#00D2D2]" /> Meu histórico
             </h2>
             {registros.isLoading ? (
               <div className="h-24 skeleton" />

@@ -1,24 +1,19 @@
 import type { ReactNode } from 'react'
 import { BotaoSairAluno } from '@/components/aluno/botao-sair'
-import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Logo } from '@/components/layout/logo'
 
 export default function PainelLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen tech-bg tech-grid-subtle">
-      <header className="glass border-b border-border/30 sticky top-0 z-40">
-        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <Logo size="md" />
-            <span className="text-muted-foreground text-sm">· Painel do Aluno</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <BotaoSairAluno />
-          </div>
+    <div className="relative min-h-screen overflow-hidden bg-[#1A1A1A] text-[#F5F5F5] tech-bg">
+      <div className="fixed inset-0 tech-grid-subtle pointer-events-none" aria-hidden="true" />
+      <div className="fixed inset-0 tech-noise pointer-events-none" aria-hidden="true" />
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#1A1A1A]/75 backdrop-blur-xl">
+        <div className="relative mx-auto flex h-20 max-w-5xl items-center justify-between px-5 md:px-6">
+          <Logo size="md" />
+          <BotaoSairAluno />
         </div>
       </header>
-      <main className="mx-auto max-w-4xl p-6 scrollbar-thin">{children}</main>
+      <main className="relative z-10 mx-auto max-w-5xl px-5 py-8 md:px-6 md:py-10 scrollbar-thin">{children}</main>
     </div>
   )
 }

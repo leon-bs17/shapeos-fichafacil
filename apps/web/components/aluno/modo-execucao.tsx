@@ -216,7 +216,8 @@ export function ModoExecucao({
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 pulse-glow">
             <Trophy className="h-10 w-10 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold">Treino concluído!</h2>
+          <p className="shapeos-eyebrow mb-2">Sessão concluída</p>
+          <h2 className="shapeos-title text-3xl">Treino concluído!</h2>
           <p className="text-muted-foreground mt-1 text-sm">
             Bom trabalho. Confira o resumo abaixo.
           </p>
@@ -283,10 +284,10 @@ export function ModoExecucao({
     <div className="mx-auto max-w-lg space-y-5">
       <header className="flex items-start justify-between gap-3">
         <div key={exercicio.id} className="animate-fade-in">
-          <p className="text-primary text-xs font-semibold uppercase tracking-wider">
+          <p className="shapeos-eyebrow text-[#00D2D2]">
             Exercício {exercicioAtual + 1} de {exercicios.length}
           </p>
-          <h2 className="text-xl font-bold">{exercicio.nome}</h2>
+          <h2 className="shapeos-title mt-2 text-2xl">{exercicio.nome}</h2>
           <p className="text-muted-foreground text-sm capitalize">{exercicio.grupo_muscular}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={sair} title="Sair do treino">
@@ -297,7 +298,7 @@ export function ModoExecucao({
       <div className="space-y-1.5">
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-[#00D2D2] to-[#FF7043] transition-all duration-500 shadow-[0_0_12px_rgba(0,210,210,.35)]"
             style={{ width: `${progressoGeral}%` }}
           />
         </div>

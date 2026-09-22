@@ -63,16 +63,19 @@ function TreinosConteudo() {
 
   return (
     <div className="space-y-8">
-      <header className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Treinos</h1>
-          <p className="text-muted-foreground text-sm">
-            Monte fichas rapidamente e gerencie as ativas de cada aluno.
-          </p>
+      <header className="animate-fade-in">
+        <p className="shapeos-eyebrow">Programação de treino</p>
+        <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="shapeos-title text-4xl md:text-5xl">Treinos</h1>
+            <p className="mt-3 text-sm text-zinc-500">
+              Monte fichas rapidamente e gerencie as ativas de cada aluno.
+            </p>
+          </div>
+          <Button onClick={() => setModalAberto(true)} className="h-11 rounded-xl bg-[#00D2D2] text-[#1A1A1A] hover:bg-[#00e1e1]">
+            <Plus className="h-4 w-4" /> Nova Ficha
+          </Button>
         </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Nova Ficha
-        </Button>
       </header>
 
       {isLoading ? (
@@ -134,7 +137,7 @@ function TreinosConteudo() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5 border-t border-border pt-3">
+                <div className="flex items-center gap-1.5 border-t border-white/[0.06] pt-3">
                   <Button
                     size="sm"
                     variant="outline"

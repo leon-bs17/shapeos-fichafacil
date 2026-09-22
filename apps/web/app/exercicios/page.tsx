@@ -61,16 +61,19 @@ function ExerciciosConteudo() {
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Biblioteca</h1>
-          <p className="text-muted-foreground text-sm">
-            {exercicios?.length ?? 0} exercicios · {filtrados.length} exibidos
-          </p>
+      <header className="animate-fade-in">
+        <p className="shapeos-eyebrow">Biblioteca de movimentos</p>
+        <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="shapeos-title text-4xl md:text-5xl">Exercícios</h1>
+            <p className="mt-3 text-sm text-zinc-500">
+              {exercicios?.length ?? 0} exercícios · {filtrados.length} exibidos
+            </p>
+          </div>
+          <Button onClick={() => setModalAberto(true)} className="h-11 rounded-xl bg-[#00D2D2] text-[#1A1A1A] hover:bg-[#00e1e1]">
+            <Plus className="h-4 w-4" /> Novo exercício
+          </Button>
         </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Novo exercicio
-        </Button>
       </header>
 
       <div className="space-y-3 animate-fade-in stagger-1">
@@ -90,8 +93,8 @@ function ExerciciosConteudo() {
               onClick={() => setGrupoAtivo(g)}
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
                 grupoAtivo === g
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                  ? 'border border-[#00D2D2]/35 bg-[#00D2D2]/10 text-[#00D2D2] shadow-[0_0_14px_rgba(0,210,210,.08)]'
+                  : 'border border-white/[0.06] bg-white/[0.025] text-zinc-500 hover:bg-white/[0.05] hover:text-[#F5F5F5]'
               }`}
             >
               {g !== 'Todos' && GRUPO_ICONS[g]}

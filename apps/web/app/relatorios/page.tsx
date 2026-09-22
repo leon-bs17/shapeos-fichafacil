@@ -52,9 +52,10 @@ function RelatoriosConteudo() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
-        <p className="text-muted-foreground text-sm">
+      <header className="animate-fade-in">
+        <p className="shapeos-eyebrow">Performance</p>
+        <h1 className="shapeos-title mt-3 text-4xl md:text-5xl">Relatórios</h1>
+        <p className="mt-3 text-sm text-zinc-500">
           Evolução de carga por exercício.
         </p>
       </header>
@@ -63,7 +64,7 @@ function RelatoriosConteudo() {
         <select
           value={alunoId}
           onChange={(e) => setAlunoId(e.target.value)}
-          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="input-tech h-11 w-full rounded-xl px-3 text-sm focus-visible:outline-none"
           aria-label="Selecionar aluno"
         >
           <option value="">Selecione o aluno...</option>
