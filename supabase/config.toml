@@ -43,4 +43,4 @@ enabled = true
 [auth.webauthn]
 rp_display_name = "ShapeOS"
 rp_id = "localhost"
-rp_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+rp_origins = ["http://localhost:3000"]
