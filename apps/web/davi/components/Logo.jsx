@@ -5,7 +5,7 @@ import React from "react";
 /**
  * shapeOS logo — matches the brand asset:
  *  - Chrome metallic dumbbells (two plates each side)
- *  - Central power button ring with vertical bar (Aqua Digital #00D2D2)
+ *  - Central power button ring with vertical bar (Aqua Digital #22C7C7)
  *  - Wordmark "shape" white + "OS" aqua + tagline "ficha fácil"
  */
 export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
@@ -35,7 +35,7 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
         {/* Aqua glow */}
         <radialGradient id="aquaGlow" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#7ffbfb" stopOpacity="1" />
-          <stop offset="55%" stopColor="#00D2D2" stopOpacity="0.85" />
+          <stop offset="55%" stopColor="#22C7C7" stopOpacity="0.85" />
           <stop offset="100%" stopColor="#003a3a" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
@@ -59,22 +59,22 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
       <rect x="84" y="58" width="18" height="12" rx="2" fill="url(#chromeBar)" />
 
       {/* Center bezel ring (metal) */}
-      <circle cx="64" cy="64" r="30" fill="#1a1a1a" stroke="url(#ringGrad)" strokeWidth="3.5" />
+      <circle cx="64" cy="64" r="30" fill="#0e1116" stroke="url(#ringGrad)" strokeWidth="3.5" />
       <circle cx="64" cy="64" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
 
       {/* Inner aqua glow */}
       <circle cx="64" cy="64" r="22" fill="url(#aquaGlow)" opacity="0.9" filter="url(#soft)" />
-      <circle cx="64" cy="64" r="19" fill="none" stroke="#00D2D2" strokeWidth="2" opacity="0.85" />
+      <circle cx="64" cy="64" r="19" fill="none" stroke="#22C7C7" strokeWidth="2" opacity="0.85" />
 
       {/* Power symbol: open arc + vertical bar */}
       <path
         d="M 52 60 A 14 14 0 1 0 76 60"
         fill="none"
-        stroke="#00F2F2"
+        stroke="#31D6D6"
         strokeWidth="4"
         strokeLinecap="round"
       />
-      <rect x="61.5" y="49" width="5" height="14" rx="2.5" fill="#00F2F2" />
+      <rect x="61.5" y="49" width="5" height="14" rx="2.5" fill="#31D6D6" />
 
       {/* Specular highlights */}
       <ellipse cx="60" cy="53" rx="10" ry="3" fill="rgba(255,255,255,0.18)" />
@@ -84,7 +84,7 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
   const wordmark = (
     <div className="leading-none">
       <div
-        className="text-[#F5F5F5] tracking-tight"
+        className="text-[#F5F7FA] tracking-tight"
         style={{
           fontFamily: "'Unbounded', sans-serif",
           fontWeight: 700,
@@ -92,7 +92,7 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
           letterSpacing: "-0.02em",
         }}
       >
-        shape<span className="text-[#00D2D2]" style={{ textShadow: "0 0 18px rgba(0,210,210,0.55)" }}>OS</span>
+        shape<span className="text-[#22C7C7]" style={{ textShadow: "0 0 18px rgba(34,199,199,0.55)" }}>OS</span>
       </div>
       {showTagline && (
         <div
