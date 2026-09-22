@@ -29,7 +29,7 @@ export const LoginView = ({ onEnter }) => {
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-4 py-12"
+      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-4 py-10 lg:py-4"
       data-testid="login-view"
     >
       {/* Ambient glow */}
@@ -63,34 +63,34 @@ export const LoginView = ({ onEnter }) => {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-md">
-        <div className="flex justify-center mb-10">
+      <div className="relative z-10 w-full max-w-md lg:max-w-sm">
+        <div className="flex justify-center mb-8 lg:mb-3 lg:scale-[0.72] lg:-my-3">
           <Logo size="xl" stacked />
         </div>
 
         <div
-          className="rounded-3xl p-8 backdrop-blur-xl"
+          className="rounded-3xl p-7 backdrop-blur-xl lg:rounded-2xl lg:p-5"
           style={{
             background: "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))",
             border: "1px solid rgba(255,255,255,0.08)",
             boxShadow: "0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)",
           }}
         >
-          <div className="mb-6">
+          <div className="mb-6 lg:mb-4">
             <h1
-              className="text-3xl text-[#F5F5F5] tracking-tight"
+              className="text-3xl lg:text-2xl text-[#F5F5F5] tracking-tight"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
             >
               Acesse sua ficha
             </h1>
-            <p className="text-sm text-zinc-500 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
+            <p className="text-sm lg:text-xs text-zinc-500 mt-2 lg:mt-1" style={{ fontFamily: "'Sora', sans-serif" }}>
               Entre para treinar ou gerenciar sua base.
             </p>
           </div>
 
           {/* Role tabs */}
           <div
-            className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6"
+            className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -101,7 +101,7 @@ export const LoginView = ({ onEnter }) => {
               type="button"
               data-testid="role-tab-personal"
               onClick={() => setRole("personal")}
-              className={`py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
                 role === "personal" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
               }`}
               style={{
@@ -116,7 +116,7 @@ export const LoginView = ({ onEnter }) => {
               type="button"
               data-testid="role-tab-aluno"
               onClick={() => setRole("aluno")}
-              className={`py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
                 role === "aluno" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
               }`}
               style={{
@@ -141,7 +141,7 @@ export const LoginView = ({ onEnter }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="voce@shapeos.app"
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -161,7 +161,7 @@ export const LoginView = ({ onEnter }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -173,7 +173,7 @@ export const LoginView = ({ onEnter }) => {
             <button
               type="submit"
               data-testid="login-submit-button"
-              className="group w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[#1A1A1A] font-semibold text-base transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
+              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#1A1A1A] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
                 background: "#FF7043",
                 boxShadow: "0 12px 28px rgba(255,112,67,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
@@ -188,7 +188,7 @@ export const LoginView = ({ onEnter }) => {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
+          <div className="flex items-center gap-3 my-6 lg:my-4">
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
             <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-500" style={{ fontFamily: "'Sora', sans-serif" }}>
               ou entre com
@@ -204,7 +204,7 @@ export const LoginView = ({ onEnter }) => {
               onClick={handleBiometric}
               disabled={bioState !== "idle"}
               aria-label="Entrar com biometria"
-              className="relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 group disabled:cursor-wait"
+              className="relative w-24 h-24 lg:w-16 lg:h-16 rounded-full flex items-center justify-center transition-all duration-300 group disabled:cursor-wait"
               style={{
                 background:
                   bioState === "success"
@@ -239,10 +239,10 @@ export const LoginView = ({ onEnter }) => {
               )}
 
               {bioState === "success" ? (
-                <CheckCircle2 className="w-10 h-10 text-[#00D2D2]" />
+                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[#00D2D2]" />
               ) : (
                 <Fingerprint
-                  className={`w-10 h-10 transition-colors ${
+                  className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
                     bioState === "scanning" ? "text-[#00F2F2]" : "text-[#00D2D2] group-hover:text-[#00F2F2]"
                   }`}
                   strokeWidth={1.6}
@@ -252,7 +252,7 @@ export const LoginView = ({ onEnter }) => {
 
             <p
               data-testid="biometric-status"
-              className="mt-4 text-xs tracking-widest uppercase text-center"
+              className="mt-4 lg:mt-2 text-xs lg:text-[10px] tracking-widest uppercase text-center"
               style={{
                 fontFamily: "'Sora', sans-serif",
                 color: bioState === "success" ? "#00D2D2" : bioState === "scanning" ? "#F5F5F5" : "#a1a1aa",
@@ -265,13 +265,13 @@ export const LoginView = ({ onEnter }) => {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 pt-6 text-xs text-zinc-500">
+          <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-zinc-500">
             <ShieldCheck className="w-3.5 h-3.5 text-[#00D2D2]" />
             Conexão criptografada · TLS 1.3 · WebAuthn
           </div>
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
+        <p className="text-center text-xs lg:text-[10px] text-zinc-600 mt-6 lg:mt-3" style={{ fontFamily: "'Sora', sans-serif" }}>
           Novo por aqui? <span className="text-[#00D2D2] cursor-pointer hover:underline">Solicite acesso</span>
         </p>
       </div>
