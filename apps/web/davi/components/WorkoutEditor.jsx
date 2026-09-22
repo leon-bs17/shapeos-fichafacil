@@ -136,7 +136,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Nome do treino"
-              className="mt-1 w-full bg-transparent outline-none text-2xl md:text-3xl text-[#F5F5F5]"
+              className="mt-1 w-full bg-transparent outline-none text-2xl md:text-3xl text-[#F5F7FA]"
               style={{
                 fontFamily: "'Unbounded', sans-serif",
                 fontWeight: 600,
@@ -166,7 +166,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={focus}
               onChange={(e) => setFocus(e.target.value)}
               placeholder="ex: Força + Hipertrofia"
-              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F5F5] outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
             />
           </div>
@@ -177,7 +177,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               placeholder="≈ 60 min"
-              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F5F5] outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
             />
           </div>
@@ -187,7 +187,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
         <div className="flex-1 overflow-y-auto px-6 md:px-7 pb-4">
           <div className="flex items-center justify-between mb-3">
             <h3
-              className="text-sm text-[#F5F5F5]"
+              className="text-sm text-[#F5F7FA]"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
             >
               Exercícios <span className="text-zinc-500">({exercises.length})</span>
@@ -197,9 +197,9 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               onClick={() => setLibraryOpen(true)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all hover:scale-[1.02]"
               style={{
-                background: "rgba(0,210,210,0.1)",
-                color: "#00D2D2",
-                border: "1px solid rgba(0,210,210,0.35)",
+                background: "rgba(34,199,199,0.1)",
+                color: "#22C7C7",
+                border: "1px solid rgba(34,199,199,0.35)",
                 fontFamily: "'Sora', sans-serif",
               }}
             >
@@ -247,7 +247,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
           <button
             data-testid="editor-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -258,10 +258,10 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
           <button
             data-testid="editor-save-button"
             onClick={handleSave}
-            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A] transition-all hover:scale-[1.01]"
+            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01]"
             style={{
-              background: "#00D2D2",
-              boxShadow: "0 10px 24px rgba(0,210,210,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+              background: "#22C7C7",
+              boxShadow: "0 10px 24px rgba(34,199,199,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
             }}
           >
             <Save className="w-4 h-4" /> Salvar treino
@@ -298,7 +298,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           data-testid={`move-up-${exercise.id}`}
           disabled={index === 0}
           onClick={() => onMove(-1)}
-          className="text-zinc-500 hover:text-[#F5F5F5] disabled:opacity-20 transition-colors"
+          className="text-zinc-500 hover:text-[#F5F7FA] disabled:opacity-20 transition-colors"
           aria-label="Mover para cima"
         >
           <ChevronUp className="w-4 h-4" />
@@ -306,9 +306,9 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
         <span
           className="text-xs w-6 h-6 rounded-md flex items-center justify-center"
           style={{
-            background: "rgba(0,210,210,0.1)",
-            color: "#00D2D2",
-            border: "1px solid rgba(0,210,210,0.25)",
+            background: "rgba(34,199,199,0.1)",
+            color: "#22C7C7",
+            border: "1px solid rgba(34,199,199,0.25)",
             fontFamily: "'Unbounded', sans-serif",
             fontWeight: 600,
           }}
@@ -319,7 +319,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           data-testid={`move-down-${exercise.id}`}
           disabled={index === total - 1}
           onClick={() => onMove(1)}
-          className="text-zinc-500 hover:text-[#F5F5F5] disabled:opacity-20 transition-colors"
+          className="text-zinc-500 hover:text-[#F5F7FA] disabled:opacity-20 transition-colors"
           aria-label="Mover para baixo"
         >
           <ChevronDown className="w-4 h-4" />
@@ -335,7 +335,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           {exercise.muscle} · {exercise.equipment}
         </div>
         <h4
-          className="text-sm md:text-base text-[#F5F5F5] mt-0.5 truncate"
+          className="text-sm md:text-base text-[#F5F7FA] mt-0.5 truncate"
           style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
           title={exercise.name}
         >
@@ -401,11 +401,11 @@ const MetricInput = ({ label, value, onChange, accent, testId }) => (
       data-testid={testId}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="mt-0.5 w-full px-2 py-1.5 rounded-lg text-sm outline-none focus:ring-1 focus:ring-[#00D2D2]/40"
+      className="mt-0.5 w-full px-2 py-1.5 rounded-lg text-sm outline-none focus:ring-1 focus:ring-[#22C7C7]/40"
       style={{
-        background: accent ? "rgba(255,112,67,0.08)" : "rgba(255,255,255,0.04)",
-        border: `1px solid ${accent ? "rgba(255,112,67,0.25)" : "rgba(255,255,255,0.07)"}`,
-        color: accent ? "#FF7043" : "#F5F5F5",
+        background: accent ? "rgba(245,158,11,0.08)" : "rgba(255,255,255,0.04)",
+        border: `1px solid ${accent ? "rgba(245,158,11,0.25)" : "rgba(255,255,255,0.07)"}`,
+        color: accent ? "#F59E0B" : "#F5F7FA",
         fontWeight: accent ? 600 : 500,
       }}
     />
@@ -462,7 +462,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3
-                className="text-xl text-[#F5F5F5]"
+                className="text-xl text-[#F5F7FA]"
                 style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
               >
                 Biblioteca de Exercícios
@@ -488,7 +488,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                 placeholder="Buscar por nome ou grupo muscular..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                 style={{
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -501,9 +501,9 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
               onClick={() => setCreateOpen(true)}
               className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02] flex-shrink-0"
               style={{
-                background: "#FF7043",
-                color: "#1A1A1A",
-                boxShadow: "0 6px 18px rgba(255,112,67,0.3), inset 0 -2px 0 rgba(0,0,0,0.15)",
+                background: "#F59E0B",
+                color: "#0E1116",
+                boxShadow: "0 6px 18px rgba(245,158,11,0.3), inset 0 -2px 0 rgba(0,0,0,0.15)",
                 fontFamily: "'Sora', sans-serif",
               }}
             >
@@ -526,16 +526,16 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                   className="group flex items-center gap-3 p-3 rounded-2xl text-left transition-all disabled:opacity-40 hover:-translate-y-0.5 relative"
                   style={{
                     background: "rgba(255,255,255,0.03)",
-                    border: `1px solid ${item.custom ? "rgba(255,112,67,0.35)" : "rgba(255,255,255,0.07)"}`,
+                    border: `1px solid ${item.custom ? "rgba(245,158,11,0.35)" : "rgba(255,255,255,0.07)"}`,
                   }}
                 >
                   {item.custom && (
                     <span
                       className="absolute top-2 right-2 text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded"
                       style={{
-                        background: "rgba(255,112,67,0.15)",
-                        color: "#FF7043",
-                        border: "1px solid rgba(255,112,67,0.4)",
+                        background: "rgba(245,158,11,0.15)",
+                        color: "#F59E0B",
+                        border: "1px solid rgba(245,158,11,0.4)",
                         fontFamily: "'Sora', sans-serif",
                       }}
                     >
@@ -551,7 +551,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                       {item.muscle}
                     </div>
                     <div
-                      className="text-sm text-[#F5F5F5] mt-0.5 truncate"
+                      className="text-sm text-[#F5F7FA] mt-0.5 truncate"
                       style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
                     >
                       {item.name}
@@ -568,7 +568,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                       já na ficha
                     </span>
                   ) : (
-                    <Plus className="w-4 h-4 text-[#00D2D2] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Plus className="w-4 h-4 text-[#22C7C7] opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}
                 </button>
               );
