@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Activity, ClipboardList, Users, ArrowRight, TrendingUp } from 'lucide-react'
+import { Activity, ArrowRight, ClipboardList, Users } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos, useMetricasGerais } from '@/hooks/use-alunos'
@@ -22,26 +22,19 @@ function VisaoGeralConteudo() {
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-2">
-          <div className="h-8 w-48 skeleton" />
-          <div className="h-4 w-64 skeleton" />
-        </div>
+        <div className="h-12 w-72 skeleton" />
         <div className="grid gap-4 sm:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-28 skeleton" />
-          ))}
+          {[0, 1, 2].map((i) => <div key={i} className="h-32 skeleton" />)}
         </div>
-        <div className="h-64 skeleton" />
+        <div className="h-72 skeleton" />
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
-        <p className="text-sm text-destructive">
-          Erro ao carregar dados. Verifique a conexao e recarregue.
-        </p>
+      <div className="rounded-2xl border border-red-400/20 bg-red-400/[0.06] p-6 text-center text-sm text-red-300">
+        Erro ao carregar dados. Verifique a conexão e recarregue.
       </div>
     )
   }
@@ -49,109 +42,80 @@ function VisaoGeralConteudo() {
   return (
     <div className="space-y-8">
       <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight">Visao Geral</h1>
-        <p className="text-muted-foreground text-sm">
-          Acompanhe seus alunos e fichas ativas.
-        </p>
+        <p className="shapeos-eyebrow">Painel do personal</p>
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="shapeos-title text-4xl md:text-5xl">
+              Sua base, <span className="text-[#00D2D2]">sob controle.</span>
+            </h1>
+            <p className="mt-3 text-sm text-zinc-500">Acompanhe alunos e fichas ativas em tempo real.</p>
+          </div>
+          <Link href="/alunos" className="inline-flex items-center gap-2 text-sm font-medium text-[#00D2D2] hover:underline">
+            Gerenciar alunos <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <MetricCard
-          titulo="Alunos vinculados"
-          valor={metricas.totalAlunos}
-          icone={<Users className="h-5 w-5" />}
-          cor="primary"
-          atraso={1}
-        />
-        <MetricCard
-          titulo="Vinculos ativos"
-          valor={metricas.alunosAtivos}
-          icone={<Activity className="h-5 w-5" />}
-          cor="success"
-          atraso={2}
-        />
-        <MetricCard
-          titulo="Fichas ativas"
-          valor={metricas.fichasAtivas}
-          icone={<ClipboardList className="h-5 w-5" />}
-          cor="info"
-          atraso={3}
-        />
+        <MetricCard label="Alunos vinculados" value={metricas.totalAlunos} icon={Users} accent="#00D2D2" delay={1} />
+        <MetricCard label="Vínculos ativos" value={metricas.alunosAtivos} icon={Activity} accent="#FF7043" delay={2} />
+        <MetricCard label="Fichas ativas" value={metricas.fichasAtivas} icon={ClipboardList} accent="#00D2D2" delay={3} />
       </div>
 
       <section className="animate-fade-in stagger-4">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Meus alunos</h2>
-          <Link
-            href="/alunos"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            Gerenciar
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          <div>
+            <p className="shapeos-eyebrow">Base ativa</p>
+            <h2 className="mt-2 text-xl font-semibold text-[#F5F5F5]">Meus alunos</h2>
+          </div>
         </div>
 
         {alunos?.length === 0 ? (
           <Card className="border-dashed">
-            <CardContent className="py-12 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-                <Users className="h-6 w-6 text-muted-foreground" />
+            <CardContent className="py-14 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#00D2D2]/20 bg-[#00D2D2]/10">
+                <Users className="h-7 w-7 text-[#00D2D2]" />
               </div>
-              <p className="text-muted-foreground">
-                Nenhum aluno vinculado ainda.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Convide seu primeiro aluno para comecar.
-              </p>
+              <p className="font-semibold">Nenhum aluno vinculado ainda.</p>
+              <p className="mt-1 text-sm text-zinc-500">Convide seu primeiro aluno para começar.</p>
             </CardContent>
           </Card>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <table className="w-full text-sm">
-              <thead className="border-b border-border bg-muted/50">
-                <tr>
-                  <th className="px-5 py-3 text-left font-medium text-muted-foreground">Aluno</th>
-                  <th className="px-5 py-3 text-left font-medium text-muted-foreground">Status</th>
-                  <th className="px-5 py-3 text-left font-medium text-muted-foreground">Fichas</th>
-                  <th className="px-5 py-3 text-left font-medium text-muted-foreground">Vinculo desde</th>
-                </tr>
-              </thead>
-              <tbody>
-                {alunos?.map((a) => (
-                  <tr key={a.vinculo_id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                          {a.nome?.charAt(0)?.toUpperCase() ?? '?'}
-                        </div>
-                        <div>
-                          <p className="font-medium">{a.nome}</p>
-                          <p className="text-muted-foreground text-xs">{a.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={
-                          a.status === 'ATIVO'
-                            ? 'inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success'
-                            : 'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground'
-                        }
-                      >
-                        <span className={`h-1.5 w-1.5 rounded-full ${a.status === 'ATIVO' ? 'bg-success' : 'bg-muted-foreground'}`} />
+          <div className="space-y-3">
+            {alunos?.map((a, index) => (
+              <div
+                key={a.vinculo_id}
+                className={`card-tech animate-slide-up stagger-${Math.min(index + 1, 8)} flex flex-col gap-4 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5`}
+              >
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#00D2D2]/30 bg-[#00D2D2]/10 text-sm font-semibold text-[#00D2D2] shapeos-display">
+                    {a.nome?.charAt(0)?.toUpperCase() ?? '?'}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="truncate text-base font-medium text-[#F5F5F5]">{a.nome}</h3>
+                      <span className={a.status === 'ATIVO'
+                        ? 'rounded-full border border-[#00D2D2]/25 bg-[#00D2D2]/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-[#00D2D2]'
+                        : 'rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] uppercase tracking-widest text-zinc-500'}>
                         {a.status}
                       </span>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span className="font-medium">{a.treinos_ativos}</span>
-                    </td>
-                    <td className="text-muted-foreground px-5 py-3.5 text-xs">
-                      {formatarData(a.criado_em)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <p className="mt-1 truncate text-xs text-zinc-500">{a.email}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 text-xs text-zinc-500">
+                  <div>
+                    <span className="shapeos-eyebrow block">Fichas</span>
+                    <span className="mt-1 block text-base font-semibold text-[#F5F5F5]">{a.treinos_ativos}</span>
+                  </div>
+                  <div>
+                    <span className="shapeos-eyebrow block">Desde</span>
+                    <span className="mt-1 block text-sm text-zinc-300">{formatarData(a.criado_em)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </section>
@@ -160,38 +124,30 @@ function VisaoGeralConteudo() {
 }
 
 function MetricCard({
-  titulo,
-  valor,
-  icone,
-  cor,
-  atraso,
+  label,
+  value,
+  icon: Icon,
+  accent,
+  delay,
 }: {
-  titulo: string
-  valor: number
-  icone: React.ReactNode
-  cor: 'primary' | 'success' | 'info'
-  atraso: number
+  label: string
+  value: number
+  icon: React.ComponentType<{ className?: string }>
+  accent: string
+  delay: number
 }) {
-  const cores = {
-    primary: 'bg-primary/10 text-primary',
-    success: 'bg-success/10 text-success',
-    info: 'bg-info/10 text-info',
-  }
-
   return (
-    <Card className={`animate-slide-up stagger-${atraso} hover:shadow-md transition-shadow duration-200`}>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
-            {icone}
-          </div>
-          <TrendingUp className="h-4 w-4 text-muted-foreground/50" />
+    <div
+      className={`relative overflow-hidden rounded-2xl p-5 card-tech animate-slide-up stagger-${delay}`}
+    >
+      <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-20 blur-2xl" style={{ background: accent }} />
+      <div className="relative">
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+          <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
+          {label}
         </div>
-        <div className="mt-4">
-          <p className="text-3xl font-bold tracking-tight">{valor}</p>
-          <p className="text-muted-foreground text-sm mt-0.5">{titulo}</p>
-        </div>
-      </CardContent>
-    </Card>
+        <div className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#F5F5F5] shapeos-display">{value}</div>
+      </div>
+    </div>
   )
 }

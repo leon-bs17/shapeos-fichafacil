@@ -5,19 +5,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, KeyRound, Lock, Mail } from 'lucide-react'
 import { Logo } from '@/components/layout/logo'
 
 export default function LoginPage() {
@@ -55,13 +47,11 @@ export default function LoginPage() {
 
     if (erroAuth) {
       setCaptchaToken('')
-      if (erroAuth.message.includes('not confirmed')) {
-        setErro(
-          'Seu e-mail ainda não foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
-        )
-      } else {
-        setErro('E-mail ou senha incorretos.')
-      }
+      setErro(
+        erroAuth.message.includes('not confirmed')
+          ? 'Seu e-mail ainda não foi confirmado. Abra o link que enviamos na hora do cadastro e tente novamente.'
+          : 'E-mail ou senha incorretos.'
+      )
       setCarregando(false)
       return
     }
@@ -72,165 +62,137 @@ export default function LoginPage() {
       .eq('id', data.user.id)
       .single()
 
-    const tipoReal = perfil?.tipo
-
-    if (tipoReal === 'ADMIN') {
+    if (perfil?.tipo === 'ADMIN') {
       router.push('/admin')
-      router.refresh()
-      return
-    }
-
-    if (tipoReal === 'ALUNO') {
+    } else if (perfil?.tipo === 'ALUNO') {
       router.push('/painel')
-      router.refresh()
-      return
+    } else {
+      router.push('/')
     }
-
-    router.push('/')
     router.refresh()
   }
 
   return (
-    <main className="min-h-screen flex bg-gradient-to-b from-background to-muted/30">
-      <div className="w-full max-w-md mx-auto px-4 py-16 md:py-24 flex items-center justify-center">
-        <Card className="w-full shadow-xl border-border/30 bg-card/90 backdrop-blur-sm">
-          <CardHeader className="text-center pb-6">
-            <Logo size="xl" className="mx-auto mb-4" />
-            <CardTitle className="text-2xl font-bold tracking-tight">Bem-vindo ao ShapeOS</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              {tipo === 'PERSONAL'
-                ? 'Acesse seu painel de personal trainer'
-                : 'Acesse sua ficha de treino'}
-            </CardDescription>
-          </CardHeader>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#1A1A1A] px-4 py-12 text-[#F5F5F5]">
+      <div className="pointer-events-none absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full blur-3xl opacity-30" style={{ background: 'radial-gradient(circle, #00D2D2 0%, transparent 70%)' }} />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[520px] w-[520px] rounded-full blur-3xl opacity-20" style={{ background: 'radial-gradient(circle, #FF7043 0%, transparent 70%)' }} />
+      <div className="pointer-events-none absolute inset-0 tech-grid opacity-40" />
+      <div className="pointer-events-none absolute inset-0 tech-noise" />
 
-          <CardContent className="space-y-5">
-            {/* Tipo selector */}
-            <div className="grid grid-cols-2 gap-1.5 p-1 bg-muted/50 rounded-xl" role="radiogroup" aria-label="Tipo de conta">
-              {(['PERSONAL', 'ALUNO'] as const).map((opcao) => (
-                <button
-                  key={opcao}
-                  type="button"
-                  role="radio"
-                  aria-checked={tipo === opcao}
-                  onClick={() => {
-                    setTipo(opcao)
-                    setErro(null)
-                  }}
-                  className={
-                    tipo === opcao
-                      ? 'rounded-lg bg-background px-3 py-2.5 text-sm font-medium shadow-sm transition-all duration-200 text-foreground'
-                      : 'rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-background/50 transition-all duration-200'
-                  }
-                >
-                  {opcao === 'PERSONAL' ? 'Sou Personal' : 'Sou Aluno'}
-                </button>
-              ))}
+      <div className="relative z-10 w-full max-w-md animate-fade-in">
+        <div className="mb-9 flex justify-center">
+          <Logo size="xl" stacked />
+        </div>
+
+        <section className="shapeos-panel rounded-3xl p-7 sm:p-8">
+          <div className="mb-6">
+            <p className="shapeos-eyebrow mb-3">Acesso ShapeOS</p>
+            <h1 className="shapeos-title text-3xl">Acesse sua ficha</h1>
+            <p className="mt-3 text-sm text-zinc-500">Entre para treinar ou gerenciar sua base.</p>
+          </div>
+
+          <div className="mb-6 grid grid-cols-2 gap-1 rounded-2xl border border-white/[0.06] bg-white/[0.025] p-1" role="radiogroup" aria-label="Tipo de conta">
+            {(['PERSONAL', 'ALUNO'] as const).map((opcao) => (
+              <button
+                key={opcao}
+                type="button"
+                role="radio"
+                aria-checked={tipo === opcao}
+                onClick={() => {
+                  setTipo(opcao)
+                  setErro(null)
+                }}
+                className={tipo === opcao
+                  ? 'rounded-xl bg-[#00D2D2] px-3 py-2.5 text-sm font-semibold text-[#1A1A1A] shadow-[0_6px_20px_rgba(0,210,210,.28)] transition-all'
+                  : 'rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-all hover:text-[#F5F5F5]'}
+              >
+                {opcao === 'PERSONAL' ? 'Personal (ADM)' : 'Aluno'}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="shapeos-eyebrow">E-mail</Label>
+              <div className="relative mt-2">
+                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="voce@shapeos.app"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                  disabled={carregando}
+                  className="h-12 rounded-xl pl-11 pr-4"
+                />
+              </div>
             </div>
 
+            <div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="senha" className="shapeos-eyebrow">Senha</Label>
+                <Link href="/admin/redefinir-senha" className="text-xs text-[#00D2D2] hover:underline">
+                  Esqueceu a senha?
+                </Link>
+              </div>
+              <div className="relative mt-2">
+                <KeyRound className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                <Input
+                  id="senha"
+                  type={mostrarSenha ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                  disabled={carregando}
+                  className="h-12 rounded-xl pl-11 pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha((v) => !v)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-[#F5F5F5]"
+                  aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <Captcha onToken={setCaptchaToken} />
+
             {erro ? (
-              <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
-                <p className="text-sm text-destructive flex items-center gap-2" role="alert">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                  </svg>
-                  {erro}
-                </p>
+              <div className="rounded-xl border border-red-400/20 bg-red-400/[0.07] px-4 py-3">
+                <p className="text-sm text-red-300" role="alert">{erro}</p>
               </div>
             ) : null}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  E-mail
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="voce@exemplo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                    required
-                    className="h-11 pl-10 pr-4"
-                    disabled={carregando}
-                  />
-                </div>
-              </div>
+            <Button
+              type="submit"
+              disabled={carregando || (captchaAtivo() && !captchaToken)}
+              className="shapeos-orange h-13 w-full rounded-2xl border-0 text-base font-semibold"
+            >
+              <Lock className="h-4 w-4" />
+              {carregando ? 'Entrando...' : 'Acessar Ficha'}
+              {!carregando ? <ArrowRight className="h-4 w-4" /> : null}
+            </Button>
+          </form>
 
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="senha" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Senha
-                  </Label>
-                  <Link href="/admin/redefinir-senha" className="text-xs text-primary hover:underline font-medium">
-                    Esqueceu a senha?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
-                  <Input
-                    id="senha"
-                    type={mostrarSenha ? 'text' : 'password'}
-                    placeholder="Sua senha"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    autoComplete="current-password"
-                    required
-                    className="h-11 pl-10 pr-12"
-                    disabled={carregando}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setMostrarSenha(!mostrarSenha)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors"
-                    aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
-                  >
-                    {mostrarSenha ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <Captcha onToken={setCaptchaToken} />
-
-              <Button
-                type="submit"
-                className="w-full h-11 font-medium rounded-xl"
-                disabled={carregando || (captchaAtivo() && !captchaToken)}
-              >
-                {carregando ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Entrando...
-                  </>
-                ) : (
-                  <>
-                    Entrar
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </form>
-
-            <CardFooter className="flex flex-col space-y-3 pt-4">
-              <p className="text-center text-sm text-muted-foreground">
+          <div className="mt-6 border-t border-white/[0.06] pt-5 text-center text-sm text-zinc-500">
+            {tipo === 'PERSONAL' ? (
+              <>
                 Não tem conta?{' '}
-                <Link href="/cadastro" className="text-primary font-medium hover:underline">
-                  Criar conta de Personal
+                <Link href="/cadastro" className="font-medium text-[#00D2D2] hover:underline">
+                  Cadastre-se grátis
                 </Link>
-              </p>
-              <p className="text-center text-xs text-muted-foreground/70">
-                Alunos acessam via convite do personal trainer.
-              </p>
-            </CardFooter>
-          </CardContent>
-        </Card>
+              </>
+            ) : (
+              'Alunos recebem acesso pelo convite enviado pelo personal.'
+            )}
+          </div>
+        </section>
       </div>
     </main>
   )

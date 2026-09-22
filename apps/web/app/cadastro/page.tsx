@@ -5,19 +5,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Eye, EyeOff, KeyRound, Mail, User } from 'lucide-react'
 import { Logo } from '@/components/layout/logo'
 
 export default function CadastroPage() {
@@ -34,125 +26,154 @@ export default function CadastroPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setErro(null)
+
     const parsed = loginSchema.safeParse({ email, senha })
-    if (!parsed.success) { setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos'); return }
-    if (nome.trim().length < 2) { setErro('Informe seu nome.'); return }
-    if (captchaAtivo() && !captchaToken) { setErro('Confirme a verificação anti-robô.'); return }
+    if (!parsed.success) {
+      setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos')
+      return
+    }
+    if (nome.trim().length < 2) {
+      setErro('Informe seu nome.')
+      return
+    }
+    if (captchaAtivo() && !captchaToken) {
+      setErro('Confirme a verificação anti-robô.')
+      return
+    }
 
     setCarregando(true)
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.senha,
-      options: { data: { nome: nome.trim(), tipo: 'PERSONAL' }, captchaToken: captchaToken || undefined },
+      options: {
+        data: { nome: nome.trim(), tipo: 'PERSONAL' },
+        captchaToken: captchaToken || undefined,
+      },
     })
 
     if (error) {
-      setErro(error.message.includes('already') ? 'Este e-mail já possui conta. Faça login.' : error.message.includes('captcha') ? 'Verificação anti-robô falhou.' : 'Não foi possível criar a conta.')
-      setCarregando(false); setCaptchaToken(''); return
+      setErro(
+        error.message.includes('already')
+          ? 'Este e-mail já possui conta. Faça login.'
+          : error.message.includes('captcha')
+            ? 'Verificação anti-robô falhou.'
+            : 'Não foi possível criar a conta.'
+      )
+      setCarregando(false)
+      setCaptchaToken('')
+      return
     }
-    if (data.session) { router.push('/'); router.refresh(); return }
-    setCarregando(false); setAguardandoEmail(true)
+
+    if (data.session) {
+      router.push('/')
+      router.refresh()
+      return
+    }
+
+    setCarregando(false)
+    setAguardandoEmail(true)
   }
 
   return (
-    <main className="min-h-screen flex bg-gradient-to-b from-background to-muted/30">
-      <div className="w-full max-w-md mx-auto px-4 py-16 md:py-24 flex items-center justify-center">
-        <Card className="w-full shadow-xl border-border/30 bg-card/90 backdrop-blur-sm">
-          <CardHeader className="text-center pb-6">
-            <Logo size="xl" className="mx-auto mb-4" />
-            <CardTitle className="text-2xl font-bold tracking-tight">Criar conta de Personal</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Gerencie alunos, crie fichas e acompanhe evolução
-            </CardDescription>
-          </CardHeader>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#1A1A1A] px-4 py-12 text-[#F5F5F5]">
+      <div className="pointer-events-none absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full blur-3xl opacity-30" style={{ background: 'radial-gradient(circle, #00D2D2 0%, transparent 70%)' }} />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[520px] w-[520px] rounded-full blur-3xl opacity-20" style={{ background: 'radial-gradient(circle, #FF7043 0%, transparent 70%)' }} />
+      <div className="pointer-events-none absolute inset-0 tech-grid opacity-40" />
+      <div className="pointer-events-none absolute inset-0 tech-noise" />
 
-          <CardContent className="space-y-5">
-            {aguardandoEmail ? (
-              <div className="space-y-4 text-center py-4">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/10">
-                  <CheckCircle2 className="h-7 w-7 text-success" />
-                </div>
-                <div className="space-y-1">
-                  <p className="font-medium text-lg">Conta criada com sucesso!</p>
-                  <p className="text-muted-foreground text-sm">
-                    Enviamos um e-mail de confirmação para{' '}
-                    <span className="font-medium text-foreground">{email}</span>.
-                  </p>
-                </div>
-                <Link href="/login">
-                  <Button variant="outline" className="w-full h-11 rounded-xl">
-                    Voltar ao login
-                  </Button>
-                </Link>
+      <div className="relative z-10 w-full max-w-md animate-fade-in">
+        <div className="mb-9 flex justify-center">
+          <Logo size="xl" stacked />
+        </div>
+
+        <section className="shapeos-panel rounded-3xl p-7 sm:p-8">
+          {aguardandoEmail ? (
+            <div className="py-3 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-[#00D2D2]/30 bg-[#00D2D2]/10">
+                <CheckCircle2 className="h-8 w-8 text-[#00D2D2]" />
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="rounded-xl bg-primary/5 border border-primary/10 px-4 py-3 text-center text-xs text-muted-foreground">
-                  Seus alunos não precisam de conta aqui: eles entram pelo convite que você envia dentro do painel.
-                </div>
+              <p className="shapeos-eyebrow mt-6">Cadastro concluído</p>
+              <h1 className="shapeos-title mt-3 text-2xl">Confirme seu e-mail</h1>
+              <p className="mt-4 text-sm leading-6 text-zinc-400">
+                Enviamos um link de confirmação para <span className="font-medium text-[#F5F5F5]">{email}</span>.
+              </p>
+              <Link href="/login" className="mt-6 block">
+                <Button variant="outline" className="h-12 w-full rounded-xl border-white/10 bg-white/[0.03]">
+                  Voltar ao login
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6">
+                <p className="shapeos-eyebrow mb-3">Novo personal</p>
+                <h1 className="shapeos-title text-3xl">Crie sua conta</h1>
+                <p className="mt-3 text-sm text-zinc-500">Gerencie alunos, fichas e evolução em um só lugar.</p>
+              </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome completo</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
+              <div className="mb-5 rounded-xl border border-[#00D2D2]/15 bg-[#00D2D2]/[0.06] px-4 py-3 text-center text-xs leading-5 text-zinc-400">
+                Seus alunos entram pelo convite enviado dentro do painel.
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="nome" className="shapeos-eyebrow">Nome completo</Label>
+                  <div className="relative mt-2">
+                    <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                     <Input
                       id="nome"
-                      placeholder="Seu nome completo"
                       value={nome}
                       onChange={(e) => setNome(e.target.value)}
+                      placeholder="Seu nome completo"
                       required
-                      className="h-11 pl-10 pr-4"
-                      disabled={carregando}
                       autoComplete="name"
+                      disabled={carregando}
+                      className="h-12 rounded-xl pl-11"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
+                <div>
+                  <Label htmlFor="email" className="shapeos-eyebrow">E-mail</Label>
+                  <div className="relative mt-2">
+                    <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder="voce@exemplo.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      autoComplete="email"
+                      placeholder="voce@shapeos.app"
                       required
-                      className="h-11 pl-10 pr-4"
+                      autoComplete="email"
                       disabled={carregando}
+                      className="h-12 rounded-xl pl-11"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="senha" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Senha</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
+                <div>
+                  <Label htmlFor="senha" className="shapeos-eyebrow">Senha</Label>
+                  <div className="relative mt-2">
+                    <KeyRound className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                     <Input
                       id="senha"
                       type={mostrarSenha ? 'text' : 'password'}
-                      placeholder="Mínimo 6 caracteres"
                       value={senha}
                       onChange={(e) => setSenha(e.target.value)}
-                      autoComplete="new-password"
+                      placeholder="Mínimo 6 caracteres"
                       required
-                      className="h-11 pl-10 pr-12"
+                      autoComplete="new-password"
                       disabled={carregando}
+                      className="h-12 rounded-xl pl-11 pr-12"
                     />
                     <button
                       type="button"
-                      onClick={() => setMostrarSenha(!mostrarSenha)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors"
+                      onClick={() => setMostrarSenha((v) => !v)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-[#F5F5F5]"
                       aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
                     >
-                      {mostrarSenha ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
+                      {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
@@ -160,47 +181,28 @@ export default function CadastroPage() {
                 <Captcha onToken={setCaptchaToken} />
 
                 {erro ? (
-                  <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
-                    <p className="text-sm text-destructive flex items-center gap-2" role="alert">
-                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                      </svg>
-                      {erro}
-                    </p>
+                  <div className="rounded-xl border border-red-400/20 bg-red-400/[0.07] px-4 py-3">
+                    <p className="text-sm text-red-300" role="alert">{erro}</p>
                   </div>
                 ) : null}
 
-                <Button type="submit" className="w-full h-11 font-medium rounded-xl" disabled={carregando || (captchaAtivo() && !captchaToken)}>
-                  {carregando ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Criando conta...
-                    </>
-                  ) : (
-                    <>
-                      Criar conta gratuita
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
+                <Button
+                  type="submit"
+                  disabled={carregando || (captchaAtivo() && !captchaToken)}
+                  className="shapeos-orange h-13 w-full rounded-2xl border-0 text-base font-semibold"
+                >
+                  {carregando ? 'Criando conta...' : 'Criar conta gratuita'}
+                  {!carregando ? <ArrowRight className="h-4 w-4" /> : null}
                 </Button>
-
-                <p className="text-center text-sm text-muted-foreground">
-                  Já tem conta?{' '}
-                  <Link href="/login" className="text-primary font-medium hover:underline">Entrar</Link>
-                </p>
               </form>
-            )}
-          </CardContent>
 
-          <CardFooter className="flex flex-col space-y-3 pt-4">
-            <p className="text-center text-xs text-muted-foreground/70">
-              Ao criar a conta, você concorda com nossos{' '}
-              <Link href="/termos" className="text-primary hover:underline">Termos de uso</Link>
-              {' '}e{' '}
-              <Link href="/privacidade" className="text-primary hover:underline">Política de privacidade</Link>
-            </p>
-          </CardFooter>
-        </Card>
+              <p className="mt-6 text-center text-sm text-zinc-500">
+                Já tem conta?{' '}
+                <Link href="/login" className="font-medium text-[#00D2D2] hover:underline">Entrar</Link>
+              </p>
+            </>
+          )}
+        </section>
       </div>
     </main>
   )
