@@ -18,11 +18,12 @@ const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ??
   ''
 const SERVICE_ROLE_KEY = process.env.E2E_SUPABASE_SERVICE_ROLE_KEY ?? ''
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
 function validarAmbienteE2E() {
-  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY || !ANON_KEY) {
     throw new Error(
-      'E2E exige E2E_SUPABASE_URL e E2E_SUPABASE_SERVICE_ROLE_KEY.'
+      'E2E exige E2E_SUPABASE_URL, E2E_SUPABASE_SERVICE_ROLE_KEY e NEXT_PUBLIC_SUPABASE_ANON_KEY.'
     )
   }
 
@@ -91,23 +92,58 @@ async function removerUsuario(id: string): Promise<void> {
   }
 }
 
+async function obterToken(email: string): Promise<string> {
+  const response = await fetch(
+    SUPABASE_URL + '/auth/v1/token?grant_type=password',
+    {
+      method: 'POST',
+      headers: {
+        apikey: ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password: SENHA_E2E }),
+    }
+  )
+
+  const data = await response.json()
+  if (!response.ok || !data.access_token) {
+    throw new Error(
+      'Login do personal E2E falhou: ' + JSON.stringify(data)
+    )
+  }
+
+  return data.access_token as string
+}
+
 async function vincularAluno(
   personalId: string,
-  alunoId: string
+  alunoId: string,
+  personalEmail: string
 ): Promise<void> {
-  const response = await adminRequest('/rest/v1/personal_alunos', {
-    method: 'POST',
-    headers: { Prefer: 'return=minimal' },
-    body: JSON.stringify({
-      personal_id: personalId,
-      aluno_id: alunoId,
-      status: 'ATIVO',
-    }),
-  })
+  const token = await obterToken(personalEmail)
+
+  const response = await fetch(
+    SUPABASE_URL + '/rest/v1/personal_alunos',
+    {
+      method: 'POST',
+      headers: {
+        apikey: ANON_KEY,
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({
+        personal_id: personalId,
+        aluno_id: alunoId,
+        status: 'ATIVO',
+      }),
+    }
+  )
 
   if (!response.ok) {
     throw new Error(
-      'Falha ao vincular contas E2E: ' + (await response.text())
+      'Falha ao vincular contas E2E via RLS: ' +
+        (await response.text())
     )
   }
 }
@@ -126,7 +162,7 @@ export async function semearContasE2E(): Promise<ContasE2E> {
   try {
     personalId = await criarConta(personalEmail, 'Personal E2E', 'PERSONAL')
     alunoId = await criarConta(alunoEmail, 'Aluno E2E', 'ALUNO')
-    await vincularAluno(personalId, alunoId)
+    await vincularAluno(personalId, alunoId, personalEmail)
 
     return {
       personalEmail,

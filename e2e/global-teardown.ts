@@ -7,10 +7,10 @@ export default async function globalTeardown() {
   const caminho = resolve(__dirname, '.e2e-accounts.json')
 
   try {
-    const contas = JSON.parse(
-      await readFile(caminho, 'utf-8')
-    ) as ContasE2E
+    const conteudo = await readFile(caminho, 'utf-8').catch(() => null)
+    if (!conteudo) return
 
+    const contas = JSON.parse(conteudo) as ContasE2E
     await removerContasE2E(contas)
   } finally {
     await unlink(caminho).catch(() => undefined)

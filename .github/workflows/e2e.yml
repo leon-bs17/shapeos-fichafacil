@@ -56,7 +56,7 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm test:e2e -- --reporter=list
+        run: pnpm exec playwright test --reporter=list
 
       - name: Upload Playwright failures
         if: failure()
