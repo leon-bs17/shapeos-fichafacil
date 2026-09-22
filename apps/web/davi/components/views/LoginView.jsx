@@ -39,12 +39,12 @@ export const LoginView = ({ onEnter, onBiometric }) => {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full blur-3xl opacity-30"
-        style={{ background: "radial-gradient(circle, #00D2D2 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #22C7C7 0%, transparent 70%)" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-20"
-        style={{ background: "radial-gradient(circle, #FF7043 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)" }}
       />
       {/* Grid overlay */}
       <div
@@ -81,7 +81,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
         >
           <div className="mb-6 lg:mb-4">
             <h1
-              className="text-3xl lg:text-2xl text-[#F5F5F5] tracking-tight"
+              className="text-3xl lg:text-2xl text-[#F5F7FA] tracking-tight"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
             >
               Acesse sua ficha
@@ -105,12 +105,12 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               data-testid="role-tab-personal"
               onClick={() => setRole("personal")}
               className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-                role === "personal" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
+                role === "personal" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
               }`}
               style={{
                 fontFamily: "'Sora', sans-serif",
-                background: role === "personal" ? "#00D2D2" : "transparent",
-                boxShadow: role === "personal" ? "0 6px 20px rgba(0,210,210,0.35)" : "none",
+                background: role === "personal" ? "#22C7C7" : "transparent",
+                boxShadow: role === "personal" ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
               }}
             >
               Personal (ADM)
@@ -120,12 +120,12 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               data-testid="role-tab-aluno"
               onClick={() => setRole("aluno")}
               className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-                role === "aluno" ? "text-[#1A1A1A]" : "text-zinc-400 hover:text-[#F5F5F5]"
+                role === "aluno" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
               }`}
               style={{
                 fontFamily: "'Sora', sans-serif",
-                background: role === "aluno" ? "#00D2D2" : "transparent",
-                boxShadow: role === "aluno" ? "0 6px 20px rgba(0,210,210,0.35)" : "none",
+                background: role === "aluno" ? "#22C7C7" : "transparent",
+                boxShadow: role === "aluno" ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
               }}
             >
               Aluno
@@ -144,7 +144,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="voce@shapeos.app"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -164,7 +164,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none transition-all focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -176,10 +176,10 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             <button
               type="submit"
               data-testid="login-submit-button"
-              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#1A1A1A] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
+              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#0E1116] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
-                background: "#FF7043",
-                boxShadow: "0 12px 28px rgba(255,112,67,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
+                background: "#F59E0B",
+                boxShadow: "0 12px 28px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
                 fontFamily: "'Sora', sans-serif",
                 letterSpacing: "0.02em",
               }}
@@ -211,22 +211,22 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               style={{
                 background:
                   bioState === "success"
-                    ? "radial-gradient(circle, rgba(0,210,210,0.35), rgba(0,210,210,0.05))"
-                    : "radial-gradient(circle, rgba(0,210,210,0.15), rgba(0,210,210,0.02))",
-                border: `1px solid ${bioState === "success" ? "rgba(0,210,210,0.7)" : "rgba(0,210,210,0.35)"}`,
+                    ? "radial-gradient(circle, rgba(34,199,199,0.35), rgba(34,199,199,0.05))"
+                    : "radial-gradient(circle, rgba(34,199,199,0.15), rgba(34,199,199,0.02))",
+                border: `1px solid ${bioState === "success" ? "rgba(34,199,199,0.7)" : "rgba(34,199,199,0.35)"}`,
                 boxShadow:
                   bioState === "success"
-                    ? "0 0 40px rgba(0,210,210,0.5), inset 0 0 20px rgba(0,210,210,0.2)"
+                    ? "0 0 40px rgba(34,199,199,0.5), inset 0 0 20px rgba(34,199,199,0.2)"
                     : bioState === "scanning"
-                      ? "0 0 30px rgba(0,210,210,0.35), inset 0 0 14px rgba(0,210,210,0.15)"
-                      : "0 0 20px rgba(0,210,210,0.2), inset 0 0 8px rgba(0,210,210,0.08)",
+                      ? "0 0 30px rgba(34,199,199,0.35), inset 0 0 14px rgba(34,199,199,0.15)"
+                      : "0 0 20px rgba(34,199,199,0.2), inset 0 0 8px rgba(34,199,199,0.08)",
               }}
             >
               {/* Pulsing rings while scanning */}
               {bioState === "scanning" && (
                 <>
-                  <span className="absolute inset-0 rounded-full border border-[#00D2D2]/40 animate-ping-slow" />
-                  <span className="absolute inset-[-8px] rounded-full border border-[#00D2D2]/20 animate-ping-slower" />
+                  <span className="absolute inset-0 rounded-full border border-[#22C7C7]/40 animate-ping-slow" />
+                  <span className="absolute inset-[-8px] rounded-full border border-[#22C7C7]/20 animate-ping-slower" />
                 </>
               )}
 
@@ -242,11 +242,11 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               )}
 
               {bioState === "success" ? (
-                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[#00D2D2]" />
+                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[#22C7C7]" />
               ) : (
                 <Fingerprint
                   className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
-                    bioState === "scanning" ? "text-[#00F2F2]" : "text-[#00D2D2] group-hover:text-[#00F2F2]"
+                    bioState === "scanning" ? "text-[#31D6D6]" : "text-[#22C7C7] group-hover:text-[#31D6D6]"
                   }`}
                   strokeWidth={1.6}
                 />
@@ -258,7 +258,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               className="mt-4 lg:mt-2 text-xs lg:text-[10px] tracking-widest uppercase text-center"
               style={{
                 fontFamily: "'Sora', sans-serif",
-                color: bioState === "success" ? "#00D2D2" : bioState === "scanning" ? "#F5F5F5" : "#a1a1aa",
+                color: bioState === "success" ? "#22C7C7" : bioState === "scanning" ? "#F5F7FA" : "#a1a1aa",
                 letterSpacing: "0.25em",
               }}
             >
@@ -285,13 +285,13 @@ export const LoginView = ({ onEnter, onBiometric }) => {
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-zinc-500">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#00D2D2]" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[#22C7C7]" />
             Conexão criptografada · TLS 1.3 · WebAuthn
           </div>
         </div>
 
         <p className="text-center text-xs lg:text-[10px] text-zinc-600 mt-6 lg:mt-3" style={{ fontFamily: "'Sora', sans-serif" }}>
-          Novo por aqui? <span className="text-[#00D2D2] cursor-pointer hover:underline">Solicite acesso</span>
+          Novo por aqui? <span className="text-[#22C7C7] cursor-pointer hover:underline">Solicite acesso</span>
         </p>
       </div>
     </div>
