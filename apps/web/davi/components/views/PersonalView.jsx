@@ -55,7 +55,7 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
       </div>
       <div className="mt-3 flex items-baseline gap-1">
         <span
-          className="text-4xl text-[#F5F5F5]"
+          className="text-4xl text-[#F5F7FA]"
           style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
         >
           {value}
@@ -95,9 +95,9 @@ const DayPicker = ({ student, onChange }) => {
               onClick={() => setOpenDay(isOpen ? null : day.key)}
               className="w-full rounded-xl p-2 md:p-2.5 transition-all hover:-translate-y-0.5"
               style={{
-                background: isRest ? "rgba(255,255,255,0.02)" : "rgba(0,210,210,0.06)",
-                border: `1px solid ${isRest ? "rgba(255,255,255,0.06)" : "rgba(0,210,210,0.25)"}`,
-                boxShadow: isOpen ? "0 0 14px rgba(0,210,210,0.25)" : "none",
+                background: isRest ? "rgba(255,255,255,0.02)" : "rgba(34,199,199,0.06)",
+                border: `1px solid ${isRest ? "rgba(255,255,255,0.06)" : "rgba(34,199,199,0.25)"}`,
+                boxShadow: isOpen ? "0 0 14px rgba(34,199,199,0.25)" : "none",
               }}
             >
               <div
@@ -107,7 +107,7 @@ const DayPicker = ({ student, onChange }) => {
                 {day.short}
               </div>
               <div
-                className={`mt-1 text-xs md:text-sm ${isRest ? "text-zinc-500" : "text-[#00D2D2]"}`}
+                className={`mt-1 text-xs md:text-sm ${isRest ? "text-zinc-500" : "text-[#22C7C7]"}`}
                 style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
               >
                 {isRest ? "Off" : template?.id}
@@ -150,12 +150,12 @@ const DayPicker = ({ student, onChange }) => {
                             className="w-2 h-2 rounded-full flex-shrink-0"
                             style={{ background: t.accent }}
                           />
-                          <span className="text-[#F5F5F5] truncate">{t.code}</span>
+                          <span className="text-[#F5F7FA] truncate">{t.code}</span>
                           {t.id !== "rest" && (
                             <span className="text-xs text-zinc-500 truncate">· {t.title}</span>
                           )}
                         </span>
-                        {selected && <CheckCheck className="w-3.5 h-3.5 text-[#00D2D2] flex-shrink-0" />}
+                        {selected && <CheckCheck className="w-3.5 h-3.5 text-[#22C7C7] flex-shrink-0" />}
                       </button>
                     );
                   })}
@@ -188,9 +188,9 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center text-sm flex-shrink-0"
             style={{
-              background: "linear-gradient(135deg, rgba(0,210,210,0.15), rgba(0,210,210,0.03))",
-              border: "1px solid rgba(0,210,210,0.3)",
-              color: "#00D2D2",
+              background: "linear-gradient(135deg, rgba(34,199,199,0.15), rgba(34,199,199,0.03))",
+              border: "1px solid rgba(34,199,199,0.3)",
+              color: "#22C7C7",
               fontFamily: "'Unbounded', sans-serif",
               fontWeight: 600,
             }}
@@ -200,7 +200,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3
-                className="text-[#F5F5F5] truncate"
+                className="text-[#F5F7FA] truncate"
                 style={{
                   fontFamily: "'Unbounded', sans-serif",
                   fontWeight: 500,
@@ -212,15 +212,15 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               </h3>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest ${
-                  student.status === "ativo" ? "text-[#00D2D2]" : "text-zinc-500"
+                  student.status === "ativo" ? "text-[#22C7C7]" : "text-zinc-500"
                 }`}
                 style={{
                   background:
                     student.status === "ativo"
-                      ? "rgba(0,210,210,0.1)"
+                      ? "rgba(34,199,199,0.1)"
                       : "rgba(255,255,255,0.05)",
                   border: `1px solid ${
-                    student.status === "ativo" ? "rgba(0,210,210,0.3)" : "rgba(255,255,255,0.08)"
+                    student.status === "ativo" ? "rgba(34,199,199,0.3)" : "rgba(255,255,255,0.08)"
                   }`,
                   fontFamily: "'Sora', sans-serif",
                 }}
@@ -254,11 +254,11 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               className="h-full rounded-full"
               style={{
                 width: `${student.progress}%`,
-                background: student.progress > 70 ? "#00D2D2" : "#FF7043",
+                background: student.progress > 70 ? "#22C7C7" : "#F59E0B",
               }}
             />
           </div>
-          <div className="text-xs text-[#F5F5F5] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <div className="text-xs text-[#F5F7FA] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
             {student.progress}% <span className="text-zinc-500">· {student.streak}d</span>
           </div>
         </div>
@@ -273,9 +273,9 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             onClick={() => setScheduleOpen((v) => !v)}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm transition-all"
             style={{
-              background: scheduleOpen ? "rgba(0,210,210,0.12)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${scheduleOpen ? "rgba(0,210,210,0.35)" : "rgba(255,255,255,0.08)"}`,
-              color: scheduleOpen ? "#00D2D2" : "#F5F5F5",
+              background: scheduleOpen ? "rgba(34,199,199,0.12)" : "rgba(255,255,255,0.03)",
+              border: `1px solid ${scheduleOpen ? "rgba(34,199,199,0.35)" : "rgba(255,255,255,0.08)"}`,
+              color: scheduleOpen ? "#22C7C7" : "#F5F7FA",
             }}
           >
             <Calendar className="w-3.5 h-3.5" /> Cronograma
@@ -283,7 +283,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           </button>
           <button
             data-testid={`view-ficha-btn-${student.id}`}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -294,7 +294,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <button
             data-testid={`edit-ficha-btn-${student.id}`}
             onClick={() => onEdit(student)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -307,10 +307,10 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             onClick={() => onClone(student.id)}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
             style={{
-              background: cloned ? "#00D2D2" : "rgba(0,210,210,0.1)",
-              color: cloned ? "#1A1A1A" : "#00D2D2",
-              border: `1px solid ${cloned ? "#00D2D2" : "rgba(0,210,210,0.3)"}`,
-              boxShadow: cloned ? "0 6px 18px rgba(0,210,210,0.35)" : "none",
+              background: cloned ? "#22C7C7" : "rgba(34,199,199,0.1)",
+              color: cloned ? "#0E1116" : "#22C7C7",
+              border: `1px solid ${cloned ? "#22C7C7" : "rgba(34,199,199,0.3)"}`,
+              boxShadow: cloned ? "0 6px 18px rgba(34,199,199,0.35)" : "none",
             }}
           >
             {cloned ? (
@@ -401,7 +401,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
   <ModalShell onClose={onCancel} testId="delete-ficha-modal">
     <button
       onClick={onCancel}
-      className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F5F5] transition-colors"
+      className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
       aria-label="Fechar"
     >
       <X className="w-4 h-4" />
@@ -415,14 +415,14 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       </div>
       <div className="flex-1">
         <h2
-          className="text-xl text-[#F5F5F5]"
+          className="text-xl text-[#F5F7FA]"
           style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
         >
           Apagar ficha?
         </h2>
         <p className="text-sm text-zinc-400 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
           Você está prestes a apagar a ficha de{" "}
-          <span className="text-[#F5F5F5] font-semibold">{student.name}</span>. Essa ação
+          <span className="text-[#F5F7FA] font-semibold">{student.name}</span>. Essa ação
           remove o aluno e o cronograma. Não pode ser desfeita.
         </p>
       </div>
@@ -431,7 +431,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-cancel-button"
         onClick={onCancel}
-        className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+        className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
         style={{
           background: "rgba(255,255,255,0.03)",
           border: "1px solid rgba(255,255,255,0.08)",
@@ -442,7 +442,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-confirm-button"
         onClick={onConfirm}
-        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#F5F5F5] transition-all hover:scale-[1.01]"
+        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#F5F7FA] transition-all hover:scale-[1.01]"
         style={{
           background: "#e64545",
           boxShadow: "0 10px 24px rgba(230,69,69,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
@@ -462,7 +462,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="edit-ficha-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F5F5] transition-colors"
+        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
         aria-label="Fechar"
       >
         <X className="w-4 h-4" />
@@ -470,13 +470,13 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
       <div className="flex items-center gap-3 mb-5">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: "rgba(0,210,210,0.1)", border: "1px solid rgba(0,210,210,0.3)" }}
+          style={{ background: "rgba(34,199,199,0.1)", border: "1px solid rgba(34,199,199,0.3)" }}
         >
-          <Pencil className="w-4 h-4 text-[#00D2D2]" />
+          <Pencil className="w-4 h-4 text-[#22C7C7]" />
         </div>
         <div>
           <h2
-            className="text-xl text-[#F5F5F5] leading-tight"
+            className="text-xl text-[#F5F7FA] leading-tight"
             style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Editar ficha
@@ -495,7 +495,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
             type="text"
             value={workout}
             onChange={(e) => setWorkout(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F5F5] outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
           />
         </div>
@@ -505,13 +505,13 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
             data-testid="edit-plan-select"
             value={plan}
             onChange={(e) => setPlan(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F5F5] outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
-            <option value="Hipertrofia" style={{ background: "#1a1a1a" }}>Hipertrofia</option>
-            <option value="Emagrecimento" style={{ background: "#1a1a1a" }}>Emagrecimento</option>
-            <option value="Força Máxima" style={{ background: "#1a1a1a" }}>Força Máxima</option>
-            <option value="Resistência" style={{ background: "#1a1a1a" }}>Resistência</option>
+            <option value="Hipertrofia" style={{ background: "#0e1116" }}>Hipertrofia</option>
+            <option value="Emagrecimento" style={{ background: "#0e1116" }}>Emagrecimento</option>
+            <option value="Força Máxima" style={{ background: "#0e1116" }}>Força Máxima</option>
+            <option value="Resistência" style={{ background: "#0e1116" }}>Resistência</option>
           </select>
         </div>
       </div>
@@ -520,7 +520,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-cancel-button"
           onClick={onCancel}
-          className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+          className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
           style={{
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.08)",
@@ -531,10 +531,10 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-save-button"
           onClick={() => onSave({ ...student, currentWorkout: workout, plan })}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A] transition-all hover:scale-[1.01]"
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01]"
           style={{
-            background: "#00D2D2",
-            boxShadow: "0 10px 24px rgba(0,210,210,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+            background: "#22C7C7",
+            boxShadow: "0 10px 24px rgba(34,199,199,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
           }}
         >
           <Save className="w-4 h-4" /> Salvar alterações
@@ -548,7 +548,7 @@ const PLANS = ["Hipertrofia", "Emagrecimento", "Força Máxima", "Resistência"]
 
 const fieldStyle = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" };
 const fieldClass =
-  "mt-2 w-full px-4 py-3 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20";
+  "mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20";
 
 const NewStudentModal = ({ onCancel, onSave }) => {
   const [name, setName] = useState("");
@@ -569,7 +569,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="new-student-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F5F5] transition-colors"
+        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
         aria-label="Fechar"
         data-testid="new-student-close-button"
       >
@@ -578,13 +578,13 @@ const NewStudentModal = ({ onCancel, onSave }) => {
       <div className="flex items-center gap-3 mb-5">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: "rgba(255,112,67,0.12)", border: "1px solid rgba(255,112,67,0.35)" }}
+          style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.35)" }}
         >
-          <UserPlus className="w-4 h-4 text-[#FF7043]" />
+          <UserPlus className="w-4 h-4 text-[#F59E0B]" />
         </div>
         <div>
           <h2
-            className="text-xl text-[#F5F5F5] leading-tight"
+            className="text-xl text-[#F5F7FA] leading-tight"
             style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Novo aluno
@@ -634,7 +634,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
               style={fieldStyle}
             >
               {PLANS.map((p) => (
-                <option key={p} value={p} style={{ background: "#1a1a1a" }}>{p}</option>
+                <option key={p} value={p} style={{ background: "#0e1116" }}>{p}</option>
               ))}
             </select>
           </div>
@@ -651,7 +651,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
             type="button"
             data-testid="new-student-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
             style={fieldStyle}
           >
             Cancelar
@@ -659,10 +659,10 @@ const NewStudentModal = ({ onCancel, onSave }) => {
           <button
             type="submit"
             data-testid="new-student-save-button"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A] transition-all hover:scale-[1.01]"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01]"
             style={{
-              background: "#FF7043",
-              boxShadow: "0 10px 24px rgba(255,112,67,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+              background: "#F59E0B",
+              boxShadow: "0 10px 24px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
             }}
           >
             <UserPlus className="w-4 h-4" /> Cadastrar aluno
@@ -777,7 +777,7 @@ export const PersonalView = ({
           <button
             data-testid="personal-logout-button"
             onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F5F5] flex items-center gap-1.5 transition-colors"
+            className="text-xs text-zinc-500 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <LogOut className="w-3.5 h-3.5" /> Sair
@@ -793,14 +793,14 @@ export const PersonalView = ({
               className="flex items-center gap-2 text-xs text-zinc-500 uppercase tracking-[0.3em]"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
-              <Flame className="w-3.5 h-3.5 text-[#FF7043]" />
+              <Flame className="w-3.5 h-3.5 text-[#F59E0B]" />
               Painel do Personal
             </div>
             <h1
-              className="mt-3 text-4xl sm:text-5xl lg:text-6xl text-[#F5F5F5] leading-[0.95]"
+              className="mt-3 text-4xl sm:text-5xl lg:text-6xl text-[#F5F7FA] leading-[0.95]"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
             >
-              Bem-vindo, <span className="text-[#00D2D2]">Personal</span>
+              Bem-vindo, <span className="text-[#22C7C7]">Personal</span>
             </h1>
             <p
               className="mt-3 text-base md:text-lg text-zinc-400"
@@ -815,9 +815,9 @@ export const PersonalView = ({
             onClick={() => setCreating(true)}
             className="flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold transition-all hover:scale-[1.02] self-start md:self-auto"
             style={{
-              background: "#FF7043",
-              color: "#1A1A1A",
-              boxShadow: "0 12px 28px rgba(255,112,67,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
+              background: "#F59E0B",
+              color: "#0E1116",
+              boxShadow: "0 12px 28px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
               fontFamily: "'Sora', sans-serif",
               letterSpacing: "0.02em",
             }}
@@ -833,14 +833,14 @@ export const PersonalView = ({
             icon={Users}
             label="Alunos Ativos"
             value={students.length}
-            accent="#00D2D2"
+            accent="#22C7C7"
           />
           <StatCard
             testId="stat-workouts"
             icon={ClipboardList}
             label="Fichas Criadas"
             value={personalStats.workoutsCreated}
-            accent="#FF7043"
+            accent="#F59E0B"
           />
           <StatCard
             testId="stat-adherence"
@@ -848,7 +848,7 @@ export const PersonalView = ({
             label="Aderência semanal"
             value={personalStats.weeklyAdherence}
             unit="%"
-            accent="#00D2D2"
+            accent="#22C7C7"
           />
         </div>
 
@@ -856,7 +856,7 @@ export const PersonalView = ({
         <div className="mb-10" data-testid="workout-templates-section">
           <div className="flex items-center justify-between mb-4">
             <h2
-              className="text-lg text-[#F5F5F5]"
+              className="text-lg text-[#F5F7FA]"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
             >
               Meus Treinos <span className="text-zinc-500">(edite os exercícios de cada ficha)</span>
@@ -898,10 +898,10 @@ export const PersonalView = ({
                         >
                           {t.id}
                         </span>
-                        <Pencil className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#00D2D2] transition-colors" />
+                        <Pencil className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#22C7C7] transition-colors" />
                       </div>
                       <h3
-                        className="mt-4 text-xl text-[#F5F5F5] leading-tight"
+                        className="mt-4 text-xl text-[#F5F7FA] leading-tight"
                         style={{
                           fontFamily: "'Unbounded', sans-serif",
                           fontWeight: 600,
@@ -921,7 +921,7 @@ export const PersonalView = ({
                         style={{ fontFamily: "'Sora', sans-serif" }}
                       >
                         <span className="inline-flex items-center gap-1">
-                          <Dumbbell className="w-3 h-3 text-[#00D2D2]" />
+                          <Dumbbell className="w-3 h-3 text-[#22C7C7]" />
                           {w?.exercises?.length || 0} exercícios
                         </span>
                         {w?.duration && (
@@ -941,7 +941,7 @@ export const PersonalView = ({
         {/* Search + list header */}
         <div className="flex items-center justify-between mb-4">
           <h2
-            className="text-lg text-[#F5F5F5]"
+            className="text-lg text-[#F5F7FA]"
             style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
           >
             Sua base <span className="text-zinc-500">({filtered.length})</span>
@@ -954,7 +954,7 @@ export const PersonalView = ({
               placeholder="Buscar aluno..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
               style={{
                 background: "rgba(255,255,255,0.03)",
                 border: "1px solid rgba(255,255,255,0.08)",
@@ -1031,8 +1031,8 @@ export const PersonalView = ({
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl text-sm animate-in slide-in-from-bottom-4 fade-in-0 duration-300"
           style={{
             background: "rgba(20,20,20,0.95)",
-            border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(0,210,210,0.4)"}`,
-            color: toast.tone === "danger" ? "#ff8a8a" : "#00D2D2",
+            border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(34,199,199,0.4)"}`,
+            color: toast.tone === "danger" ? "#ff8a8a" : "#22C7C7",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
             fontFamily: "'Sora', sans-serif",
           }}
