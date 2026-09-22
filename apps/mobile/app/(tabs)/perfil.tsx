@@ -10,7 +10,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { pararSincronizacaoAutomatica } from '@/sync/engine'
+import {
+  executarCicloSync,
+  pararSincronizacaoAutomatica,
+} from '@/sync/engine'
+import { contarRegistrosPendentes } from '@/sync/registros'
+import { limparContextoLocal } from '@/sync/local-user'
 import { supabase } from '@/services/supabase/client'
 import {
   ativarBiometria,
@@ -35,6 +40,7 @@ export default function PerfilScreen() {
         setNome((data.user.user_metadata?.nome as string) ?? '')
       }
     })
+
     void (async () => {
       setBiometriaSuportada(await biometriaDisponivel())
       setBiometriaOn(await biometriaAtivada())
@@ -45,23 +51,27 @@ export default function PerfilScreen() {
     ? nome
         .split(' ')
         .slice(0, 2)
-        .map((p) => p.charAt(0).toUpperCase())
+        .map((parte) => parte.charAt(0).toUpperCase())
         .join('')
     : email.charAt(0).toUpperCase()
 
   async function ativar() {
     if (!senhaBiometria) return
     setAtivandoBiometria(true)
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password: senhaBiometria,
     })
+
     setAtivandoBiometria(false)
+
     if (error) {
       Alert.alert('Senha incorreta', 'Confirme sua senha para ativar.')
       return
     }
-    await ativarBiometria(email, senhaBiometria)
+
+    await ativarBiometria()
     setSenhaBiometria('')
     setBiometriaOn(true)
   }
@@ -69,7 +79,7 @@ export default function PerfilScreen() {
   function desativar() {
     Alert.alert(
       'Desativar biometria',
-      'Voce precisara digitar e-mail e senha ao abrir o app.',
+      'Voce precisara desbloquear o aparelho normalmente ao abrir o app.',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -84,7 +94,27 @@ export default function PerfilScreen() {
   }
 
   async function sair() {
+    const pendentesAntes = await contarRegistrosPendentes()
+
+    if (pendentesAntes > 0) {
+      try {
+        await executarCicloSync()
+      } catch {
+        void 0
+      }
+
+      const pendentesDepois = await contarRegistrosPendentes()
+      if (pendentesDepois > 0) {
+        Alert.alert(
+          'Sincronizacao pendente',
+          'Existem registros de treino ainda nao enviados. Conecte-se a internet e sincronize antes de sair para nao perder esses dados.'
+        )
+        return
+      }
+    }
+
     pararSincronizacaoAutomatica()
+    await limparContextoLocal()
     await desativarBiometria()
     await supabase.auth.signOut()
     router.replace('/(auth)/entrar')
@@ -131,8 +161,8 @@ export default function PerfilScreen() {
               <Text style={estilos.cardLabel}>Entrada por biometria</Text>
               <Text style={estilos.cardValue}>
                 {biometriaOn
-                  ? 'Ativada. Ao abrir o app, use digital ou Face ID para entrar.'
-                  : 'Use digital ou Face ID para entrar sem digitar a senha.'}
+                  ? 'Ativada. Sua sessao fica protegida por digital ou Face ID.'
+                  : 'Use digital ou Face ID para proteger o acesso a sua sessao.'}
               </Text>
             </View>
           </View>
@@ -180,7 +210,7 @@ export default function PerfilScreen() {
           estilos.botaoSair,
           pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
         ]}
-        onPress={sair}
+        onPress={() => void sair()}
       >
         <Ionicons name="log-out-outline" size={18} color="#fca5a5" />
         <Text style={estilos.botaoSairTexto}>Sair da conta</Text>

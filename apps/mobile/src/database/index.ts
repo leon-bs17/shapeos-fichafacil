@@ -1,5 +1,6 @@
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
+import { migrations } from './migrations'
 import { mySchema } from './schema'
 import Treino from './models/Treino'
 import { ItemTreinoLocal } from './models/ItemTreino'
@@ -7,6 +8,7 @@ import RegistroExecucao from './models/RegistroExecucao'
 
 const adapter = new SQLiteAdapter({
   schema: mySchema,
+  migrations,
   dbName: 'shapeos',
   jsi: true,
   onSetUpError: (error) => {

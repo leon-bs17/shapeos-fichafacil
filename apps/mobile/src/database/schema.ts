@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb'
 
 export const mySchema = appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: 'treinos',
@@ -30,6 +30,7 @@ export const mySchema = appSchema({
       name: 'registros_execucao',
       columns: [
         { name: 'remote_id', type: 'string', isIndexed: true, isOptional: true },
+        { name: 'aluno_id', type: 'string', isIndexed: true, isOptional: true },
         { name: 'item_treino_remote_id', type: 'string', isIndexed: true },
         { name: 'carga_utilizada', type: 'number', isOptional: true },
         { name: 'repeticoes_feitas', type: 'number', isOptional: true },

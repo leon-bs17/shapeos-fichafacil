@@ -11,23 +11,40 @@ export interface NovoRegistro {
 }
 
 export async function salvarRegistro(novo: NovoRegistro): Promise<void> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error('Usuario nao autenticado')
+  }
+
   const { registros } = colecoes()
 
   await database.write(async () => {
-    await registros.create((r) => {
-      r.remoteId = gerarUuid()
-      r.itemTreinoRemoteId = novo.itemTreinoRemoteId
-      r.cargaUtilizada = novo.cargaUtilizada
-      r.repeticoesFeitas = novo.repeticoesFeitas
-      r.dataRegistro = new Date()
-      r.sincronizado = false
+    await registros.create((registro) => {
+      registro.remoteId = gerarUuid()
+      registro.alunoId = user.id
+      registro.itemTreinoRemoteId = novo.itemTreinoRemoteId
+      registro.cargaUtilizada = novo.cargaUtilizada
+      registro.repeticoesFeitas = novo.repeticoesFeitas
+      registro.dataRegistro = new Date()
+      registro.sincronizado = false
     })
   })
 }
 
 export async function contarRegistrosPendentes(): Promise<number> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return 0
+
   return colecoes()
-    .registros.query(Q.where('sincronizado', false))
+    .registros.query(
+      Q.where('aluno_id', user.id),
+      Q.where('sincronizado', false)
+    )
     .fetchCount()
 }
 
@@ -35,24 +52,28 @@ export async function enviarRegistrosPendentes(): Promise<number> {
   const estado = await NetInfo.fetch()
   if (!estado.isConnected) return 0
 
-  const pendentes = await colecoes()
-    .registros.query(Q.where('sincronizado', false), Q.sortBy('data_registro', Q.asc))
-    .fetch()
-
-  if (!pendentes.length) return 0
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return 0
 
-  const payload = pendentes.map((r) => ({
-    id: r.remoteId ?? undefined,
-    aluno_id: user.id,
-    item_treino_id: r.itemTreinoRemoteId,
-    carga_utilizada: r.cargaUtilizada,
-    repeticoes_feitas: r.repeticoesFeitas,
-    data_registro: r.dataRegistro.toISOString(),
+  const pendentes = await colecoes()
+    .registros.query(
+      Q.where('aluno_id', user.id),
+      Q.where('sincronizado', false),
+      Q.sortBy('data_registro', Q.asc)
+    )
+    .fetch()
+
+  if (!pendentes.length) return 0
+
+  const payload = pendentes.map((registro) => ({
+    id: registro.remoteId ?? undefined,
+    aluno_id: registro.alunoId,
+    item_treino_id: registro.itemTreinoRemoteId,
+    carga_utilizada: registro.cargaUtilizada,
+    repeticoes_feitas: registro.repeticoesFeitas,
+    data_registro: registro.dataRegistro.toISOString(),
   }))
 
   const { error } = await supabase
@@ -63,9 +84,9 @@ export async function enviarRegistrosPendentes(): Promise<number> {
 
   await database.write(async () => {
     await database.batch(
-      ...pendentes.map((r) =>
-        r.prepareUpdate((rec: RegistroExecucao) => {
-          rec.sincronizado = true
+      ...pendentes.map((registro) =>
+        registro.prepareUpdate((item: RegistroExecucao) => {
+          item.sincronizado = true
         })
       )
     )

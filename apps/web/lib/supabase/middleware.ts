@@ -49,14 +49,12 @@ export async function updateSession(request: NextRequest) {
   const isAdminLogin = pathname === '/admin/login'
   const isPainelAluno = pathname.startsWith('/painel')
 
-  // Login de admin e a unica rota publica da area admin
   const isPublic =
     isAdminLogin ||
     pathname === '/login' ||
     pathname === '/cadastro' ||
     pathname.startsWith('/auth/callback')
 
-  // Sem sessao
   if (!user) {
     if (isAdminArea && !isAdminLogin) {
       const url = request.nextUrl.clone()
@@ -71,15 +69,25 @@ export async function updateSession(request: NextRequest) {
     return response
   }
 
-  // Com sessao: descobre o tipo real no banco
   const { data: perfil } = await supabase
     .from('usuarios')
     .select('tipo')
     .eq('id', user.id)
     .single()
+
   const tipo = perfil?.tipo as 'PERSONAL' | 'ALUNO' | 'ADMIN' | undefined
 
-  // ADMIN so fica na area admin; qualquer outra pagina volta pro /admin
+  if (!tipo) {
+    if (pathname === '/login' || pathname === '/admin/login') {
+      return response
+    }
+
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.searchParams.set('error', 'perfil')
+    return NextResponse.redirect(url)
+  }
+
   if (tipo === 'ADMIN') {
     if (!isAdminArea || isAdminLogin) {
       const url = request.nextUrl.clone()
@@ -89,7 +97,6 @@ export async function updateSession(request: NextRequest) {
     return response
   }
 
-  // Nao-admin nunca acessa area admin (nem o login admin)
   if (isAdminArea) {
     const url = request.nextUrl.clone()
     url.pathname = tipo === 'ALUNO' ? '/painel' : '/'

@@ -15,13 +15,14 @@ export async function executarCicloSync(): Promise<void> {
   cicloEmAndamento = true
 
   try {
-    await enviarRegistrosPendentes()
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    if (user) {
-      await baixarFichasDoAluno(user.id)
-    }
+
+    if (!user) return
+
+    await enviarRegistrosPendentes()
+    await baixarFichasDoAluno(user.id)
   } finally {
     cicloEmAndamento = false
   }
