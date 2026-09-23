@@ -148,6 +148,6 @@ on public.broadcast_leituras for delete
 to authenticated
 using (usuario_id = auth.uid());
 
-grant select on public.broadcast_mensagens to authenticated;
+grant select, insert, update, delete on public.broadcast_mensagens to authenticated;
 grant select, insert, delete on public.broadcast_leituras to authenticated;
 grant all privileges on public.broadcast_mensagens, public.broadcast_leituras to service_role;
