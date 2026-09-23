@@ -226,27 +226,6 @@ export const AlunoView = ({ onLogout, workouts }) => {
 
   return (
     <div className="min-h-screen pb-32" data-testid="aluno-view">
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-30 backdrop-blur-xl"
-        style={{
-          background: "rgba(26,26,26,0.7)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
-          <Logo size="sm" />
-          <button
-            data-testid="aluno-logout-button"
-            onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
-            style={{ fontFamily: "'Sora', sans-serif" }}
-          >
-            <LogOut className="w-3.5 h-3.5" /> Sair
-          </button>
-        </div>
-      </div>
-
       <div className="max-w-5xl mx-auto px-5 pt-10">
         {/* Header */}
         <div className="mb-6">
