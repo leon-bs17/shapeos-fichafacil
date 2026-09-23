@@ -24,6 +24,8 @@ import {
   UserPlus,
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
+import { ProductTopbar } from "@/components/layout/product-topbar";
+import { useToast } from "@/components/ui/toast";
 import WorkoutEditor from "@/davi/components/WorkoutEditor";
 import {
   personalStats,
@@ -705,8 +707,8 @@ export const PersonalView = ({
   const [clonedId, setClonedId] = useState(null);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
-  const [toast, setToast] = useState(null);
   const [editingTemplate, setEditingTemplate] = useState(null);
+  const { toast: notify } = useToast();
 
   const filtered = students.filter((s) =>
     s.name.toLowerCase().includes(query.toLowerCase())
@@ -718,8 +720,10 @@ export const PersonalView = ({
   };
 
   const showToast = (msg, tone = "success") => {
-    setToast({ msg, tone });
-    setTimeout(() => setToast(null), 2500);
+    notify({
+      title: msg,
+      tone: tone === "danger" ? "danger" : "success",
+    });
   };
 
   const handleSaveEdit = (updated) => {
@@ -764,26 +768,7 @@ export const PersonalView = ({
 
   return (
     <div className="min-h-screen" data-testid="personal-view">
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-30 backdrop-blur-xl"
-        style={{
-          background: "rgba(26,26,26,0.7)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-          <Logo size="sm" />
-          <button
-            data-testid="personal-logout-button"
-            onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F5F5] flex items-center gap-1.5 transition-colors"
-            style={{ fontFamily: "'Sora', sans-serif" }}
-          >
-            <LogOut className="w-3.5 h-3.5" /> Sair
-          </button>
-        </div>
-      </div>
+      <ProductTopbar label="Painel do Personal" maxWidth="max-w-6xl" onLogout={onLogout} />
 
       <div className="max-w-6xl mx-auto px-5 pt-10 pb-16">
         {/* Header */}
@@ -1024,22 +1009,6 @@ export const PersonalView = ({
         />
       )}
 
-      {/* Toast */}
-      {toast && (
-        <div
-          data-testid="personal-toast"
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl text-sm animate-in slide-in-from-bottom-4 fade-in-0 duration-300"
-          style={{
-            background: "rgba(20,20,20,0.95)",
-            border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(0,210,210,0.4)"}`,
-            color: toast.tone === "danger" ? "#ff8a8a" : "#00D2D2",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
-            fontFamily: "'Sora', sans-serif",
-          }}
-        >
-          {toast.msg}
-        </div>
-      )}
     </div>
   );
 };
