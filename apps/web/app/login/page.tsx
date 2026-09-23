@@ -45,14 +45,20 @@ export default function LoginPage() {
     router.refresh()
   }
 
-  return (
-    <div className="relative">
-      <LoginView onEnter={entrar} />
-      {erro ? (
-        <div className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#141414]/95 px-5 py-3 text-sm text-red-300 shadow-2xl">
-          {erro}
-        </div>
-      ) : null}
-    </div>
-  )
+  async function entrarGithub() {
+    setErro(null)
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      setErro('Não foi possível iniciar o login com GitHub.')
+    }
+  }
+
+  return <LoginView onEnter={entrar} onGithub={entrarGithub} error={erro} />
 }
