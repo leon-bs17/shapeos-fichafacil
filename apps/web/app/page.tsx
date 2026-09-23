@@ -9,6 +9,7 @@ import PersonalView from '@/davi/components/views/PersonalView'
 const DaviPersonalView: any = PersonalView
 import { students as initialStudents, workoutsById as initialWorkouts } from '@/davi/data/mockData'
 import { createClient } from '@/lib/supabase/client'
+import { ProductFooter } from '@/components/layout/product-footer'
 
 export default function PersonalFrontendPage() {
   const router = useRouter()
@@ -28,14 +29,19 @@ export default function PersonalFrontendPage() {
   }
 
   return (
-    <DaviPersonalView
-      onLogout={sair}
-      workouts={workouts}
-      onUpdateWorkout={atualizarTreino}
-      customExercises={customExercises}
-      onAddCustomExercise={(exercise: any) => setCustomExercises((prev) => [exercise, ...prev])}
-      students={students}
-      setStudents={setStudents}
-    />
+    <>
+      <DaviPersonalView
+        onLogout={sair}
+        workouts={workouts}
+        onUpdateWorkout={atualizarTreino}
+        customExercises={customExercises}
+        onAddCustomExercise={(exercise: any) => setCustomExercises((prev) => [exercise, ...prev])}
+        students={students}
+        setStudents={setStudents}
+      />
+      <div className="mx-auto max-w-6xl px-5 pb-8">
+        <ProductFooter />
+      </div>
+    </>
   )
 }

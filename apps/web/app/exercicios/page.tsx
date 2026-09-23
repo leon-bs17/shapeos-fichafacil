@@ -10,6 +10,8 @@ import { Modal } from '@/components/ui/modal'
 import { useCriarExercicio, useExercicios } from '@/hooks/use-exercicios'
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { EmptyState } from '@/components/ui/empty-state'
+import { SelectField } from '@/components/ui/select-field'
 
 const GRUPO_ICONS: Record<string, React.ReactNode> = {
   Peito: <Dumbbell className="h-4 w-4" />,
@@ -108,14 +110,13 @@ function ExerciciosConteudo() {
           ))}
         </div>
       ) : filtrados.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="py-12 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-              <Library className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <p className="font-medium">Nenhum exercicio encontrado.</p>
-            <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou crie um novo.</p>
-          </CardContent>
+        <Card>
+          <EmptyState
+            icon={Library}
+            title="Nenhum exercício encontrado"
+            description="Tente outro termo ou adicione um exercício à sua biblioteca."
+            action={<Button onClick={() => setModalAberto(true)}><Plus className="h-4 w-4" /> Novo exercício</Button>}
+          />
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -160,15 +161,15 @@ function ExerciciosConteudo() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="ex-grupo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Grupo muscular</Label>
-              <select id="ex-grupo" value={grupo} onChange={(e) => setGrupo(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
+              <SelectField id="ex-grupo" value={grupo} onChange={(e) => setGrupo(e.target.value)} className="h-10">
                 {GRUPOS_MUSCULARES.map((g) => (<option key={g} value={g}>{g}</option>))}
-              </select>
+              </SelectField>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="ex-equip" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Equipamento</Label>
-              <select id="ex-equip" value={equipamento} onChange={(e) => setEquipamento(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
+              <SelectField id="ex-equip" value={equipamento} onChange={(e) => setEquipamento(e.target.value)} className="h-10">
                 {EQUIPAMENTOS.map((eq) => (<option key={eq} value={eq}>{eq}</option>))}
-              </select>
+              </SelectField>
             </div>
           </div>
           {criar.error ? (

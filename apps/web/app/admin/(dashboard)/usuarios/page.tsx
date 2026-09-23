@@ -1,37 +1,44 @@
 'use client'
 
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Users, Search, Filter, Mail, Calendar, Shield, UserCheck, GraduationCap } from 'lucide-react'
+import { Calendar, GraduationCap, Mail, Search, Shield, UserCheck, Users } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { SelectField } from '@/components/ui/select-field'
+import { Badge } from '@/components/ui/badge'
+import { EmptyState } from '@/components/ui/empty-state'
+import { useToast } from '@/components/ui/toast'
 import { formatarData } from '@/lib/utils'
 
-export default function AdminUsuariosPage() {
-  return <UsuariosConteudo />
-}
+type Plano = 'STARTER' | 'PRO' | 'DREAM'
 
-function UsuariosConteudo() {
+export default function AdminUsuariosPage() {
   const [busca, setBusca] = useState('')
   const [filtroTipo, setFiltroTipo] = useState<string>('TODOS')
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   const { data: usuarios, isLoading } = useQuery({
     queryKey: ['admin-usuarios'],
     queryFn: async () => {
       const supabase = createClient()
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('usuarios')
-        .select('id, nome, email, tipo, criado_em')
+        .select('id, nome, email, tipo, plano, avatar_url, criado_em')
         .order('criado_em', { ascending: false })
+      if (error) throw error
       return data ?? []
     },
   })
 
   const filtrados = usuarios?.filter((u) => {
-    const matchesBusca = busca === '' ||
-      u.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-      u.email?.toLowerCase().includes(busca.toLowerCase())
+    const termo = busca.toLowerCase()
+    const matchesBusca =
+      busca === '' ||
+      u.nome?.toLowerCase().includes(termo) ||
+      u.email?.toLowerCase().includes(termo)
     const matchesTipo = filtroTipo === 'TODOS' || u.tipo === filtroTipo
     return matchesBusca && matchesTipo
   })
@@ -43,46 +50,56 @@ function UsuariosConteudo() {
     admins: usuarios?.filter((u) => u.tipo === 'ADMIN').length ?? 0,
   }
 
+  async function alterarPlano(id: string, plano: Plano) {
+    const supabase = createClient()
+    const { error } = await supabase.from('usuarios').update({ plano }).eq('id', id)
+
+    if (error) {
+      toast({ tone: 'danger', title: 'Plano não alterado', description: error.message })
+      return
+    }
+
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['admin-usuarios'] }),
+      queryClient.invalidateQueries({ queryKey: ['product-topbar'] }),
+    ])
+    toast({ tone: 'success', title: 'Plano atualizado', description: `Usuário movido para ${plano.toLowerCase()}.` })
+  }
+
   return (
-    <div className="space-y-8">
-      <header className="animate-fade-in">
-        <h1 className="text-2xl font-bold tracking-tight">Usuarios</h1>
-        <p className="text-muted-foreground text-sm">
-          Todos os usuarios registrados na plataforma.
+    <div className="space-y-7">
+      <header>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Administração</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em]">Usuários</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Acesso, papel e plano comercial da base.
         </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-4">
-        <ContadorCard titulo="Total" valor={contadores.total} icone={<Users className="h-5 w-5" />} cor="primary" />
-        <ContadorCard titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-5 w-5" />} cor="success" />
-        <ContadorCard titulo="Alunos" valor={contadores.alunos} icone={<GraduationCap className="h-5 w-5" />} cor="info" />
-        <ContadorCard titulo="Admins" valor={contadores.admins} icone={<Shield className="h-5 w-5" />} cor="warning" />
+      <div className="grid gap-3 sm:grid-cols-4">
+        <ContadorCard titulo="Total" valor={contadores.total} icone={<Users className="h-4 w-4" />} />
+        <ContadorCard titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-4 w-4" />} />
+        <ContadorCard titulo="Alunos" valor={contadores.alunos} icone={<GraduationCap className="h-4 w-4" />} />
+        <ContadorCard titulo="Admins" valor={contadores.admins} icone={<Shield className="h-4 w-4" />} />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome ou e-mail..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-9 h-10"
+            className="pl-11"
           />
         </div>
-        <div className="flex gap-2">
-          {['TODOS', 'ADMIN', 'PERSONAL', 'ALUNO'].map((tipo) => (
-            <button
-              key={tipo}
-              onClick={() => setFiltroTipo(tipo)}
-              className={`px-3 h-10 rounded-xl text-xs font-medium transition-all ${
-                filtroTipo === tipo
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
-            >
-              {tipo === 'TODOS' ? 'Todos' : tipo}
-            </button>
-          ))}
+        <div className="w-full sm:w-48">
+          <SelectField value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} aria-label="Filtrar usuários por tipo">
+            <option value="TODOS">Todos os tipos</option>
+            <option value="ADMIN">Admins</option>
+            <option value="PERSONAL">Personais</option>
+            <option value="ALUNO">Alunos</option>
+          </SelectField>
         </div>
       </div>
 
@@ -91,95 +108,89 @@ function UsuariosConteudo() {
           {[0, 1, 2, 3, 4].map((i) => <div key={i} className="h-16 skeleton" />)}
         </div>
       ) : filtrados?.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="py-12 text-center">
-            <Users className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-            <p className="font-semibold">Nenhum usuario encontrado</p>
-            <p className="text-muted-foreground text-sm mt-1">Tente ajustar os filtros.</p>
-          </CardContent>
+        <Card>
+          <EmptyState icon={Users} title="Nenhum usuário encontrado" description="Ajuste a busca ou o filtro para encontrar outro perfil." />
         </Card>
       ) : (
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="border-b border-border bg-muted/50">
-                  <tr>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Usuario</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Tipo</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">E-mail</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Criado em</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtrados?.map((u) => (
-                    <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold ${
-                            u.tipo === 'ADMIN' ? 'bg-warning/10 text-warning' :
-                            u.tipo === 'PERSONAL' ? 'bg-success/10 text-success' :
-                            'bg-info/10 text-info'
-                          }`}>
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[820px] text-sm">
+              <thead className="bg-foreground/[0.025] text-left">
+                <tr>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Usuário</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Papel</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Plano</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">E-mail</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Criado em</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtrados?.map((u) => (
+                  <tr key={u.id} className="border-t border-border/60 transition hover:bg-foreground/[0.018]">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        {u.avatar_url ? (
+                          <img src={u.avatar_url} alt="" className="h-9 w-9 rounded-xl object-cover" referrerPolicy="no-referrer" />
+                        ) : (
+                          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-xs font-bold text-primary">
                             {u.nome?.charAt(0)?.toUpperCase() ?? '?'}
                           </div>
-                          <p className="font-medium">{u.nome}</p>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
-                          u.tipo === 'ADMIN' ? 'bg-warning/10 text-warning' :
-                          u.tipo === 'PERSONAL' ? 'bg-success/10 text-success' :
-                          'bg-info/10 text-info'
-                        }`}>
-                          {u.tipo === 'ADMIN' && <Shield className="h-3 w-3" />}
-                          {u.tipo === 'PERSONAL' && <UserCheck className="h-3 w-3" />}
-                          {u.tipo === 'ALUNO' && <GraduationCap className="h-3 w-3" />}
-                          {u.tipo}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className="text-muted-foreground flex items-center gap-1.5">
-                          <Mail className="h-3.5 w-3.5" />
-                          {u.email}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className="text-muted-foreground text-xs flex items-center gap-1.5">
-                          <Calendar className="h-3.5 w-3.5" />
-                          {formatarData(u.criado_em)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
+                        )}
+                        <p className="font-semibold">{u.nome}</p>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <Badge tone={u.tipo === 'ADMIN' ? 'warning' : u.tipo === 'PERSONAL' ? 'success' : 'neutral'}>
+                        {u.tipo}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      {u.tipo === 'PERSONAL' ? (
+                        <SelectField
+                          value={u.plano ?? 'STARTER'}
+                          onChange={(e) => void alterarPlano(u.id, e.target.value as Plano)}
+                          className="h-9 min-w-32"
+                          aria-label={`Plano de ${u.nome}`}
+                        >
+                          <option value="STARTER">Starter</option>
+                          <option value="PRO">Pro</option>
+                          <option value="DREAM">Dream</option>
+                        </SelectField>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">{u.tipo === 'ADMIN' ? 'Interno' : 'Vinculado ao personal'}</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
+                        <Mail className="h-3.5 w-3.5" />
+                        {u.email}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {formatarData(u.criado_em)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
     </div>
   )
 }
 
-function ContadorCard({ titulo, valor, icone, cor }: { titulo: string; valor: number; icone: React.ReactNode; cor: string }) {
-  const cores: Record<string, string> = {
-    primary: 'bg-primary/10 text-primary',
-    success: 'bg-success/10 text-success',
-    info: 'bg-info/10 text-info',
-    warning: 'bg-warning/10 text-warning',
-  }
+function ContadorCard({ titulo, valor, icone }: { titulo: string; valor: number; icone: React.ReactNode }) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
-            {icone}
-          </div>
-          <div>
-            <p className="text-2xl font-bold">{valor}</p>
-            <p className="text-xs text-muted-foreground">{titulo}</p>
-          </div>
+    <Card>
+      <CardContent className="flex items-center gap-3 p-4">
+        <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/8 text-primary">{icone}</div>
+        <div>
+          <p className="text-xl font-semibold tracking-tight">{valor}</p>
+          <p className="text-[11px] text-muted-foreground">{titulo}</p>
         </div>
       </CardContent>
     </Card>
