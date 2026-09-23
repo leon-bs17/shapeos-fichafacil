@@ -3,106 +3,86 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Shield, LayoutDashboard, Users, Dumbbell, ArrowLeft, LogOut, KeyRound } from 'lucide-react'
+import { ArrowLeft, Dumbbell, KeyRound, LayoutDashboard, LogOut, Megaphone, Shield, UserCheck, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { useQuery } from '@tanstack/react-query'
+import { ProductTopbar } from '@/components/layout/product-topbar'
+import { ProductFooter } from '@/components/layout/product-footer'
+import { cn } from '@/lib/utils'
 
 const links = [
-  { href: '/admin', label: 'Dashboard', icone: LayoutDashboard },
-  { href: '/admin/usuarios', label: 'Usuarios', icone: Users },
-  { href: '/admin/personais', label: 'Personais', icone: Users },
-  { href: '/admin/exercicios', label: 'Exercicios', icone: Dumbbell },
-  { href: '/admin/conta', label: 'Minha conta', icone: KeyRound },
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/usuarios', label: 'Usuários', icon: Users },
+  { href: '/admin/personais', label: 'Personais', icon: UserCheck },
+  { href: '/admin/exercicios', label: 'Exercícios', icon: Dumbbell },
+  { href: '/admin/broadcasts', label: 'Broadcasts', icon: Megaphone },
+  { href: '/admin/conta', label: 'Minha conta', icon: KeyRound },
 ]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: user } = useQuery({
-    queryKey: ['admin-user'],
-    queryFn: async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Nao autenticado')
-      const { data } = await supabase.from('usuarios').select('nome, email, tipo').eq('id', user.id).single()
-      return data
-    },
-  })
-
   async function sair() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/admin/login')
+    router.refresh()
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card/80 backdrop-blur-xl">
-        <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10">
-            <Shield className="h-4 w-4 text-destructive" />
+    <div className="min-h-screen bg-background">
+      <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-card shadow-[inset_-1px_0_0_hsl(var(--border)/0.72)]">
+        <div className="flex h-16 items-center gap-3 px-5">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+            <Shield className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-bold tracking-tight">Admin</p>
-            <p className="text-[10px] text-muted-foreground">Painel de gestao</p>
+            <p className="text-sm font-semibold tracking-tight">ShapeOS Admin</p>
+            <p className="text-[10px] text-muted-foreground">Operação e produto</p>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 p-3">
-          {links.map(({ href, label, icone: Icon }) => {
-            const ativo = pathname === href
+        <nav className="flex-1 space-y-1 px-3 py-3">
+          {links.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href || (href !== '/admin' && pathname.startsWith(href))
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  ativo
+                className={cn(
+                  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
+                  active
                     ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                }`}
+                    : 'text-muted-foreground hover:bg-foreground/[0.035] hover:text-foreground'
+                )}
               >
                 <Icon className="h-4 w-4" />
                 {label}
-                {ativo && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />}
+                {active ? <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" /> : null}
               </Link>
             )
           })}
         </nav>
 
-        <div className="border-t border-border p-3 space-y-2">
-          <Link
-            href="/"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all"
-          >
+        <div className="space-y-1 p-3">
+          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-foreground/[0.035] hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            Voltar ao app
+            Voltar ao produto
           </Link>
-          <button
-            onClick={sair}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
-          >
+          <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-destructive/8 hover:text-destructive">
             <LogOut className="h-4 w-4" />
             Sair
           </button>
         </div>
-
-        {user && (
-          <div className="border-t border-border p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-xs font-bold text-destructive">
-                {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{user.nome}</p>
-                <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </aside>
 
-      <main className="ml-64 flex-1 p-8">{children}</main>
+      <div className="ml-64 min-h-screen">
+        <ProductTopbar label="Admin · Gestão da plataforma" maxWidth="max-w-none" onLogout={sair} />
+        <main className="px-8 py-7">
+          {children}
+          <ProductFooter />
+        </main>
+      </div>
     </div>
   )
 }

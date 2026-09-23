@@ -1,213 +1,221 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
 
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 220 16% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 16% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 16% 10%;
+    --field: 210 20% 96%;
+    --primary: 180 70% 42%;
+    --primary-foreground: 210 20% 7%;
+    --secondary: 210 16% 94%;
+    --secondary-foreground: 220 16% 13%;
+    --muted: 210 16% 94%;
+    --muted-foreground: 215 11% 45%;
+    --accent: 210 16% 94%;
+    --accent-foreground: 220 16% 13%;
+    --destructive: 5 76% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 151 58% 40%;
+    --warning: 37 92% 48%;
+    --info: 199 79% 48%;
+    --border: 215 17% 86%;
+    --input: 215 17% 86%;
+    --ring: 180 70% 42%;
+    --chart-1: 180 70% 42%;
+    --chart-2: 15 83% 59%;
+    --chart-3: 199 79% 48%;
+    --chart-4: 43 74% 56%;
+    --chart-5: 151 58% 40%;
+    --radius: 1rem;
+  }
 
-body {
+  .dark {
+    --background: 210 10% 7%;
+    --foreground: 210 17% 96%;
+    --card: 210 9% 9%;
+    --card-foreground: 210 17% 96%;
+    --popover: 210 9% 10%;
+    --popover-foreground: 210 17% 96%;
+    --field: 210 9% 12%;
+    --primary: 180 67% 46%;
+    --primary-foreground: 210 14% 7%;
+    --secondary: 210 8% 13%;
+    --secondary-foreground: 210 17% 94%;
+    --muted: 210 8% 13%;
+    --muted-foreground: 215 9% 60%;
+    --accent: 210 8% 14%;
+    --accent-foreground: 210 17% 96%;
+    --destructive: 7 79% 62%;
+    --destructive-foreground: 210 17% 96%;
+    --success: 151 58% 51%;
+    --warning: 39 93% 58%;
+    --info: 199 88% 61%;
+    --border: 210 8% 18%;
+    --input: 210 8% 18%;
+    --ring: 180 67% 46%;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: hsl(var(--background));
+  }
+
+  body {
     margin: 0;
-    font-family:
-        "Sora",
-        -apple-system,
-        BlinkMacSystemFont,
-        sans-serif;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 20% -10%, hsl(var(--primary) / 0.07), transparent 34rem),
+      hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Sora", -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #1a1a1a;
-    color: #f5f5f5;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  code,
+  pre {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.24);
+    color: hsl(var(--foreground));
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+
+  [data-debug-wrapper="true"] {
+    display: contents !important;
+  }
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+@theme inline {
+  --color-field: hsl(var(--field));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+  --color-info: hsl(var(--info));
 }
 
-@layer base {
-    :root {
-        --background: 0 0% 10%;
-        --foreground: 0 0% 96%;
-        --card: 0 0% 10%;
-        --card-foreground: 0 0% 96%;
-        --popover: 0 0% 10%;
-        --popover-foreground: 0 0% 96%;
-        --primary: 180 100% 41%;
-        --primary-foreground: 0 0% 10%;
-        --secondary: 0 0% 14%;
-        --secondary-foreground: 0 0% 96%;
-        --muted: 0 0% 14%;
-        --muted-foreground: 0 0% 63%;
-        --accent: 0 0% 14%;
-        --accent-foreground: 0 0% 96%;
-        --destructive: 15 100% 63%;
-        --destructive-foreground: 0 0% 10%;
-        --border: 0 0% 16%;
-        --input: 0 0% 16%;
-        --ring: 180 100% 41%;
-        --chart-1: 180 100% 41%;
-        --chart-2: 15 100% 63%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.75rem;
-    }
-    .dark {
-        --background: 0 0% 10%;
-        --foreground: 0 0% 96%;
-        --card: 0 0% 10%;
-        --card-foreground: 0 0% 96%;
-        --popover: 0 0% 10%;
-        --popover-foreground: 0 0% 96%;
-        --primary: 180 100% 41%;
-        --primary-foreground: 0 0% 10%;
-        --secondary: 0 0% 14%;
-        --secondary-foreground: 0 0% 96%;
-        --muted: 0 0% 14%;
-        --muted-foreground: 0 0% 63%;
-        --accent: 0 0% 14%;
-        --accent-foreground: 0 0% 96%;
-        --destructive: 15 100% 63%;
-        --destructive-foreground: 0 0% 96%;
-        --border: 0 0% 16%;
-        --input: 0 0% 16%;
-        --ring: 180 100% 41%;
-    }
-}
-
-
-
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
-}
-
-
-/* shapeOS - ficha fácil - base overrides */
-
-html,
-body,
-#root {
-    background: #1a1a1a;
-    color: #f5f5f5;
-    min-height: 100vh;
-}
-
-.App {
-    background: #1a1a1a;
-    min-height: 100vh;
-}
-
-/* Custom text selection */
-::selection {
-    background: rgba(0, 210, 210, 0.35);
-    color: #f5f5f5;
-}
-
-/* Scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  width: 9px;
+  height: 9px;
 }
 ::-webkit-scrollbar-track {
-    background: #1a1a1a;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+  background: hsl(var(--foreground) / 0.1);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 210, 210, 0.35);
+  background: hsl(var(--foreground) / 0.18);
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
-/* Autofill fix on dark inputs */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f5f5f5 !important;
-    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 1) inset !important;
-    transition: background-color 5000s ease-in-out 0s;
-    caret-color: #00d2d2;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--field)) inset !important;
+  caret-color: hsl(var(--primary));
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Biometric scanning animations */
-@keyframes bio-sweep-anim {
-    0% {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    15% {
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(100%);
-        opacity: 1;
-    }
-    65% {
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(100%);
-        opacity: 0;
-    }
+.tech-bg {
+  background:
+    radial-gradient(circle at 85% 0%, hsl(var(--primary) / 0.055), transparent 28rem),
+    hsl(var(--background));
 }
 
-.bio-sweep {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        180deg,
-        transparent 0%,
-        rgba(0, 242, 242, 0.8) 45%,
-        rgba(0, 242, 242, 1) 50%,
-        rgba(0, 242, 242, 0.8) 55%,
-        transparent 100%
-    );
-    height: 100%;
-    animation: bio-sweep-anim 1.6s ease-in-out infinite;
-    box-shadow: 0 0 20px rgba(0, 210, 210, 0.7);
+.tech-grid-subtle {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.018) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
 
-@keyframes ping-slow-anim {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1.35);
-        opacity: 0;
-    }
+.tech-noise {
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
 }
 
-.animate-ping-slow {
-    animation: ping-slow-anim 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+.glass {
+  background: hsl(var(--background) / 0.82);
+  backdrop-filter: blur(18px);
 }
 
-.animate-ping-slower {
-    animation: ping-slow-anim 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-    animation-delay: 0.35s;
+.card-tech {
+  background: hsl(var(--card));
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--border) / 0.78),
+    0 12px 30px hsl(210 40% 2% / 0.08);
 }
 
+.card-tech-glow:hover {
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--primary) / 0.22),
+    0 18px 44px hsl(210 40% 2% / 0.14);
+}
+
+.skeleton {
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--foreground) / 0.055) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.6s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to { background-position: -220% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in { animation: fade-in .35s ease both; }
+.animate-slide-up { animation: slide-up .4s cubic-bezier(.22,.8,.25,1) both; }
+.stagger-1 { animation-delay: .04s; }
+.stagger-2 { animation-delay: .08s; }
+.stagger-3 { animation-delay: .12s; }
+.stagger-4 { animation-delay: .16s; }
+.stagger-5 { animation-delay: .20s; }
+.stagger-6 { animation-delay: .24s; }
+.stagger-7 { animation-delay: .28s; }
+.stagger-8 { animation-delay: .32s; }
+.stagger-9 { animation-delay: .36s; }
