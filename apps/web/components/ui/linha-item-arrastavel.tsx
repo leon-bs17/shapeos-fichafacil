@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Trash2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { SelectField } from '@/components/ui/select-field'
 
 interface LinhaItem {
   exercicio_id: string
@@ -64,22 +65,25 @@ export function LinhaItemArrastavel({
         <GripVertical className="h-4 w-4" />
       </button>
 
-      <select
-        value={item.exercicio_id}
-        onChange={(e) => onAtualizar(indice, 'exercicio_id', e.target.value)}
-        className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <option value="">Exercício...</option>
-        {[...grupos.entries()].map(([grupo, lista]) => (
-          <optgroup key={grupo} label={grupo}>
-            {(lista ?? []).map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.nome}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
+      <div className="min-w-0 flex-1">
+        <SelectField
+          value={item.exercicio_id}
+          onChange={(e) => onAtualizar(indice, 'exercicio_id', e.target.value)}
+          aria-label={`Exercício ${indice + 1}`}
+          className="h-10"
+        >
+          <option value="">Exercício...</option>
+          {[...grupos.entries()].map(([grupo, lista]) => (
+            <optgroup key={grupo} label={grupo}>
+              {(lista ?? []).map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.nome}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </SelectField>
+      </div>
 
       <Input
         className="w-16"

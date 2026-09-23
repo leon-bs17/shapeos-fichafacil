@@ -27,6 +27,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
+import { ProductTopbar } from "@/components/layout/product-topbar";
+import { useToast } from "@/components/ui/toast";
 import WorkoutEditor from "@/davi/components/WorkoutEditor";
 import {
   personalStats,
@@ -708,9 +710,9 @@ export const PersonalView = ({
   const [clonedId, setClonedId] = useState(null);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
-  const [toast, setToast] = useState(null);
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [activeSection, setActiveSection] = useState("overview");
+  const { toast: notify } = useToast();
 
   const menuItems = [
     { id: "overview", label: "Visão geral", icon: LayoutDashboard },
@@ -753,8 +755,10 @@ export const PersonalView = ({
   };
 
   const showToast = (msg, tone = "success") => {
-    setToast({ msg, tone });
-    setTimeout(() => setToast(null), 2500);
+    notify({
+      title: msg,
+      tone: tone === "danger" ? "danger" : "success",
+    });
   };
 
   const handleSaveEdit = (updated) => {
@@ -890,57 +894,35 @@ export const PersonalView = ({
         </div>
       </aside>
 
-      {/* Mobile navigation */}
-      <div
-        className="sticky top-0 z-40 lg:hidden"
-        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid #273142", backdropFilter: "blur(18px)" }}
-      >
-        <div className="flex items-center justify-between px-4 py-3">
-          <Logo size="sm" />
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setCreating(true)}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#0E1116]"
-              style={{ background: "#22C7C7" }}
-              aria-label="Novo aluno"
-            >
-              <UserPlus className="h-4 w-4" />
-            </button>
-            <button
-              data-testid="personal-logout-button-mobile"
-              onClick={onLogout}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#6F7B8C]"
-              style={{ background: "#171C24", border: "1px solid #273142" }}
-              aria-label="Sair"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-        <nav className="flex gap-2 overflow-x-auto px-4 pb-3">
-          {menuItems.map(({ id, label, icon: Icon }) => {
-            const active = activeSection === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => goToSection(id)}
-                className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
-                style={{
-                  background: active ? "rgba(34,199,199,0.11)" : "#171C24",
-                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #273142",
-                  color: active ? "#22C7C7" : "#A7B0BE",
-                }}
-              >
-                <Icon className="h-3.5 w-3.5" /> {label}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
-
       <main className="lg:ml-64">
+        <ProductTopbar
+          label="Painel do Personal"
+          maxWidth="max-w-6xl"
+          onLogout={onLogout}
+        />
+
+        <div className="sticky top-16 z-30 border-b border-[#273142] bg-[#0E1116]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+          <nav className="flex gap-2 overflow-x-auto">
+            {menuItems.map(({ id, label, icon: Icon }) => {
+              const active = activeSection === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => goToSection(id)}
+                  className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
+                  style={{
+                    background: active ? "rgba(34,199,199,0.11)" : "#171C24",
+                    border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #273142",
+                    color: active ? "#22C7C7" : "#A7B0BE",
+                  }}
+                >
+                  <Icon className="h-3.5 w-3.5" /> {label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
         <div className="mx-auto max-w-6xl px-5 pt-8 pb-16 md:pt-10">
         {/* Header */}
         <section id="overview" className="scroll-mt-32 lg:scroll-mt-8">
@@ -1185,22 +1167,6 @@ export const PersonalView = ({
         />
       )}
 
-      {/* Toast */}
-      {toast && (
-        <div
-          data-testid="personal-toast"
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl text-sm animate-in slide-in-from-bottom-4 fade-in-0 duration-300"
-          style={{
-            background: "rgba(20,20,20,0.95)",
-            border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(34,199,199,0.4)"}`,
-            color: toast.tone === "danger" ? "#ff8a8a" : "#22C7C7",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
-            fontFamily: "'Sora', sans-serif",
-          }}
-        >
-          {toast.msg}
-        </div>
-      )}
     </div>
   );
 };

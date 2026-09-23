@@ -53,6 +53,7 @@ export async function updateSession(request: NextRequest) {
     isAdminLogin ||
     pathname === '/login' ||
     pathname === '/cadastro' ||
+    pathname.startsWith('/docs') ||
     pathname.startsWith('/auth/callback')
 
   if (!user) {

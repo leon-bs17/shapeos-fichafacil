@@ -27,6 +27,8 @@ import { useAcoesFichas, useFichas } from '@/hooks/use-fichas'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { Combobox } from '@/components/ui/combobox'
+import { EmptyState } from '@/components/ui/empty-state'
 import { formatarData } from '@/lib/utils'
 import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
 import type { FichaResumo } from '@/services/treinos'
@@ -82,16 +84,13 @@ function TreinosConteudo() {
           ))}
         </div>
       ) : fichas?.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="py-14 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-              <Dumbbell className="h-7 w-7 text-primary" />
-            </div>
-            <p className="font-semibold text-lg">Nenhuma ficha criada</p>
-            <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-              Clique em Nova Ficha para montar o treino de um aluno em segundos.
-            </p>
-          </CardContent>
+        <Card>
+          <EmptyState
+            icon={Dumbbell}
+            title="Nenhuma ficha criada"
+            description="Crie a primeira ficha e o ShapeOS organiza exercícios, ordem e ativação para você."
+            action={<Button onClick={() => setModalAberto(true)}><Plus className="h-4 w-4" /> Nova ficha</Button>}
+          />
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -373,17 +372,14 @@ function ModalNovaFicha({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="ficha-aluno" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Aluno</Label>
-                <select
-                  id="ficha-aluno"
+                <Combobox
                   value={alunoId}
-                  onChange={(e) => setAlunoId(e.target.value)}
-                  className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="">Selecione...</option>
-                  {alunos?.map((a) => (
-                    <option key={a.vinculo_id} value={a.aluno_id}>{a.nome}</option>
-                  ))}
-                </select>
+                  onChange={setAlunoId}
+                  placeholder="Selecionar aluno..."
+                  searchPlaceholder="Buscar aluno..."
+                  emptyText="Nenhum aluno encontrado."
+                  options={(alunos ?? []).map((a) => ({ value: a.aluno_id, label: a.nome }))}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="ficha-titulo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Titulo</Label>
