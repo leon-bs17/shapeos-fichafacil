@@ -1,4 +1,6 @@
-import { BookOpen, Database, KeyRound, Megaphone, Sparkles } from 'lucide-react'
+import type { ReactNode } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import { Database, KeyRound, Megaphone, Sparkles } from 'lucide-react'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { CodeBlock } from '@/components/ui/code-block'
 import { DocsTree } from '@/components/docs/docs-tree'
@@ -108,7 +110,7 @@ export default function DocsPage() {
   )
 }
 
-function Section({ id, title, description, children }: { id: string; title: string; description: string; children?: React.ReactNode }) {
+function Section({ id, title, description, children }: { id: string; title: string; description: string; children?: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-24 border-t border-border/60 py-10">
       <div className="mb-5">
@@ -120,7 +122,7 @@ function Section({ id, title, description, children }: { id: string; title: stri
   )
 }
 
-function InfoCard({ icon: Icon, title, text }: { icon: typeof BookOpen; title: string; text: string }) {
+function InfoCard({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
   return (
     <div className="rounded-2xl bg-card p-4 shadow-[inset_0_0_0_1px_hsl(var(--border)/0.7)]">
       <Icon className="h-4 w-4 text-primary" />

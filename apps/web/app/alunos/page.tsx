@@ -11,6 +11,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos } from '@/hooks/use-alunos'
+import { EmptyState } from '@/components/ui/empty-state'
+import { useToast } from '@/components/ui/toast'
 
 export default function AlunosPage() {
   return (
@@ -27,6 +29,7 @@ function AlunosConteudo() {
   const [erro, setErro] = useState<string | null>(null)
   const [ocupado, setOcupado] = useState(false)
   const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   async function convidar() {
     setErro(null)
@@ -48,6 +51,7 @@ function AlunosConteudo() {
       }
       void queryClient.invalidateQueries({ queryKey: ['alunos'] })
       setEmail(''); setModalAberto(false)
+      toast({ tone: 'success', title: 'Aluno vinculado', description: 'O acesso foi criado ou reutilizado e já está disponível na sua base.' })
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro inesperado.')
     } finally { setOcupado(false) }
@@ -72,16 +76,13 @@ function AlunosConteudo() {
           {[0, 1, 2].map((i) => <div key={i} className="h-16 skeleton" />)}
         </div>
       ) : alunos?.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="py-14 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-              <Users className="h-7 w-7 text-muted-foreground" />
-            </div>
-            <p className="font-semibold text-lg">Nenhum aluno vinculado</p>
-            <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-              Clique em Convidar aluno, informe o e-mail dele e a ficha de treino ja pode ser criada.
-            </p>
-          </CardContent>
+        <Card>
+          <EmptyState
+            icon={Users}
+            title="Nenhum aluno vinculado"
+            description="Convide seu primeiro aluno por e-mail. Assim que o vínculo for criado, você já poderá montar a ficha dele."
+            action={<Button onClick={() => setModalAberto(true)}><UserPlus className="h-4 w-4" /> Convidar aluno</Button>}
+          />
         </Card>
       ) : (
         <div className="space-y-2">

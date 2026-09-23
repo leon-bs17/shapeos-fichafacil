@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { TrendingUp } from 'lucide-react'
+import { BarChart3, TrendingUp, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { Combobox } from '@/components/ui/combobox'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default function RelatoriosPage() {
   return (
@@ -42,9 +44,11 @@ function RelatoriosConteudo() {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            Vincule um aluno e registre treinos para ver a evolução aqui.
-          </CardContent>
+          <EmptyState
+            icon={Users}
+            title="Nenhum aluno para analisar"
+            description="Vincule um aluno e, quando ele registrar execuções, a evolução aparecerá aqui."
+          />
         </Card>
       </div>
     )
@@ -59,26 +63,21 @@ function RelatoriosConteudo() {
         </p>
       </header>
 
-      <div className="max-w-sm space-y-1.5">
-        <select
+      <div className="max-w-sm">
+        <Combobox
           value={alunoId}
-          onChange={(e) => setAlunoId(e.target.value)}
-          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Selecionar aluno"
-        >
-          <option value="">Selecione o aluno...</option>
-          {alunos?.map((a) => (
-            <option key={a.vinculo_id} value={a.aluno_id}>
-              {a.nome}
-            </option>
-          ))}
-        </select>
+          onChange={setAlunoId}
+          placeholder="Selecionar aluno..."
+          searchPlaceholder="Buscar aluno..."
+          emptyText="Nenhum aluno encontrado."
+          options={(alunos ?? []).map((a) => ({ value: a.aluno_id, label: a.nome }))}
+        />
       </div>
 
       {!alunoId ? (
-        <p className="text-muted-foreground text-sm">
-          Escolha um aluno para ver o progresso dos treinos registrados no app.
-        </p>
+        <Card>
+          <EmptyState icon={BarChart3} title="Escolha um aluno" description="Selecione acima quem você quer analisar para abrir o histórico de evolução." compact />
+        </Card>
       ) : isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">
           {[0, 1].map((i) => (
@@ -87,9 +86,7 @@ function RelatoriosConteudo() {
         </div>
       ) : agrupados.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            Este aluno ainda não registrou execuções no app.
-          </CardContent>
+          <EmptyState icon={BarChart3} title="Ainda sem histórico" description="Este aluno ainda não registrou execuções no app." />
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">

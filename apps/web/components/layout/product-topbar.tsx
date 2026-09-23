@@ -25,6 +25,9 @@ type Broadcast = {
   mensagem: string
   nivel: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR'
   criado_em: string
+  ativo: boolean
+  inicio: string
+  fim: string | null
 }
 
 const toneMap = {
@@ -58,20 +61,27 @@ export function ProductTopbar({
 
       const [{ data: user }, { data: broadcasts }, { data: reads }] = await Promise.all([
         supabase.from('usuarios').select('id,nome,email,tipo,plano,avatar_url').eq('id', auth.user.id).single(),
-        supabase.from('broadcast_mensagens').select('id,titulo,mensagem,nivel,criado_em').order('criado_em', { ascending: false }).limit(20),
+        supabase.from('broadcast_mensagens').select('id,titulo,mensagem,nivel,criado_em,ativo,inicio,fim').order('criado_em', { ascending: false }).limit(20),
         supabase.from('broadcast_leituras').select('broadcast_id').eq('usuario_id', auth.user.id),
       ])
 
+      const now = Date.now()
+      const activeBroadcasts = ((broadcasts ?? []) as Broadcast[]).filter((item) => {
+        const started = new Date(item.inicio).getTime() <= now
+        const notExpired = !item.fim || new Date(item.fim).getTime() > now
+        return item.ativo && started && notExpired
+      })
+
       return {
         user: user as UserRow | null,
-        broadcasts: (broadcasts ?? []) as Broadcast[],
+        broadcasts: activeBroadcasts,
         readIds: new Set((reads ?? []).map((item) => item.broadcast_id as string)),
       }
     },
   })
 
   const unread = useMemo(() => data?.broadcasts.filter((item) => !data.readIds.has(item.id)) ?? [], [data])
-  const latest = unread[0] ?? data?.broadcasts[0]
+  const latest = unread[0]
   const user = data?.user
 
   async function markRead(id: string) {
