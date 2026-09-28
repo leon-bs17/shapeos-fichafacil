@@ -57,3 +57,53 @@ export async function criarExercicio(
     throw error
   }
 }
+
+export async function editarExercicio(
+  supabase: SupabaseClient,
+  personalId: string,
+  exercicioId: string,
+  entrada: { nome: string; grupo_muscular: string; equipamento: string }
+): Promise<void> {
+  if (!GRUPOS_MUSCULARES.includes(entrada.grupo_muscular as never)) {
+    throw new Error('Grupo muscular inválido')
+  }
+  const equipamento = EQUIPAMENTOS.includes(entrada.equipamento as never)
+    ? entrada.equipamento
+    : null
+
+  const { error } = await supabase
+    .from('exercicios')
+    .update({
+      nome: entrada.nome.trim(),
+      grupo_muscular: entrada.grupo_muscular,
+      equipamento,
+    })
+    .eq('id', exercicioId)
+    .eq('criado_por', personalId)
+
+  if (error) {
+    if (error.code === '23505') {
+      throw new Error('Já existe um exercício com esse nome neste grupo.')
+    }
+    throw error
+  }
+}
+
+export async function excluirExercicio(
+  supabase: SupabaseClient,
+  personalId: string,
+  exercicioId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from('exercicios')
+    .delete()
+    .eq('id', exercicioId)
+    .eq('criado_por', personalId)
+
+  if (error) {
+    if (error.code === '23503') {
+      throw new Error('Este exercício está sendo usado em alguma ficha de treino e não pode ser excluído.')
+    }
+    throw error
+  }
+}

@@ -1,15 +1,16 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Library, Plus, Search, Dumbbell, Weight, Bike, Footprints } from 'lucide-react'
+import { Library, Plus, Search, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
-import { useCriarExercicio, useExercicios } from '@/hooks/use-exercicios'
+import { useCriarExercicio, useExercicios, useEditarExercicio, useExcluirExercicio } from '@/hooks/use-exercicios'
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import type { ExercicioBiblioteca } from '@/services/exercicios'
 
 const GRUPO_ICONS: Record<string, React.ReactNode> = {
   Peito: <Dumbbell className="h-4 w-4" />,
@@ -34,10 +35,16 @@ export default function ExerciciosPage() {
 function ExerciciosConteudo() {
   const { data: exercicios, isLoading } = useExercicios()
   const criar = useCriarExercicio()
+  const editar = useEditarExercicio()
+  const excluir = useExcluirExercicio()
 
   const [busca, setBusca] = useState('')
   const [grupoAtivo, setGrupoAtivo] = useState('Todos')
+  
   const [modalAberto, setModalAberto] = useState(false)
+  const [modalEditarAberto, setModalEditarAberto] = useState(false)
+  const [exEditando, setExEditando] = useState<ExercicioBiblioteca | null>(null)
+  
   const [nome, setNome] = useState('')
   const [grupo, setGrupo] = useState<string>(GRUPOS_MUSCULARES[0])
   const [equipamento, setEquipamento] = useState<string>(EQUIPAMENTOS[0])
@@ -51,11 +58,37 @@ function ExerciciosConteudo() {
     )
   }, [exercicios, busca, grupoAtivo])
 
+  function abrirCriacao() {
+    setNome('')
+    setGrupo(GRUPOS_MUSCULARES[0])
+    setEquipamento(EQUIPAMENTOS[0])
+    setModalAberto(true)
+  }
+
+  function abrirEdicao(e: ExercicioBiblioteca) {
+    setExEditando(e)
+    setNome(e.nome)
+    setGrupo(e.grupo_muscular)
+    setEquipamento(e.equipamento ?? EQUIPAMENTOS[0])
+    setModalEditarAberto(true)
+  }
+
   async function salvar() {
     if (nome.trim().length < 2) return
     try {
       await criar.mutateAsync({ nome: nome.trim(), grupo_muscular: grupo, equipamento })
-      setNome(''); setModalAberto(false)
+      setModalAberto(false)
+    } catch { void 0 }
+  }
+
+  async function salvarEdicao() {
+    if (!exEditando || nome.trim().length < 2) return
+    try {
+      await editar.mutateAsync({
+        id: exEditando.id,
+        entrada: { nome: nome.trim(), grupo_muscular: grupo, equipamento }
+      })
+      setModalEditarAberto(false)
     } catch { void 0 }
   }
 
@@ -65,11 +98,11 @@ function ExerciciosConteudo() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Biblioteca</h1>
           <p className="text-muted-foreground text-sm">
-            {exercicios?.length ?? 0} exercicios · {filtrados.length} exibidos
+            {exercicios?.length ?? 0} exercícios · {filtrados.length} exibidos
           </p>
         </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Novo exercicio
+        <Button onClick={abrirCriacao} className="shadow-sm">
+          <Plus className="mr-1.5 h-4 w-4" /> Novo exercício
         </Button>
       </header>
 
@@ -113,7 +146,7 @@ function ExerciciosConteudo() {
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
               <Library className="h-6 w-6 text-muted-foreground" />
             </div>
-            <p className="font-medium">Nenhum exercicio encontrado.</p>
+            <p className="font-medium">Nenhum exercício encontrado.</p>
             <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou crie um novo.</p>
           </CardContent>
         </Card>
@@ -135,23 +168,46 @@ function ExerciciosConteudo() {
                     </p>
                   </div>
                 </div>
-                {e.video_url ? (
-                  <a
-                    href={e.video_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary shrink-0 text-xs font-medium hover:underline"
-                  >
-                    video
-                  </a>
-                ) : null}
+                
+                {e.proprio ? (
+                  <div className="flex items-center shrink-0">
+                    <button
+                      onClick={() => abrirEdicao(e)}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+                      title="Editar exercício"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Excluir "${e.nome}" permanentemente?`)) excluir.mutate(e.id)
+                      }}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      title="Excluir exercício"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  e.video_url ? (
+                    <a
+                      href={e.video_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary shrink-0 text-xs font-medium hover:underline"
+                    >
+                      vídeo
+                    </a>
+                  ) : null
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
       )}
 
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercicio">
+      {/* Modal Criar */}
+      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ex-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -180,6 +236,46 @@ function ExerciciosConteudo() {
             <Button variant="outline" onClick={() => setModalAberto(false)} className="rounded-xl">Cancelar</Button>
             <Button onClick={salvar} disabled={criar.isPending} className="rounded-xl shadow-sm">
               {criar.isPending ? 'Salvando...' : 'Salvar'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Editar */}
+      <Modal open={modalEditarAberto} onClose={() => setModalEditarAberto(false)} titulo="Editar Exercício">
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
+            <Input id="edit-nome" value={nome} onChange={(e) => setNome(e.target.value)} className="h-10" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-grupo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Grupo muscular</Label>
+              <select id="edit-grupo" value={grupo} onChange={(e) => setGrupo(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
+                {GRUPOS_MUSCULARES.map((g) => (<option key={g} value={g}>{g}</option>))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-equip" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Equipamento</Label>
+              <select id="edit-equip" value={equipamento} onChange={(e) => setEquipamento(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
+                {EQUIPAMENTOS.map((eq) => (<option key={eq} value={eq}>{eq}</option>))}
+              </select>
+            </div>
+          </div>
+          {editar.error ? (
+            <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+              <p className="text-destructive text-sm">{editar.error.message}</p>
+            </div>
+          ) : null}
+          {excluir.error ? (
+            <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
+              <p className="text-destructive text-sm">{excluir.error.message}</p>
+            </div>
+          ) : null}
+          <div className="flex justify-end gap-2 border-t border-border pt-4">
+            <Button variant="outline" onClick={() => setModalEditarAberto(false)} className="rounded-xl">Cancelar</Button>
+            <Button onClick={salvarEdicao} disabled={editar.isPending} className="rounded-xl shadow-sm">
+              {editar.isPending ? 'Atualizando...' : 'Atualizar'}
             </Button>
           </div>
         </div>

@@ -43,3 +43,47 @@ export function useCriarExercicio() {
     },
   })
 }
+
+export function useEditarExercicio() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      entrada,
+    }: {
+      id: string
+      entrada: { nome: string; grupo_muscular: string; equipamento: string }
+    }) => {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessão expirada')
+      const { editarExercicio } = await import('@/services/exercicios')
+      await editarExercicio(supabase, user.id, id, entrada)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['exercicios'] })
+    },
+  })
+}
+
+export function useExcluirExercicio() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessão expirada')
+      const { excluirExercicio } = await import('@/services/exercicios')
+      await excluirExercicio(supabase, user.id, id)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['exercicios'] })
+    },
+  })
+}
