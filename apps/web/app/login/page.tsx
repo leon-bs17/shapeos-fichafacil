@@ -58,10 +58,19 @@ export default function LoginPage() {
     if (window.localStorage.getItem(chave) === '1') return
 
     try {
+      // É importante aguardar o WebAuthn terminar antes de navegar.
+      // Se a página for redirecionada durante navigator.credentials.create(),
+      // o navegador cancela o cadastro da passkey/digital.
       const { error } = await supabase.auth.registerPasskey()
+
       if (!error || error.code === 'webauthn_credential_exists') {
         window.localStorage.setItem(chave, '1')
+        return
       }
+
+      // O login por senha continua funcionando mesmo se o usuário cancelar
+      // o cadastro ou se a biometria estiver temporariamente indisponível.
+      if (error.code === 'passkey_disabled') return
     } catch {
       // A biometria é opcional e nunca deve bloquear o login por senha.
     }
@@ -95,9 +104,10 @@ export default function LoginPage() {
       return
     }
 
-    // Não aguardamos o cadastro opcional de biometria: o acesso ao sistema
-    // deve acontecer imediatamente depois da autenticação por senha.
-    void tentarCadastrarBiometria(supabase)
+    // No primeiro login pelo celular, conclui o cadastro da passkey antes
+    // de sair desta página. Depois disso o botão de digital pode autenticar
+    // sem e-mail/senha usando signInWithPasskey().
+    await tentarCadastrarBiometria(supabase)
     await redirecionarPorPerfil(supabase, data.user.id)
   }
 
@@ -124,10 +134,10 @@ export default function LoginPage() {
         throw new Error('A biometria ainda não está habilitada no servidor do ShapeOS.')
       }
       if (error.code === 'webauthn_credential_not_found') {
-        throw new Error('Nenhuma biometria foi cadastrada neste aparelho. Entre uma vez com e-mail e senha.')
+        throw new Error('Nenhuma digital foi cadastrada neste aparelho. Entre uma vez com e-mail e senha para ativá-la.')
       }
       if (error.code === 'webauthn_verification_failed') {
-        throw new Error('Não foi possível confirmar sua biometria. Tente novamente.')
+        throw new Error('Não foi possível confirmar sua digital. Tente novamente.')
       }
       if (error.name === 'NotAllowedError') {
         throw new Error('Autenticação biométrica cancelada.')
@@ -138,7 +148,7 @@ export default function LoginPage() {
     const user = data?.user ?? (await supabase.auth.getUser()).data.user
     if (!user) {
       entrandoRef.current = false
-      throw new Error('A biometria foi validada, mas a sessão não pôde ser criada.')
+      throw new Error('A digital foi validada, mas a sessão não pôde ser criada.')
     }
 
     await redirecionarPorPerfil(supabase, user.id)
