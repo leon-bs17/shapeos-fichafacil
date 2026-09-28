@@ -22,13 +22,13 @@ async function loginViaInterface(
 ) {
   await page.goto('/login')
 
-  if (tipo === 'ALUNO') {
-    await page.getByRole('radio', { name: /sou aluno/i }).click()
-  }
+  await page
+    .getByTestId(tipo === 'ALUNO' ? 'role-tab-aluno' : 'role-tab-personal')
+    .click()
 
-  await page.getByLabel(/e-mail/i).fill(email)
-  await page.getByLabel(/senha/i).fill(SENHA_E2E)
-  await page.getByRole('button', { name: /^entrar$/i }).click()
+  await page.getByTestId('login-email-input').fill(email)
+  await page.getByTestId('login-password-input').fill(SENHA_E2E)
+  await page.getByTestId('login-submit-button').click()
 
   const destino = tipo === 'ALUNO' ? '/painel' : '/'
   await page.waitForURL((url) => url.pathname === destino)

@@ -47,16 +47,19 @@ export async function updateSession(request: NextRequest) {
 
   const isAdminArea = pathname.startsWith('/admin')
   const isAdminLogin = pathname === '/admin/login'
+  const isAdminRecovery = pathname === '/admin/redefinir-senha'
   const isPainelAluno = pathname.startsWith('/painel')
 
   const isPublic =
     isAdminLogin ||
+    isAdminRecovery ||
     pathname === '/login' ||
     pathname === '/cadastro' ||
+    pathname === '/recuperar-senha' ||
     pathname.startsWith('/auth/callback')
 
   if (!user) {
-    if (isAdminArea && !isAdminLogin) {
+    if (isAdminArea && !isAdminLogin && !isAdminRecovery) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin/login'
       return NextResponse.redirect(url)
@@ -89,7 +92,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (tipo === 'ADMIN') {
-    if (!isAdminArea || isAdminLogin) {
+    if ((!isAdminArea || isAdminLogin) && !isAdminRecovery) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin'
       return NextResponse.redirect(url)
