@@ -1,17 +1,47 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dumbbell, Play } from "lucide-react";
 
 /**
- * ExerciseGif — image with graceful fallback.
- * If the remote image fails to load, renders a branded SVG placeholder
- * with the exercise name so the card never breaks.
+ * ExerciseGif — animated exercise demo with graceful fallback.
+ *
+ * `src` can be:
+ * - a GIF/WebP/image URL (the browser renders animated formats normally), or
+ * - an array of frame URLs. Frame arrays are cycled to demonstrate the movement.
  */
-export const ExerciseGif = ({ src, alt, size = 112 }) => {
+export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
+  const frames = useMemo(() => {
+    if (Array.isArray(src)) return src.filter(Boolean);
+    return src ? [src] : [];
+  }, [src]);
+
+  const [frameIndex, setFrameIndex] = useState(0);
   const [failed, setFailed] = useState(false);
 
-  if (failed || !src) {
+  useEffect(() => {
+    setFrameIndex(0);
+    setFailed(false);
+  }, [src]);
+
+  useEffect(() => {
+    if (frames.length <= 1 || failed) return undefined;
+
+    frames.forEach((frame) => {
+      const image = new Image();
+      image.src = frame;
+    });
+
+    const timer = window.setInterval(() => {
+      setFrameIndex((current) => (current + 1) % frames.length);
+    }, frameDuration);
+
+    return () => window.clearInterval(timer);
+  }, [frames, frameDuration, failed]);
+
+  const currentSrc = frames[frameIndex];
+
+  if (failed || !currentSrc) {
     return (
       <div
         className="relative rounded-xl flex flex-col items-center justify-center overflow-hidden flex-shrink-0"
@@ -23,6 +53,7 @@ export const ExerciseGif = ({ src, alt, size = 112 }) => {
           border: "1px solid rgba(34,199,199,0.25)",
         }}
         data-testid="exercise-gif-fallback"
+        aria-label={`Demonstração indisponível: ${alt}`}
       >
         <Dumbbell className="w-8 h-8 text-[#22C7C7] opacity-80" strokeWidth={1.5} />
         <span
@@ -39,14 +70,18 @@ export const ExerciseGif = ({ src, alt, size = 112 }) => {
     <div
       className="relative rounded-xl overflow-hidden flex-shrink-0 bg-black"
       style={{ width: size, height: size }}
+      data-testid="exercise-gif"
+      aria-label={`Demonstração da execução: ${alt}`}
     >
       <img
-        src={src}
-        alt={alt}
+        key={currentSrc}
+        src={currentSrc}
+        alt={`Execução de ${alt}`}
         onError={() => setFailed(true)}
         className="w-full h-full object-cover"
         style={{ filter: "grayscale(100%) contrast(1.15) brightness(0.95)" }}
         loading="lazy"
+        decoding="async"
       />
       <div className="absolute inset-0 ring-1 ring-white/5 rounded-xl pointer-events-none" />
       <div className="absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur">
@@ -55,7 +90,7 @@ export const ExerciseGif = ({ src, alt, size = 112 }) => {
           className="text-[9px] uppercase tracking-widest text-[#F5F7FA]"
           style={{ fontFamily: "'Sora', sans-serif" }}
         >
-          Demo
+          Execução
         </span>
       </div>
     </div>
