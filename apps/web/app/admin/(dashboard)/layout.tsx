@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   ArrowLeft,
   Dumbbell,
+  History,
   KeyRound,
   LayoutDashboard,
   LogOut,
@@ -22,6 +23,7 @@ const links = [
   { href: '/admin/usuarios', label: 'Usuários', icone: Users },
   { href: '/admin/personais', label: 'Personais', icone: UserCheck },
   { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },
+  { href: '/admin/auditoria', label: 'Auditoria', icone: History },
   { href: '/admin/conta', label: 'Minha conta', icone: KeyRound },
 ]
 
