@@ -5,11 +5,14 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   ArrowLeft,
+  BarChart3,
+  BellRing,
   Dumbbell,
   History,
   KeyRound,
   LayoutDashboard,
   LogOut,
+  ServerCog,
   ShieldCheck,
   UserCheck,
   Users,
@@ -23,7 +26,10 @@ const links = [
   { href: '/admin/usuarios', label: 'Usuários', icone: Users },
   { href: '/admin/personais', label: 'Personais', icone: UserCheck },
   { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },
+  { href: '/admin/relatorios', label: 'Relatórios', icone: BarChart3 },
+  { href: '/admin/notificacoes', label: 'Notificações', icone: BellRing },
   { href: '/admin/auditoria', label: 'Auditoria', icone: History },
+  { href: '/admin/sistema', label: 'Sistema', icone: ServerCog },
   { href: '/admin/conta', label: 'Minha conta', icone: KeyRound },
 ]
 
@@ -73,7 +79,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 p-4 pt-5">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-4 pt-5">
           {links.map(({ href, label, icone: Icon }) => {
             const ativo = href === '/admin' ? pathname === href : pathname.startsWith(href)
             return (
