@@ -6,11 +6,10 @@ import ExerciseGif from "@/davi/components/ExerciseGif";
 
 /**
  * CreateExerciseModal — lets the Personal add a brand-new exercise to the library.
- * The GIF/image source can be pasted as a URL from the internet OR uploaded from the
- * device (converted to a data-URL and used as the image src).
+ * A movement demo is optional and can be supplied by URL or local upload.
  */
 export const CreateExerciseModal = ({ onCancel, onCreate }) => {
-  const [source, setSource] = useState("url"); // "url" | "upload"
+  const [source, setSource] = useState("url");
   const [name, setName] = useState("");
   const [muscle, setMuscle] = useState("");
   const [equipment, setEquipment] = useState("");
@@ -22,39 +21,49 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
   const fileInputRef = useRef(null);
 
   const previewSrc = source === "url" ? gifUrl.trim() : dataUrl;
-  const canSave = name.trim() && muscle.trim() && equipment.trim() && previewSrc;
+  const canSave = Boolean(name.trim() && muscle.trim() && equipment.trim());
+
+  const clearDemo = () => {
+    setGifUrl("");
+    setDataUrl("");
+    setFileName("");
+    setError("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleFile = (file) => {
     if (!file) return;
     if (!/^image\//.test(file.type)) {
-      setError("Selecione um arquivo de imagem ou GIF válido.");
+      setError("Selecione um GIF, WebP ou arquivo de imagem válido.");
       return;
     }
     if (file.size > 8 * 1024 * 1024) {
       setError("Arquivo muito grande (máx 8 MB).");
       return;
     }
+
     setError("");
     setFileName(file.name);
     const reader = new FileReader();
-    reader.onload = (e) => setDataUrl(e.target.result);
+    reader.onload = (event) => setDataUrl(event.target?.result || "");
     reader.readAsDataURL(file);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
+  const handleDrop = (event) => {
+    event.preventDefault();
     setDragOver(false);
-    handleFile(e.dataTransfer.files?.[0]);
+    handleFile(event.dataTransfer.files?.[0]);
   };
 
   const handleSubmit = () => {
     if (!canSave) return;
+
     onCreate({
       id: `custom-${Date.now().toString(36)}`,
       name: name.trim(),
       muscle: muscle.trim(),
       equipment: equipment.trim(),
-      gif: previewSrc,
+      gif: previewSrc || "",
       custom: true,
     });
   };
@@ -65,6 +74,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
       data-testid="create-exercise-modal"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="create-exercise-title"
     >
       <div
         className="absolute inset-0 backdrop-blur-sm"
@@ -80,7 +90,6 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
           maxHeight: "90vh",
         }}
       >
-        {/* Header */}
         <div
           className="flex items-start gap-3 p-6"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
@@ -96,6 +105,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
           </div>
           <div className="flex-1">
             <h3
+              id="create-exercise-title"
               className="text-xl text-[#F5F7FA] leading-tight"
               style={{
                 fontFamily: "'Unbounded', sans-serif",
@@ -109,7 +119,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
               className="text-xs text-zinc-500 mt-1"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
-              Cole uma URL de GIF da internet ou envie um arquivo do seu computador.
+              Cadastre o exercício e, se quiser, adicione um GIF demonstrando a execução.
             </p>
           </div>
           <button
@@ -122,9 +132,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-5" style={{ fontFamily: "'Sora', sans-serif" }}>
-          {/* Basic info */}
           <div className="grid grid-cols-1 gap-3">
             <div>
               <label className="text-[10px] uppercase tracking-widest text-zinc-500">Nome do exercício</label>
@@ -132,19 +140,19 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 data-testid="create-name-input"
                 autoFocus
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(event) => setName(event.target.value)}
                 placeholder="ex: Supino Reto na Máquina"
                 className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                 style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-[10px] uppercase tracking-widest text-zinc-500">Grupo muscular</label>
                 <input
                   data-testid="create-muscle-input"
                   value={muscle}
-                  onChange={(e) => setMuscle(e.target.value)}
+                  onChange={(event) => setMuscle(event.target.value)}
                   placeholder="ex: Peitoral"
                   className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
@@ -155,7 +163,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 <input
                   data-testid="create-equipment-input"
                   value={equipment}
-                  onChange={(e) => setEquipment(e.target.value)}
+                  onChange={(event) => setEquipment(event.target.value)}
                   placeholder="ex: Máquina"
                   className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
@@ -164,8 +172,36 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             </div>
           </div>
 
-          {/* Source tabs */}
-          <div>
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "rgba(34,199,199,0.025)", border: "1px solid rgba(34,199,199,0.14)" }}
+          >
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#F5F7FA]">Demonstração em GIF</span>
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[9px] uppercase tracking-widest text-[#22C7C7]"
+                    style={{ background: "rgba(34,199,199,0.08)", border: "1px solid rgba(34,199,199,0.2)" }}
+                  >
+                    Opcional
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  Use uma URL direta ou envie um GIF/WebP do seu dispositivo.
+                </p>
+              </div>
+              {previewSrc && (
+                <button
+                  type="button"
+                  onClick={clearDemo}
+                  className="text-[11px] text-zinc-500 transition-colors hover:text-red-300"
+                >
+                  Remover mídia
+                </button>
+              )}
+            </div>
+
             <div
               className="grid grid-cols-2 gap-1 p-1 rounded-xl"
               style={{
@@ -181,11 +217,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
                   source === "url" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
                 }`}
-                style={{
-                  background: source === "url" ? "#22C7C7" : "transparent",
-                }}
+                style={{ background: source === "url" ? "#22C7C7" : "transparent" }}
               >
-                <LinkIcon className="w-3.5 h-3.5" /> Colar URL
+                <LinkIcon className="w-3.5 h-3.5" /> URL do GIF
               </button>
               <button
                 type="button"
@@ -194,39 +228,39 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
                   source === "upload" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
                 }`}
-                style={{
-                  background: source === "upload" ? "#22C7C7" : "transparent",
-                }}
+                style={{ background: source === "upload" ? "#22C7C7" : "transparent" }}
               >
-                <Upload className="w-3.5 h-3.5" /> Enviar arquivo
+                <Upload className="w-3.5 h-3.5" /> Enviar GIF
               </button>
             </div>
 
             <div className="mt-3">
               {source === "url" ? (
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-zinc-500">
-                    URL do GIF / imagem
-                  </label>
+                  <label className="text-[10px] uppercase tracking-widest text-zinc-500">URL direta do GIF</label>
                   <div className="mt-1.5 relative">
                     <LinkIcon className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       data-testid="create-url-input"
                       value={gifUrl}
-                      onChange={(e) => setGifUrl(e.target.value)}
-                      placeholder="https://... .gif"
+                      onChange={(event) => {
+                        setGifUrl(event.target.value);
+                        setError("");
+                      }}
+                      placeholder="https://exemplo.com/exercicio.gif"
+                      inputMode="url"
                       className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                       style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
                     />
                   </div>
                   <p className="mt-2 text-[11px] text-zinc-500">
-                    Dica: procure no Google Imagens por &quot;{name || "exercício"} gif&quot;, clique com o botão direito e copie o endereço da imagem.
+                    Prefira um link direto terminado em .gif ou .webp e use mídia que você tenha direito de utilizar.
                   </p>
                 </div>
               ) : (
                 <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
+                  onDragOver={(event) => {
+                    event.preventDefault();
                     setDragOver(true);
                   }}
                   onDragLeave={() => setDragOver(false)}
@@ -243,9 +277,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                     ref={fileInputRef}
                     data-testid="create-file-input"
                     type="file"
-                    accept="image/*,image/gif"
+                    accept="image/gif,image/webp,image/*"
                     className="hidden"
-                    onChange={(e) => handleFile(e.target.files?.[0])}
+                    onChange={(event) => handleFile(event.target.files?.[0])}
                   />
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -260,11 +294,11 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                       </>
                     ) : (
                       <>
-                        Arraste um <span className="text-[#22C7C7]">GIF</span> ou imagem aqui — ou clique para escolher
+                        Arraste um <span className="text-[#22C7C7]">GIF</span> aqui ou clique para escolher
                       </>
                     )}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-500">.gif · .jpg · .png · até 8 MB</div>
+                  <div className="mt-1 text-[11px] text-zinc-500">GIF · WebP · imagem · até 8 MB</div>
                 </div>
               )}
             </div>
@@ -284,7 +318,6 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             )}
           </div>
 
-          {/* Preview */}
           <div>
             <label className="text-[10px] uppercase tracking-widest text-zinc-500">Pré-visualização</label>
             <div
@@ -295,13 +328,14 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 <ExerciseGif src={previewSrc} alt={name || "Exercício"} size={96} />
               ) : (
                 <div
-                  className="w-24 h-24 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-24 h-24 rounded-xl flex flex-col items-center justify-center flex-shrink-0 gap-1.5"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px dashed rgba(255,255,255,0.1)",
                   }}
                 >
                   <ImageIcon className="w-6 h-6 text-zinc-600" strokeWidth={1.5} />
+                  <span className="text-[9px] uppercase tracking-widest text-zinc-600">Sem GIF</span>
                 </div>
               )}
               <div className="min-w-0">
@@ -314,12 +348,14 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 >
                   {name || "Nome do exercício"}
                 </div>
+                <p className="mt-1.5 text-[11px] text-zinc-500">
+                  {previewSrc ? "A demonstração será exibida na ficha." : "Você pode criar agora e adicionar uma demonstração depois."}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div
           className="flex gap-3 p-6"
           style={{
