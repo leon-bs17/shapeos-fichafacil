@@ -16,8 +16,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff, Clock3 } from 'lucide-react'
 import { Logo } from '@/components/layout/logo'
+
+type CadastroConcluido = 'APROVACAO' | 'EMAIL_E_APROVACAO' | null
 
 export default function CadastroPage() {
   const [nome, setNome] = useState('')
@@ -26,7 +28,7 @@ export default function CadastroPage() {
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
   const [erro, setErro] = useState<string | null>(null)
-  const [aguardandoEmail, setAguardandoEmail] = useState(false)
+  const [concluido, setConcluido] = useState<CadastroConcluido>(null)
   const [carregando, setCarregando] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -90,15 +92,14 @@ export default function CadastroPage() {
 
       setEmail(emailLimpo)
 
-      // Se a confirmação de e-mail estiver desativada, o Supabase já devolve
-      // uma sessão pronta. Navegação completa evita corrida com os cookies SSR.
+      // Personais novos são criados como PENDENTE e precisam ser aprovados
+      // no painel ADMIN antes do primeiro acesso ao sistema.
       if (data.session) {
-        window.location.replace('/')
-        return
+        await supabase.auth.signOut()
+        setConcluido('APROVACAO')
+      } else {
+        setConcluido('EMAIL_E_APROVACAO')
       }
-
-      // Com confirmação de e-mail habilitada, aguarda o usuário clicar no link.
-      setAguardandoEmail(true)
     } catch {
       setErro('Não foi possível conectar ao serviço de cadastro. Tente novamente.')
     } finally {
@@ -119,18 +120,28 @@ export default function CadastroPage() {
           </CardHeader>
 
           <CardContent className="space-y-5">
-            {aguardandoEmail ? (
+            {concluido ? (
               <div className="space-y-4 text-center py-4">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/10">
-                  <CheckCircle2 className="h-7 w-7 text-success" />
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-warning/10">
+                  {concluido === 'APROVACAO' ? (
+                    <Clock3 className="h-7 w-7 text-warning" />
+                  ) : (
+                    <CheckCircle2 className="h-7 w-7 text-warning" />
+                  )}
                 </div>
-                <div className="space-y-1">
-                  <p className="font-medium text-lg">Conta criada com sucesso!</p>
-                  <p className="text-muted-foreground text-sm">
-                    Enviamos um e-mail de confirmação para{' '}
-                    <span className="font-medium text-foreground">{email}</span>.
-                    {' '}Confirme o e-mail para liberar seu acesso de Personal.
-                  </p>
+                <div className="space-y-2">
+                  <p className="font-medium text-lg">Conta de Personal criada!</p>
+                  {concluido === 'APROVACAO' ? (
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Seu cadastro está <span className="font-medium text-foreground">aguardando aprovação do administrador</span>.
+                      Assim que for aprovado, você poderá entrar normalmente com seu e-mail e senha.
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Enviamos uma confirmação para <span className="font-medium text-foreground">{email}</span>.
+                      Depois de confirmar o e-mail, seu cadastro ficará aguardando aprovação do administrador.
+                    </p>
+                  )}
                 </div>
                 <Link href="/login">
                   <Button variant="outline" className="w-full h-11 rounded-xl">
@@ -141,7 +152,7 @@ export default function CadastroPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="rounded-xl bg-primary/5 border border-primary/10 px-4 py-3 text-center text-xs text-muted-foreground">
-                  Este cadastro cria uma conta de Personal. Seus alunos entram pelo convite enviado dentro do painel.
+                  Este cadastro cria uma conta de Personal. Após o cadastro, um administrador precisa aprovar seu acesso.
                 </div>
 
                 <div className="space-y-1.5">
@@ -200,11 +211,7 @@ export default function CadastroPage() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors"
                       aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
                     >
-                      {mostrarSenha ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
+                      {mostrarSenha ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
                 </div>
