@@ -81,4 +81,5 @@ begin
 end;
 $$;
 
-revoke all on function public.criar_usuario_autenticado() from public;
+-- A funcao e usada apenas como trigger interno do Auth; nao deve ser RPC publico.
+revoke execute on function public.criar_usuario_autenticado() from public, anon, authenticated;
