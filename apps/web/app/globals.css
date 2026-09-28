@@ -34,20 +34,6 @@
     --color-chart-5: hsl(var(--chart-5));
 }
 
-body {
-    margin: 0;
-    font-family: "Sora", -apple-system, BlinkMacSystemFont, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background: #0E1116;
-    color: #F5F7FA;
-    color-scheme: dark;
-}
-
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-
 @layer base {
     :root,
     .dark {
@@ -82,20 +68,66 @@ code {
         --chart-4: 38 92% 50%;
         --chart-5: 0 91% 71%;
         --radius: 0.75rem;
+
+        --shapeos-bg: #0e1116;
+        --shapeos-surface: #171c24;
+        --shapeos-surface-strong: #1b222c;
+        --shapeos-border: #273142;
+        --shapeos-brand: #22c7c7;
+        --shapeos-brand-soft: rgba(34, 199, 199, 0.12);
+        --shapeos-text: #f5f7fa;
+        --shapeos-muted: #a7b0be;
+        --shapeos-subtle: #6f7b8c;
     }
 
     * {
         border-color: hsl(var(--border));
+        box-sizing: border-box;
     }
 
-    html,
-    body {
+    html {
         background: hsl(var(--background));
         color: hsl(var(--foreground));
+        scroll-behavior: smooth;
     }
-}
 
-@layer base {
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Sora", -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        background: hsl(var(--background));
+        color: hsl(var(--foreground));
+        color-scheme: dark;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font: inherit;
+    }
+
+    button,
+    [role="button"],
+    a,
+    input,
+    select,
+    textarea {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+        outline: 2px solid rgba(34, 199, 199, 0.9);
+        outline-offset: 3px;
+    }
+
+    code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+
     [data-debug-wrapper="true"] {
         display: contents !important;
     }
@@ -127,24 +159,18 @@ code {
     }
 }
 
-
-/* ShapeOS visual system */
 html,
 body,
-#root {
-    background: #0E1116;
-    color: #F5F7FA;
-    min-height: 100vh;
-}
-
+#root,
 .App {
-    background: #0E1116;
+    background: #0e1116;
+    color: #f5f7fa;
     min-height: 100vh;
 }
 
 ::selection {
     background: rgba(34, 199, 199, 0.28);
-    color: #F5F7FA;
+    color: #f5f7fa;
 }
 
 ::-webkit-scrollbar {
@@ -153,7 +179,7 @@ body,
 }
 
 ::-webkit-scrollbar-track {
-    background: #0E1116;
+    background: #0e1116;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -168,10 +194,152 @@ body,
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #F5F7FA !important;
-    -webkit-box-shadow: 0 0 0 1000px #171C24 inset !important;
+    -webkit-text-fill-color: #f5f7fa !important;
+    -webkit-box-shadow: 0 0 0 1000px #171c24 inset !important;
     transition: background-color 5000s ease-in-out 0s;
-    caret-color: #22C7C7;
+    caret-color: #22c7c7;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    transform: translateY(-160%);
+    border: 1px solid rgba(34, 199, 199, 0.45);
+    border-radius: 0.75rem;
+    background: #171c24;
+    color: #f5f7fa;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38);
+    transition: transform 160ms ease;
+}
+
+.skip-link:focus-visible {
+    transform: translateY(0);
+}
+
+/* Personal dashboard polish */
+[data-testid="personal-view"] {
+    --dashboard-brand: #22c7c7;
+    --dashboard-brand-soft: rgba(34, 199, 199, 0.11);
+    --dashboard-border: rgba(255, 255, 255, 0.08);
+}
+
+[data-testid="personal-view"] button,
+[data-testid="personal-view"] input,
+[data-testid="personal-view"] select {
+    touch-action: manipulation;
+}
+
+[data-testid="personal-view"] [data-testid^="student-row-"] {
+    backdrop-filter: blur(10px);
+}
+
+[data-testid="personal-view"] [data-testid^="schedule-day-"] {
+    min-height: 3.5rem;
+}
+
+[data-testid="personal-view"] [data-testid^="toggle-schedule-btn-"],
+[data-testid="personal-view"] [data-testid^="view-ficha-btn-"],
+[data-testid="personal-view"] [data-testid^="edit-ficha-btn-"],
+[data-testid="personal-view"] [data-testid^="clone-ficha-btn-"],
+[data-testid="personal-view"] [data-testid^="delete-ficha-btn-"] {
+    min-height: 2.75rem;
+}
+
+[data-testid="personal-view"] [data-testid="new-student-button"] {
+    background: var(--dashboard-brand) !important;
+    box-shadow: 0 12px 28px rgba(34, 199, 199, 0.28), inset 0 -3px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-testid="personal-view"] [data-testid="new-student-save-button"] {
+    background: var(--dashboard-brand) !important;
+    box-shadow: 0 10px 24px rgba(34, 199, 199, 0.28), inset 0 -3px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-testid="personal-view"] [data-testid="student-search-input"] {
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+[data-testid="personal-view"] [data-testid="student-search-input"]:focus {
+    background: rgba(255, 255, 255, 0.045) !important;
+}
+
+@media (max-width: 639px) {
+    [data-testid="personal-view"] #overview h1 {
+        font-size: clamp(2.25rem, 12vw, 3.2rem) !important;
+        line-height: 1 !important;
+    }
+
+    [data-testid="personal-view"] [data-testid="new-student-button"] {
+        width: 100%;
+        justify-content: center;
+        min-height: 3rem;
+    }
+
+    [data-testid="personal-view"] #students > div:first-child {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    [data-testid="personal-view"] #students > div:first-child > div:last-child {
+        max-width: none;
+    }
+
+    [data-testid="personal-view"] [data-testid="student-search-input"] {
+        font-size: 16px;
+        min-height: 2.75rem;
+    }
+
+    [data-testid="personal-view"] [data-testid^="schedule-"] {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.5rem !important;
+    }
+
+    [data-testid="personal-view"] [data-testid^="toggle-schedule-btn-"] {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    [data-testid="personal-view"] [data-testid^="view-ficha-btn-"],
+    [data-testid="personal-view"] [data-testid^="edit-ficha-btn-"],
+    [data-testid="personal-view"] [data-testid^="clone-ficha-btn-"] {
+        flex: 1 1 calc(33.333% - 0.5rem);
+        justify-content: center;
+        min-width: 0;
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+    }
+
+    [data-testid="personal-view"] [data-testid^="delete-ficha-btn-"] {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    [data-testid="personal-view"] [data-testid^="schedule-"] {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* Biometric scanning animations */
@@ -231,4 +399,3 @@ input:-webkit-autofill:focus {
     animation: ping-slow-anim 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     animation-delay: 0.35s;
 }
-
