@@ -31,7 +31,7 @@ export default function LoginPage() {
   async function redirecionarPorPerfil(supabase: ReturnType<typeof createClient>, userId: string) {
     const { data: perfil, error } = await supabase
       .from('usuarios')
-      .select('tipo')
+      .select('tipo, status_conta')
       .eq('id', userId)
       .single()
 
@@ -42,11 +42,23 @@ export default function LoginPage() {
       return
     }
 
+    if (perfil.status_conta === 'PENDENTE') {
+      await supabase.auth.signOut()
+      entrandoRef.current = false
+      setErro('Seu cadastro de Personal está aguardando aprovação do administrador.')
+      return
+    }
+
+    if (perfil.status_conta === 'BLOQUEADO') {
+      await supabase.auth.signOut()
+      entrandoRef.current = false
+      setErro('Sua conta está bloqueada. Entre em contato com o administrador do ShapeOS.')
+      return
+    }
+
     const destino =
       perfil.tipo === 'ADMIN' ? '/admin' : perfil.tipo === 'ALUNO' ? '/painel' : '/'
 
-    // Uma navegação completa garante que os cookies da sessão recém-criada
-    // já estejam disponíveis para o middleware na próxima requisição.
     window.location.replace(destino)
   }
 
@@ -58,9 +70,6 @@ export default function LoginPage() {
     if (window.localStorage.getItem(chave) === '1') return
 
     try {
-      // É importante aguardar o WebAuthn terminar antes de navegar.
-      // Se a página for redirecionada durante navigator.credentials.create(),
-      // o navegador cancela o cadastro da passkey/digital.
       const { error } = await supabase.auth.registerPasskey()
 
       if (!error || error.code === 'webauthn_credential_exists') {
@@ -68,8 +77,6 @@ export default function LoginPage() {
         return
       }
 
-      // O login por senha continua funcionando mesmo se o usuário cancelar
-      // o cadastro ou se a biometria estiver temporariamente indisponível.
       if (error.code === 'passkey_disabled') return
     } catch {
       // A biometria é opcional e nunca deve bloquear o login por senha.
@@ -104,9 +111,18 @@ export default function LoginPage() {
       return
     }
 
-    // No primeiro login pelo celular, conclui o cadastro da passkey antes
-    // de sair desta página. Depois disso o botão de digital pode autenticar
-    // sem e-mail/senha usando signInWithPasskey().
+    // Verifica o status administrativo antes de oferecer/cadastrar biometria.
+    const { data: perfil } = await supabase
+      .from('usuarios')
+      .select('status_conta')
+      .eq('id', data.user.id)
+      .single()
+
+    if (perfil?.status_conta === 'PENDENTE' || perfil?.status_conta === 'BLOQUEADO') {
+      await redirecionarPorPerfil(supabase, data.user.id)
+      return
+    }
+
     await tentarCadastrarBiometria(supabase)
     await redirecionarPorPerfil(supabase, data.user.id)
   }
