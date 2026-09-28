@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,7 +20,6 @@ import { ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff } from
 import { Logo } from '@/components/layout/logo'
 
 export default function CadastroPage() {
-  const router = useRouter()
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -34,25 +32,78 @@ export default function CadastroPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setErro(null)
-    const parsed = loginSchema.safeParse({ email, senha })
-    if (!parsed.success) { setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos'); return }
-    if (nome.trim().length < 2) { setErro('Informe seu nome.'); return }
-    if (captchaAtivo() && !captchaToken) { setErro('Confirme a verificação anti-robô.'); return }
+
+    const emailLimpo = email.trim().toLowerCase()
+    const nomeLimpo = nome.trim()
+    const parsed = loginSchema.safeParse({ email: emailLimpo, senha })
+
+    if (!parsed.success) {
+      setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos')
+      return
+    }
+    if (nomeLimpo.length < 2) {
+      setErro('Informe seu nome.')
+      return
+    }
+    if (captchaAtivo() && !captchaToken) {
+      setErro('Confirme a verificação anti-robô.')
+      return
+    }
 
     setCarregando(true)
-    const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.senha,
-      options: { data: { nome: nome.trim(), tipo: 'PERSONAL' }, captchaToken: captchaToken || undefined },
-    })
 
-    if (error) {
-      setErro(error.message.includes('already') ? 'Este e-mail já possui conta. Faça login.' : error.message.includes('captcha') ? 'Verificação anti-robô falhou.' : 'Não foi possível criar a conta.')
-      setCarregando(false); setCaptchaToken(''); return
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase.auth.signUp({
+        email: parsed.data.email,
+        password: parsed.data.senha,
+        options: {
+          data: { nome: nomeLimpo, tipo: 'PERSONAL' },
+          captchaToken: captchaToken || undefined,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+
+      if (error) {
+        const limiteEmail =
+          error.code === 'over_email_send_rate_limit' ||
+          error.status === 429 ||
+          error.message.toLowerCase().includes('rate limit')
+
+        setErro(
+          limiteEmail
+            ? 'O serviço de confirmação por e-mail atingiu o limite temporário de envios. Sua conta não foi criada. Tente novamente daqui a alguns minutos.'
+            : error.message.toLowerCase().includes('already') || error.code === 'user_already_exists'
+              ? 'Este e-mail já possui conta. Faça login.'
+              : error.message.toLowerCase().includes('captcha')
+                ? 'Verificação anti-robô falhou. Tente novamente.'
+                : 'Não foi possível criar a conta. Tente novamente.'
+        )
+        setCaptchaToken('')
+        return
+      }
+
+      if (!data.user) {
+        setErro('Não foi possível criar a conta. Tente novamente.')
+        return
+      }
+
+      setEmail(emailLimpo)
+
+      // Se a confirmação de e-mail estiver desativada, o Supabase já devolve
+      // uma sessão pronta. Navegação completa evita corrida com os cookies SSR.
+      if (data.session) {
+        window.location.replace('/')
+        return
+      }
+
+      // Com confirmação de e-mail habilitada, aguarda o usuário clicar no link.
+      setAguardandoEmail(true)
+    } catch {
+      setErro('Não foi possível conectar ao serviço de cadastro. Tente novamente.')
+    } finally {
+      setCarregando(false)
     }
-    if (data.session) { router.push('/'); router.refresh(); return }
-    setCarregando(false); setAguardandoEmail(true)
   }
 
   return (
@@ -78,6 +129,7 @@ export default function CadastroPage() {
                   <p className="text-muted-foreground text-sm">
                     Enviamos um e-mail de confirmação para{' '}
                     <span className="font-medium text-foreground">{email}</span>.
+                    {' '}Confirme o e-mail para liberar seu acesso de Personal.
                   </p>
                 </div>
                 <Link href="/login">
@@ -89,7 +141,7 @@ export default function CadastroPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="rounded-xl bg-primary/5 border border-primary/10 px-4 py-3 text-center text-xs text-muted-foreground">
-                  Seus alunos não precisam de conta aqui: eles entram pelo convite que você envia dentro do painel.
+                  Este cadastro cria uma conta de Personal. Seus alunos entram pelo convite enviado dentro do painel.
                 </div>
 
                 <div className="space-y-1.5">
@@ -178,7 +230,7 @@ export default function CadastroPage() {
                     </>
                   ) : (
                     <>
-                      Criar conta gratuita
+                      Criar conta de Personal
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
