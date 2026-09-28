@@ -54,7 +54,7 @@ export async function updateSession(request: NextRequest) {
     isAdminLogin ||
     isAdminRecovery ||
     pathname === '/login' ||
-    pathname === '/cadastro' ||
+    pathname.startsWith('/cadastro') ||
     pathname === '/recuperar-senha' ||
     pathname.startsWith('/auth/callback')
 
