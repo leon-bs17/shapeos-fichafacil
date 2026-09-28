@@ -154,7 +154,16 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             </div>
 
             <div>
-              <label className="text-xs text-zinc-500 uppercase tracking-widest">Senha</label>
+              <div className="flex items-center justify-between gap-3">
+                <label className="text-xs text-zinc-500 uppercase tracking-widest">Senha</label>
+                <a
+                  href="/recuperar-senha"
+                  data-testid="forgot-password-link"
+                  className="text-[11px] font-medium text-[#22C7C7] transition-colors hover:text-[#31D6D6] hover:underline"
+                >
+                  Esqueci minha senha
+                </a>
+              </div>
               <div className="mt-2 relative">
                 <KeyRound className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
