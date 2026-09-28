@@ -1,43 +1,56 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
+import { colors } from '@/theme'
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#10b981',
-        tabBarInactiveTintColor: '#475569',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textFaint,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          backgroundColor: '#0f172a',
-          borderTopColor: '#1e293b',
+          backgroundColor: colors.surfaceSubtle,
+          borderTopColor: colors.borderSoft,
           borderTopWidth: 1,
-          paddingTop: 6,
-          paddingBottom: 6,
-          height: 60,
+          paddingTop: 8,
+          paddingBottom: 8,
+          height: 68,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 2,
         },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '600',
+          fontWeight: '700',
         },
-        sceneStyle: { backgroundColor: '#0a0f1a' },
+        sceneStyle: { backgroundColor: colors.background },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Treino',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="barbell" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'barbell' : 'barbell-outline'}
+              size={focused ? size + 1 : size}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="historico"
         options={{
-          title: 'Historico',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time" size={size} color={color} />
+          title: 'Histórico',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'time' : 'time-outline'}
+              size={focused ? size + 1 : size}
+              color={color}
+            />
           ),
         }}
       />
@@ -45,8 +58,12 @@ export default function TabsLayout() {
         name="perfil"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'person' : 'person-outline'}
+              size={focused ? size + 1 : size}
+              color={color}
+            />
           ),
         }}
       />
