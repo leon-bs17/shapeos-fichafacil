@@ -35,7 +35,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-4 py-10 lg:py-4"
       data-testid="login-view"
     >
-      {/* Ambient glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full blur-3xl opacity-30"
@@ -46,7 +45,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
         className="pointer-events-none absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-20"
         style={{ background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)" }}
       />
-      {/* Grid overlay */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.04]"
@@ -56,7 +54,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
           backgroundSize: "42px 42px",
         }}
       />
-      {/* Carbon fiber diagonal accent */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
@@ -91,7 +88,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             </p>
           </div>
 
-          {/* Role tabs */}
           <div
             className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
             style={{
@@ -199,7 +195,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="md:hidden flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
             <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-500" style={{ fontFamily: "'Sora', sans-serif" }}>
@@ -208,7 +203,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
           </div>
 
-          {/* Biometric */}
           <div className="md:hidden flex flex-col items-center">
             <button
               type="button"
@@ -231,7 +225,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
                       : "0 0 20px rgba(34,199,199,0.2), inset 0 0 8px rgba(34,199,199,0.08)",
               }}
             >
-              {/* Pulsing rings while scanning */}
               {bioState === "scanning" && (
                 <>
                   <span className="absolute inset-0 rounded-full border border-[#22C7C7]/40 animate-ping-slow" />
@@ -239,7 +232,6 @@ export const LoginView = ({ onEnter, onBiometric }) => {
                 </>
               )}
 
-              {/* Scanning sweep bar */}
               {bioState === "scanning" && (
                 <span
                   aria-hidden
@@ -300,7 +292,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
         </div>
 
         <p className="text-center text-xs lg:text-[10px] text-zinc-600 mt-6 lg:mt-3" style={{ fontFamily: "'Sora', sans-serif" }}>
-          Novo por aqui? <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Solicite acesso</a>
+          Novo por aqui? <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Criar uma conta de Personal</a>
         </p>
       </div>
     </div>
