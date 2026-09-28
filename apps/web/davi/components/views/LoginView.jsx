@@ -291,7 +291,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
         </div>
 
         <p className="text-center text-xs lg:text-[10px] text-zinc-600 mt-6 lg:mt-3" style={{ fontFamily: "'Sora', sans-serif" }}>
-          Novo por aqui? <span className="text-[#22C7C7] cursor-pointer hover:underline">Solicite acesso</span>
+          Novo por aqui? <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Solicite acesso</a>
         </p>
       </div>
     </div>
