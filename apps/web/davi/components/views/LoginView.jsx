@@ -5,7 +5,7 @@ import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Fingerprint, CheckCircle
 import Logo from "@/davi/components/Logo";
 
 export const LoginView = ({ onEnter, onBiometric }) => {
-  const [role, setRole] = useState("aluno"); // "personal" | "aluno"
+  const [role, setRole] = useState("personal"); // "personal" | "aluno" | "admin"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bioState, setBioState] = useState("idle"); // idle | scanning | success | error
@@ -29,6 +29,16 @@ export const LoginView = ({ onEnter, onBiometric }) => {
       setBioError(error instanceof Error ? error.message : "Não foi possível autenticar com biometria.");
     }
   };
+
+  const activeTabStyle = (tab) => ({
+    fontFamily: "'Sora', sans-serif",
+    background: role === tab ? "#22C7C7" : "transparent",
+    boxShadow: role === tab ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
+  });
+
+  const tabClass = (tab) => `py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
+    role === tab ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
+  }`;
 
   return (
     <div
@@ -84,12 +94,12 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               Acesse sua ficha
             </h1>
             <p className="text-sm lg:text-xs text-zinc-500 mt-2 lg:mt-1" style={{ fontFamily: "'Sora', sans-serif" }}>
-              Entre para treinar ou gerenciar sua base.
+              Entre para treinar, gerenciar sua base ou administrar a plataforma.
             </p>
           </div>
 
           <div
-            className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
+            className="grid grid-cols-3 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -100,31 +110,28 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               type="button"
               data-testid="role-tab-personal"
               onClick={() => setRole("personal")}
-              className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-                role === "personal" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
-              }`}
-              style={{
-                fontFamily: "'Sora', sans-serif",
-                background: role === "personal" ? "#22C7C7" : "transparent",
-                boxShadow: role === "personal" ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
-              }}
+              className={tabClass("personal")}
+              style={activeTabStyle("personal")}
             >
-              Personal (ADM)
+              Personal
             </button>
             <button
               type="button"
               data-testid="role-tab-aluno"
               onClick={() => setRole("aluno")}
-              className={`py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-                role === "aluno" ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
-              }`}
-              style={{
-                fontFamily: "'Sora', sans-serif",
-                background: role === "aluno" ? "#22C7C7" : "transparent",
-                boxShadow: role === "aluno" ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
-              }}
+              className={tabClass("aluno")}
+              style={activeTabStyle("aluno")}
             >
               Aluno
+            </button>
+            <button
+              type="button"
+              data-testid="role-tab-admin"
+              onClick={() => setRole("admin")}
+              className={tabClass("admin")}
+              style={activeTabStyle("admin")}
+            >
+              Admin
             </button>
           </div>
 
@@ -189,8 +196,8 @@ export const LoginView = ({ onEnter, onBiometric }) => {
                 letterSpacing: "0.02em",
               }}
             >
-              <Lock className="w-4 h-4" />
-              Acessar Ficha
+              {role === "admin" ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+              {role === "admin" ? "Acessar Painel Admin" : "Acessar Ficha"}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </form>
