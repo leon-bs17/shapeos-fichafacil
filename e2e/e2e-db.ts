@@ -77,6 +77,26 @@ async function criarConta(
   return data.id as string
 }
 
+async function ativarUsuario(id: string): Promise<void> {
+  const response = await adminRequest(
+    '/rest/v1/usuarios?id=eq.' + encodeURIComponent(id),
+    {
+      method: 'PATCH',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ status_conta: 'ATIVO' }),
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'Falha ao ativar usuario E2E (' +
+        response.status +
+        '): ' +
+        (await response.text())
+    )
+  }
+}
+
 async function removerUsuario(id: string): Promise<void> {
   const response = await adminRequest('/auth/v1/admin/users/' + id, {
     method: 'DELETE',
@@ -161,6 +181,7 @@ export async function semearContasE2E(): Promise<ContasE2E> {
 
   try {
     personalId = await criarConta(personalEmail, 'Personal E2E', 'PERSONAL')
+    await ativarUsuario(personalId)
     alunoId = await criarConta(alunoEmail, 'Aluno E2E', 'ALUNO')
     await vincularAluno(personalId, alunoId, personalEmail)
 

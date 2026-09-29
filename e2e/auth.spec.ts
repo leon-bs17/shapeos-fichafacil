@@ -21,10 +21,12 @@ test.describe('Autenticação', () => {
     await expect(page.getByTestId('role-tab-aluno')).toHaveCSS('background-color', 'rgb(34, 199, 199)')
   })
 
-  test('cadastro é exclusivo para personal', async ({ page }) => {
+  test('cadastro público existe para Personal e Aluno', async ({ page }) => {
     await page.goto('/cadastro')
     await expect(page.getByRole('heading', { name: /criar conta de personal/i })).toBeVisible()
-    await expect(page.getByText(/alunos não precisam de conta aqui/i)).toBeVisible()
+
+    await page.goto('/cadastro/aluno')
+    await expect(page.getByRole('heading', { name: /criar conta de aluno/i })).toBeVisible()
   })
 
   test('recuperação de senha é pública', async ({ page }) => {
