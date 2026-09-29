@@ -26,7 +26,7 @@ test.describe('Painel do Aluno', () => {
     await loginComoAluno(page)
     await page.goto('/painel/suporte')
 
-    await expect(page.getByRole('heading', { name: 'Suporte' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Suporte', exact: true })).toBeVisible()
     await expect(page.getByText('Suporte ao Personal')).toBeVisible()
     await expect(page.getByText('Suporte ao Sistema')).toBeVisible()
     await expect(page.getByRole('button', { name: /enviar solicitação/i })).toBeVisible()
