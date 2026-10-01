@@ -9,7 +9,7 @@ export const SENHA_E2E = 'senha123456'
 
 function envObrigatoria(nome: string): string {
   const valor = process.env[nome]
-  if (!valor) throw new Error('Variavel obrigatoria ausente: ' + nome)
+  if (!valor) throw new Error('Variável obrigatória ausente: ' + nome)
   return valor
 }
 
@@ -70,7 +70,7 @@ async function criarConta(
   const data = await response.json()
   if (!response.ok || !data.id) {
     throw new Error(
-      'Criacao de usuario E2E falhou: ' + JSON.stringify(data)
+      'Criação de usuário E2E falhou: ' + JSON.stringify(data)
     )
   }
 
