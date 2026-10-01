@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
 
   if (limpandoSessao) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0a0f1a]">
+      <main className="flex min-h-screen items-center justify-center bg-[#121719]">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </main>
     )

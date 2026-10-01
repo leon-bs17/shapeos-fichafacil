@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         aria-current={ativo ? 'page' : undefined}
         className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/[.04]"
         style={{
-          color: ativo ? '#F5F7FA' : '#a7b0be',
+          color: ativo ? '#edf2f3' : '#a9b8be',
           background: ativo ? 'rgba(255,255,255,.06)' : 'transparent',
           border: '1px solid transparent',
         }}
@@ -88,11 +88,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0E1116] text-[#F5F7FA]" style={{ fontFamily: "'Sora', sans-serif" }}>
+    <div className="min-h-screen bg-[#121719] text-[#edf2f3]" style={{ fontFamily: "'Sora', sans-serif" }}>
       <aside
         className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
         style={{
-          background: '#12161d',
+          background: '#171d20',
           borderRight: '1px solid rgba(255,255,255,.06)',
           boxShadow: 'none',
         }}
@@ -106,7 +106,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <ShieldCheck className="h-3.5 w-3.5 text-[#22C7C7]" />
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Administração</p>
-              <p className="mt-0.5 text-[9px] text-zinc-600">controle da plataforma</p>
+              <p className="mt-0.5 text-[9px] text-muted-foreground">controle da plataforma</p>
             </div>
           </div>
         </div>
@@ -117,20 +117,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             {novasFerramentas.map((item) => linkDesktop(item))}
           </div>
 
-          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-zinc-600">Gestão</p>
+          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Gestão</p>
           <div className="space-y-1">
             {gestaoLinks.map((item) => linkDesktop(item))}
           </div>
 
-          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-zinc-600">Conta</p>
+          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Conta</p>
           <div className="space-y-1">{linkDesktop(contaLink)}</div>
         </nav>
 
         <div className="flex-shrink-0 space-y-1 p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
-          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-zinc-500 transition-colors hover:bg-white/[.03] hover:text-zinc-300">
+          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-white/[.03] hover:text-zinc-300">
             <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao app
           </Link>
-          <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-zinc-500 transition-colors hover:bg-red-400/[.05] hover:text-red-300">
+          <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-red-400/[.05] hover:text-red-300">
             <LogOut className="h-3.5 w-3.5" /> Sair
           </button>
         </div>
@@ -138,22 +138,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {user && (
           <div className="flex-shrink-0 p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
             <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#0E1116]" style={{ background: '#22C7C7' }}>
+              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#121719]" style={{ background: '#22C7C7' }}>
                 {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
               </div>
               <div className="min-w-0">
                 <p className="truncate text-xs font-semibold text-zinc-200">{user.nome}</p>
-                <p className="mt-0.5 truncate text-[10px] text-zinc-600">{user.email}</p>
+                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{user.email}</p>
               </div>
             </div>
           </div>
         )}
       </aside>
 
-      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#0E1116]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#121719]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between">
           <Logo size="sm" />
-          <button onClick={sair} className="rounded-xl p-2 text-zinc-500" aria-label="Sair">
+          <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">
             <LogOut className="h-4 w-4" />
           </button>
         </div>

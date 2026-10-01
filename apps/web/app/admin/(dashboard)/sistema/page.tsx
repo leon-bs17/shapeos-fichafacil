@@ -73,7 +73,7 @@ export default function AdminSistemaPage() {
             <ServerCog className="h-4 w-4" /> Operação
           </div>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Sistema</h1>
-          <p className="mt-1 text-sm text-zinc-500">Diagnóstico em tempo real dos serviços usados pelo painel administrativo.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Diagnóstico em tempo real dos serviços usados pelo painel administrativo.</p>
         </div>
         <Button variant="outline" onClick={() => refetch()} disabled={isFetching} className="gap-2">
           <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} /> Verificar agora
@@ -92,10 +92,10 @@ export default function AdminSistemaPage() {
                 </div>
                 <div>
                   <p className="text-lg font-semibold">{data.saudavel ? 'Serviços operacionais' : 'Há serviços com falha'}</p>
-                  <p className="text-sm text-zinc-500">Última verificação: {new Date(data.verificadoEm).toLocaleTimeString('pt-BR')}</p>
+                  <p className="text-sm text-muted-foreground">Última verificação: {new Date(data.verificadoEm).toLocaleTimeString('pt-BR')}</p>
                 </div>
               </div>
-              <div className="rounded-xl border border-white/[.07] bg-black/10 px-4 py-2 text-sm text-zinc-400">
+              <div className="rounded-xl border border-white/[.07] bg-black/10 px-4 py-2 text-sm text-muted-foreground">
                 Latência do diagnóstico: <strong className="text-zinc-100">{data.latencia} ms</strong>
               </div>
             </CardContent>
@@ -114,7 +114,7 @@ export default function AdminSistemaPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-xs leading-relaxed text-zinc-500">{check.detalhe}</p>
+                  <p className="text-xs leading-relaxed text-muted-foreground">{check.detalhe}</p>
                 </CardContent>
               </Card>
             ))}
@@ -122,7 +122,7 @@ export default function AdminSistemaPage() {
 
           <Card className="border-white/[.07] bg-white/[.025]">
             <CardHeader><CardTitle className="text-base">O que esta tela valida</CardTitle></CardHeader>
-            <CardContent className="grid gap-3 text-sm text-zinc-500 md:grid-cols-2">
+            <CardContent className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
               <p>• Sessão do Admin autenticada no Supabase Auth.</p>
               <p>• Leitura real das tabelas principais via Data API.</p>
               <p>• Disponibilidade da auditoria administrativa.</p>

@@ -73,7 +73,7 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
           width: size,
           height: size,
           background:
-            "linear-gradient(135deg, rgba(34,199,199,0.1), rgba(0,0,0,0.5))",
+            "var(--shapeos-surface)",
           border: "1px solid rgba(34,199,199,0.25)",
         }}
         data-testid="exercise-gif-fallback"
@@ -95,7 +95,7 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
       <button
         type="button"
         onClick={() => setExpanded(true)}
-        className="group relative rounded-xl overflow-hidden flex-shrink-0 bg-black cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C7C7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#101216]"
+        className="group relative rounded-xl overflow-hidden flex-shrink-0 bg-black cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C7C7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121719]"
         style={{ width: size, height: size }}
         data-testid="exercise-gif"
         aria-label={`Ampliar demonstração da execução: ${alt}`}
@@ -135,7 +135,7 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
         <div className="absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur pointer-events-none">
           <Play className="w-2.5 h-2.5 text-[#22C7C7]" fill="#22C7C7" />
           <span
-            className="text-[9px] uppercase tracking-widest text-[#F5F7FA]"
+            className="text-[9px] uppercase tracking-widest text-[#edf2f3]"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             Execução
@@ -152,7 +152,7 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
           onMouseDown={() => setExpanded(false)}
         >
           <div
-            className="relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0B0E13] shadow-2xl"
+            className="relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#121719] shadow-2xl"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">

@@ -40,7 +40,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
   });
 
   const tabClass = (tab) => `py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-    role === tab ? "text-[#0E1116]" : "text-zinc-400 hover:text-[#F5F7FA]"
+    role === tab ? "text-[#121719]" : "text-muted-foreground hover:text-[#edf2f3]"
   }`;
 
   return (
@@ -48,19 +48,19 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         <div
           className="rounded-xl p-6 sm:p-7"
           style={{
-            background: "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))",
+            background: "var(--shapeos-surface)",
             border: "1px solid rgba(255,255,255,0.08)",
             boxShadow: "none",
           }}
         >
           <div className="mb-6 lg:mb-4">
             <h1
-              className="text-3xl lg:text-2xl text-[#F5F7FA] tracking-tight"
+              className="text-3xl lg:text-2xl text-[#edf2f3] tracking-tight"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
             >
               Bem-vindo à ShapeOS
             </h1>
-            <p className="text-sm leading-relaxed text-zinc-400 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
+            <p className="text-sm leading-relaxed text-muted-foreground mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
               Entre para consultar seus treinos ou gerenciar seus alunos.
             </p>
           </div>
@@ -99,7 +99,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
             <div>
               <label htmlFor="login-email" className="text-sm text-zinc-300">E-mail</label>
               <div className="mt-2 relative">
-                <Mail className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   id="login-email"
                   autoComplete="email"
@@ -109,7 +109,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="voce@shapeos.app"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -124,13 +124,13 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 <a
                   href="/recuperar-senha"
                   data-testid="forgot-password-link"
-                  className="text-[11px] font-medium text-[#22C7C7] transition-colors hover:text-[#31D6D6] hover:underline"
+                  className="text-[11px] font-medium text-[#22C7C7] transition-colors hover:text-[#62ded2] hover:underline"
                 >
                   Esqueci minha senha
                 </a>
               </div>
               <div className="mt-2 relative">
-                <KeyRound className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
+                <KeyRound className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   id="login-password"
                   autoComplete="current-password"
@@ -140,7 +140,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
                   style={{
                     background: "rgba(255,255,255,0.03)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -153,7 +153,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               type="submit"
               disabled={submitting}
               data-testid="login-submit-button"
-              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#0E1116] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
+              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#121719] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
                 background: "#22C7C7",
                 boxShadow: "none",
@@ -169,7 +169,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
 
           <div className="md:hidden flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-500" style={{ fontFamily: "'Sora', sans-serif" }}>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
               ou entre com
             </span>
             <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -219,7 +219,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               ) : (
                 <Fingerprint
                   className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
-                    bioState === "scanning" ? "text-[#31D6D6]" : "text-[#22C7C7] group-hover:text-[#31D6D6]"
+                    bioState === "scanning" ? "text-[#62ded2]" : "text-[#22C7C7] group-hover:text-[#62ded2]"
                   }`}
                   strokeWidth={1.6}
                 />
@@ -231,7 +231,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               className="mt-4 lg:mt-2 text-xs lg:text-[10px] tracking-widest uppercase text-center"
               style={{
                 fontFamily: "'Sora', sans-serif",
-                color: bioState === "success" ? "#22C7C7" : bioState === "scanning" ? "#F5F7FA" : "#a1a1aa",
+                color: bioState === "success" ? "#22C7C7" : bioState === "scanning" ? "#edf2f3" : "#a1a1aa",
                 letterSpacing: "0.25em",
               }}
             >
@@ -249,7 +249,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               </p>
             ) : (
               <p
-                className="mt-2 text-center text-[10px] leading-relaxed text-zinc-600 max-w-[280px]"
+                className="mt-2 text-center text-[10px] leading-relaxed text-muted-foreground max-w-[280px]"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 Primeiro acesso neste celular? Entre com e-mail e senha para cadastrar a biometria.
@@ -257,16 +257,16 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-zinc-500">
+          <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-muted-foreground">
             <ShieldCheck className="w-3.5 h-3.5 text-[#22C7C7]" />
             Conexão criptografada · TLS 1.3 · WebAuthn
           </div>
         </div>
 
-        <p className="text-center text-sm leading-relaxed text-zinc-400 mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
+        <p className="text-center text-sm leading-relaxed text-muted-foreground mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
           Novo por aqui?{' '}
           <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Personal</a>
-          <span className="mx-2 text-zinc-700">•</span>
+          <span className="mx-2 text-muted-foreground">•</span>
           <a href="/cadastro/aluno" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Aluno</a>
         </p>
     </AuthShell>

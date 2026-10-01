@@ -131,7 +131,7 @@ export default function AdminRelatoriosPage() {
             <BarChart3 className="h-4 w-4" /> Inteligência operacional
           </div>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Relatórios</h1>
-          <p className="mt-1 text-sm text-zinc-500">Visão consolidada da plataforma com exportação real em CSV.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Visão consolidada da plataforma com exportação real em CSV.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={exportarUsuarios} className="gap-2">
@@ -153,7 +153,7 @@ export default function AdminRelatoriosPage() {
               <div>
                 <div className="text-2xl font-bold">{valor}</div>
                 <div className="text-sm font-medium text-zinc-300">{label}</div>
-                <div className="mt-0.5 text-xs text-zinc-600">{detalhe}</div>
+                <div className="mt-0.5 text-xs text-muted-foreground">{detalhe}</div>
               </div>
             </CardContent>
           </Card>
@@ -179,7 +179,7 @@ function Barra({ label, atual, total }: { label: string; atual: number; total: n
   return (
     <div>
       <div className="mb-2 flex items-center justify-between text-xs">
-        <span className="text-zinc-400">{label}</span>
+        <span className="text-muted-foreground">{label}</span>
         <span className="font-semibold text-zinc-200">{atual} · {percentual}%</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-white/[.05]">

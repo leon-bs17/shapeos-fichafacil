@@ -99,7 +99,7 @@ export default function AdminNotificacoesPage() {
           <BellRing className="h-4 w-4" /> Comunicação
         </div>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">Notificações</h1>
-        <p className="mt-1 text-sm text-zinc-500">Crie e gerencie comunicados administrativos persistidos no ShapeOS.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Crie e gerencie comunicados administrativos persistidos no ShapeOS.</p>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[.8fr_1.2fr]">
@@ -110,11 +110,11 @@ export default function AdminNotificacoesPage() {
           <CardContent>
             <form onSubmit={publicar} className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-zinc-500">Título</label>
+                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">Título</label>
                 <Input value={titulo} onChange={(e) => setTitulo(e.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-zinc-500">Mensagem</label>
+                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">Mensagem</label>
                 <textarea
                   value={mensagem}
                   onChange={(e) => setMensagem(e.target.value)}
@@ -125,7 +125,7 @@ export default function AdminNotificacoesPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-zinc-500">Público</label>
+                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">Público</label>
                 <div className="grid grid-cols-3 gap-2">
                   {(['TODOS', 'PERSONAL', 'ALUNO'] as Publico[]).map((item) => (
                     <button
@@ -163,7 +163,7 @@ export default function AdminNotificacoesPage() {
             {isLoading ? (
               <div className="h-48 rounded-2xl skeleton" />
             ) : !notificacoes?.length ? (
-              <div className="py-12 text-center text-sm text-zinc-500">
+              <div className="py-12 text-center text-sm text-muted-foreground">
                 <BellRing className="mx-auto mb-3 h-7 w-7" /> Nenhum comunicado publicado.
               </div>
             ) : (
@@ -173,21 +173,21 @@ export default function AdminNotificacoesPage() {
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-semibold text-zinc-100">{item.titulo}</h3>
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${item.ativa ? 'bg-emerald-400/10 text-emerald-300' : 'bg-zinc-500/10 text-zinc-500'}`}>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${item.ativa ? 'bg-emerald-400/10 text-emerald-300' : 'bg-zinc-500/10 text-muted-foreground'}`}>
                           {item.ativa ? 'ATIVO' : 'PAUSADO'}
                         </span>
                       </div>
-                      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-zinc-400">{item.mensagem}</p>
-                      <div className="mt-3 flex items-center gap-3 text-[11px] text-zinc-600">
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{item.mensagem}</p>
+                      <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
                         <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {item.publico}</span>
                         <span>{new Date(item.criado_em).toLocaleString('pt-BR')}</span>
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 gap-1">
-                      <button onClick={() => alternar(item)} className="rounded-lg p-2 text-zinc-500 hover:bg-white/[.05] hover:text-[#22C7C7]" title={item.ativa ? 'Pausar' : 'Reativar'}>
+                      <button onClick={() => alternar(item)} className="rounded-lg p-2 text-muted-foreground hover:bg-white/[.05] hover:text-[#22C7C7]" title={item.ativa ? 'Pausar' : 'Reativar'}>
                         {item.ativa ? <PauseCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
                       </button>
-                      <button onClick={() => excluir(item.id)} className="rounded-lg p-2 text-zinc-500 hover:bg-red-400/[.06] hover:text-red-300" title="Excluir">
+                      <button onClick={() => excluir(item.id)} className="rounded-lg p-2 text-muted-foreground hover:bg-red-400/[.06] hover:text-red-300" title="Excluir">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>

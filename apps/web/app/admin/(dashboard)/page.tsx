@@ -47,7 +47,7 @@ type Vinculo = {
 }
 
 const glass = {
-  background: 'linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))',
+  background: "var(--shapeos-surface)",
   border: '1px solid rgba(255,255,255,0.07)',
   boxShadow: '0 18px 48px rgba(0,0,0,0.28)',
 }
@@ -229,13 +229,13 @@ export default function AdminDashboardPage() {
           className="absolute inset-0 opacity-[0.035]"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.45) 1px,transparent 1px)',
+              "var(--shapeos-surface)",
             backgroundSize: '38px 38px',
           }}
         />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-zinc-500">
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22C7C7] opacity-50" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[#22C7C7]" />
@@ -243,12 +243,12 @@ export default function AdminDashboardPage() {
               Command Center · dados atualizados automaticamente
             </div>
             <h1
-              className="mt-4 text-3xl font-semibold leading-tight text-[#F5F7FA] md:text-5xl"
+              className="mt-4 text-3xl font-semibold leading-tight text-[#edf2f3] md:text-5xl"
               style={{ fontFamily: "'Unbounded', sans-serif", letterSpacing: '-0.045em' }}
             >
 {frasePulse}
             </h1>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 md:text-base">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
               Uma visão operacional da plataforma para saber o que está crescendo, o que está sendo usado e onde você precisa agir.
             </p>
           </div>
@@ -258,20 +258,20 @@ export default function AdminDashboardPage() {
               className="relative grid h-24 w-24 place-items-center rounded-full"
               style={{
                 background: `conic-gradient(#22C7C7 ${metricas.pulse * 3.6}deg, rgba(255,255,255,.07) 0deg)`,
-                boxShadow: '0 0 35px rgba(34,199,199,.12)',
+                boxShadow: "none",
               }}
             >
-              <div className="absolute inset-[7px] rounded-full bg-[#0E1116]" />
+              <div className="absolute inset-[7px] rounded-full bg-[#121719]" />
               <div className="relative text-center">
-                <div className="text-2xl font-bold text-[#F5F7FA]">{metricas.pulse}</div>
-                <div className="text-[9px] uppercase tracking-widest text-zinc-500">Pulse</div>
+                <div className="text-2xl font-bold text-[#edf2f3]">{metricas.pulse}</div>
+                <div className="text-[9px] uppercase tracking-widest text-muted-foreground">Pulse</div>
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-2 text-sm font-semibold text-[#F5F7FA]">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#edf2f3]">
                 <Gauge className="h-4 w-4 text-[#22C7C7]" /> ShapeOS Pulse
               </div>
-              <p className="mt-1 max-w-[190px] text-xs leading-relaxed text-zinc-500">
+              <p className="mt-1 max-w-[190px] text-xs leading-relaxed text-muted-foreground">
                 Combina uso, vínculos, treinos ativos e crescimento recente.
               </p>
             </div>
@@ -281,14 +281,14 @@ export default function AdminDashboardPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard icon={Users} label="Usuários" value={metricas.usuarios} detail={`+${metricas.novos7} esta semana`} accent="#22C7C7" />
-        <KpiCard icon={UserCheck} label="Personais" value={metricas.personals} detail={`${metricas.vinculosAtivos} vínculos ativos`} accent="#8BE9A8" />
-        <KpiCard icon={GraduationCap} label="Alunos" value={metricas.alunos} detail={`+${metricas.novos30} nos últimos 30d`} accent="#70A5FF" />
+        <KpiCard icon={UserCheck} label="Personais" value={metricas.personals} detail={`${metricas.vinculosAtivos} vínculos ativos`} accent="#86cfa5" />
+        <KpiCard icon={GraduationCap} label="Alunos" value={metricas.alunos} detail={`+${metricas.novos30} nos últimos 30d`} accent="#8cbbe4" />
         <KpiCard
           icon={Activity}
           label="Execuções · 7d"
           value={metricas.execucoes7}
           detail={`${metricas.variacaoExecucoes >= 0 ? '+' : ''}${metricas.variacaoExecucoes}% vs. semana anterior`}
-          accent={metricas.variacaoExecucoes >= 0 ? '#F59E0B' : '#FF8B8B'}
+          accent={metricas.variacaoExecucoes >= 0 ? '#e3b66a' : '#f18d8d'}
         />
       </div>
 
@@ -296,10 +296,10 @@ export default function AdminDashboardPage() {
         <section className="rounded-3xl p-5 md:p-6" style={glass}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#F5F7FA]">
-                <Zap className="h-4 w-4 text-[#F59E0B]" /> Pulso de atividade
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#edf2f3]">
+                <Zap className="h-4 w-4 text-[#e3b66a]" /> Pulso de atividade
               </div>
-              <p className="mt-1 text-xs text-zinc-500">Execuções registradas nos últimos 14 dias.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Execuções registradas nos últimos 14 dias.</p>
             </div>
             <div className="rounded-full px-3 py-1 text-[10px] font-medium text-[#22C7C7]" style={{ background: 'rgba(34,199,199,.08)', border: '1px solid rgba(34,199,199,.18)' }}>
               ao vivo
@@ -320,14 +320,14 @@ export default function AdminDashboardPage() {
                         height: `${altura}%`,
                         minHeight: 5,
                         background: recente
-                          ? 'linear-gradient(180deg,#22C7C7,rgba(34,199,199,.16))'
-                          : 'linear-gradient(180deg,rgba(245,158,11,.7),rgba(245,158,11,.1))',
+                          ? "var(--shapeos-surface)"
+                          : "var(--shapeos-surface)",
                         opacity: dia.valor ? 0.82 : 0.25,
                         boxShadow: recente && dia.valor ? '0 -8px 22px rgba(34,199,199,.08)' : 'none',
                       }}
                     />
                   </div>
-                  <span className="hidden text-[9px] text-zinc-600 md:block">{index % 2 === 0 ? dia.label : ''}</span>
+                  <span className="hidden text-[9px] text-muted-foreground md:block">{index % 2 === 0 ? dia.label : ''}</span>
                 </div>
               )
             })}
@@ -343,9 +343,9 @@ export default function AdminDashboardPage() {
         <section className="rounded-3xl p-5 md:p-6" style={glass}>
           <div className="flex items-center gap-2">
             <BrainCircuit className="h-4 w-4 text-[#22C7C7]" />
-            <h2 className="text-sm font-semibold text-[#F5F7FA]">Shape Intelligence</h2>
+            <h2 className="text-sm font-semibold text-[#edf2f3]">Shape Intelligence</h2>
           </div>
-          <p className="mt-1 text-xs text-zinc-500">Sinais calculados automaticamente com os dados atuais.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Sinais calculados automaticamente com os dados atuais.</p>
 
           <div className="mt-5 space-y-3">
             {metricas.insights.map((item, index) => (
@@ -364,14 +364,14 @@ export default function AdminDashboardPage() {
                     style={{ background: item.tone === 'warning' || item.tone === 'danger' ? 'rgba(245,158,11,.1)' : 'rgba(34,199,199,.08)' }}
                   >
                     {item.tone === 'warning' || item.tone === 'danger'
-                      ? <AlertTriangle className="h-3.5 w-3.5 text-[#F59E0B]" />
+                      ? <AlertTriangle className="h-3.5 w-3.5 text-[#e3b66a]" />
                       : <CheckCircle2 className="h-3.5 w-3.5 text-[#22C7C7]" />}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-[#F5F7FA]">{item.title}</p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-zinc-500">{item.text}</p>
+                    <p className="text-xs font-semibold text-[#edf2f3]">{item.title}</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{item.text}</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-zinc-700 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-400" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
                 </div>
               </Link>
             ))}
@@ -383,15 +383,15 @@ export default function AdminDashboardPage() {
         <section className="rounded-3xl p-5 md:p-6" style={glass}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-[#F5F7FA]">Agora no ShapeOS</h2>
-              <p className="mt-1 text-xs text-zinc-500">Atividade recente da plataforma.</p>
+              <h2 className="text-sm font-semibold text-[#edf2f3]">Agora no ShapeOS</h2>
+              <p className="mt-1 text-xs text-muted-foreground">Atividade recente da plataforma.</p>
             </div>
-            <Clock3 className="h-4 w-4 text-zinc-600" />
+            <Clock3 className="h-4 w-4 text-muted-foreground" />
           </div>
 
           <div className="mt-5 space-y-1">
             {metricas.atividades.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-xs text-zinc-500">
+              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-xs text-muted-foreground">
                 A atividade recente aparecerá aqui.
               </div>
             ) : metricas.atividades.map((item, index) => (
@@ -403,13 +403,13 @@ export default function AdminDashboardPage() {
                 >
                   {item.tipo === 'execucao'
                     ? <Activity className="h-3.5 w-3.5 text-[#22C7C7]" />
-                    : <Users className="h-3.5 w-3.5 text-[#F59E0B]" />}
+                    : <Users className="h-3.5 w-3.5 text-[#e3b66a]" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-zinc-200">{item.titulo}</p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-wider text-zinc-600">{item.detalhe}</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{item.detalhe}</p>
                 </div>
-                <span className="text-[10px] text-zinc-600">{tempoRelativo(item.data)}</span>
+                <span className="text-[10px] text-muted-foreground">{tempoRelativo(item.data)}</span>
               </div>
             ))}
           </div>
@@ -417,16 +417,16 @@ export default function AdminDashboardPage() {
 
         <section className="rounded-3xl p-5 md:p-6" style={glass}>
           <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-[#F59E0B]" />
-            <h2 className="text-sm font-semibold text-[#F5F7FA]">Ações rápidas</h2>
+            <TrendingUp className="h-4 w-4 text-[#e3b66a]" />
+            <h2 className="text-sm font-semibold text-[#edf2f3]">Ações rápidas</h2>
           </div>
-          <p className="mt-1 text-xs text-zinc-500">Entre direto nos pontos mais importantes da operação.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Entre direto nos pontos mais importantes da operação.</p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <QuickAction href="/admin/usuarios" icon={Users} title="Usuários" text="Auditar base e perfis" accent="#22C7C7" />
-            <QuickAction href="/admin/personais" icon={UserCheck} title="Personais" text="Ver alunos e vínculos" accent="#8BE9A8" />
-            <QuickAction href="/admin/exercicios" icon={Dumbbell} title="Biblioteca" text="Gerenciar exercícios" accent="#F59E0B" />
-            <QuickAction href="/admin/conta" icon={Gauge} title="Conta" text="Segurança e acesso" accent="#70A5FF" />
+            <QuickAction href="/admin/personais" icon={UserCheck} title="Personais" text="Ver alunos e vínculos" accent="#86cfa5" />
+            <QuickAction href="/admin/exercicios" icon={Dumbbell} title="Biblioteca" text="Gerenciar exercícios" accent="#e3b66a" />
+            <QuickAction href="/admin/conta" icon={Gauge} title="Conta" text="Segurança e acesso" accent="#8cbbe4" />
           </div>
         </section>
       </div>
@@ -452,9 +452,9 @@ function KpiCard({
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl opacity-10" style={{ background: accent }} />
       <div className="relative flex items-start justify-between">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-600">{label}</p>
-          <p className="mt-2 text-3xl font-semibold text-[#F5F7FA]" style={{ fontFamily: "'Unbounded', sans-serif" }}>{value}</p>
-          <p className="mt-1 text-[11px] text-zinc-500">{detail}</p>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
+          <p className="mt-2 text-3xl font-semibold text-[#edf2f3]" style={{ fontFamily: "'Unbounded', sans-serif" }}>{value}</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">{detail}</p>
         </div>
         <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: `${accent}14`, border: `1px solid ${accent}2c` }}>
           <Icon className="h-4 w-4" style={{ color: accent }} />
@@ -471,7 +471,7 @@ function MiniSignal({ icon: Icon, value, label }: { icon: typeof Dumbbell; value
         <Icon className="h-3.5 w-3.5 text-[#22C7C7]" />
         <span className="text-lg font-semibold text-zinc-100">{value}</span>
       </div>
-      <p className="mt-1 text-[10px] leading-relaxed text-zinc-600">{label}</p>
+      <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">{label}</p>
     </div>
   )
 }
@@ -495,10 +495,10 @@ function QuickAction({
         <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: `${accent}12`, border: `1px solid ${accent}25` }}>
           <Icon className="h-4 w-4" style={{ color: accent }} />
         </div>
-        <ArrowUpRight className="h-4 w-4 text-zinc-700 transition-colors group-hover:text-zinc-400" />
+        <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-muted-foreground" />
       </div>
       <p className="mt-4 text-sm font-semibold text-zinc-200">{title}</p>
-      <p className="mt-1 text-[11px] text-zinc-600">{text}</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">{text}</p>
     </Link>
   )
 }

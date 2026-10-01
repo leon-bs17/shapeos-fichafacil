@@ -39,18 +39,14 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
     data-testid={testId}
     className="relative rounded-2xl p-5 overflow-hidden transition-transform hover:-translate-y-0.5"
     style={{
-      background: "linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))",
+      background: "var(--shapeos-surface)",
       border: "1px solid rgba(255,255,255,0.07)",
       boxShadow: "0 12px 30px rgba(0,0,0,0.3)",
     }}
   >
-    <div
-      className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-25 blur-2xl"
-      style={{ background: accent }}
-    />
     <div className="relative">
       <div
-        className="flex items-center gap-2 text-xs text-zinc-500 uppercase tracking-widest"
+        className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest"
         style={{ fontFamily: "'Sora', sans-serif" }}
       >
         <Icon className="w-3.5 h-3.5" style={{ color: accent }} />
@@ -58,13 +54,13 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
       </div>
       <div className="mt-3 flex items-baseline gap-1">
         <span
-          className="text-4xl text-[#F5F7FA]"
+          className="text-4xl text-[#edf2f3]"
           style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
         >
           {value}
         </span>
         {unit && (
-          <span className="text-sm text-zinc-500" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <span className="text-sm text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
             {unit}
           </span>
         )}
@@ -104,13 +100,13 @@ const DayPicker = ({ student, onChange }) => {
               }}
             >
               <div
-                className="text-[10px] uppercase tracking-widest text-zinc-500"
+                className="text-[10px] uppercase tracking-widest text-muted-foreground"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 {day.short}
               </div>
               <div
-                className={`mt-1 text-xs md:text-sm ${isRest ? "text-zinc-500" : "text-[#22C7C7]"}`}
+                className={`mt-1 text-xs md:text-sm ${isRest ? "text-muted-foreground" : "text-[#22C7C7]"}`}
                 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
               >
                 {isRest ? "Off" : template?.id}
@@ -133,7 +129,7 @@ const DayPicker = ({ student, onChange }) => {
                   data-testid={`schedule-popover-${student.id}-${day.key}`}
                 >
                   <div
-                    className="px-3 py-2 text-[10px] uppercase tracking-widest text-zinc-500"
+                    className="px-3 py-2 text-[10px] uppercase tracking-widest text-muted-foreground"
                     style={{ fontFamily: "'Sora', sans-serif" }}
                   >
                     Treino para {day.label}
@@ -153,9 +149,9 @@ const DayPicker = ({ student, onChange }) => {
                             className="w-2 h-2 rounded-full flex-shrink-0"
                             style={{ background: t.accent }}
                           />
-                          <span className="text-[#F5F7FA] truncate">{t.code}</span>
+                          <span className="text-[#edf2f3] truncate">{t.code}</span>
                           {t.id !== "rest" && (
-                            <span className="text-xs text-zinc-500 truncate">· {t.title}</span>
+                            <span className="text-xs text-muted-foreground truncate">· {t.title}</span>
                           )}
                         </span>
                         {selected && <CheckCheck className="w-3.5 h-3.5 text-[#22C7C7] flex-shrink-0" />}
@@ -180,7 +176,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
       data-testid={`student-row-${student.id}`}
       className="rounded-2xl p-4 md:p-5 transition-all duration-300"
       style={{
-        background: "linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.012))",
+        background: "var(--shapeos-surface)",
         border: "1px solid rgba(255,255,255,0.07)",
         boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
       }}
@@ -191,7 +187,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center text-sm flex-shrink-0"
             style={{
-              background: "linear-gradient(135deg, rgba(34,199,199,0.15), rgba(34,199,199,0.03))",
+              background: "var(--shapeos-surface)",
               border: "1px solid rgba(34,199,199,0.3)",
               color: "#22C7C7",
               fontFamily: "'Sora', sans-serif",
@@ -203,7 +199,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3
-                className="text-[#F5F7FA] truncate"
+                className="text-[#edf2f3] truncate"
                 style={{
                   fontFamily: "'Sora', sans-serif",
                   fontWeight: 500,
@@ -215,7 +211,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               </h3>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest ${
-                  student.status === "ativo" ? "text-[#22C7C7]" : "text-zinc-500"
+                  student.status === "ativo" ? "text-[#22C7C7]" : "text-muted-foreground"
                 }`}
                 style={{
                   background:
@@ -232,7 +228,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               </span>
             </div>
             <div
-              className="text-xs text-zinc-500 mt-1 flex items-center gap-3 flex-wrap"
+              className="text-xs text-muted-foreground mt-1 flex items-center gap-3 flex-wrap"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               <span>{student.age} anos</span>
@@ -247,7 +243,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
         {/* Progress */}
         <div className="hidden lg:block w-36 flex-shrink-0">
           <div
-            className="text-[10px] text-zinc-500 uppercase tracking-widest mb-2"
+            className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             Aderência
@@ -257,12 +253,12 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               className="h-full rounded-full"
               style={{
                 width: `${student.progress}%`,
-                background: student.progress > 70 ? "#22C7C7" : "#F59E0B",
+                background: student.progress > 70 ? "#22C7C7" : "#e3b66a",
               }}
             />
           </div>
-          <div className="text-xs text-[#F5F7FA] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
-            {student.progress}% <span className="text-zinc-500">· {student.streak}d</span>
+          <div className="text-xs text-[#edf2f3] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+            {student.progress}% <span className="text-muted-foreground">· {student.streak}d</span>
           </div>
         </div>
 
@@ -278,7 +274,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             style={{
               background: scheduleOpen ? "rgba(34,199,199,0.12)" : "rgba(255,255,255,0.03)",
               border: `1px solid ${scheduleOpen ? "rgba(34,199,199,0.35)" : "rgba(255,255,255,0.08)"}`,
-              color: scheduleOpen ? "#22C7C7" : "#F5F7FA",
+              color: scheduleOpen ? "#22C7C7" : "#edf2f3",
             }}
           >
             <Calendar className="w-3.5 h-3.5" /> Cronograma
@@ -286,7 +282,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           </button>
           <button
             data-testid={`view-ficha-btn-${student.id}`}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -297,7 +293,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <button
             data-testid={`edit-ficha-btn-${student.id}`}
             onClick={() => onEdit(student)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -311,7 +307,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
             style={{
               background: cloned ? "#22C7C7" : "rgba(34,199,199,0.1)",
-              color: cloned ? "#0E1116" : "#22C7C7",
+              color: cloned ? "#121719" : "#22C7C7",
               border: `1px solid ${cloned ? "#22C7C7" : "rgba(34,199,199,0.3)"}`,
               boxShadow: cloned ? "0 6px 18px rgba(34,199,199,0.35)" : "none",
             }}
@@ -333,7 +329,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-105"
             style={{
               background: "rgba(255,80,80,0.08)",
-              color: "#ff6b6b",
+              color: "#f18d8d",
               border: "1px solid rgba(255,80,80,0.25)",
             }}
           >
@@ -349,7 +345,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
           <div
-            className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-3"
+            className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <Calendar className="w-3 h-3" />
@@ -357,7 +353,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           </div>
           <DayPicker student={student} onChange={onScheduleChange} />
           <div
-            className="mt-3 flex flex-wrap gap-3 text-[10px] uppercase tracking-widest text-zinc-500"
+            className="mt-3 flex flex-wrap gap-3 text-[10px] uppercase tracking-widest text-muted-foreground"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             {workoutTemplates.map((t) => (
@@ -390,7 +386,7 @@ const ModalShell = ({ children, onClose, testId }) => (
     <div
       className="relative w-full max-w-md rounded-3xl p-7 animate-in fade-in-0 zoom-in-95 duration-200"
       style={{
-        background: "linear-gradient(160deg, rgba(30,30,30,0.98), rgba(20,20,20,0.98))",
+        background: "var(--shapeos-surface)",
         border: "1px solid rgba(255,255,255,0.08)",
         boxShadow: "0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
       }}
@@ -404,7 +400,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
   <ModalShell onClose={onCancel} testId="delete-ficha-modal">
     <button
       onClick={onCancel}
-      className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
+      className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
       aria-label="Fechar"
     >
       <X className="w-4 h-4" />
@@ -414,18 +410,18 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
         className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)" }}
       >
-        <AlertTriangle className="w-5 h-5 text-[#ff6b6b]" />
+        <AlertTriangle className="w-5 h-5 text-[#f18d8d]" />
       </div>
       <div className="flex-1">
         <h2
-          className="text-xl text-[#F5F7FA]"
+          className="text-xl text-[#edf2f3]"
           style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
         >
           Apagar ficha?
         </h2>
-        <p className="text-sm text-zinc-400 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
+        <p className="text-sm text-muted-foreground mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
           Você está prestes a apagar a ficha de{" "}
-          <span className="text-[#F5F7FA] font-semibold">{student.name}</span>. Essa ação
+          <span className="text-[#edf2f3] font-semibold">{student.name}</span>. Essa ação
           remove o aluno e o cronograma. Não pode ser desfeita.
         </p>
       </div>
@@ -434,7 +430,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-cancel-button"
         onClick={onCancel}
-        className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
+        className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
         style={{
           background: "rgba(255,255,255,0.03)",
           border: "1px solid rgba(255,255,255,0.08)",
@@ -445,10 +441,10 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-confirm-button"
         onClick={onConfirm}
-        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#F5F7FA] transition-all hover:scale-[1.01]"
+        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#edf2f3] transition-all hover:scale-[1.01]"
         style={{
           background: "#e64545",
-          boxShadow: "0 10px 24px rgba(230,69,69,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
+          boxShadow: "none",
         }}
       >
         Apagar ficha
@@ -465,7 +461,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="edit-ficha-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
         aria-label="Fechar"
       >
         <X className="w-4 h-4" />
@@ -479,12 +475,12 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         </div>
         <div>
           <h2
-            className="text-xl text-[#F5F7FA] leading-tight"
+            className="text-xl text-[#edf2f3] leading-tight"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Editar ficha
           </h2>
-          <p className="text-xs text-zinc-500 mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <p className="text-xs text-muted-foreground mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
             {student.name}
           </p>
         </div>
@@ -492,29 +488,29 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
 
       <div className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
         <div>
-          <label className="text-xs text-zinc-500 uppercase tracking-widest">Ficha atual</label>
+          <label className="text-xs text-muted-foreground uppercase tracking-widest">Ficha atual</label>
           <input
             data-testid="edit-workout-input"
             type="text"
             value={workout}
             onChange={(e) => setWorkout(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
           />
         </div>
         <div>
-          <label className="text-xs text-zinc-500 uppercase tracking-widest">Objetivo do plano</label>
+          <label className="text-xs text-muted-foreground uppercase tracking-widest">Objetivo do plano</label>
           <select
             data-testid="edit-plan-select"
             value={plan}
             onChange={(e) => setPlan(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
-            <option value="Hipertrofia" style={{ background: "#0e1116" }}>Hipertrofia</option>
-            <option value="Emagrecimento" style={{ background: "#0e1116" }}>Emagrecimento</option>
-            <option value="Força Máxima" style={{ background: "#0e1116" }}>Força Máxima</option>
-            <option value="Resistência" style={{ background: "#0e1116" }}>Resistência</option>
+            <option value="Hipertrofia" style={{ background: "#121719" }}>Hipertrofia</option>
+            <option value="Emagrecimento" style={{ background: "#121719" }}>Emagrecimento</option>
+            <option value="Força Máxima" style={{ background: "#121719" }}>Força Máxima</option>
+            <option value="Resistência" style={{ background: "#121719" }}>Resistência</option>
           </select>
         </div>
       </div>
@@ -523,7 +519,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-cancel-button"
           onClick={onCancel}
-          className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
+          className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
           style={{
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.08)",
@@ -534,10 +530,10 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-save-button"
           onClick={() => onSave({ ...student, currentWorkout: workout, plan })}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01]"
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01]"
           style={{
             background: "#22C7C7",
-            boxShadow: "0 10px 24px rgba(34,199,199,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+            boxShadow: "none",
           }}
         >
           <Save className="w-4 h-4" /> Salvar alterações
@@ -551,7 +547,7 @@ const PLANS = ["Hipertrofia", "Emagrecimento", "Força Máxima", "Resistência"]
 
 const fieldStyle = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" };
 const fieldClass =
-  "mt-2 w-full px-4 py-3 rounded-xl text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20";
+  "mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20";
 
 const NewStudentModal = ({ onCancel, onSave }) => {
   const [name, setName] = useState("");
@@ -572,7 +568,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="new-student-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F7FA] transition-colors"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
         aria-label="Fechar"
         data-testid="new-student-close-button"
       >
@@ -583,16 +579,16 @@ const NewStudentModal = ({ onCancel, onSave }) => {
           className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.35)" }}
         >
-          <UserPlus className="w-4 h-4 text-[#F59E0B]" />
+          <UserPlus className="w-4 h-4 text-muted-foreground" />
         </div>
         <div>
           <h2
-            className="text-xl text-[#F5F7FA] leading-tight"
+            className="text-xl text-[#edf2f3] leading-tight"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Novo aluno
           </h2>
-          <p className="text-xs text-zinc-500 mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <p className="text-xs text-muted-foreground mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
             Cadastre e monte o cronograma em seguida
           </p>
         </div>
@@ -600,7 +596,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
         <div>
-          <label className="text-xs text-zinc-500 uppercase tracking-widest">Nome completo</label>
+          <label className="text-xs text-muted-foreground uppercase tracking-widest">Nome completo</label>
           <input
             data-testid="new-student-name-input"
             type="text"
@@ -614,7 +610,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-zinc-500 uppercase tracking-widest">Idade</label>
+            <label className="text-xs text-muted-foreground uppercase tracking-widest">Idade</label>
             <input
               data-testid="new-student-age-input"
               type="number"
@@ -628,7 +624,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-500 uppercase tracking-widest">Objetivo</label>
+            <label className="text-xs text-muted-foreground uppercase tracking-widest">Objetivo</label>
             <select
               data-testid="new-student-plan-select"
               value={plan}
@@ -637,14 +633,14 @@ const NewStudentModal = ({ onCancel, onSave }) => {
               style={fieldStyle}
             >
               {PLANS.map((p) => (
-                <option key={p} value={p} style={{ background: "#0e1116" }}>{p}</option>
+                <option key={p} value={p} style={{ background: "#121719" }}>{p}</option>
               ))}
             </select>
           </div>
         </div>
 
         {error && (
-          <p data-testid="new-student-error" className="text-xs text-[#ff8a8a] flex items-center gap-1.5">
+          <p data-testid="new-student-error" className="text-xs text-[#f18d8d] flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5" /> {error}
           </p>
         )}
@@ -654,7 +650,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
             type="button"
             data-testid="new-student-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#F5F7FA] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
             style={fieldStyle}
           >
             Cancelar
@@ -662,10 +658,10 @@ const NewStudentModal = ({ onCancel, onSave }) => {
           <button
             type="submit"
             data-testid="new-student-save-button"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#0E1116] transition-all hover:scale-[1.01]"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01]"
             style={{
-              background: "#F59E0B",
-              boxShadow: "0 10px 24px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+              background: "#22C7C7",
+              boxShadow: "none",
             }}
           >
             <UserPlus className="w-4 h-4" /> Cadastrar aluno
@@ -798,17 +794,17 @@ export const PersonalView = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#0E1116]" data-testid="personal-view">
+    <div className="min-h-screen bg-[#121719]" data-testid="personal-view">
       {/* Desktop navigation */}
       <aside
         className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col lg:flex"
         style={{
-          background: "linear-gradient(180deg, #12161D 0%, #0F1319 100%)",
-          borderRight: "1px solid #273142",
+          background: "var(--shapeos-surface)",
+          borderRight: "1px solid #354249",
           boxShadow: "none",
         }}
       >
-        <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid #273142" }}>
+        <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid #354249" }}>
           <Logo size="sm" />
         </div>
 
@@ -820,7 +816,7 @@ export const PersonalView = ({
             <PanelLeft className="h-3.5 w-3.5 text-[#22C7C7]" />
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-200">Espaço do personal</p>
-              <p className="mt-0.5 truncate text-[9px] text-[#6F7B8C]">Alunos e programação</p>
+              <p className="mt-0.5 truncate text-[9px] text-[#91a3ac]">Alunos e programação</p>
             </div>
           </div>
         </div>
@@ -836,7 +832,7 @@ export const PersonalView = ({
                 onClick={() => goToSection(id)}
                 className="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all"
                 style={{
-                  color: active ? "#F5F7FA" : "#A7B0BE",
+                  color: active ? "#edf2f3" : "#a9b8be",
                   background: active ? "rgba(34,199,199,0.10)" : "transparent",
                   border: active ? "1px solid rgba(34,199,199,0.18)" : "1px solid transparent",
                 }}
@@ -846,7 +842,7 @@ export const PersonalView = ({
                 <span className="flex-1">{label}</span>
                 <ChevronRight
                   className="h-3.5 w-3.5 transition-all"
-                  style={{ color: active ? "#22C7C7" : "#3F4A59", opacity: active ? 1 : 0.55 }}
+                  style={{ color: active ? "#22C7C7" : "#637780", opacity: active ? 1 : 0.55 }}
                 />
               </button>
             );
@@ -860,17 +856,17 @@ export const PersonalView = ({
             className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5"
             style={{
               background: "#22C7C7",
-              color: "#0E1116",
-              boxShadow: "0 10px 24px rgba(34,199,199,0.16)",
+              color: "#121719",
+              boxShadow: "none",
             }}
           >
             <UserPlus className="h-4 w-4" /> Novo aluno
           </button>
-          <div className="mt-3 rounded-xl px-3 py-3" style={{ background: "#171C24", border: "1px solid #273142" }}>
+          <div className="mt-3 rounded-xl px-3 py-3" style={{ background: "#1b2327", border: "1px solid #354249" }}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.16em] text-[#6F7B8C]">Sua base</p>
-                <p className="mt-1 text-sm font-semibold text-[#F5F7FA]">{students.length} alunos ativos</p>
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#91a3ac]">Sua base</p>
+                <p className="mt-1 text-sm font-semibold text-[#edf2f3]">{students.length} alunos ativos</p>
               </div>
               <div className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: "rgba(34,199,199,0.10)" }}>
                 <Users className="h-3.5 w-3.5 text-[#22C7C7]" />
@@ -879,11 +875,11 @@ export const PersonalView = ({
           </div>
         </div>
 
-        <div className="p-4" style={{ borderTop: "1px solid #273142" }}>
+        <div className="p-4" style={{ borderTop: "1px solid #354249" }}>
           <button
             data-testid="personal-logout-button"
             onClick={onLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-[#6F7B8C] transition-colors hover:bg-red-400/[0.05] hover:text-red-300"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-[#91a3ac] transition-colors hover:bg-red-400/[0.05] hover:text-red-300"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <LogOut className="h-3.5 w-3.5" /> Sair da conta
@@ -894,7 +890,7 @@ export const PersonalView = ({
       {/* Mobile navigation */}
       <div
         className="sticky top-0 z-40 lg:hidden"
-        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid #273142", backdropFilter: "blur(18px)" }}
+        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid #354249", backdropFilter: "blur(18px)" }}
       >
         <div className="flex items-center justify-between px-4 py-3">
           <Logo size="sm" />
@@ -902,7 +898,7 @@ export const PersonalView = ({
             <button
               type="button"
               onClick={() => setCreating(true)}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#0E1116]"
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#121719]"
               style={{ background: "#22C7C7" }}
               aria-label="Novo aluno"
             >
@@ -911,8 +907,8 @@ export const PersonalView = ({
             <button
               data-testid="personal-logout-button-mobile"
               onClick={onLogout}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#6F7B8C]"
-              style={{ background: "#171C24", border: "1px solid #273142" }}
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#91a3ac]"
+              style={{ background: "#1b2327", border: "1px solid #354249" }}
               aria-label="Sair"
             >
               <LogOut className="h-4 w-4" />
@@ -930,9 +926,9 @@ export const PersonalView = ({
                 onClick={() => goToSection(id)}
                 className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
                 style={{
-                  background: active ? "rgba(34,199,199,0.11)" : "#171C24",
-                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #273142",
-                  color: active ? "#22C7C7" : "#A7B0BE",
+                  background: active ? "rgba(34,199,199,0.11)" : "#1b2327",
+                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #354249",
+                  color: active ? "#22C7C7" : "#a9b8be",
                 }}
               >
                 <Icon className="h-3.5 w-3.5" /> {label}
@@ -949,20 +945,20 @@ export const PersonalView = ({
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
             <div
-              className="flex items-center gap-2 text-xs text-zinc-500 uppercase tracking-[0.3em]"
+              className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-[0.3em]"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
-              <Flame className="w-3.5 h-3.5 text-[#F59E0B]" />
+              <Flame className="w-3.5 h-3.5 text-muted-foreground" />
               Painel do Personal
             </div>
             <h1
-              className="mt-3 text-3xl sm:text-4xl text-[#F5F7FA] leading-tight"
+              className="mt-3 text-3xl sm:text-4xl text-[#edf2f3] leading-tight"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
             >
               Bem-vindo, <span className="text-[#22C7C7]">Personal</span>
             </h1>
             <p
-              className="mt-3 text-base md:text-lg text-zinc-400"
+              className="mt-3 text-base md:text-lg text-muted-foreground"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               Monte a semana de cada aluno, edite fichas e clone treinos em segundos.
@@ -974,9 +970,9 @@ export const PersonalView = ({
             onClick={() => setCreating(true)}
             className="flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold transition-all hover:scale-[1.02] self-start md:self-auto"
             style={{
-              background: "#F59E0B",
-              color: "#0E1116",
-              boxShadow: "0 12px 28px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
+              background: "#22C7C7",
+              color: "#121719",
+              boxShadow: "none",
               fontFamily: "'Sora', sans-serif",
               letterSpacing: "0.02em",
             }}
@@ -999,7 +995,7 @@ export const PersonalView = ({
             icon={ClipboardList}
             label="Fichas Criadas"
             value={personalStats.workoutsCreated}
-            accent="#F59E0B"
+            accent="#8cbbe4"
           />
           <StatCard
             testId="stat-adherence"
@@ -1016,10 +1012,10 @@ export const PersonalView = ({
         <section id="workouts" className="scroll-mt-32 lg:scroll-mt-8 mb-10" data-testid="workout-templates-section">
           <div className="flex items-center justify-between mb-4">
             <h2
-              className="text-lg text-[#F5F7FA]"
+              className="text-lg text-[#edf2f3]"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
             >
-              Meus Treinos <span className="text-zinc-500">(edite os exercícios de cada ficha)</span>
+              Meus Treinos <span className="text-muted-foreground">(edite os exercícios de cada ficha)</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1035,7 +1031,7 @@ export const PersonalView = ({
                     className="group text-left rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden"
                     style={{
                       background:
-                        "linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))",
+                        "var(--shapeos-surface)",
                       border: "1px solid rgba(255,255,255,0.07)",
                       boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
                     }}
@@ -1058,10 +1054,10 @@ export const PersonalView = ({
                         >
                           {t.id}
                         </span>
-                        <Pencil className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#22C7C7] transition-colors" />
+                        <Pencil className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#22C7C7] transition-colors" />
                       </div>
                       <h3
-                        className="mt-4 text-xl text-[#F5F7FA] leading-tight"
+                        className="mt-4 text-xl text-[#edf2f3] leading-tight"
                         style={{
                           fontFamily: "'Sora', sans-serif",
                           fontWeight: 600,
@@ -1071,13 +1067,13 @@ export const PersonalView = ({
                         {w?.title || t.title}
                       </h3>
                       <div
-                        className="mt-1 text-xs text-zinc-500"
+                        className="mt-1 text-xs text-muted-foreground"
                         style={{ fontFamily: "'Sora', sans-serif" }}
                       >
                         {t.code}
                       </div>
                       <div
-                        className="mt-4 flex items-center gap-3 text-xs text-zinc-400"
+                        className="mt-4 flex items-center gap-3 text-xs text-muted-foreground"
                         style={{ fontFamily: "'Sora', sans-serif" }}
                       >
                         <span className="inline-flex items-center gap-1">
@@ -1102,20 +1098,20 @@ export const PersonalView = ({
         {/* Search + list header */}
         <div className="flex items-center justify-between mb-4">
           <h2
-            className="text-lg text-[#F5F7FA]"
+            className="text-lg text-[#edf2f3]"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
           >
-            Sua base <span className="text-zinc-500">({filtered.length})</span>
+            Sua base <span className="text-muted-foreground">({filtered.length})</span>
           </h2>
           <div className="relative w-full max-w-xs">
-            <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               data-testid="student-search-input"
               type="text"
               placeholder="Buscar aluno..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F7FA] placeholder:text-zinc-600 outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
               style={{
                 background: "rgba(255,255,255,0.03)",
                 border: "1px solid rgba(255,255,255,0.08)",
@@ -1140,7 +1136,7 @@ export const PersonalView = ({
           ))}
           {filtered.length === 0 && (
             <div
-              className="text-center py-10 rounded-2xl text-zinc-500 text-sm"
+              className="text-center py-10 rounded-2xl text-muted-foreground text-sm"
               style={{
                 background: "rgba(255,255,255,0.02)",
                 border: "1px dashed rgba(255,255,255,0.08)",
@@ -1195,7 +1191,7 @@ export const PersonalView = ({
           style={{
             background: "rgba(20,20,20,0.95)",
             border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(34,199,199,0.4)"}`,
-            color: toast.tone === "danger" ? "#ff8a8a" : "#22C7C7",
+            color: toast.tone === "danger" ? "#f18d8d" : "#22C7C7",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
             fontFamily: "'Sora', sans-serif",
           }}

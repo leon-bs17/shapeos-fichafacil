@@ -53,7 +53,7 @@ export default function RedefinirSenhaPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0a0f1a] p-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#121719] p-4">
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Definir nova senha</h1>
