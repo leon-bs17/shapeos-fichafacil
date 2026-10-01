@@ -26,7 +26,7 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "O ShapeOS usa Face ID para voce entrar com biometria."
+          "faceIDPermission": "O ShapeOS usa Face ID para você entrar com biometria."
         }
       ]
     ],
