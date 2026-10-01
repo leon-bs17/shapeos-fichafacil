@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
 
 @theme inline {
     --color-background: hsl(var(--background));
@@ -252,12 +252,12 @@ input:-webkit-autofill:focus {
 
 [data-testid="personal-view"] [data-testid="new-student-button"] {
     background: var(--dashboard-brand) !important;
-    box-shadow: 0 12px 28px rgba(34, 199, 199, 0.28), inset 0 -3px 0 rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-testid="personal-view"] [data-testid="new-student-save-button"] {
     background: var(--dashboard-brand) !important;
-    box-shadow: 0 10px 24px rgba(34, 199, 199, 0.28), inset 0 -3px 0 rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-testid="personal-view"] [data-testid="student-search-input"] {
@@ -270,8 +270,8 @@ input:-webkit-autofill:focus {
 
 @media (max-width: 639px) {
     [data-testid="personal-view"] #overview h1 {
-        font-size: clamp(2.25rem, 12vw, 3.2rem) !important;
-        line-height: 1 !important;
+        font-size: clamp(1.75rem, 7vw, 2.25rem);
+        line-height: 1.2;
     }
 
     [data-testid="personal-view"] [data-testid="new-student-button"] {
@@ -398,4 +398,23 @@ input:-webkit-autofill:focus {
 .animate-ping-slower {
     animation: ping-slow-anim 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     animation-delay: 0.35s;
+}
+
+/* Shared workspace rhythm: restrained surfaces and readable headings. */
+.shapeos-workspace h1,
+.shapeos-workspace h2,
+.shapeos-workspace h3 {
+    text-wrap: balance;
+}
+.shapeos-workspace p { text-wrap: pretty; }
+.shapeos-workspace input,
+.shapeos-workspace select,
+.shapeos-workspace textarea { min-height: 2.75rem; }
+[data-testid="personal-view"] aside nav svg { opacity: 0.7; }
+[data-testid="personal-view"] aside nav button[aria-current] svg { opacity: 1; }
+[data-testid="aluno-view"] { background: hsl(var(--background)); }
+@media (max-width: 639px) {
+    .shapeos-workspace input,
+    .shapeos-workspace select,
+    .shapeos-workspace textarea { font-size: 16px; }
 }

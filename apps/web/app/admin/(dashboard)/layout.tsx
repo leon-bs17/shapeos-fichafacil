@@ -32,7 +32,7 @@ const novasFerramentas = [
 ]
 
 const gestaoLinks = [
-  { href: '/admin', label: 'Command Center', icone: LayoutDashboard },
+  { href: '/admin', label: 'Visão geral', icone: LayoutDashboard },
   { href: '/admin/usuarios', label: 'Usuários', icone: Users },
   { href: '/admin/personais', label: 'Personais', icone: UserCheck },
   { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },
@@ -64,26 +64,25 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     router.refresh()
   }
 
-  function linkDesktop(item: typeof contaLink, destaque = false) {
+  function linkDesktop(item: typeof contaLink) {
     const Icon = item.icone
     const ativo = item.href === '/admin' ? pathname === item.href : pathname.startsWith(item.href)
     return (
       <Link
         key={item.href}
         href={item.href}
-        className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all"
+        aria-current={ativo ? 'page' : undefined}
+        className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/[.04]"
         style={{
-          color: ativo ? '#F5F7FA' : destaque ? '#a1a1aa' : '#71717a',
-          background: ativo ? 'rgba(34,199,199,.09)' : destaque ? 'rgba(255,255,255,.02)' : 'transparent',
-          border: ativo ? '1px solid rgba(34,199,199,.18)' : destaque ? '1px solid rgba(255,255,255,.035)' : '1px solid transparent',
+          color: ativo ? '#F5F7FA' : '#a7b0be',
+          background: ativo ? 'rgba(255,255,255,.06)' : 'transparent',
+          border: '1px solid transparent',
         }}
       >
         {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#22C7C7]" />}
-        <Icon className="h-4 w-4" style={{ color: ativo || destaque ? '#22C7C7' : undefined }} />
+        <Icon className="h-4 w-4" aria-hidden="true" />
         <span className="flex-1">{item.label}</span>
-        {destaque && !ativo ? (
-          <span className="rounded-full bg-[#22C7C7]/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-[#22C7C7]">novo</span>
-        ) : null}
+
       </Link>
     )
   }
@@ -93,9 +92,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <aside
         className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
         style={{
-          background: 'linear-gradient(180deg,rgba(22,22,22,.98),rgba(18,18,18,.98))',
+          background: '#12161d',
           borderRight: '1px solid rgba(255,255,255,.06)',
-          boxShadow: '18px 0 50px rgba(0,0,0,.18)',
+          boxShadow: 'none',
         }}
       >
         <div className="flex h-20 flex-shrink-0 items-center px-5" style={{ borderBottom: '1px solid rgba(255,255,255,.055)' }}>
@@ -106,24 +105,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(34,199,199,.045)', border: '1px solid rgba(34,199,199,.12)' }}>
             <ShieldCheck className="h-3.5 w-3.5 text-[#22C7C7]" />
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Admin OS</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Administração</p>
               <p className="mt-0.5 text-[9px] text-zinc-600">controle da plataforma</p>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
-          <p className="mb-2 px-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#22C7C7]">Novas ferramentas</p>
+        <nav aria-label="Administração" className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
+          <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[#22C7C7]">Operação</p>
           <div className="space-y-1">
-            {novasFerramentas.map((item) => linkDesktop(item, true))}
+            {novasFerramentas.map((item) => linkDesktop(item))}
           </div>
 
-          <p className="mb-2 mt-5 px-2 text-[9px] font-bold uppercase tracking-[0.22em] text-zinc-600">Gestão</p>
+          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-zinc-600">Gestão</p>
           <div className="space-y-1">
             {gestaoLinks.map((item) => linkDesktop(item))}
           </div>
 
-          <p className="mb-2 mt-5 px-2 text-[9px] font-bold uppercase tracking-[0.22em] text-zinc-600">Conta</p>
+          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-zinc-600">Conta</p>
           <div className="space-y-1">{linkDesktop(contaLink)}</div>
         </nav>
 
@@ -158,31 +157,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <LogOut className="h-4 w-4" />
           </button>
         </div>
-        <p className="mt-3 text-[9px] font-bold uppercase tracking-[0.2em] text-[#22C7C7]">Menu Admin</p>
-        <nav className="mt-2 flex gap-2 overflow-x-auto pb-1">
-          {todosLinks.map(({ href, label, icone: Icon }) => {
-            const ativo = href === '/admin' ? pathname === href : pathname.startsWith(href)
-            const novo = novasFerramentas.some((item) => item.href === href)
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px]"
-                style={{
-                  background: ativo ? 'rgba(34,199,199,.09)' : novo ? 'rgba(34,199,199,.035)' : 'rgba(255,255,255,.025)',
-                  border: ativo ? '1px solid rgba(34,199,199,.16)' : novo ? '1px solid rgba(34,199,199,.09)' : '1px solid rgba(255,255,255,.05)',
-                  color: ativo || novo ? '#22C7C7' : '#71717a',
-                }}
-              >
-                <Icon className="h-3.5 w-3.5" /> {label}
-              </Link>
-            )
-          })}
-        </nav>
+        <details className="mt-3 group">
+          <summary className="cursor-pointer rounded-lg border border-border px-3 py-2.5 text-sm text-muted-foreground">Navegar · {todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</summary>
+          <nav aria-label="Administração no celular" className="mt-2 grid max-h-[60vh] grid-cols-2 gap-1 overflow-y-auto rounded-xl border border-border bg-card p-2">
+            {todosLinks.map((item) => linkDesktop(item))}
+          </nav>
+        </details>
       </div>
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
-        <div className="mx-auto max-w-[1500px]">{children}</div>
+        <div className="mx-auto max-w-[1400px]">
+          <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex"><span>ShapeOS</span><span aria-hidden="true">/</span><span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span></div>
+          {children}
+        </div>
       </main>
     </div>
   )

@@ -59,7 +59,7 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
       <div className="mt-3 flex items-baseline gap-1">
         <span
           className="text-4xl text-[#F5F7FA]"
-          style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
+          style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
         >
           {value}
         </span>
@@ -111,7 +111,7 @@ const DayPicker = ({ student, onChange }) => {
               </div>
               <div
                 className={`mt-1 text-xs md:text-sm ${isRest ? "text-zinc-500" : "text-[#22C7C7]"}`}
-                style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
+                style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
               >
                 {isRest ? "Off" : template?.id}
               </div>
@@ -194,7 +194,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               background: "linear-gradient(135deg, rgba(34,199,199,0.15), rgba(34,199,199,0.03))",
               border: "1px solid rgba(34,199,199,0.3)",
               color: "#22C7C7",
-              fontFamily: "'Unbounded', sans-serif",
+              fontFamily: "'Sora', sans-serif",
               fontWeight: 600,
             }}
           >
@@ -205,7 +205,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               <h3
                 className="text-[#F5F7FA] truncate"
                 style={{
-                  fontFamily: "'Unbounded', sans-serif",
+                  fontFamily: "'Sora', sans-serif",
                   fontWeight: 500,
                   fontSize: "1.05rem",
                   letterSpacing: "-0.01em",
@@ -419,7 +419,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <div className="flex-1">
         <h2
           className="text-xl text-[#F5F7FA]"
-          style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
+          style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
         >
           Apagar ficha?
         </h2>
@@ -480,7 +480,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <div>
           <h2
             className="text-xl text-[#F5F7FA] leading-tight"
-            style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
+            style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Editar ficha
           </h2>
@@ -588,7 +588,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
         <div>
           <h2
             className="text-xl text-[#F5F7FA] leading-tight"
-            style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
+            style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Novo aluno
           </h2>
@@ -805,7 +805,7 @@ export const PersonalView = ({
         style={{
           background: "linear-gradient(180deg, #12161D 0%, #0F1319 100%)",
           borderRight: "1px solid #273142",
-          boxShadow: "18px 0 50px rgba(0,0,0,0.18)",
+          boxShadow: "none",
         }}
       >
         <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid #273142" }}>
@@ -819,23 +819,24 @@ export const PersonalView = ({
           >
             <PanelLeft className="h-3.5 w-3.5 text-[#22C7C7]" />
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-200">Personal OS</p>
-              <p className="mt-0.5 truncate text-[9px] text-[#6F7B8C]">gestão da sua base</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-200">Espaço do personal</p>
+              <p className="mt-0.5 truncate text-[9px] text-[#6F7B8C]">Alunos e programação</p>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 p-4 pt-5">
+        <nav aria-label="Painel do personal" className="flex-1 space-y-1 overflow-y-auto p-4 pt-5">
           {menuItems.map(({ id, label, icon: Icon }) => {
             const active = activeSection === id;
             return (
               <button
                 key={id}
                 type="button"
+                aria-current={active ? "location" : undefined}
                 onClick={() => goToSection(id)}
                 className="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all"
                 style={{
-                  color: active ? "#F5F7FA" : "#6F7B8C",
+                  color: active ? "#F5F7FA" : "#A7B0BE",
                   background: active ? "rgba(34,199,199,0.10)" : "transparent",
                   border: active ? "1px solid rgba(34,199,199,0.18)" : "1px solid transparent",
                 }}
@@ -925,6 +926,7 @@ export const PersonalView = ({
               <button
                 key={id}
                 type="button"
+                aria-current={active ? "location" : undefined}
                 onClick={() => goToSection(id)}
                 className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
                 style={{
@@ -940,7 +942,7 @@ export const PersonalView = ({
         </nav>
       </div>
 
-      <main className="lg:ml-64">
+      <main className="lg:ml-64 shapeos-workspace">
         <div className="mx-auto max-w-6xl px-5 pt-8 pb-16 md:pt-10">
         {/* Header */}
         <section id="overview" className="scroll-mt-32 lg:scroll-mt-8">
@@ -954,8 +956,8 @@ export const PersonalView = ({
               Painel do Personal
             </div>
             <h1
-              className="mt-3 text-4xl sm:text-5xl lg:text-6xl text-[#F5F7FA] leading-[0.95]"
-              style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
+              className="mt-3 text-3xl sm:text-4xl text-[#F5F7FA] leading-tight"
+              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
             >
               Bem-vindo, <span className="text-[#22C7C7]">Personal</span>
             </h1>
@@ -1015,7 +1017,7 @@ export const PersonalView = ({
           <div className="flex items-center justify-between mb-4">
             <h2
               className="text-lg text-[#F5F7FA]"
-              style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
+              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
             >
               Meus Treinos <span className="text-zinc-500">(edite os exercícios de cada ficha)</span>
             </h2>
@@ -1050,7 +1052,7 @@ export const PersonalView = ({
                             background: `${t.accent}1a`,
                             border: `1px solid ${t.accent}66`,
                             color: t.accent,
-                            fontFamily: "'Unbounded', sans-serif",
+                            fontFamily: "'Sora', sans-serif",
                             fontWeight: 700,
                           }}
                         >
@@ -1061,7 +1063,7 @@ export const PersonalView = ({
                       <h3
                         className="mt-4 text-xl text-[#F5F7FA] leading-tight"
                         style={{
-                          fontFamily: "'Unbounded', sans-serif",
+                          fontFamily: "'Sora', sans-serif",
                           fontWeight: 600,
                           letterSpacing: "-0.01em",
                         }}
@@ -1101,7 +1103,7 @@ export const PersonalView = ({
         <div className="flex items-center justify-between mb-4">
           <h2
             className="text-lg text-[#F5F7FA]"
-            style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
+            style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
           >
             Sua base <span className="text-zinc-500">({filtered.length})</span>
           </h2>

@@ -5,6 +5,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (
+    pathname === '/apresentacao' ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
     /\.(js|css|woff2?|png|jpg|jpeg|svg|gif|ico|webp)$/.test(pathname)

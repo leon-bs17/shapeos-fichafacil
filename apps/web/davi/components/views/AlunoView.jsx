@@ -56,7 +56,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
           background: done ? "rgba(34,199,199,0.15)" : "rgba(34,199,199,0.06)",
           color: "#22C7C7",
           border: `1px solid ${done ? "rgba(34,199,199,0.4)" : "rgba(34,199,199,0.2)"}`,
-          fontFamily: "'Unbounded', sans-serif",
+          fontFamily: "'Sora', sans-serif",
           fontWeight: 600,
           fontSize: "0.95rem",
         }}
@@ -75,7 +75,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
         <h3
           className="text-lg md:text-xl text-[#F5F7FA] leading-tight mt-1 truncate"
           style={{
-            fontFamily: "'Unbounded', sans-serif",
+            fontFamily: "'Sora', sans-serif",
             fontWeight: 500,
             letterSpacing: "-0.01em",
           }}
@@ -176,7 +176,7 @@ const RestDayCard = () => (
     <div>
       <h3
         className="text-2xl text-[#F5F7FA]"
-        style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
+        style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
       >
         Dia de Recuperação
       </h3>
@@ -239,7 +239,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
           <button
             data-testid="aluno-logout-button"
             onClick={onLogout}
-            className="text-xs text-zinc-500 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
+            className="min-h-11 rounded-lg px-3 text-sm text-zinc-400 hover:text-[#F5F7FA] flex items-center gap-1.5 transition-colors"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <LogOut className="w-3.5 h-3.5" /> Sair
@@ -247,7 +247,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-5 pt-10">
+      <div className="max-w-5xl mx-auto px-5 pt-8 md:pt-10 shapeos-workspace">
         {/* Header */}
         <div className="mb-6">
           <div
@@ -260,9 +260,9 @@ export const AlunoView = ({ onLogout, workouts }) => {
           <div className="mt-3 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <h1
-                className="text-4xl sm:text-5xl lg:text-6xl text-[#F5F7FA] leading-[0.95]"
+                className="text-3xl sm:text-4xl text-[#F5F7FA] leading-tight"
                 style={{
-                  fontFamily: "'Unbounded', sans-serif",
+                  fontFamily: "'Sora', sans-serif",
                   fontWeight: 600,
                   letterSpacing: "-0.03em",
                 }}
@@ -342,7 +342,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                       isRestDay ? "text-zinc-500" : "text-[#F5F7FA]"
                     }`}
                     style={{
-                      fontFamily: "'Unbounded', sans-serif",
+                      fontFamily: "'Sora', sans-serif",
                       fontWeight: 600,
                     }}
                   >
