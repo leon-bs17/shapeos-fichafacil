@@ -36,30 +36,30 @@
 
 @layer base {
     :root {
-        --background: 190.00 30.00% 96.08%;
-        --foreground: 198.14 47.25% 17.84%;
-        --card: 0.00 0.00% 100.00%;
-        --card-foreground: 198.14 47.25% 17.84%;
+        --background: 0 0% 98%;
+        --foreground: 240 10% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 3.9%;
         --popover: 0.00 0.00% 100.00%;
-        --popover-foreground: 198.14 47.25% 17.84%;
+        --popover-foreground: 240 10% 3.9%;
         --primary: 176.69 100.00% 24.90%;
         --primary-foreground: 0.00 0.00% 100.00%;
-        --secondary: 168.00 47.62% 91.76%;
-        --secondary-foreground: 176.55 86.14% 19.80%;
-        --muted: 198.00 29.41% 93.33%;
-        --muted-foreground: 198.95 18.63% 40.00%;
-        --accent: 166.67 52.94% 90.00%;
-        --accent-foreground: 176.55 86.14% 19.80%;
-        --destructive: 354.09 51.97% 49.80%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 46.1%;
+        --accent: 240 4.8% 95.9%;
+        --accent-foreground: 240 5.9% 10%;
+        --destructive: 0 72% 42%;
         --destructive-foreground: 0.00 0.00% 100.00%;
-        --border: 193.04 27.71% 83.73%;
-        --input: 196.00 20.83% 71.76%;
-        --ring: 176.69 100.00% 24.90%;
-        --success: 151.67 71.05% 29.80%;
+        --border: 240 5.9% 90%;
+        --input: 240 5.9% 90%;
+        --ring: 172 66% 35%;
+        --success: 160 84% 30%;
         --success-foreground: 0.00 0.00% 100.00%;
-        --info: 213.47 69.01% 41.76%;
+        --info: 221 83% 40%;
         --info-foreground: 0.00 0.00% 100.00%;
-        --warning: 40.41 100.00% 28.82%;
+        --warning: 38 92% 36%;
         --warning-foreground: 0.00 0.00% 100.00%;
         --chart-1: 175.32 100.00% 27.65%;
         --chart-2: 214.66 65.71% 51.96%;
@@ -68,18 +68,18 @@
         --chart-5: 262.08 51.96% 60.00%;
         --radius: 0.75rem;
 
-        --shapeos-bg: #f2f7f8;
+        --shapeos-bg: #fafafa;
         --shapeos-surface: #ffffff;
-        --shapeos-surface-strong: #e9f0f3;
-        --shapeos-border: #cadce1;
-        --shapeos-brand: #007f78;
-        --shapeos-brand-soft: #d8f3ed;
+        --shapeos-surface-strong: #f4f4f5;
+        --shapeos-border: #e4e4e7;
+        --shapeos-brand: #0f766e;
+        --shapeos-brand-soft: #ccfbf1;
         --shapeos-on-brand: #ffffff;
-        --shapeos-brand-hover: #006b65;
-        --shapeos-neutral-rgb: 24, 54, 67;
-        --shapeos-text: #183643;
-        --shapeos-muted: #536d79;
-        --shapeos-subtle: #607c88;
+        --shapeos-brand-hover: #115e59;
+        --shapeos-neutral-rgb: 24, 24, 27;
+        --shapeos-text: #18181b;
+        --shapeos-muted: #52525b;
+        --shapeos-subtle: #71717a;
     }
 
     * {
@@ -171,7 +171,7 @@ body,
 }
 
 ::selection {
-    background: rgba(34, 199, 199, 0.28);
+    background: rgba(15, 118, 110, 0.16);
     color: hsl(var(--foreground));
 }
 
@@ -185,12 +185,12 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(39, 49, 66, 0.82);
+    background: rgba(24, 24, 27, 0.28);
     border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 199, 199, 0.34);
+    background: rgba(15, 118, 110, 0.42);
 }
 
 input:-webkit-autofill,
