@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
     })
     setCarregando(false)
     if (error) {
-      setErro('Nao foi possivel enviar o e-mail. Tente novamente.')
+      setErro('Não foi possivel enviar o e-mail. Tente novamente.')
       return
     }
     setAvisoEnviado(true)
@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
 
     const parsed = loginSchema.safeParse({ email, senha })
     if (!parsed.success) {
-      setErro(parsed.error.issues[0]?.message ?? 'Dados invalidos')
+      setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos')
       return
     }
 
