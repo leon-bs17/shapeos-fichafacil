@@ -161,36 +161,34 @@ export default function AdminAprovacoesPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card
-          className="overflow-hidden border-white/10 bg-card/80 shadow-xl shadow-black/10 backdrop-blur-xl"
-          style={{ background: 'linear-gradient(135deg, rgba(47, 31, 12, 0.55), rgba(19, 18, 31, 0.86))' }}
+          className="overflow-hidden border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-slate-100 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:from-amber-950/50 dark:via-slate-950/90 dark:to-slate-900/90"
         >
           <CardContent className="flex items-center gap-4 p-5 sm:p-6">
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-warning/15 text-warning shadow-inner shadow-warning/10">
               <Clock3 className="h-7 w-7" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-300">Pendentes</p>
-              <p className="mt-0.5 text-3xl font-black tracking-tight text-white">{totalPendentes}</p>
-              <p className="text-xs text-muted-foreground">Aguardando aprovação</p>
+              <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Pendentes</p>
+              <p className="mt-0.5 text-3xl font-black tracking-tight text-slate-950 dark:text-white">{totalPendentes}</p>
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">Aguardando aprovação</p>
             </div>
-            <ArrowRight className="ml-auto h-5 w-5 text-slate-400" />
+            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" />
           </CardContent>
         </Card>
 
         <Card
-          className="overflow-hidden border-white/10 bg-card/80 shadow-xl shadow-black/10 backdrop-blur-xl"
-          style={{ background: 'linear-gradient(135deg, rgba(5, 74, 72, 0.48), rgba(11, 22, 31, 0.88))' }}
+          className="overflow-hidden border-teal-200/70 bg-gradient-to-br from-teal-50 via-white to-slate-100 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:from-teal-950/55 dark:via-slate-950/90 dark:to-slate-900/90"
         >
           <CardContent className="flex items-center gap-4 p-5 sm:p-6">
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary shadow-inner shadow-primary/10">
               <Users className="h-7 w-7" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-300">Acesso controlado</p>
-              <p className="mt-0.5 text-xl font-black tracking-tight text-white">Só aprovados</p>
-              <p className="text-xs text-muted-foreground">Personais liberados pela administração</p>
+              <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Acesso controlado</p>
+              <p className="mt-0.5 text-xl font-black tracking-tight text-slate-950 dark:text-white">Só aprovados</p>
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">Personais liberados pela administração</p>
             </div>
-            <ArrowRight className="ml-auto h-5 w-5 text-slate-400" />
+            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" />
           </CardContent>
         </Card>
       </div>
