@@ -310,7 +310,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 style={{
                   background: "rgba(255,80,80,0.08)",
                   border: "1px solid rgba(255,80,80,0.3)",
-                  color: "#c13d4a",
+                  color: "hsl(var(--destructive))",
                 }}
               >
                 {error}

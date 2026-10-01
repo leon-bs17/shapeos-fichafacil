@@ -75,6 +75,7 @@
         --shapeos-brand: #007f78;
         --shapeos-brand-soft: #d8f3ed;
         --shapeos-on-brand: #ffffff;
+        --shapeos-brand-hover: #006b65;
         --shapeos-neutral-rgb: 24, 54, 67;
         --shapeos-text: #183643;
         --shapeos-muted: #536d79;
@@ -195,8 +196,8 @@ body,
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #183643 !important;
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: var(--shapeos-text) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--shapeos-surface) inset !important;
     transition: background-color 5000s ease-in-out 0s;
     caret-color: #22c7c7;
 }
@@ -224,9 +225,9 @@ input:-webkit-autofill:focus {
 
 /* Personal dashboard polish */
 [data-testid="personal-view"] {
-    --dashboard-brand: #007f78;
+    --dashboard-brand: var(--shapeos-brand);
     --dashboard-brand-soft: rgba(34, 199, 199, 0.11);
-    --dashboard-border: #cadce1;
+    --dashboard-border: var(--shapeos-border);
 }
 
 [data-testid="personal-view"] button,
@@ -459,3 +460,55 @@ input:-webkit-autofill:focus {
 .shapeos-feature-teal { background: #ddf7ef; color: #075e59; }
 .shapeos-feature-coral { background: #ffebe5; color: #9a3b2b; }
 .shapeos-feature-gold { background: #fff4d4; color: #805900; }
+
+.dark {
+    --background: 201.82 40.74% 10.59%;
+    --foreground: 193.85 56.52% 95.49%;
+    --card: 200.00 37.50% 15.69%;
+    --card-foreground: 193.85 56.52% 95.49%;
+    --popover: 199.46 36.63% 19.80%;
+    --popover-foreground: 193.85 56.52% 95.49%;
+    --primary: 170.42 67.92% 58.43%;
+    --primary-foreground: 195.48 49.21% 12.35%;
+    --secondary: 171.67 36.00% 19.61%;
+    --secondary-foreground: 162.97 77.08% 81.18%;
+    --muted: 199.41 33.33% 20.00%;
+    --muted-foreground: 196.88 24.24% 74.12%;
+    --accent: 175.26 33.93% 21.96%;
+    --accent-foreground: 167.62 75.90% 83.73%;
+    --destructive: 353.94 100.00% 80.59%;
+    --destructive-foreground: 195.48 49.21% 12.35%;
+    --border: 199.02 25.15% 31.96%;
+    --input: 197.56 19.43% 41.37%;
+    --ring: 170.42 67.92% 58.43%;
+    --success: 146.21 61.68% 67.25%;
+    --success-foreground: 195.48 49.21% 12.35%;
+    --info: 213.68 100.00% 77.65%;
+    --info-foreground: 195.48 49.21% 12.35%;
+    --warning: 42.60 84.52% 69.61%;
+    --warning-foreground: 195.48 49.21% 12.35%;
+    --chart-1: 170.42 67.92% 58.43%;
+    --chart-2: 213.68 100.00% 77.65%;
+    --chart-3: 11.13 100.00% 75.69%;
+    --chart-4: 42.60 84.52% 69.61%;
+    --chart-5: 260.22 100.00% 82.55%;
+    --shapeos-bg: #101e26;
+    --shapeos-surface: #192d37;
+    --shapeos-surface-strong: #203945;
+    --shapeos-border: #3d5966;
+    --shapeos-brand: #4dddc6;
+    --shapeos-brand-hover: #6df0dc;
+    --shapeos-brand-soft: #20443f;
+    --shapeos-on-brand: #10272f;
+    --shapeos-text: #edf7fa;
+    --shapeos-muted: #adc4cd;
+    --shapeos-subtle: #adc4cd;
+    --shapeos-neutral-rgb: 225, 244, 248;
+    color-scheme: dark;
+}
+.dark body { color-scheme: dark; }
+.dark .shapeos-auth { background: radial-gradient(ellipse at 15% 0%, #16423e 0%, transparent 48%), radial-gradient(ellipse at 95% 100%, #3c3325 0%, transparent 45%), #101e26; }
+.dark .shapeos-hero { background: linear-gradient(135deg, #153c37 0%, #101e26 55%, #302c25 100%); }
+.dark .shapeos-feature-teal { background: #20443f; color: #aaf4df; }
+.dark .shapeos-feature-coral { background: #4a2e2c; color: #ffc0ac; }
+.dark .shapeos-feature-gold { background: #453a22; color: #f3d889; }

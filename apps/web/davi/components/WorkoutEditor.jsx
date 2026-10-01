@@ -383,7 +383,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
         className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105"
         style={{
           background: "rgba(255,80,80,0.08)",
-          color: "#c13d4a",
+          color: "hsl(var(--destructive))",
           border: "1px solid rgba(255,80,80,0.25)",
         }}
         aria-label="Remover exercício"

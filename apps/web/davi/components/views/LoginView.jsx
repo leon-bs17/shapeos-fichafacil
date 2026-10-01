@@ -124,7 +124,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 <a
                   href="/recuperar-senha"
                   data-testid="forgot-password-link"
-                  className="text-[11px] font-medium text-[var(--shapeos-brand)] transition-colors hover:text-[#006b65] hover:underline"
+                  className="text-[11px] font-medium text-[var(--shapeos-brand)] transition-colors hover:text-[var(--shapeos-brand-hover)] hover:underline"
                 >
                   Esqueci minha senha
                 </a>
@@ -219,7 +219,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               ) : (
                 <Fingerprint
                   className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
-                    bioState === "scanning" ? "text-[#006b65]" : "text-[var(--shapeos-brand)] group-hover:text-[#006b65]"
+                    bioState === "scanning" ? "text-[var(--shapeos-brand-hover)]" : "text-[var(--shapeos-brand)] group-hover:text-[var(--shapeos-brand-hover)]"
                   }`}
                   strokeWidth={1.6}
                 />

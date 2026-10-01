@@ -115,7 +115,7 @@ const ExerciseCard = ({ exercise, done, onToggle }) => (
             style={{
               background: "rgba(245,158,11,0.08)",
               border: "1px solid rgba(245,158,11,0.25)",
-              color: "#936300",
+              color: "hsl(var(--warning))",
               fontWeight: 600,
             }}
           >
@@ -254,7 +254,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
             className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-[0.3em]"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
-            <Flame className="w-3.5 h-3.5 text-[#936300]" />
+            <Flame className="w-3.5 h-3.5 text-[hsl(var(--warning))]" />
             {selectedDay === todayKey ? `Hoje · ${todayLabel}` : weekDays.find((d) => d.key === selectedDay)?.label}
           </div>
           <div className="mt-3 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -283,7 +283,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                 label="Duração"
                 value={isRest ? "—" : workout.duration}
               />
-              <StatChip icon={Trophy} label="Streak" value={`${student.streak} dias`} accent="#936300" />
+              <StatChip icon={Trophy} label="Streak" value={`${student.streak} dias`} accent="hsl(var(--warning))" />
               <StatChip
                 icon={Dumbbell}
                 label="Foco"
@@ -351,7 +351,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
                   {isToday && (
                     <span
                       className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-                      style={{ background: "#936300", boxShadow: "0 0 6px #936300" }}
+                      style={{ background: "hsl(var(--warning))", boxShadow: "0 0 6px hsl(var(--warning))" }}
                     />
                   )}
                 </button>
@@ -426,7 +426,7 @@ export const AlunoView = ({ onLogout, workouts }) => {
               onClick={handleFinish}
               className="group w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-[var(--shapeos-on-brand)] font-semibold transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
-                background: finished ? "var(--shapeos-brand)" : "#936300",
+                background: finished ? "var(--shapeos-brand)" : "hsl(var(--warning))",
                 boxShadow: finished
                   ? "0 14px 32px rgba(34,199,199,0.4)"
                   : "0 14px 32px rgba(245,158,11,0.4), inset 0 -3px 0 rgba(0,0,0,0.15)",

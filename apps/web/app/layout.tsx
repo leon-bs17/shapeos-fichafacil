@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import { ThemeProvider } from 'next-themes'
 import { QueryProvider } from '@/providers/query-provider'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { RegisterSw } from '@/components/pwa/register-sw'
 import './globals.css'
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: '#f2f7f8',
-  colorScheme: 'light',
+  colorScheme: 'light dark',
   viewportFit: 'cover',
 }
 
@@ -37,7 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          forcedTheme="light"
+          storageKey="shapeos-theme"
           enableSystem={false}
           disableTransitionOnChange
         >
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               {children}
             </div>
           </QueryProvider>
+          <div className="fixed bottom-24 right-4 z-[60] md:bottom-5"><ThemeToggle /></div>
           <RegisterSw />
         </ThemeProvider>
       </body>

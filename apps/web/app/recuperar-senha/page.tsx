@@ -212,7 +212,7 @@ export default function RecuperarSenhaPage() {
                 data-testid="recovery-send-button"
                 disabled={mode === 'sending'}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: '#936300', boxShadow: "none" }}
+                style={{ background: 'hsl(var(--warning))', boxShadow: "none" }}
               >
                 {mode === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
                 {mode === 'sending' ? 'Enviando...' : 'Enviar link de recuperação'}
@@ -289,7 +289,7 @@ export default function RecuperarSenhaPage() {
                 data-testid="recovery-save-password-button"
                 disabled={mode === 'saving'}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: '#936300', boxShadow: "none" }}
+                style={{ background: 'hsl(var(--warning))', boxShadow: "none" }}
               >
                 {mode === 'saving' ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
                 {mode === 'saving' ? 'Salvando...' : 'Salvar nova senha'}

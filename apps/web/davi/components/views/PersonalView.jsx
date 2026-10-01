@@ -254,7 +254,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               className="h-full rounded-full"
               style={{
                 width: `${student.progress}%`,
-                background: student.progress > 70 ? "var(--shapeos-brand)" : "#936300",
+                background: student.progress > 70 ? "var(--shapeos-brand)" : "hsl(var(--warning))",
               }}
             />
           </div>
@@ -330,7 +330,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-105"
             style={{
               background: "rgba(255,80,80,0.08)",
-              color: "#c13d4a",
+              color: "hsl(var(--destructive))",
               border: "1px solid rgba(255,80,80,0.25)",
             }}
           >
@@ -411,7 +411,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
         className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)" }}
       >
-        <AlertTriangle className="w-5 h-5 text-[#c13d4a]" />
+        <AlertTriangle className="w-5 h-5 text-[hsl(var(--destructive))]" />
       </div>
       <div className="flex-1">
         <h2
@@ -641,7 +641,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
         </div>
 
         {error && (
-          <p data-testid="new-student-error" className="text-xs text-[#c13d4a] flex items-center gap-1.5">
+          <p data-testid="new-student-error" className="text-xs text-[hsl(var(--destructive))] flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5" /> {error}
           </p>
         )}
@@ -996,7 +996,7 @@ export const PersonalView = ({
             icon={ClipboardList}
             label="Fichas Criadas"
             value={personalStats.workoutsCreated}
-            accent="#2162b4"
+            accent="hsl(var(--info))"
           />
           <StatCard
             testId="stat-adherence"
@@ -1192,7 +1192,7 @@ export const PersonalView = ({
           style={{
             background: "rgba(20,20,20,0.95)",
             border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(34,199,199,0.4)"}`,
-            color: toast.tone === "danger" ? "#c13d4a" : "var(--shapeos-brand)",
+            color: toast.tone === "danger" ? "hsl(var(--destructive))" : "var(--shapeos-brand)",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
             fontFamily: "'Sora', sans-serif",
           }}

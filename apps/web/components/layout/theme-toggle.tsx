@@ -18,7 +18,8 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="icon"
+      size="sm"
+      className="gap-2 rounded-full border border-border bg-card px-4 shadow-lg shadow-black/10 hover:bg-accent"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
       title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
@@ -28,6 +29,7 @@ export function ThemeToggle() {
       ) : (
         <Moon className="h-5 w-5" />
       )}
+      <span>{isDark ? "Modo claro" : "Modo escuro"}</span>
     </Button>
   )
 }
