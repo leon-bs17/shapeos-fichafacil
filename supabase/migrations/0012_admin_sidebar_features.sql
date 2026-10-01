@@ -1,5 +1,5 @@
 -- Novas funcionalidades administrativas: central de comunicados.
--- Relatorios e saude do sistema usam as tabelas existentes.
+-- Relatórios e saúde do sistema usam as tabelas existentes.
 
 create table if not exists public.admin_notificacoes (
   id uuid primary key default gen_random_uuid(),
