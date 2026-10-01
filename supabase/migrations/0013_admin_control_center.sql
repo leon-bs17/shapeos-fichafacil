@@ -10,6 +10,8 @@ begin
  if (new.id is distinct from old.id or new.email is distinct from old.email or new.tipo is distinct from old.tipo or new.status_conta is distinct from old.status_conta or new.criado_em is distinct from old.criado_em) and current_user not in ('postgres','service_role') then raise exception 'Use o controle administrativo auditado para alterar o acesso'; end if;
  return new;
 end $$;
+drop trigger if exists proteger_campos_sensiveis_usuario on public.usuarios;
+create trigger proteger_campos_sensiveis_usuario before update on public.usuarios for each row execute function public.proteger_campos_sensiveis_usuario();
 create table public.admin_configuracao (
  id boolean primary key default true check(id),
  cadastro_aberto boolean not null default true,
