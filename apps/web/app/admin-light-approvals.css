@@ -1,0 +1,170 @@
+/* Ajustes visuais exclusivos do modo claro para a tela de Aprovações.
+   Este arquivo fica depois de globals.css para neutralizar variantes dark baseadas
+   na preferência do sistema quando o tema selecionado no ShapeOS é light. */
+
+.light [data-admin-route="/admin/aprovacoes"] {
+  --approvals-bg: #f8fafc;
+  --approvals-surface: #ffffff;
+  --approvals-border: #e2e8f0;
+  --approvals-text: #0f172a;
+  --approvals-muted: #64748b;
+  --approvals-teal: #0d9488;
+}
+
+/* Sidebar clara, somente na rota de Aprovações. */
+.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 173 58% 94%;
+  --border: 214 32% 91%;
+  --primary: 173 80% 32%;
+  --shapeos-bg: #ffffff;
+  --shapeos-surface: #ffffff;
+  --shapeos-surface-strong: #f8fafc;
+  --shapeos-text: #0f172a;
+  --shapeos-muted: #64748b;
+  --shapeos-subtle: #64748b;
+  --shapeos-brand: #0d9488;
+  --shapeos-on-brand: #ffffff;
+  --shapeos-border: #e2e8f0;
+  --shapeos-neutral-rgb: 13, 148, 136;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-right-color: #e2e8f0 !important;
+}
+
+.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation [aria-current="page"] {
+  background: #e6f7f4 !important;
+  color: #0f172a !important;
+}
+
+.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation [aria-current="page"] svg {
+  color: #0d9488 !important;
+}
+
+.light [data-admin-route="/admin/aprovacoes"] main {
+  background: #f8fafc;
+}
+
+/* Hero claro: mantém apenas a camada clara e esconde a camada dark. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  background: linear-gradient(112deg, #ffffff 0%, #fbfdfe 50%, #eefbfc 100%) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.07) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(1) {
+  display: block !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2) {
+  display: none !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  color: #0f172a !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  color: #475569 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  color: rgba(30, 41, 59, 0.9) !important;
+  text-shadow: 0 2px 14px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Cards de métricas. */
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
+  background: #ffffff !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-color: #fde7b0 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-color: #bfe9e3 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) p {
+  color: #64748b !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) p[class*="font-black"] {
+  color: #0f172a !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
+  background: #fff8e8 !important;
+  color: #d99100 !important;
+  border-color: #fde7b0 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
+  background: #ecfdf8 !important;
+  color: #0d9488 !important;
+  border-color: #bfe9e3 !important;
+}
+
+/* Estado vazio “Tudo em dia!”. */
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.055) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
+  color: #0f172a !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] p {
+  color: #64748b !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  background: #ecfdf8 !important;
+  color: #0d9488 !important;
+  border-color: #ccfbf1 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
+  background: #0d9488 !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 28px rgba(13, 148, 136, 0.2) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button:hover {
+  background: #0f766e !important;
+}
+
+/* Lista de pendentes, quando houver registros. */
+.light [data-admin-content="/admin/aprovacoes"] section[class*="space-y-3"] > div {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="space-y-3"] p[class*="font-bold"] {
+  color: #0f172a !important;
+}
+
+/* Cards de benefícios inferiores. */
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child p[class*="font-bold"] {
+  color: #0f172a !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child p:not([class*="font-bold"]) {
+  color: #64748b !important;
+}
