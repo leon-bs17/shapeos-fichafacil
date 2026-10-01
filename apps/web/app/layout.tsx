@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          storageKey="shapeos-theme"
+          storageKey="shapeos-theme-v2"
           enableSystem={false}
           disableTransitionOnChange
         >
