@@ -44,7 +44,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
   }`;
 
   return (
-    <AuthShell testId="login-view">
+    <AuthShell compact testId="login-view">
         <div
           className="rounded-xl p-6 sm:p-7"
           style={{

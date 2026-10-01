@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, CalendarDays, Check, ClipboardList, Dumbbell, LayoutDashboard, Users } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
+import Logo from '@/davi/components/Logo'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { buttonVariants } from '@/components/ui/button'
 
@@ -15,7 +15,7 @@ export default function ApresentacaoPage() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-5 md:px-8">
-          <Link href="/apresentacao" aria-label="ShapeOS — apresentação"><Logo size="md" /></Link>
+          <Link href="/apresentacao" aria-label="ShapeOS — apresentação"><Logo size="sm" /></Link>
           <nav aria-label="Navegação principal" className="flex items-center gap-3 md:gap-6">
             <Link href="#recursos" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Recursos</Link>
             <Link href="/login" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Entrar <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
