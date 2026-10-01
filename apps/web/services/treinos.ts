@@ -91,7 +91,7 @@ export async function criarFicha(
   })
 
   if (error) throw error
-  if (!data) throw new Error('Nao foi possivel criar a ficha.')
+  if (!data) throw new Error('Não foi possivel criar a ficha.')
 
   return data as string
 }
