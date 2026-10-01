@@ -53,7 +53,7 @@ function ExerciciosConteudo() {
         criado_por: user?.id ?? null,
       })
       if (error) {
-        if (error.code === '23505') throw new Error('Exercicio ja existe nesse grupo muscular.')
+        if (error.code === '23505') throw new Error('Exercício já existe nesse grupo muscular.')
         throw error
       }
     },
