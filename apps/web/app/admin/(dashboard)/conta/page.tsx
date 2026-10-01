@@ -10,9 +10,9 @@ import { Loader2, CheckCircle2, KeyRound, Mail } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 
 function validarSenhaForte(senha: string): string | null {
-  if (senha.length < 8) return 'A senha precisa ter no minimo 8 caracteres.'
+  if (senha.length < 8) return 'A senha precisa ter no mínimo 8 caracteres.'
   if (!/[a-zA-Z]/.test(senha)) return 'A senha precisa ter pelo menos uma letra.'
-  if (!/[0-9]/.test(senha)) return 'A senha precisa ter pelo menos um numero.'
+  if (!/[0-9]/.test(senha)) return 'A senha precisa ter pelo menos um número.'
   return null
 }
 
@@ -28,7 +28,7 @@ export default function ContaAdminPage() {
     queryFn: async () => {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Nao autenticado')
+      if (!user) throw new Error('Não autenticado')
       const { data } = await supabase
         .from('usuarios')
         .select('nome, email')
@@ -48,7 +48,7 @@ export default function ContaAdminPage() {
       return
     }
     if (senha !== confirmar) {
-      setErro('As senhas nao coincidem.')
+      setErro('As senhas não coincidem.')
       return
     }
 
@@ -58,7 +58,7 @@ export default function ContaAdminPage() {
     setCarregando(false)
 
     if (error) {
-      setErro('Nao foi possivel alterar a senha.')
+      setErro('Não foi possivel alterar a senha.')
       return
     }
     setOk(true)
