@@ -127,7 +127,7 @@ export default function AdminAprovacoesPage() {
         />
         <div className="relative z-10 max-w-2xl">
           <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.28em] text-[var(--shapeos-brand)]">
-            <Sparkles className="h-3.5 w-3.5" />
+            <Sparkles className="h-3.5 w-3.5" strokeWidth={1.7} />
             Aprovações
           </div>
           <h1 className="text-3xl font-black tracking-[-0.035em] text-white sm:text-4xl">
@@ -164,15 +164,15 @@ export default function AdminAprovacoesPage() {
           className="overflow-hidden border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-slate-100 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:from-amber-950/50 dark:via-slate-950/90 dark:to-slate-900/90"
         >
           <CardContent className="flex items-center gap-4 p-5 sm:p-6">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-warning/15 text-warning shadow-inner shadow-warning/10">
-              <Clock3 className="h-7 w-7" />
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-warning/10 text-warning shadow-inner shadow-warning/10">
+              <Clock3 className="h-6 w-6" strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Pendentes</p>
               <p className="mt-0.5 text-3xl font-black tracking-tight text-slate-950 dark:text-white">{totalPendentes}</p>
               <p className="text-xs font-medium text-slate-600 dark:text-slate-400">Aguardando aprovação</p>
             </div>
-            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" />
+            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" strokeWidth={1.7} />
           </CardContent>
         </Card>
 
@@ -180,15 +180,15 @@ export default function AdminAprovacoesPage() {
           className="overflow-hidden border-teal-200/70 bg-gradient-to-br from-teal-50 via-white to-slate-100 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-white/10 dark:from-teal-950/55 dark:via-slate-950/90 dark:to-slate-900/90"
         >
           <CardContent className="flex items-center gap-4 p-5 sm:p-6">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary shadow-inner shadow-primary/10">
-              <Users className="h-7 w-7" />
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary shadow-inner shadow-primary/10">
+              <Users className="h-6 w-6" strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Acesso controlado</p>
               <p className="mt-0.5 text-xl font-black tracking-tight text-slate-950 dark:text-white">Só aprovados</p>
               <p className="text-xs font-medium text-slate-600 dark:text-slate-400">Personais liberados pela administração</p>
             </div>
-            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" />
+            <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" strokeWidth={1.7} />
           </CardContent>
         </Card>
       </div>
@@ -211,8 +211,8 @@ export default function AdminAprovacoesPage() {
               'radial-gradient(circle at 50% 12%, rgba(0, 255, 204, 0.12), transparent 28%), radial-gradient(circle at 8% 100%, rgba(111, 45, 220, 0.14), transparent 32%), #07131c',
           }}
         >
-          <div className="mx-auto grid h-20 w-20 place-items-center rounded-[24px] border border-primary/20 bg-primary/10 text-primary shadow-[0_0_45px_rgba(0,255,204,0.12)]">
-            <FileCheck2 className="h-10 w-10" />
+          <div className="mx-auto grid h-[72px] w-[72px] place-items-center rounded-[22px] border border-primary/20 bg-primary/10 text-primary shadow-[0_0_45px_rgba(0,255,204,0.12)]">
+            <FileCheck2 className="h-9 w-9" strokeWidth={1.7} />
           </div>
           <h2 className="mt-5 text-3xl font-black tracking-tight text-white">Tudo em dia!</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-300 sm:text-base">
@@ -224,7 +224,7 @@ export default function AdminAprovacoesPage() {
             className="mt-6 gap-2 rounded-full px-7 font-bold shadow-[0_10px_35px_rgba(0,255,204,0.18)]"
           >
             Verificar novamente
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
           </Button>
         </section>
       ) : (
@@ -249,7 +249,7 @@ export default function AdminAprovacoesPage() {
                         </span>
                       </div>
                       <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-muted-foreground">
-                        <Mail className="h-3.5 w-3.5 shrink-0" />
+                        <Mail className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
                         {personal.email}
                       </p>
                       <p className="mt-1 text-[11px] text-muted-foreground">
@@ -264,7 +264,7 @@ export default function AdminAprovacoesPage() {
                       disabled={processando}
                       className="flex-1 gap-2 rounded-xl sm:flex-none"
                     >
-                      {processando ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                      {processando ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />}
                       Aprovar
                     </Button>
                     <Button
@@ -273,7 +273,7 @@ export default function AdminAprovacoesPage() {
                       disabled={processando}
                       className="flex-1 gap-2 rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 sm:flex-none"
                     >
-                      <Ban className="h-4 w-4" />
+                      <Ban className="h-4 w-4" strokeWidth={1.8} />
                       Bloquear
                     </Button>
                   </div>
@@ -288,7 +288,7 @@ export default function AdminAprovacoesPage() {
         <Card className="border-white/10 bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet-500/10 text-violet-300">
-              <ShieldCheck className="h-5 w-5" />
+              <ShieldCheck className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
               <p className="text-sm font-bold">Controle total</p>
@@ -299,7 +299,7 @@ export default function AdminAprovacoesPage() {
         <Card className="border-white/10 bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/10 text-pink-300">
-              <FileCheck2 className="h-5 w-5" />
+              <FileCheck2 className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
               <p className="text-sm font-bold">Rastreabilidade</p>
@@ -310,7 +310,7 @@ export default function AdminAprovacoesPage() {
         <Card className="border-white/10 bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-300">
-              <UserCheck className="h-5 w-5" />
+              <UserCheck className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
               <p className="text-sm font-bold">Acesso seguro</p>
