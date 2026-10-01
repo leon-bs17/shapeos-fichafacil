@@ -218,23 +218,23 @@ export default function AdminAprovacoesPage() {
         </div>
       ) : !pendentes?.length ? (
         <section
-          className="relative overflow-hidden rounded-[28px] border border-white/10 px-6 py-14 text-center shadow-2xl shadow-black/15 sm:px-10"
+          className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-teal-50 px-6 py-14 text-center shadow-xl shadow-slate-900/10 sm:px-10 dark:border-white/10 dark:from-[#07131c] dark:via-[#07131c] dark:to-[#0b2025]"
           style={{
             background:
-              'radial-gradient(circle at 50% 12%, rgba(0, 255, 204, 0.12), transparent 28%), radial-gradient(circle at 8% 100%, rgba(111, 45, 220, 0.14), transparent 32%), #07131c',
+              'radial-gradient(circle at 50% 12%, rgba(0, 127, 120, 0.08), transparent 28%), radial-gradient(circle at 8% 100%, rgba(111, 45, 220, 0.08), transparent 32%)',
           }}
         >
-          <div className="mx-auto grid h-[72px] w-[72px] place-items-center rounded-[22px] border border-primary/20 bg-primary/10 text-primary shadow-[0_0_45px_rgba(0,255,204,0.12)]">
+          <div className="mx-auto grid h-[72px] w-[72px] place-items-center rounded-[22px] border border-teal-200 bg-teal-50 text-teal-700 shadow-[0_12px_35px_rgba(0,127,120,0.10)] dark:border-primary/20 dark:bg-primary/10 dark:text-primary dark:shadow-[0_0_45px_rgba(0,255,204,0.12)]">
             <FileCheck2 className="h-9 w-9" strokeWidth={1.7} />
           </div>
-          <h2 className="mt-5 text-3xl font-black tracking-tight text-white">Tudo em dia!</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-300 sm:text-base">
+          <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 dark:text-white">Tudo em dia!</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-slate-600 sm:text-base dark:text-slate-300">
             Nenhuma aprovação pendente no momento.
           </p>
           <Button
             type="button"
             onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-aprovacoes'] })}
-            className="mt-6 gap-2 rounded-full px-7 font-bold shadow-[0_10px_35px_rgba(0,255,204,0.18)]"
+            className="mt-6 gap-2 rounded-full bg-teal-700 px-7 font-bold text-white shadow-[0_10px_35px_rgba(0,127,120,0.18)] hover:bg-teal-800 dark:bg-primary dark:text-primary-foreground dark:shadow-[0_10px_35px_rgba(0,255,204,0.18)] dark:hover:bg-primary/90"
           >
             Verificar novamente
             <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
@@ -257,7 +257,7 @@ export default function AdminAprovacoesPage() {
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-bold text-white">{personal.nome}</p>
-                        <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-warning">
+                        <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:border-amber-300/20 dark:bg-amber-400/10 dark:text-amber-300">
                           Pendente
                         </span>
                       </div>
@@ -298,9 +298,9 @@ export default function AdminAprovacoesPage() {
       )}
 
       <div className="grid gap-3 md:grid-cols-3">
-        <Card className="border-white/10 bg-card/60">
+        <Card className="border-slate-200 bg-white/85 shadow-sm dark:border-white/10 dark:bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet-500/10 text-violet-300">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-300">
               <ShieldCheck className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
@@ -311,7 +311,7 @@ export default function AdminAprovacoesPage() {
         </Card>
         <Card className="border-white/10 bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/10 text-pink-300">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-50 text-pink-700 dark:bg-pink-500/10 dark:text-pink-300">
               <FileCheck2 className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
@@ -322,7 +322,7 @@ export default function AdminAprovacoesPage() {
         </Card>
         <Card className="border-white/10 bg-card/60">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-300">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
               <UserCheck className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div>
