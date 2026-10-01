@@ -83,8 +83,12 @@ export function importRows(text: string): ImportRow[] {
     name: r[exercise] ?? "",
     date: /^\d{4}-\d{2}-\d{2}/.test(r[date] ?? "") ? r[date].slice(0, 10) : "",
     load: r[weight] ?? "",
-    reps: r[reps] ?? "",
-    seconds: r[duration] ?? "",
+    reps:
+      Number(r[reps]) === 0 && Number(r[duration]) > 0 ? "" : (r[reps] ?? ""),
+    seconds:
+      Number(r[duration]) === 0 && Number(r[reps]) > 0
+        ? ""
+        : (r[duration] ?? ""),
     itemId: "",
   }));
 }

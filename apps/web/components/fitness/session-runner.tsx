@@ -161,6 +161,12 @@ export function SessionRunner({
     };
     if (!(await persist(next))) return;
     setWorkStart(0);
+    if (warming && warm + 1 >= e.config.aquecimento) {
+      setLoad(suggestion.load == null ? "" : String(suggestion.load));
+      setReps("");
+      setSeconds("");
+      setRpe("");
+    }
     let ni = index,
       secondsRest = e.descanso_segundos;
     if (!warming && e.config.superset) {

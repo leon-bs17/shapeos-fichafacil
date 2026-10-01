@@ -137,8 +137,8 @@ export function ImportPanel({
         <p className="text-sm text-muted-foreground">
           Exporte suas sessões ShapeOS em JSON ou importe séries de CSV/JSON.
           Cabeçalhos comuns de Strong e Hevy são reconhecidos; datas ambíguas
-          precisam ser corrigidas na revisão. Vincule cada exercício a uma ficha
-          ativa antes de importar.
+          precisam ser corrigidas na revisão. As cargas devem estar em kg.
+          Vincule cada exercício a uma ficha ativa antes de importar.
         </p>
         <div className="flex flex-wrap gap-2">
           <Button

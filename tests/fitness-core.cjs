@@ -21,4 +21,16 @@ f.queueSession({...past,aluno_id:'student-a'});f.queueSession({...past,aluno_id:
 assert.equal(f.localSessions('student-a').length,1);assert.equal(f.localSessions('student-b').length,0);
 f.clearQueued('student-a',{...past,aluno_id:'student-a'});assert.equal(f.localSessions('student-a').length,1);
 f.clearQueued('student-a',f.localSessions('student-a')[0]);assert.equal(f.localSessions('student-a').length,0);
-console.log('18 fitness assertions passed: CSV, progression, totals and account-scoped retries.');
+assert.equal(csv.importRows('exercise_title,start_time,weight_kg,reps,duration_seconds\nBench,2026-09-20,20,10,0')[0].seconds,'');
+f.queueSessions('student-a',[{...past,id:'a',aluno_id:'student-a'},{...past,id:'b',aluno_id:'student-a'}]);
+assert.equal(f.localSessions('student-a').length,2);
+assert.throws(()=>f.queueSessions('student-a',[{...past,aluno_id:'student-b'}]));
+assert.equal(f.localSessions('student-a').length,2);
+console.log('Fitness core assertions passed: CSV, progression, totals and atomic account-scoped retries.');
+(async()=>{
+ const seen=[];
+ const errors=await f.syncQueue('student-a',async s=>{seen.push(s.id);if(s.id==='a')throw new Error('retry later')});
+ assert.deepEqual(seen,['a','b']);assert.deepEqual(errors,['retry later']);assert.equal(f.localSessions('student-a').length,1);
+ await f.syncQueue('student-a',async()=>{});assert.equal(f.localSessions('student-a').length,0);
+ console.log('Synchronization passed: one failed session preserves its data and does not block other sessions.');
+})().catch(e=>{console.error(e);process.exitCode=1});

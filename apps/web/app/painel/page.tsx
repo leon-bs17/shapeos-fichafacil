@@ -21,11 +21,10 @@ import { ImportPanel } from "@/components/fitness/import-panel";
 import {
   agendaForStudent,
   assessmentsForStudent,
-  clearQueued,
-  dayOf,
   localSessions,
   queueSession,
-  saveSession,
+  queueSessions,
+  syncQueue,
   sessionsForStudent,
   today,
   workoutsForStudent,
@@ -118,13 +117,9 @@ export default function StudentPage() {
     if (!id || syncing.current) return;
     syncing.current = true;
     try {
-      while (localSessions(id).length) {
-        const s = localSessions(id)[0];
-        await saveSession(s);
-        clearQueued(id, s);
-      }
+      const errors = await syncQueue(id);
       setPending(localSessions(id));
-      setSyncError("");
+      setSyncError(errors[0] ?? "");
       void qc.invalidateQueries({ queryKey: ["fitness-student", id] });
     } catch (e) {
       setPending(localSessions(id));
@@ -176,8 +171,14 @@ export default function StudentPage() {
       series: [],
       observacoes: "",
     };
-    await save(s);
-    setActive(s);
+    try {
+      await save(s);
+      setActive(s);
+    } catch {
+      setSyncError(
+        "Não foi possível guardar a sessão neste navegador. Libere espaço e tente novamente.",
+      );
+    }
   }
   async function logout() {
     if (
@@ -237,7 +238,7 @@ export default function StudentPage() {
         </div>
       </header>
       <main className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
-        {(offline || pending.length > 0) && (
+        {(offline || pending.length > 0 || syncError) && (
           <div
             role="status"
             className="rounded-xl border border-warning/40 bg-warning/10 p-4 flex flex-wrap items-center gap-3 text-sm"
@@ -417,7 +418,7 @@ export default function StudentPage() {
                 workouts={workouts}
                 sessions={sessions}
                 onImport={async (incoming) => {
-                  for (const s of incoming) queueSession(s);
+                  queueSessions(id, incoming);
                   setPending(localSessions(id));
                   await sync();
                 }}

@@ -254,7 +254,10 @@ export function download(name: string, value: unknown) {
 const key = (id: string) => `shapeos-fitness-v1:${id}`;
 export function localSessions(id: string): Session[] {
   try {
-    return JSON.parse(localStorage.getItem(key(id)) ?? "[]");
+    const rows = JSON.parse(localStorage.getItem(key(id)) ?? "[]");
+    return Array.isArray(rows)
+      ? rows.filter((s) => s && s.aluno_id === id)
+      : [];
   } catch {
     return [];
   }
@@ -262,6 +265,13 @@ export function localSessions(id: string): Session[] {
 export function queueSession(s: Session) {
   const all = localSessions(s.aluno_id).filter((v) => v.id !== s.id);
   localStorage.setItem(key(s.aluno_id), JSON.stringify([...all, s]));
+}
+export function queueSessions(id: string, sessions: Session[]) {
+  if (sessions.some((s) => s.aluno_id !== id))
+    throw new Error("Conta incompatível.");
+  const updated = new Map(localSessions(id).map((s) => [s.id, s]));
+  sessions.forEach((s) => updated.set(s.id, s));
+  localStorage.setItem(key(id), JSON.stringify([...updated.values()]));
 }
 export function clearQueued(id: string, s: Session) {
   localStorage.setItem(
@@ -273,9 +283,21 @@ export function clearQueued(id: string, s: Session) {
     ),
   );
 }
-export async function syncQueue(id: string) {
-  for (const s of localSessions(id)) {
-    await saveSession(s);
-    clearQueued(id, s);
+export async function syncQueue(id: string, write = saveSession) {
+  const failed = new Set<string>();
+  const errors: string[] = [];
+  for (;;) {
+    const s = localSessions(id).find((row) => !failed.has(row.id));
+    if (!s) break;
+    try {
+      await write(s);
+      clearQueued(id, s);
+    } catch (error) {
+      failed.add(s.id);
+      errors.push(
+        error instanceof Error ? error.message : "Sincronização pendente.",
+      );
+    }
   }
+  return errors;
 }
