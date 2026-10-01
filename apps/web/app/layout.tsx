@@ -5,6 +5,7 @@ import { QueryProvider } from '@/providers/query-provider'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { RegisterSw } from '@/components/pwa/register-sw'
 import './globals.css'
+import './admin-light-approvals.css'
 
 export const metadata: Metadata = {
   title: 'ShapeOS · Ficha Fácil',
