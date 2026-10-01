@@ -32,7 +32,7 @@ Deno.serve(async (req: Request) => {
 
   if (req.method !== 'POST') {
     return Response.json(
-      { error: 'Metodo nao permitido' },
+      { error: 'Metodo não permitido' },
       { status: 405, headers }
     )
   }
@@ -40,7 +40,7 @@ Deno.serve(async (req: Request) => {
   const authHeader = req.headers.get('Authorization')
   if (!authHeader?.startsWith('Bearer ')) {
     return Response.json(
-      { error: 'Nao autenticado' },
+      { error: 'Não autenticado' },
       { status: 401, headers }
     )
   }
@@ -103,7 +103,7 @@ Deno.serve(async (req: Request) => {
   if (erroLimite) {
     console.error('Falha ao verificar rate limit', erroLimite)
     return Response.json(
-      { error: 'Nao foi possivel validar o limite de convites.' },
+      { error: 'Não foi possivel validar o limite de convites.' },
       { status: 503, headers }
     )
   }
@@ -154,7 +154,7 @@ Deno.serve(async (req: Request) => {
 
     if (perfil?.id) {
       return Response.json(
-        { error: 'Este e-mail pertence a uma conta que nao e de aluno.' },
+        { error: 'Este e-mail pertence a uma conta que não e de aluno.' },
         { status: 409, headers }
       )
     }
