@@ -33,7 +33,7 @@ Para executar o projeto localmente, sua máquina precisa ter instalados:
 * **Git**: Para clonamento do repositório
 * **Supabase CLI** *(Opcional)*: Caso precise rodar o banco de dados e os serviços do Supabase de forma totalmente local na sua máquina.
 
-> 💡 **Nota:** Se este é o seu primeiro contacto com o projeto ou com desenvolvimento, siga o passo a passo detalhado abaixo.
+> 💡 **Nota:** Se este é o seu primeiro contato com o projeto ou com desenvolvimento, siga o passo a passo detalhado abaixo.
 
 ---
 ### 📍 Passo 1: Instalar os programas básicos (Pré-requisitos)
