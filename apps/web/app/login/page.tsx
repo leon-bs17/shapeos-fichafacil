@@ -42,6 +42,12 @@ export default function LoginPage() {
       return
     }
 
+    if (perfil.tipo === 'ADMIN') {
+      await supabase.auth.signOut()
+      window.location.replace('/admin/login')
+      return
+    }
+
     if (perfil.status_conta === 'PENDENTE') {
       await supabase.auth.signOut()
       entrandoRef.current = false
@@ -57,7 +63,7 @@ export default function LoginPage() {
     }
 
     const destino =
-      perfil.tipo === 'ADMIN' ? '/admin' : perfil.tipo === 'ALUNO' ? '/painel' : '/'
+      perfil.tipo === 'ALUNO' ? '/painel' : '/'
 
     window.location.replace(destino)
   }
@@ -114,11 +120,11 @@ export default function LoginPage() {
     // Verifica o status administrativo antes de oferecer/cadastrar biometria.
     const { data: perfil } = await supabase
       .from('usuarios')
-      .select('status_conta')
+      .select('tipo, status_conta')
       .eq('id', data.user.id)
       .single()
 
-    if (perfil?.status_conta === 'PENDENTE' || perfil?.status_conta === 'BLOQUEADO') {
+    if (perfil?.tipo === 'ADMIN' || perfil?.status_conta === 'PENDENTE' || perfil?.status_conta === 'BLOQUEADO') {
       await redirecionarPorPerfil(supabase, data.user.id)
       return
     }

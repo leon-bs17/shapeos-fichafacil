@@ -5,7 +5,7 @@ import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Fingerprint, CheckCircle
 import { AuthShell } from "@/components/auth/auth-shell";
 
 export const LoginView = ({ onEnter, onBiometric, error }) => {
-  const [role, setRole] = useState("personal"); // "personal" | "aluno" | "admin"
+  const [role, setRole] = useState("personal"); // "personal" | "aluno"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -61,12 +61,12 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               Bem-vindo à ShapeOS
             </h1>
             <p className="text-sm leading-relaxed text-zinc-400 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
-              Entre para treinar, gerenciar sua base ou administrar a plataforma.
+              Entre para consultar seus treinos ou gerenciar seus alunos.
             </p>
           </div>
 
           <div
-            className="grid grid-cols-3 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
+            className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -91,15 +91,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
             >
               Aluno
             </button>
-            <button
-              type="button"
-              data-testid="role-tab-admin"
-              onClick={() => setRole("admin")}
-              className={tabClass("admin")}
-              style={activeTabStyle("admin")}
-            >
-              Admin
-            </button>
+
           </div>
 
           {error && <p role="alert" className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
@@ -169,8 +161,8 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 letterSpacing: "0.02em",
               }}
             >
-              {role === "admin" ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-              {submitting ? "Entrando…" : role === "admin" ? "Acessar Painel Admin" : "Entrar na ShapeOS"}
+              <Lock className="w-4 h-4" />
+              {submitting ? "Entrando…" : "Entrar na ShapeOS"}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </form>
