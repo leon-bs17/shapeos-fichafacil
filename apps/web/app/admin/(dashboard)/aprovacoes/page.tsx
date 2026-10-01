@@ -57,8 +57,11 @@ export default function AdminAprovacoesPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Sessão administrativa expirada.')
 
-      const { data: configuracaoPendente } = await supabase.from('admin_configuracao').select('id').limit(1)
-      if (!configuracaoPendente) {
+      const { error: configuracaoError } = await supabase
+        .from('admin_configuracao')
+        .select('id')
+        .limit(1)
+      if (configuracaoError) {
         const response = await fetch('/api/admin/control', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -72,8 +75,6 @@ export default function AdminAprovacoesPage() {
         if (!response.ok) throw new Error(result.error)
         return
       }
-      // Preserve the existing workflow only while the new table is absent.
-      if (configuracaoPendente.code !== 'PGRST205' && configuracaoPendente.code !== '42P01') throw configuracaoPendente
       const { error: updateError } = await supabase
         .from('usuarios')
         .update({ status_conta: novoStatus })
