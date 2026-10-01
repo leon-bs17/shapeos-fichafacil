@@ -10,9 +10,9 @@ import { createClient } from '@/lib/supabase/client'
 import { Loader2, CheckCircle2, ArrowRight } from 'lucide-react'
 
 function validarSenhaForte(senha: string): string | null {
-  if (senha.length < 8) return 'A senha precisa ter no minimo 8 caracteres.'
+  if (senha.length < 8) return 'A senha precisa ter no mínimo 8 caracteres.'
   if (!/[a-zA-Z]/.test(senha)) return 'A senha precisa ter pelo menos uma letra.'
-  if (!/[0-9]/.test(senha)) return 'A senha precisa ter pelo menos um numero.'
+  if (!/[0-9]/.test(senha)) return 'A senha precisa ter pelo menos um número.'
   return null
 }
 
@@ -34,7 +34,7 @@ export default function RedefinirSenhaPage() {
       return
     }
     if (senha !== confirmar) {
-      setErro('As senhas nao coincidem.')
+      setErro('As senhas não coincidem.')
       return
     }
 
@@ -43,7 +43,7 @@ export default function RedefinirSenhaPage() {
     const { error } = await supabase.auth.updateUser({ password: senha })
 
     if (error) {
-      setErro('Nao foi possivel alterar a senha. O link pode ter expirado.')
+      setErro('Não foi possivel alterar a senha. O link pode ter expirado.')
       setCarregando(false)
       return
     }
