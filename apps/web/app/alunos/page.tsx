@@ -32,18 +32,18 @@ function AlunosConteudo() {
     setErro(null)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setErro('Sessao expirada. Entre novamente.'); return }
+    if (!user) { setErro('Sessão expirada. Entre novamente.'); return }
 
     setOcupado(true)
     try {
       const { data, error } = await supabase.functions.invoke('convite-aluno', { body: { email: email.trim().toLowerCase() } })
-      if (error) throw new Error('Falha ao chamar o servico de convites.')
+      if (error) throw new Error('Falha ao chamar o serviço de convites.')
       const alunoId: string | undefined = (data as { data?: { user?: { id?: string } } })?.data?.user?.id
-      if (!alunoId) throw new Error((data as { error?: string })?.error ?? 'Nao foi possivel convidar.')
+      if (!alunoId) throw new Error((data as { error?: string })?.error ?? 'Não foi possivel convidar.')
 
       const { error: erroVinculo } = await supabase.from('personal_alunos').insert({ personal_id: user.id, aluno_id: alunoId })
       if (erroVinculo) {
-        if (erroVinculo.code === '23505') throw new Error('Este aluno ja esta vinculado a voce.')
+        if (erroVinculo.code === '23505') throw new Error('Este aluno ja esta vinculado a você.')
         throw erroVinculo
       }
       void queryClient.invalidateQueries({ queryKey: ['alunos'] })
@@ -123,7 +123,7 @@ function AlunosConteudo() {
             <Label htmlFor="convite-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail do aluno</Label>
             <Input id="convite-email" type="email" placeholder="aluno@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10" />
             <p className="text-muted-foreground text-xs">
-              Se o aluno ainda nao tem conta, ele recebera um e-mail de convite.
+              Se o aluno ainda não tem conta, ele recebera um e-mail de convite.
             </p>
           </div>
           {erro ? (
