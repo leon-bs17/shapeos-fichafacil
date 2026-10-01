@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
+  const requestedNext = searchParams.get('next')
+  const next = requestedNext === '/admin/redefinir-senha' || requestedNext === '/recuperar-senha' ? requestedNext : '/'
 
   if (code) {
     const supabase = await createClient()
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
     if (!error) {
       // Fluxo de redefinicao de senha: respeita o destino do link
       if (next !== '/') {
-        return NextResponse.redirect(`${origin}${next}`)
+        return NextResponse.redirect(`${origin}${next}${next === '/recuperar-senha' ? '?recovery=1' : ''}`)
       }
 
       const { data: { user } } = await supabase.auth.getUser()
@@ -34,5 +35,6 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`)
+  const failurePath = next === '/admin/redefinir-senha' ? '/admin/redefinir-senha' : next === '/recuperar-senha' ? '/recuperar-senha' : '/login'
+  return NextResponse.redirect(`${origin}${failurePath}?error=auth`)
 }

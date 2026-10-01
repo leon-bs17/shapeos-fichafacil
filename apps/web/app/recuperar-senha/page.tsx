@@ -21,7 +21,12 @@ export default function RecuperarSenhaPage() {
     const code = params.get('code')
     const accessToken = hashParams.get('access_token')
     const refreshToken = hashParams.get('refresh_token')
-    const isRecovery = Boolean(code || accessToken || hashParams.get('type') === 'recovery')
+    const isRecovery = Boolean(code || accessToken || params.get('recovery') === '1' || hashParams.get('type') === 'recovery')
+    if (params.get('error') || hashParams.get('error')) {
+      setErro('Este link de recuperação é inválido ou expirou. Solicite um novo link.')
+      setMode('invalid')
+      return
+    }
 
     if (!isRecovery) return
 
@@ -84,7 +89,7 @@ export default function RecuperarSenhaPage() {
     setMode('sending')
     const supabase = createClient()
     const { error } = await supabase.auth.resetPasswordForEmail(emailLimpo, {
-      redirectTo: `${window.location.origin}/recuperar-senha`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/recuperar-senha`,
     })
 
     if (error) {

@@ -46,6 +46,18 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Recovery and OAuth callbacks must finish before profile routing or sign-out.
+  // These pages only update the authenticated user's password; app access remains gated below.
+  if (pathname === '/auth/callback' || pathname === '/recuperar-senha' || pathname === '/admin/redefinir-senha') {
+    return response
+  }
+
+  function redirectWithSession(url: URL) {
+    const redirect = NextResponse.redirect(url)
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie.name, cookie.value, cookie))
+    return redirect
+  }
+
   const isAdminArea = pathname.startsWith('/admin')
   const isAdminLogin = pathname === '/admin/login'
   const isAdminRecovery = pathname === '/admin/redefinir-senha'
@@ -63,12 +75,12 @@ export async function updateSession(request: NextRequest) {
     if (isAdminArea && !isAdminLogin && !isAdminRecovery) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin/login'
-      return NextResponse.redirect(url)
+      return redirectWithSession(url)
     }
     if (!isPublic) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
-      return NextResponse.redirect(url)
+      return redirectWithSession(url)
     }
     return response
   }
@@ -90,7 +102,7 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('error', 'perfil')
-    return NextResponse.redirect(url)
+    return redirectWithSession(url)
   }
 
   if (status && status !== 'ATIVO') {
@@ -118,7 +130,7 @@ export async function updateSession(request: NextRequest) {
     if ((!isAdminArea || isAdminLogin) && !isAdminRecovery) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin'
-      return NextResponse.redirect(url)
+      return redirectWithSession(url)
     }
     return response
   }
@@ -126,25 +138,25 @@ export async function updateSession(request: NextRequest) {
   if (isAdminArea) {
     const url = request.nextUrl.clone()
     url.pathname = tipo === 'ALUNO' ? '/painel' : '/'
-    return NextResponse.redirect(url)
+    return redirectWithSession(url)
   }
 
   if (tipo === 'ALUNO' && !isPainelAluno) {
     const url = request.nextUrl.clone()
     url.pathname = '/painel'
-    return NextResponse.redirect(url)
+    return redirectWithSession(url)
   }
 
   if (tipo === 'PERSONAL' && isPainelAluno) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    return NextResponse.redirect(url)
+    return redirectWithSession(url)
   }
 
   if (pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = tipo === 'ALUNO' ? '/painel' : '/'
-    return NextResponse.redirect(url)
+    return redirectWithSession(url)
   }
 
   return response
