@@ -151,10 +151,22 @@ export default function AdminAprovacoesPage() {
             className="absolute right-[-5%] bottom-[-22%] h-72 w-72 rounded-full blur-3xl"
             style={{ background: 'rgba(0, 255, 204, 0.10)' }}
           />
-          <div className="absolute right-5 top-8 max-w-[250px] text-right text-4xl font-black leading-[0.95] tracking-[-0.06em] text-white/10">
-            MAIS
-            <br />
-            CONTROLE
+          <div
+            className="absolute right-3 top-7 max-w-[290px] rotate-[-5deg] text-right leading-[0.92] text-white/85 dark:text-white/80"
+            style={{
+              fontFamily: '"Segoe Print", "Bradley Hand", "Comic Sans MS", cursive',
+              fontSize: 'clamp(2rem, 3.2vw, 3.35rem)',
+              fontWeight: 500,
+              letterSpacing: '-0.035em',
+              textShadow: '0 2px 18px rgba(0,0,0,0.22)',
+            }}
+          >
+            <span className="block">Mais profissionais</span>
+            <span className="block">Mais resultados</span>
+            <span
+              className="ml-auto mt-3 block h-1 w-28 -rotate-[7deg] rounded-full bg-[var(--shapeos-brand)] shadow-[0_0_18px_rgba(0,255,204,0.45)]"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </section>
