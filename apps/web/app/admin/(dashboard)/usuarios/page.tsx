@@ -65,6 +65,15 @@ function UsuariosConteudo() {
       if (user.id === usuario.id) throw new Error('Você não pode alterar o status da própria conta.')
       if (usuario.tipo === 'ADMIN') throw new Error('Contas ADMIN não podem ser bloqueadas por esta tela.')
 
+      const { error: configuracaoPendente } = await supabase.from('admin_configuracao').select('id').limit(1)
+      if (!configuracaoPendente) {
+        const response = await fetch('/api/admin/control', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'EDITAR_USUARIO', id: usuario.id, dados: { status_conta: status } }) })
+        const result = await response.json()
+        if (!response.ok) throw new Error(result.error)
+        return
+      }
+      // Preserve the existing workflow only while the new table is absent.
+      if (configuracaoPendente.code !== 'PGRST205' && configuracaoPendente.code !== '42P01') throw configuracaoPendente
       const { error: erroUpdate } = await supabase
         .from('usuarios')
         .update({ status_conta: status })

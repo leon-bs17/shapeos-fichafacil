@@ -12,7 +12,6 @@ import {
   Dumbbell,
   History,
   KeyRound,
-  LayoutDashboard,
   LogOut,
   ServerCog,
   ShieldCheck,
@@ -24,6 +23,7 @@ import { useQuery } from '@tanstack/react-query'
 import Logo from '@/davi/components/Logo'
 
 const novasFerramentas = [
+  { href: '/admin', label: 'Central de controle', icone: ShieldCheck },
   { href: '/admin/aprovacoes', label: 'Aprovações', icone: ClipboardCheck },
   { href: '/admin/atividade', label: 'Atividade', icone: Activity },
   { href: '/admin/relatorios', label: 'Relatórios', icone: BarChart3 },
@@ -32,7 +32,6 @@ const novasFerramentas = [
 ]
 
 const gestaoLinks = [
-  { href: '/admin', label: 'Visão geral', icone: LayoutDashboard },
   { href: '/admin/usuarios', label: 'Usuários', icone: Users },
   { href: '/admin/personais', label: 'Personais', icone: UserCheck },
   { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },

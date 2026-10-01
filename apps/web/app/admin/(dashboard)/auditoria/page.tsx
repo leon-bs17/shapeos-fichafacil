@@ -12,7 +12,7 @@ type Auditoria = {
   id: string
   admin_id: string
   usuario_id: string | null
-  acao: 'APROVAR_USUARIO' | 'BLOQUEAR_USUARIO' | 'REATIVAR_USUARIO' | 'ALTERAR_TIPO'
+  acao: 'APROVAR_USUARIO' | 'BLOQUEAR_USUARIO' | 'REATIVAR_USUARIO' | 'ALTERAR_TIPO' | 'EDITAR_USUARIO' | 'VINCULAR' | 'DESATIVAR_VINCULO' | 'EDITAR_TREINO' | 'CONFIGURAR'
   detalhes: Record<string, unknown>
   criado_em: string
 }
@@ -20,6 +20,11 @@ type Auditoria = {
 type UsuarioMinimo = { id: string; nome: string; email: string }
 
 const acaoConfig = {
+  EDITAR_USUARIO: { label: 'Conta atualizada', icon: ShieldCheck, classe: 'text-info bg-info/10' },
+  VINCULAR: { label: 'Vínculo ativado', icon: ShieldCheck, classe: 'text-success bg-success/10' },
+  DESATIVAR_VINCULO: { label: 'Vínculo desativado', icon: Ban, classe: 'text-warning bg-warning/10' },
+  EDITAR_TREINO: { label: 'Treino atualizado', icon: Activity, classe: 'text-info bg-info/10' },
+  CONFIGURAR: { label: 'Configuração alterada', icon: ShieldCheck, classe: 'text-warning bg-warning/10' },
   APROVAR_USUARIO: { label: 'Usuário aprovado', icon: CheckCircle2, classe: 'text-success bg-success/10' },
   BLOQUEAR_USUARIO: { label: 'Usuário bloqueado', icon: Ban, classe: 'text-destructive bg-destructive/10' },
   REATIVAR_USUARIO: { label: 'Usuário reativado', icon: UserRoundCheck, classe: 'text-info bg-info/10' },
@@ -70,7 +75,7 @@ export default function AdminAuditoriaPage() {
     return (data?.eventos ?? []).filter((evento) => {
       const admin = nomes.get(evento.admin_id)
       const alvo = evento.usuario_id ? nomes.get(evento.usuario_id) : null
-      const config = acaoConfig[evento.acao]
+      const config = acaoConfig[evento.acao] ?? { label: evento.acao, icon: Activity, classe: 'text-info bg-info/10' }
       return [admin?.nome, admin?.email, alvo?.nome, alvo?.email, config.label]
         .filter(Boolean)
         .some((valor) => String(valor).toLowerCase().includes(termo))
@@ -114,7 +119,7 @@ export default function AdminAuditoriaPage() {
       ) : (
         <div className="space-y-3">
           {filtrados.map((evento) => {
-            const config = acaoConfig[evento.acao]
+            const config = acaoConfig[evento.acao] ?? { label: evento.acao, icon: Activity, classe: 'text-info bg-info/10' }
             const Icon = config.icon
             const admin = nomes.get(evento.admin_id)
             const alvo = evento.usuario_id ? nomes.get(evento.usuario_id) : null
@@ -129,7 +134,7 @@ export default function AdminAuditoriaPage() {
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-semibold">{config.label}</p>
+                        <p className="font-semibold">{config.label}</p><details className="text-xs text-muted-foreground"><summary className="cursor-pointer">Ver alterações</summary><pre className="mt-2 max-w-[70vw] overflow-auto whitespace-pre-wrap">{JSON.stringify(detalhes, null, 2)}</pre></details>
                         {typeof detalhes.status_novo === 'string' ? (
                           <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
                             {detalhes.status_novo}
