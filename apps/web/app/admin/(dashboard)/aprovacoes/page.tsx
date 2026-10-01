@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Ban,
   CheckCircle2,
-  ClipboardCheck,
   Clock3,
   FileCheck2,
   Loader2,
@@ -58,16 +57,8 @@ export default function AdminAprovacoesPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Sessão administrativa expirada.')
 
-      const { data: configuracao, error: configuracaoError } = await supabase
-        .from('admin_configuracao')
-        .select('id')
-        .limit(1)
-
-      if (configuracaoError && configuracaoError.code !== 'PGRST205' && configuracaoError.code !== '42P01') {
-        throw configuracaoError
-      }
-
-      if (!configuracao?.length) {
+      const { data: configuracaoPendente } = await supabase.from('admin_configuracao').select('id').limit(1)
+      if (!configuracaoPendente) {
         const response = await fetch('/api/admin/control', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -81,7 +72,8 @@ export default function AdminAprovacoesPage() {
         if (!response.ok) throw new Error(result.error)
         return
       }
-
+      // Preserve the existing workflow only while the new table is absent.
+      if (configuracaoPendente.code !== 'PGRST205' && configuracaoPendente.code !== '42P01') throw configuracaoPendente
       const { error: updateError } = await supabase
         .from('usuarios')
         .update({ status_conta: novoStatus })
