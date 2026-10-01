@@ -29,6 +29,7 @@ import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { formatarData } from '@/lib/utils'
 import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
+import { PrescriptionEditor } from '@/components/fitness/prescription-editor'
 import type { FichaResumo } from '@/services/treinos'
 
 interface LinhaItem {
@@ -57,6 +58,7 @@ function TreinosConteudo() {
   const { data: fichas, isLoading } = useFichas()
   const acoes = useAcoesFichas()
   const [modalAberto, setModalAberto] = useState(false)
+  const [prescricao, setPrescricao] = useState<FichaResumo | null>(null)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
   const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
   const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
@@ -134,7 +136,8 @@ function TreinosConteudo() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5 border-t border-border pt-3">
+                <div className="flex flex-wrap items-center gap-1.5 border-t border-border pt-3">
+                  <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setPrescricao(ficha)}>Prescrição avançada</Button>
                   <Button
                     size="sm"
                     variant="outline"
@@ -194,6 +197,7 @@ function TreinosConteudo() {
         </div>
       )}
 
+      {prescricao && <PrescriptionEditor ficha={prescricao} onClose={() => setPrescricao(null)} />}
       <ModalNovaFicha
         open={modalAberto}
         onClose={() => { setModalAberto(false); setTemplateSelecionado(null); setTipoTreino('hipertrofia') }}
@@ -245,8 +249,10 @@ function ModalNovaFicha({
   const [titulo, setTitulo] = useState(template?.titulo ?? '')
   const [itens, setItens] = useState<LinhaItem[]>([{ ...ITEM_VAZIO }])
   const [erroLocal, setErroLocal] = useState<string | null>(null)
+  const [editorAberto, setEditorAberto] = useState(false)
 
   function aplicarTemplate(t: TemplateFicha | null) {
+    setEditorAberto(true)
     onSelecionarTemplate(t)
     if (t && exercicios) {
       setTitulo(t.titulo)
@@ -321,7 +327,7 @@ function ModalNovaFicha({
   return (
     <Modal open={open} onClose={onClose} titulo="Nova Ficha de Treino" className="max-w-2xl">
       <div className="space-y-5">
-        {!template ? (
+        {!template && !editorAberto ? (
           <div className="space-y-5">
             <div className="space-y-2.5">
               <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Tipo de Treino</Label>
@@ -394,7 +400,7 @@ function ModalNovaFicha({
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Exercicios</Label>
-                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => aplicarTemplate(null)}>
+                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setEditorAberto(false); onSelecionarTemplate(null) }}>
                   Trocar template
                 </Button>
               </div>

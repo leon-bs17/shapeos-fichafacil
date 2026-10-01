@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/alunos', label: 'Alunos', icon: Users },
   { href: '/treinos', label: 'Treinos', icon: Dumbbell },
   { href: '/exercicios', label: 'Biblioteca', icon: Library },
+  { href: '/relatorios', label: 'Evolução', icon: FileBarChart },
 ]
 
 export function MobileNav() {
@@ -24,7 +25,7 @@ export function MobileNav() {
             key={href}
             href={href}
             className={cn(
-              'flex flex-col items-center gap-1 p-2 min-w-[64px] text-[10px] font-medium transition-colors',
+              'flex flex-col items-center gap-1 p-2 min-w-0 flex-1 text-[10px] font-medium transition-colors',
               active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
             )}
           >

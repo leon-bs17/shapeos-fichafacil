@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
+import { StudentReport } from '@/components/fitness/student-report'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 
 export default function RelatoriosPage() {
@@ -55,7 +56,7 @@ function RelatoriosConteudo() {
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
         <p className="text-muted-foreground text-sm">
-          Evolução de carga por exercício.
+          Sessões, prescrito × realizado, agenda e avaliações físicas.
         </p>
       </header>
 
@@ -75,6 +76,8 @@ function RelatoriosConteudo() {
         </select>
       </div>
 
+      {alunoId && <StudentReport key={alunoId} alunoId={alunoId} />}
+      {alunoId && <h2 className="text-lg font-semibold">Histórico de cargas (registros anteriores e atuais)</h2>}
       {!alunoId ? (
         <p className="text-muted-foreground text-sm">
           Escolha um aluno para ver o progresso dos treinos registrados no app.
@@ -137,9 +140,9 @@ function EvolucaoExercicio({ grupo }: { grupo: Agrupado }) {
         <div className="text-muted-foreground flex items-center gap-3 text-xs">
           <span className="inline-flex items-center gap-1">
             <TrendingUp className={evoluiu ? 'h-3.5 w-3.5 text-primary' : 'h-3.5 w-3.5 rotate-180'} />
-            {evoluiu ? `+${ultimo - primeiro} kg desde o início` : 'sem variação'}
+            {ultimo === primeiro ? 'sem variação' : `${ultimo > primeiro ? '+' : ''}${Math.round((ultimo - primeiro) * 100) / 100} kg desde o início`}
           </span>
-          <span>último: {formatarData(grupo.registros[0].data)}</span>
+          <span>último: {formatarData(grupo.registros[grupo.registros.length - 1].data)}</span>
         </div>
       </CardContent>
     </Card>

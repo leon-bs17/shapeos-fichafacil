@@ -5,7 +5,7 @@ import {
   ExpirationPlugin,
   NetworkFirst,
   Serwist,
-  StaleWhileRevalidate,
+  NetworkOnly,
 } from 'serwist'
 
 declare const self: ServiceWorkerGlobalScope & {
@@ -30,17 +30,8 @@ const serwist = new Serwist({
           {
             matcher: new RegExp(`^${supabaseUrl}/rest/v1/.*`),
             method: 'GET' as const,
-            handler: new StaleWhileRevalidate({
-              cacheName: 'supabase-rest',
-              plugins: [
-                new CacheableResponsePlugin({ statuses: [200] }),
-                new ExpirationPlugin({
-                  maxEntries: 200,
-                  maxAgeSeconds: 7 * 24 * 60 * 60,
-                }),
-              ],
-              matchOptions: { ignoreVary: true },
-            }),
+            // Authenticated responses must never be shared across accounts.
+            handler: new NetworkOnly(),
           },
         ]
       : []),
@@ -69,6 +60,10 @@ const serwist = new Serwist({
       },
     ],
   },
+})
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(caches.delete('supabase-rest'))
 })
 
 serwist.addEventListeners()

@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('../apps/web/node_modules/typescript'),Module=require('node:module');
+function load(file){const m=new Module(file,module);m.filename=file;m.paths=module.paths;m._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText,file);return m.exports}
+const original=Module._load;Module._load=function(id,...args){if(id==='@/lib/supabase/client')return {createClient:()=>{throw Error('No network in unit tests')}};return original.call(this,id,...args)};
+const f=load('apps/web/services/fitness.ts'),csv=load('apps/web/lib/fitness-import.ts');
+assert.deepEqual(csv.parseCsv('a,b\r\n"Bench, flat","10"\r\n'),[['a','b'],['Bench, flat','10']]);
+assert.deepEqual(csv.parseCsv('a,b\n"Say ""hello""",20'),[['a','b'],['Say "hello"','20']]);
+assert.throws(()=>csv.parseCsv('a,b\n"broken,20'));
+assert.equal(csv.importRows('Exercise Name,Date,Weight,Reps\nBench,2026-09-20 12:00:00,20,10')[0].date,'2026-09-20');
+assert.equal(csv.importRows('exercise_title,start_time,weight_kg,reps\nBench,20 Sep 2026,20,10')[0].date,'');
+assert.throws(()=>csv.importRows('wrong,headers\n1,2'));
+const e={id:'item-new',exercicio_id:'ex-bench',nome:'Bench',series:2,repeticoes:'8-12',config:{...f.defaultPrescription,incremento_kg:2.5}};
+const past={id:'past',inicio:'2026-09-20T12:00:00Z',status:'CONCLUIDO',prescricao:[{...e,id:'item-old'}],series:[{id:'s1',item_id:'item-old',carga:20,reps:12,aquecimento:false,registrado_em:'2026-09-20T12:01:00Z'},{id:'s2',item_id:'item-old',carga:20,reps:12,aquecimento:false,registrado_em:'2026-09-20T12:02:00Z'},{id:'w',item_id:'item-old',carga:10,reps:10,aquecimento:true,registrado_em:'2026-09-20T12:00:00Z'}]};
+assert.equal(f.sessionVolume(past),480);assert.equal(f.completion(past),100);
+assert.equal(f.completion({...past,series:[past.series[0]]}),50);
+assert.equal(f.previousSets([past],e).length,2);assert.deepEqual(f.loadSuggestion([past],e),{load:22.5,progress:true});
+assert.deepEqual(f.loadSuggestion([past],{...e,config:{...e.config,carga_alvo:30}}),{load:30,progress:false});
+assert.equal(f.loadSuggestion([{...past,series:[past.series[0],{...past.series[1],reps:8}]}],e).load,20);
+assert.equal(f.loadSuggestion([{...past,status:'EM_ANDAMENTO'}],e).load,null);
+const storage=new Map();global.localStorage={getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)};
+f.queueSession({...past,aluno_id:'student-a'});f.queueSession({...past,aluno_id:'student-a',observacoes:'new'});
+assert.equal(f.localSessions('student-a').length,1);assert.equal(f.localSessions('student-b').length,0);
+f.clearQueued('student-a',{...past,aluno_id:'student-a'});assert.equal(f.localSessions('student-a').length,1);
+f.clearQueued('student-a',f.localSessions('student-a')[0]);assert.equal(f.localSessions('student-a').length,0);
+console.log('18 fitness assertions passed: CSV, progression, totals and account-scoped retries.');
