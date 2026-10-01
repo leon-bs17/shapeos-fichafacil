@@ -1,8 +1,9 @@
 'use client'
 
+import { AuthShell } from '@/components/auth/auth-shell'
+
 import { FormEvent, useEffect, useState } from 'react'
 import { ArrowLeft, CheckCircle2, KeyRound, Loader2, Mail, ShieldCheck } from 'lucide-react'
-import Logo from '@/davi/components/Logo'
 import { createClient } from '@/lib/supabase/client'
 
 type Mode = 'request' | 'sending' | 'sent' | 'loading' | 'reset' | 'saving' | 'success' | 'invalid'
@@ -150,44 +151,19 @@ export default function RecuperarSenhaPage() {
             : 'Informe seu e-mail e enviaremos um link seguro para redefinir sua senha.'
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-4 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl opacity-30"
-        style={{ background: 'radial-gradient(circle, #22C7C7 0%, transparent 70%)' }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-32 h-[520px] w-[520px] rounded-full blur-3xl opacity-20"
-        style={{ background: 'radial-gradient(circle, #F59E0B 0%, transparent 70%)' }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
-          backgroundSize: '42px 42px',
-        }}
-      />
-
-      <div className="relative z-10 w-full max-w-md">
-        <div className="mb-6 flex justify-center">
-          <Logo size="xl" stacked />
-        </div>
-
+    <AuthShell compact>
         <section
-          className="rounded-3xl p-7 backdrop-blur-xl"
+          className="rounded-xl p-6 sm:p-7"
           style={{
             background: 'linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))',
             border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
+            boxShadow: 'none',
           }}
         >
           <div className="mb-6">
             <h1
               className="text-2xl tracking-tight text-[#F5F7FA]"
-              style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
+              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
             >
               {titulo}
             </h1>
@@ -353,7 +329,6 @@ export default function RecuperarSenhaPage() {
             </div>
           ) : null}
         </section>
-      </div>
-    </main>
+    </AuthShell>
   )
 }

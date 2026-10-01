@@ -1,5 +1,7 @@
 'use client'
 
+import { AuthShell } from '@/components/auth/auth-shell'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { loginSchema } from '@shapeos/shared'
@@ -17,7 +19,6 @@ import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 import { ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff, Clock3 } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
 
 type CadastroConcluido = 'APROVACAO' | 'EMAIL_E_APROVACAO' | null
 
@@ -108,11 +109,10 @@ export default function CadastroPage() {
   }
 
   return (
-    <main className="min-h-screen flex bg-gradient-to-b from-background to-muted/30">
-      <div className="w-full max-w-md mx-auto px-4 py-16 md:py-24 flex items-center justify-center">
-        <Card className="w-full shadow-xl border-border/30 bg-card/90 backdrop-blur-sm">
+    <AuthShell>
+        <Card className="w-full border-border bg-card shadow-none">
           <CardHeader className="text-center pb-6">
-            <Logo size="xl" className="mx-auto mb-4" />
+
             <CardTitle className="text-2xl font-bold tracking-tight">Criar conta de Personal</CardTitle>
             <CardDescription className="text-muted-foreground">
               Gerencie alunos, crie fichas e acompanhe evolução
@@ -260,7 +260,6 @@ export default function CadastroPage() {
             </p>
           </CardFooter>
         </Card>
-      </div>
-    </main>
+    </AuthShell>
   )
 }

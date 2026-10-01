@@ -418,3 +418,7 @@ input:-webkit-autofill:focus {
     .shapeos-workspace select,
     .shapeos-workspace textarea { font-size: 16px; }
 }
+
+.shapeos-auth input:not([type="checkbox"]):not([type="radio"]) { min-height: 2.75rem; }
+.shapeos-auth button:disabled { cursor: wait; opacity: 0.6; }
+@media (max-width: 639px) { .shapeos-auth input { font-size: 16px; } }

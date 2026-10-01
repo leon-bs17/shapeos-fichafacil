@@ -1,5 +1,7 @@
 'use client'
 
+import { AuthShell } from '@/components/auth/auth-shell'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { loginSchema } from '@shapeos/shared'
@@ -17,7 +19,6 @@ import { Label } from '@/components/ui/label'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
 import { ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, User } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
 
 export default function CadastroAlunoPage() {
   const [nome, setNome] = useState('')
@@ -111,11 +112,10 @@ export default function CadastroAlunoPage() {
   }
 
   return (
-    <main className="min-h-screen flex bg-gradient-to-b from-background to-muted/30">
-      <div className="w-full max-w-md mx-auto px-4 py-16 md:py-24 flex items-center justify-center">
-        <Card className="w-full shadow-xl border-border/30 bg-card/90 backdrop-blur-sm">
+    <AuthShell>
+        <Card className="w-full border-border bg-card shadow-none">
           <CardHeader className="text-center pb-6">
-            <Logo size="xl" className="mx-auto mb-4" />
+
             <CardTitle className="text-2xl font-bold tracking-tight">Criar conta de Aluno</CardTitle>
             <CardDescription className="text-muted-foreground">
               Acesse seus treinos, histórico e evolução no ShapeOS
@@ -244,7 +244,6 @@ export default function CadastroAlunoPage() {
             </p>
           </CardFooter>
         </Card>
-      </div>
-    </main>
+    </AuthShell>
   )
 }

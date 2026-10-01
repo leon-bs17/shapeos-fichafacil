@@ -170,17 +170,5 @@ export default function LoginPage() {
     await redirecionarPorPerfil(supabase, user.id)
   }
 
-  return (
-    <div className="relative">
-      <LoginView onEnter={entrar} onBiometric={entrarComBiometria} />
-      {erro ? (
-        <div
-          role="alert"
-          className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#141414]/95 px-5 py-3 text-sm text-red-300 shadow-2xl"
-        >
-          {erro}
-        </div>
-      ) : null}
-    </div>
-  )
+  return <LoginView onEnter={entrar} onBiometric={entrarComBiometria} error={erro} />
 }

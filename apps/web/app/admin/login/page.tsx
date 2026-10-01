@@ -1,5 +1,7 @@
 'use client'
 
+import { AuthShell } from '@/components/auth/auth-shell'
+
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
@@ -99,14 +101,14 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0a0f1a] p-4">
+    <AuthShell compact>
       <div className="w-full max-w-md space-y-6 animate-fade-in">
         <div className="text-center space-y-3">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/10">
-            <Shield className="h-8 w-8 text-destructive" />
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl border border-border bg-card">
+            <Shield className="h-5 w-5 text-muted-foreground" />
           </div>
 <div>
-          <h1 className="text-2xl font-bold tracking-tight">Acesso Restrito</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Acesso administrativo</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Área exclusiva dos administradores <Logo size="sm" variant="inverse" />
           </p>
@@ -237,6 +239,6 @@ export default function AdminLoginPage() {
           Somente contas com permissao de administrador acessam esta area.
         </p>
       </div>
-    </main>
+    </AuthShell>
   )
 }

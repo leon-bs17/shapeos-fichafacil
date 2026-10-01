@@ -2,18 +2,21 @@
 
 import React, { useState } from "react";
 import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Fingerprint, CheckCircle2 } from "lucide-react";
-import Logo from "@/davi/components/Logo";
+import { AuthShell } from "@/components/auth/auth-shell";
 
-export const LoginView = ({ onEnter, onBiometric }) => {
+export const LoginView = ({ onEnter, onBiometric, error }) => {
   const [role, setRole] = useState("personal"); // "personal" | "aluno" | "admin"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [bioState, setBioState] = useState("idle"); // idle | scanning | success | error
   const [bioError, setBioError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onEnter(role, email, password);
+    if (submitting) return;
+    setSubmitting(true);
+    try { await onEnter(role, email, password); } finally { setSubmitting(false); }
   };
 
   const handleBiometric = async () => {
@@ -33,7 +36,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
   const activeTabStyle = (tab) => ({
     fontFamily: "'Sora', sans-serif",
     background: role === tab ? "#22C7C7" : "transparent",
-    boxShadow: role === tab ? "0 6px 20px rgba(34,199,199,0.35)" : "none",
+    boxShadow: "none",
   });
 
   const tabClass = (tab) => `py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
@@ -41,59 +44,23 @@ export const LoginView = ({ onEnter, onBiometric }) => {
   }`;
 
   return (
-    <div
-      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-4 py-10 lg:py-4"
-      data-testid="login-view"
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full blur-3xl opacity-30"
-        style={{ background: "radial-gradient(circle, #22C7C7 0%, transparent 70%)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-20"
-        style={{ background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(45deg, rgba(255,255,255,0.5) 0 1px, transparent 1px 12px)",
-        }}
-      />
-
-      <div className="relative z-10 w-full max-w-md lg:max-w-sm">
-        <div className="flex justify-center mb-8 lg:mb-3 lg:scale-[0.72] lg:-my-3">
-          <Logo size="xl" stacked />
-        </div>
-
+    <AuthShell testId="login-view">
         <div
-          className="rounded-3xl p-7 backdrop-blur-xl lg:rounded-2xl lg:p-5"
+          className="rounded-xl p-6 sm:p-7"
           style={{
             background: "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015))",
             border: "1px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)",
+            boxShadow: "none",
           }}
         >
           <div className="mb-6 lg:mb-4">
             <h1
               className="text-3xl lg:text-2xl text-[#F5F7FA] tracking-tight"
-              style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600 }}
+              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
             >
-              Acesse sua ficha
+              Bem-vindo à ShapeOS
             </h1>
-            <p className="text-sm lg:text-xs text-zinc-500 mt-2 lg:mt-1" style={{ fontFamily: "'Sora', sans-serif" }}>
+            <p className="text-sm leading-relaxed text-zinc-400 mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
               Entre para treinar, gerenciar sua base ou administrar a plataforma.
             </p>
           </div>
@@ -135,12 +102,15 @@ export const LoginView = ({ onEnter, onBiometric }) => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
+          {error && <p role="alert" className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
+          <form aria-busy={submitting} onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
             <div>
-              <label className="text-xs text-zinc-500 uppercase tracking-widest">Email</label>
+              <label htmlFor="login-email" className="text-sm text-zinc-300">E-mail</label>
               <div className="mt-2 relative">
                 <Mail className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
+                  id="login-email"
+                  autoComplete="email"
                   data-testid="login-email-input"
                   type="email"
                   required
@@ -158,7 +128,7 @@ export const LoginView = ({ onEnter, onBiometric }) => {
 
             <div>
               <div className="flex items-center justify-between gap-3">
-                <label className="text-xs text-zinc-500 uppercase tracking-widest">Senha</label>
+                <label htmlFor="login-password" className="text-sm text-zinc-300">Senha</label>
                 <a
                   href="/recuperar-senha"
                   data-testid="forgot-password-link"
@@ -170,6 +140,8 @@ export const LoginView = ({ onEnter, onBiometric }) => {
               <div className="mt-2 relative">
                 <KeyRound className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
+                  id="login-password"
+                  autoComplete="current-password"
                   data-testid="login-password-input"
                   type="password"
                   required
@@ -187,17 +159,18 @@ export const LoginView = ({ onEnter, onBiometric }) => {
 
             <button
               type="submit"
+              disabled={submitting}
               data-testid="login-submit-button"
               className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#0E1116] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
-                background: "#F59E0B",
-                boxShadow: "0 12px 28px rgba(245,158,11,0.35), inset 0 -3px 0 rgba(0,0,0,0.15)",
+                background: "#22C7C7",
+                boxShadow: "none",
                 fontFamily: "'Sora', sans-serif",
                 letterSpacing: "0.02em",
               }}
             >
               {role === "admin" ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-              {role === "admin" ? "Acessar Painel Admin" : "Acessar Ficha"}
+              {submitting ? "Entrando…" : role === "admin" ? "Acessar Painel Admin" : "Entrar na ShapeOS"}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </form>
@@ -298,14 +271,13 @@ export const LoginView = ({ onEnter, onBiometric }) => {
           </div>
         </div>
 
-        <p className="text-center text-xs lg:text-[10px] text-zinc-600 mt-6 lg:mt-3" style={{ fontFamily: "'Sora', sans-serif" }}>
+        <p className="text-center text-sm leading-relaxed text-zinc-400 mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
           Novo por aqui?{' '}
           <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Personal</a>
           <span className="mx-2 text-zinc-700">•</span>
           <a href="/cadastro/aluno" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Aluno</a>
         </p>
-      </div>
-    </div>
+    </AuthShell>
   );
 };
 
