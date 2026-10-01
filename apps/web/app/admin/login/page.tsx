@@ -110,7 +110,7 @@ export default function AdminLoginPage() {
 <div>
           <h1 className="text-2xl font-bold tracking-tight">Acesso administrativo</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Área exclusiva dos administradores <Logo size="sm" variant="inverse" />
+            Área exclusiva dos administradores <Logo size="sm" />
           </p>
         </div>
         </div>
