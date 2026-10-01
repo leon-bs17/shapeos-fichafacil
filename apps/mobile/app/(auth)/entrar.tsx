@@ -40,9 +40,9 @@ export default function EntrarScreen() {
 
       Alert.alert(
         'Entrar por biometria',
-        'Deseja usar digital ou Face ID para desbloquear sua sessao nas proximas vezes?',
+        'Deseja usar digital ou Face ID para desbloquear sua sessão nas próximas vezes?',
         [
-          { text: 'Agora nao', style: 'cancel' },
+          { text: 'Agora não', style: 'cancel' },
           {
             text: 'Ativar',
             style: 'default',
@@ -59,7 +59,7 @@ export default function EntrarScreen() {
     setErro(null)
     const parsed = loginSchema.safeParse({ email, senha })
     if (!parsed.success) {
-      setErro(parsed.error.issues[0]?.message ?? 'Dados invalidos')
+      setErro(parsed.error.issues[0]?.message ?? 'Dados inválidos')
       return
     }
 
@@ -105,7 +105,7 @@ export default function EntrarScreen() {
           <Text style={estilos.label}>E-MAIL</Text>
           <TextInput
             style={estilos.input}
-            placeholder="voce@exemplo.com"
+            placeholder="você@exemplo.com"
             placeholderTextColor="#475569"
             keyboardType="email-address"
             autoCapitalize="none"
@@ -151,7 +151,7 @@ export default function EntrarScreen() {
       </View>
 
       <Text style={estilos.footer}>
-        Treinos offline · Sincronizacao automatica
+        Treinos offline · Sincronização automática
       </Text>
     </KeyboardAvoidingView>
   )
