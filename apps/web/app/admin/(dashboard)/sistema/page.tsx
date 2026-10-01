@@ -69,7 +69,7 @@ export default function AdminSistemaPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[#22C7C7]">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
             <ServerCog className="h-4 w-4" /> Operação
           </div>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Sistema</h1>
@@ -95,19 +95,19 @@ export default function AdminSistemaPage() {
                   <p className="text-sm text-muted-foreground">Última verificação: {new Date(data.verificadoEm).toLocaleTimeString('pt-BR')}</p>
                 </div>
               </div>
-              <div className="rounded-xl border border-white/[.07] bg-black/10 px-4 py-2 text-sm text-muted-foreground">
-                Latência do diagnóstico: <strong className="text-zinc-100">{data.latencia} ms</strong>
+              <div className="rounded-xl border border-border bg-black/10 px-4 py-2 text-sm text-muted-foreground">
+                Latência do diagnóstico: <strong className="text-foreground">{data.latencia} ms</strong>
               </div>
             </CardContent>
           </Card>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {data.checks.map((check) => (
-              <Card key={check.nome} className="border-white/[.07] bg-white/[.025]">
+              <Card key={check.nome} className="border-border bg-accent/50">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between gap-3 text-sm">
                     <span className="flex items-center gap-2">
-                      {check.nome === 'Autenticação' ? <ShieldCheck className="h-4 w-4 text-[#22C7C7]" /> : check.nome === 'Banco principal' ? <Database className="h-4 w-4 text-[#22C7C7]" /> : <Activity className="h-4 w-4 text-[#22C7C7]" />}
+                      {check.nome === 'Autenticação' ? <ShieldCheck className="h-4 w-4 text-[var(--shapeos-brand)]" /> : check.nome === 'Banco principal' ? <Database className="h-4 w-4 text-[var(--shapeos-brand)]" /> : <Activity className="h-4 w-4 text-[var(--shapeos-brand)]" />}
                       {check.nome}
                     </span>
                     {check.ok ? <CheckCircle2 className="h-4 w-4 text-emerald-300" /> : <XCircle className="h-4 w-4 text-red-300" />}
@@ -120,7 +120,7 @@ export default function AdminSistemaPage() {
             ))}
           </div>
 
-          <Card className="border-white/[.07] bg-white/[.025]">
+          <Card className="border-border bg-accent/50">
             <CardHeader><CardTitle className="text-base">O que esta tela valida</CardTitle></CardHeader>
             <CardContent className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
               <p>• Sessão do Admin autenticada no Supabase Auth.</p>

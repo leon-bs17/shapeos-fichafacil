@@ -127,7 +127,7 @@ export default function AdminRelatoriosPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[#22C7C7]">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
             <BarChart3 className="h-4 w-4" /> Inteligência operacional
           </div>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Relatórios</h1>
@@ -145,14 +145,14 @@ export default function AdminRelatoriosPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map(({ label, valor, detalhe, Icon }) => (
-          <Card key={label} className="border-white/[.07] bg-white/[.025]">
+          <Card key={label} className="border-border bg-accent/50">
             <CardContent className="flex items-center gap-4 p-5">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[#22C7C7]/10 text-[#22C7C7]">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--shapeos-brand)]/10 text-[var(--shapeos-brand)]">
                 <Icon className="h-5 w-5" />
               </div>
               <div>
                 <div className="text-2xl font-bold">{valor}</div>
-                <div className="text-sm font-medium text-zinc-300">{label}</div>
+                <div className="text-sm font-medium text-foreground">{label}</div>
                 <div className="mt-0.5 text-xs text-muted-foreground">{detalhe}</div>
               </div>
             </CardContent>
@@ -160,9 +160,9 @@ export default function AdminRelatoriosPage() {
         ))}
       </div>
 
-      <Card className="border-white/[.07] bg-white/[.025]">
+      <Card className="border-border bg-accent/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base"><Link2 className="h-4 w-4 text-[#22C7C7]" /> Distribuição da base</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base"><Link2 className="h-4 w-4 text-[var(--shapeos-brand)]" /> Distribuição da base</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
           <Barra label="Personais" atual={data.personals} total={Math.max(data.totalUsuarios, 1)} />
@@ -180,10 +180,10 @@ function Barra({ label, atual, total }: { label: string; atual: number; total: n
     <div>
       <div className="mb-2 flex items-center justify-between text-xs">
         <span className="text-muted-foreground">{label}</span>
-        <span className="font-semibold text-zinc-200">{atual} · {percentual}%</span>
+        <span className="font-semibold text-foreground">{atual} · {percentual}%</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/[.05]">
-        <div className="h-full rounded-full bg-[#22C7C7]" style={{ width: `${percentual}%` }} />
+      <div className="h-2 overflow-hidden rounded-full bg-accent/50">
+        <div className="h-full rounded-full bg-[var(--shapeos-brand)]" style={{ width: `${percentual}%` }} />
       </div>
     </div>
   )

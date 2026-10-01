@@ -35,12 +35,12 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
 
   const activeTabStyle = (tab) => ({
     fontFamily: "'Sora', sans-serif",
-    background: role === tab ? "#22C7C7" : "transparent",
+    background: role === tab ? "var(--shapeos-brand)" : "transparent",
     boxShadow: "none",
   });
 
   const tabClass = (tab) => `py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-    role === tab ? "text-[#121719]" : "text-muted-foreground hover:text-[#edf2f3]"
+    role === tab ? "text-[var(--shapeos-on-brand)]" : "text-muted-foreground hover:text-[var(--shapeos-text)]"
   }`;
 
   return (
@@ -49,13 +49,13 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           className="rounded-xl p-6 sm:p-7"
           style={{
             background: "var(--shapeos-surface)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
             boxShadow: "none",
           }}
         >
           <div className="mb-6 lg:mb-4">
             <h1
-              className="text-3xl lg:text-2xl text-[#edf2f3] tracking-tight"
+              className="text-3xl lg:text-2xl text-[var(--shapeos-text)] tracking-tight"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
             >
               Bem-vindo à ShapeOS
@@ -68,8 +68,8 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           <div
             className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
             }}
             data-testid="role-tabs"
           >
@@ -97,7 +97,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           {error && <p role="alert" className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
           <form aria-busy={submitting} onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
             <div>
-              <label htmlFor="login-email" className="text-sm text-zinc-300">E-mail</label>
+              <label htmlFor="login-email" className="text-sm text-foreground">E-mail</label>
               <div className="mt-2 relative">
                 <Mail className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
@@ -109,10 +109,10 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="voce@shapeos.app"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none transition-all focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                    border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
                   }}
                 />
               </div>
@@ -120,11 +120,11 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
 
             <div>
               <div className="flex items-center justify-between gap-3">
-                <label htmlFor="login-password" className="text-sm text-zinc-300">Senha</label>
+                <label htmlFor="login-password" className="text-sm text-foreground">Senha</label>
                 <a
                   href="/recuperar-senha"
                   data-testid="forgot-password-link"
-                  className="text-[11px] font-medium text-[#22C7C7] transition-colors hover:text-[#62ded2] hover:underline"
+                  className="text-[11px] font-medium text-[var(--shapeos-brand)] transition-colors hover:text-[#006b65] hover:underline"
                 >
                   Esqueci minha senha
                 </a>
@@ -140,10 +140,10 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none transition-all focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none transition-all focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                    border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
                   }}
                 />
               </div>
@@ -153,9 +153,9 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               type="submit"
               disabled={submitting}
               data-testid="login-submit-button"
-              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[#121719] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
+              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[var(--shapeos-on-brand)] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
               style={{
-                background: "#22C7C7",
+                background: "var(--shapeos-brand)",
                 boxShadow: "none",
                 fontFamily: "'Sora', sans-serif",
                 letterSpacing: "0.02em",
@@ -168,11 +168,11 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           </form>
 
           <div className="md:hidden flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(var(--shapeos-neutral-rgb),0.08)" }} />
             <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
               ou entre com
             </span>
-            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(var(--shapeos-neutral-rgb),0.08)" }} />
           </div>
 
           <div className="md:hidden flex flex-col items-center">
@@ -199,8 +199,8 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
             >
               {bioState === "scanning" && (
                 <>
-                  <span className="absolute inset-0 rounded-full border border-[#22C7C7]/40 animate-ping-slow" />
-                  <span className="absolute inset-[-8px] rounded-full border border-[#22C7C7]/20 animate-ping-slower" />
+                  <span className="absolute inset-0 rounded-full border border-[var(--shapeos-brand)]/40 animate-ping-slow" />
+                  <span className="absolute inset-[-8px] rounded-full border border-[var(--shapeos-brand)]/20 animate-ping-slower" />
                 </>
               )}
 
@@ -215,11 +215,11 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               )}
 
               {bioState === "success" ? (
-                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[#22C7C7]" />
+                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[var(--shapeos-brand)]" />
               ) : (
                 <Fingerprint
                   className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
-                    bioState === "scanning" ? "text-[#62ded2]" : "text-[#22C7C7] group-hover:text-[#62ded2]"
+                    bioState === "scanning" ? "text-[#006b65]" : "text-[var(--shapeos-brand)] group-hover:text-[#006b65]"
                   }`}
                   strokeWidth={1.6}
                 />
@@ -231,7 +231,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
               className="mt-4 lg:mt-2 text-xs lg:text-[10px] tracking-widest uppercase text-center"
               style={{
                 fontFamily: "'Sora', sans-serif",
-                color: bioState === "success" ? "#22C7C7" : bioState === "scanning" ? "#edf2f3" : "#a1a1aa",
+                color: bioState === "success" ? "var(--shapeos-brand)" : bioState === "scanning" ? "var(--shapeos-text)" : "#a1a1aa",
                 letterSpacing: "0.25em",
               }}
             >
@@ -258,16 +258,16 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-muted-foreground">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#22C7C7]" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[var(--shapeos-brand)]" />
             Conexão criptografada · TLS 1.3 · WebAuthn
           </div>
         </div>
 
         <p className="text-center text-sm leading-relaxed text-muted-foreground mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
           Novo por aqui?{' '}
-          <a href="/cadastro" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Personal</a>
+          <a href="/cadastro" className="text-[var(--shapeos-brand)] cursor-pointer hover:underline">Criar conta de Personal</a>
           <span className="mx-2 text-muted-foreground">•</span>
-          <a href="/cadastro/aluno" className="text-[#22C7C7] cursor-pointer hover:underline">Criar conta de Aluno</a>
+          <a href="/cadastro/aluno" className="text-[var(--shapeos-brand)] cursor-pointer hover:underline">Criar conta de Aluno</a>
         </p>
     </AuthShell>
   );

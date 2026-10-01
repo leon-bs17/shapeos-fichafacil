@@ -96,15 +96,15 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
         className="relative w-full max-w-4xl m-4 md:m-6 rounded-3xl flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
         style={{
           background: "var(--shapeos-surface)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
+          border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
+          boxShadow: "0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 rgba(var(--shapeos-neutral-rgb),0.06)",
           maxHeight: "calc(100vh - 3rem)",
         }}
       >
         {/* Header */}
         <div
           className="flex items-start gap-4 p-6 md:p-7"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderBottom: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)" }}
         >
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
@@ -136,7 +136,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Nome do treino"
-              className="mt-1 w-full bg-transparent outline-none text-2xl md:text-3xl text-[#edf2f3]"
+              className="mt-1 w-full bg-transparent outline-none text-2xl md:text-3xl text-[var(--shapeos-text)]"
               style={{
                 fontFamily: "'Unbounded', sans-serif",
                 fontWeight: 600,
@@ -166,8 +166,8 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={focus}
               onChange={(e) => setFocus(e.target.value)}
               placeholder="ex: Força + Hipertrofia"
-              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+              style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
             />
           </div>
           <div>
@@ -177,8 +177,8 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               placeholder="≈ 60 min"
-              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+              className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+              style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
             />
           </div>
         </div>
@@ -187,7 +187,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
         <div className="flex-1 overflow-y-auto px-6 md:px-7 pb-4">
           <div className="flex items-center justify-between mb-3">
             <h3
-              className="text-sm text-[#edf2f3]"
+              className="text-sm text-[var(--shapeos-text)]"
               style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
             >
               Exercícios <span className="text-muted-foreground">({exercises.length})</span>
@@ -198,7 +198,7 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all hover:scale-[1.02]"
               style={{
                 background: "rgba(34,199,199,0.1)",
-                color: "#22C7C7",
+                color: "var(--shapeos-brand)",
                 border: "1px solid rgba(34,199,199,0.35)",
                 fontFamily: "'Sora', sans-serif",
               }}
@@ -211,8 +211,8 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
             <div
               className="text-center py-12 rounded-2xl text-muted-foreground text-sm"
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px dashed rgba(255,255,255,0.08)",
+                background: "rgba(var(--shapeos-neutral-rgb),0.02)",
+                border: "1px dashed rgba(var(--shapeos-neutral-rgb),0.08)",
                 fontFamily: "'Sora', sans-serif",
               }}
             >
@@ -240,17 +240,17 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
         <div
           className="flex gap-3 p-6 md:p-7"
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
             fontFamily: "'Sora', sans-serif",
           }}
         >
           <button
             data-testid="editor-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
             }}
           >
             Cancelar
@@ -258,9 +258,9 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExerc
           <button
             data-testid="editor-save-button"
             onClick={handleSave}
-            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01]"
+            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01]"
             style={{
-              background: "#22C7C7",
+              background: "var(--shapeos-brand)",
               boxShadow: "none",
             }}
           >
@@ -287,8 +287,8 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
     data-testid={`editor-row-${exercise.id}`}
     className="rounded-2xl p-3"
     style={{
-      background: "rgba(255,255,255,0.03)",
-      border: "1px solid rgba(255,255,255,0.06)",
+      background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+      border: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
     }}
   >
     <div className="flex items-center gap-3">
@@ -298,7 +298,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           data-testid={`move-up-${exercise.id}`}
           disabled={index === 0}
           onClick={() => onMove(-1)}
-          className="text-muted-foreground hover:text-[#edf2f3] disabled:opacity-20 transition-colors"
+          className="text-muted-foreground hover:text-[var(--shapeos-text)] disabled:opacity-20 transition-colors"
           aria-label="Mover para cima"
         >
           <ChevronUp className="w-4 h-4" />
@@ -307,7 +307,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           className="text-xs w-6 h-6 rounded-md flex items-center justify-center"
           style={{
             background: "rgba(34,199,199,0.1)",
-            color: "#22C7C7",
+            color: "var(--shapeos-brand)",
             border: "1px solid rgba(34,199,199,0.25)",
             fontFamily: "'Unbounded', sans-serif",
             fontWeight: 600,
@@ -319,7 +319,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           data-testid={`move-down-${exercise.id}`}
           disabled={index === total - 1}
           onClick={() => onMove(1)}
-          className="text-muted-foreground hover:text-[#edf2f3] disabled:opacity-20 transition-colors"
+          className="text-muted-foreground hover:text-[var(--shapeos-text)] disabled:opacity-20 transition-colors"
           aria-label="Mover para baixo"
         >
           <ChevronDown className="w-4 h-4" />
@@ -335,7 +335,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
           {exercise.muscle} · {exercise.equipment}
         </div>
         <h4
-          className="text-sm md:text-base text-[#edf2f3] mt-0.5 truncate"
+          className="text-sm md:text-base text-[var(--shapeos-text)] mt-0.5 truncate"
           style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
           title={exercise.name}
         >
@@ -383,7 +383,7 @@ const ExerciseEditorRow = ({ exercise, index, total, onChange, onRemove, onMove 
         className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105"
         style={{
           background: "rgba(255,80,80,0.08)",
-          color: "#f18d8d",
+          color: "#c13d4a",
           border: "1px solid rgba(255,80,80,0.25)",
         }}
         aria-label="Remover exercício"
@@ -401,11 +401,11 @@ const MetricInput = ({ label, value, onChange, accent, testId }) => (
       data-testid={testId}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="mt-0.5 w-full px-2 py-1.5 rounded-lg text-sm outline-none focus:ring-1 focus:ring-[#22C7C7]/40"
+      className="mt-0.5 w-full px-2 py-1.5 rounded-lg text-sm outline-none focus:ring-1 focus:ring-[var(--shapeos-brand)]/40"
       style={{
-        background: accent ? "rgba(34,199,199,0.08)" : "rgba(255,255,255,0.04)",
-        border: `1px solid ${accent ? "rgba(34,199,199,0.25)" : "rgba(255,255,255,0.07)"}`,
-        color: accent ? "#22C7C7" : "#edf2f3",
+        background: accent ? "rgba(34,199,199,0.08)" : "rgba(var(--shapeos-neutral-rgb),0.04)",
+        border: `1px solid ${accent ? "rgba(34,199,199,0.25)" : "rgba(var(--shapeos-neutral-rgb),0.07)"}`,
+        color: accent ? "var(--shapeos-brand)" : "var(--shapeos-text)",
         fontWeight: accent ? 600 : 500,
       }}
     />
@@ -449,7 +449,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
         className="relative w-full max-w-2xl rounded-3xl flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
         style={{
           background: "var(--shapeos-surface)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
           boxShadow: "0 30px 70px rgba(0,0,0,0.6)",
           maxHeight: "85vh",
         }}
@@ -457,12 +457,12 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
         {/* Header */}
         <div
           className="p-6"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderBottom: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)" }}
         >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3
-                className="text-xl text-[#edf2f3]"
+                className="text-xl text-[var(--shapeos-text)]"
                 style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
               >
                 Biblioteca de Exercícios
@@ -488,10 +488,10 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                 placeholder="Buscar por nome ou grupo muscular..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                  border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
                   fontFamily: "'Sora', sans-serif",
                 }}
               />
@@ -501,8 +501,8 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
               onClick={() => setCreateOpen(true)}
               className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02] flex-shrink-0"
               style={{
-                background: "#22C7C7",
-                color: "#121719",
+                background: "var(--shapeos-brand)",
+                color: "var(--shapeos-on-brand)",
                 boxShadow: "none",
                 fontFamily: "'Sora', sans-serif",
               }}
@@ -525,8 +525,8 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                   disabled={alreadyAdded}
                   className="group flex items-center gap-3 p-3 rounded-2xl text-left transition-all disabled:opacity-40 hover:-translate-y-0.5 relative"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: `1px solid ${item.custom ? "rgba(34,199,199,0.35)" : "rgba(255,255,255,0.07)"}`,
+                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                    border: `1px solid ${item.custom ? "rgba(34,199,199,0.35)" : "rgba(var(--shapeos-neutral-rgb),0.07)"}`,
                   }}
                 >
                   {item.custom && (
@@ -534,7 +534,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                       className="absolute top-2 right-2 text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded"
                       style={{
                         background: "rgba(34,199,199,0.15)",
-                        color: "#22C7C7",
+                        color: "var(--shapeos-brand)",
                         border: "1px solid rgba(34,199,199,0.4)",
                         fontFamily: "'Sora', sans-serif",
                       }}
@@ -551,7 +551,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                       {item.muscle}
                     </div>
                     <div
-                      className="text-sm text-[#edf2f3] mt-0.5 truncate"
+                      className="text-sm text-[var(--shapeos-text)] mt-0.5 truncate"
                       style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
                     >
                       {item.name}
@@ -568,7 +568,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
                       já na ficha
                     </span>
                   ) : (
-                    <Plus className="w-4 h-4 text-[#22C7C7] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Plus className="w-4 h-4 text-[var(--shapeos-brand)] opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}
                 </button>
               );
@@ -577,8 +577,8 @@ const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], 
               <div
                 className="col-span-full text-center py-10 rounded-2xl text-muted-foreground text-sm"
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px dashed rgba(255,255,255,0.08)",
+                  background: "rgba(var(--shapeos-neutral-rgb),0.02)",
+                  border: "1px dashed rgba(var(--shapeos-neutral-rgb),0.08)",
                   fontFamily: "'Sora', sans-serif",
                 }}
               >

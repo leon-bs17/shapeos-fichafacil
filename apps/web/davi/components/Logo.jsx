@@ -84,7 +84,7 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
   const wordmark = (
     <div className="leading-none">
       <div
-        className="text-[#F5F7FA] tracking-tight"
+        className="text-foreground tracking-tight"
         style={{
           fontFamily: "'Unbounded', sans-serif",
           fontWeight: 700,
@@ -92,11 +92,11 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
           letterSpacing: "-0.02em",
         }}
       >
-        shape<span className="text-[#22C7C7]" style={{ textShadow: "0 0 18px rgba(34,199,199,0.55)" }}>OS</span>
+        shape<span className="text-primary" >OS</span>
       </div>
       {showTagline && (
         <div
-          className="text-zinc-400 mt-1.5"
+          className="text-muted-foreground mt-1.5"
           style={{
             fontFamily: "'Sora', sans-serif",
             fontWeight: 300,

@@ -6,8 +6,7 @@ import { Dumbbell, FileBarChart, LayoutDashboard, Library, LogOut, Users } from 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { ThemeToggle } from './theme-toggle'
-import { Logo } from './logo'
+import Logo from '@/davi/components/Logo'
 
 const NAV_ITEMS = [
   { href: '/', label: 'Visão Geral', icon: LayoutDashboard },
@@ -29,7 +28,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex h-screen w-60 flex-col glass border-r border-border/50">
+    <aside className="shapeos-navigation hidden md:flex h-screen w-60 flex-col glass border-r border-border/50">
       <div className="flex h-16 items-center gap-2.5 border-b border-border/30 px-5">
         <Logo size="lg" />
       </div>
@@ -63,7 +62,7 @@ export function Sidebar() {
 
       <div className="border-t border-border/30 p-3 space-y-1">
         <div className="flex justify-end px-1 pb-1">
-          <ThemeToggle />
+
         </div>
         <Button
           variant="ghost"

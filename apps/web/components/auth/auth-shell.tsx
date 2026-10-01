@@ -11,7 +11,7 @@ export function AuthShell({ children, compact = false, testId }: { children: Rea
           <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
           <Link href="/apresentacao" className="flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />Conhecer a ShapeOS</Link>
         </header>
-        <div className="mx-auto flex w-full max-w-md flex-1 items-center py-10"><div className="w-full">{children}</div></div>
+        <div className="mx-auto flex w-full max-w-md flex-1 items-center py-10"><div className={`w-full ${compact ? "rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/5 sm:p-8" : ""}`}>{children}</div></div>
         <footer className="text-center text-xs text-muted-foreground">ShapeOS · Seu espaço para planejar e treinar</footer>
       </div>
       {!compact && <aside aria-label="Sobre a ShapeOS" className="hidden flex-col justify-center border-l border-border bg-card/40 p-12 lg:flex xl:p-20">

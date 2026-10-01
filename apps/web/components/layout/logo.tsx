@@ -26,7 +26,7 @@ export function Logo({ size = 'md', variant = 'default', className }: LogoProps)
     xl: 'text-2xl gap-2.5',
   }
   const colorStyles = variant === 'inverse'
-    ? 'text-white'
+    ? 'text-foreground'
     : 'text-foreground'
 
   return (

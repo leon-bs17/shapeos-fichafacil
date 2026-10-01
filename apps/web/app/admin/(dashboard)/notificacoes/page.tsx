@@ -95,7 +95,7 @@ export default function AdminNotificacoesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[#22C7C7]">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
           <BellRing className="h-4 w-4" /> Comunicação
         </div>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">Notificações</h1>
@@ -103,9 +103,9 @@ export default function AdminNotificacoesPage() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[.8fr_1.2fr]">
-        <Card className="border-white/[.07] bg-white/[.025]">
+        <Card className="border-border bg-accent/50">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base"><Megaphone className="h-4 w-4 text-[#22C7C7]" /> Novo comunicado</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-base"><Megaphone className="h-4 w-4 text-[var(--shapeos-brand)]" /> Novo comunicado</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={publicar} className="space-y-4">
@@ -121,7 +121,7 @@ export default function AdminNotificacoesPage() {
                   maxLength={1500}
                   rows={6}
                   placeholder="Escreva o comunicado..."
-                  className="w-full resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/15"
+                  className="w-full resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/15"
                 />
               </div>
               <div>
@@ -134,9 +134,9 @@ export default function AdminNotificacoesPage() {
                       onClick={() => setPublico(item)}
                       className="rounded-xl px-3 py-2 text-xs font-medium transition"
                       style={{
-                        background: publico === item ? 'rgba(34,199,199,.12)' : 'rgba(255,255,255,.03)',
-                        border: publico === item ? '1px solid rgba(34,199,199,.35)' : '1px solid rgba(255,255,255,.07)',
-                        color: publico === item ? '#22C7C7' : '#71717a',
+                        background: publico === item ? 'rgba(34,199,199,.12)' : 'rgba(var(--shapeos-neutral-rgb),.03)',
+                        border: publico === item ? '1px solid rgba(34,199,199,.35)' : '1px solid rgba(var(--shapeos-neutral-rgb),.07)',
+                        color: publico === item ? 'var(--shapeos-brand)' : '#71717a',
                       }}
                     >
                       {item === 'TODOS' ? 'Todos' : item === 'PERSONAL' ? 'Personais' : 'Alunos'}
@@ -152,11 +152,11 @@ export default function AdminNotificacoesPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-white/[.07] bg-white/[.025]">
+        <Card className="border-border bg-accent/50">
           <CardHeader>
             <div className="flex items-center justify-between gap-3">
               <CardTitle className="text-base">Comunicados publicados</CardTitle>
-              <span className="rounded-full bg-[#22C7C7]/10 px-3 py-1 text-xs text-[#22C7C7]">{ativas} ativo(s)</span>
+              <span className="rounded-full bg-[var(--shapeos-brand)]/10 px-3 py-1 text-xs text-[var(--shapeos-brand)]">{ativas} ativo(s)</span>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -168,11 +168,11 @@ export default function AdminNotificacoesPage() {
               </div>
             ) : (
               notificacoes.map((item) => (
-                <div key={item.id} className="rounded-2xl border border-white/[.07] bg-black/10 p-4">
+                <div key={item.id} className="rounded-2xl border border-border bg-black/10 p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold text-zinc-100">{item.titulo}</h3>
+                        <h3 className="font-semibold text-foreground">{item.titulo}</h3>
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${item.ativa ? 'bg-emerald-400/10 text-emerald-300' : 'bg-zinc-500/10 text-muted-foreground'}`}>
                           {item.ativa ? 'ATIVO' : 'PAUSADO'}
                         </span>
@@ -184,7 +184,7 @@ export default function AdminNotificacoesPage() {
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 gap-1">
-                      <button onClick={() => alternar(item)} className="rounded-lg p-2 text-muted-foreground hover:bg-white/[.05] hover:text-[#22C7C7]" title={item.ativa ? 'Pausar' : 'Reativar'}>
+                      <button onClick={() => alternar(item)} className="rounded-lg p-2 text-muted-foreground hover:bg-accent/50 hover:text-[var(--shapeos-brand)]" title={item.ativa ? 'Pausar' : 'Reativar'}>
                         {item.ativa ? <PauseCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
                       </button>
                       <button onClick={() => excluir(item.id)} className="rounded-lg p-2 text-muted-foreground hover:bg-red-400/[.06] hover:text-red-300" title="Excluir">

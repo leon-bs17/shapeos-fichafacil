@@ -71,14 +71,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         key={item.href}
         href={item.href}
         aria-current={ativo ? 'page' : undefined}
-        className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/[.04]"
+        className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent/50"
         style={{
-          color: ativo ? '#edf2f3' : '#a9b8be',
-          background: ativo ? 'rgba(255,255,255,.06)' : 'transparent',
+          color: ativo ? 'var(--shapeos-text)' : 'var(--shapeos-muted)',
+          background: ativo ? 'rgba(var(--shapeos-neutral-rgb),.06)' : 'transparent',
           border: '1px solid transparent',
         }}
       >
-        {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#22C7C7]" />}
+        {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[var(--shapeos-brand)]" />}
         <Icon className="h-4 w-4" aria-hidden="true" />
         <span className="flex-1">{item.label}</span>
 
@@ -87,31 +87,31 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#121719] text-[#edf2f3]" style={{ fontFamily: "'Sora', sans-serif" }}>
+    <div className="min-h-screen bg-[var(--shapeos-bg)] text-[var(--shapeos-text)]" style={{ fontFamily: "'Sora', sans-serif" }}>
       <aside
-        className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
+        className="shapeos-navigation fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
         style={{
-          background: '#171d20',
-          borderRight: '1px solid rgba(255,255,255,.06)',
+          background: 'var(--shapeos-surface)',
+          borderRight: '1px solid rgba(var(--shapeos-neutral-rgb),.06)',
           boxShadow: 'none',
         }}
       >
-        <div className="flex h-20 flex-shrink-0 items-center px-5" style={{ borderBottom: '1px solid rgba(255,255,255,.055)' }}>
+        <div className="flex h-20 flex-shrink-0 items-center px-5" style={{ borderBottom: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
           <Logo size="sm" />
         </div>
 
         <div className="flex-shrink-0 px-4 pt-4">
           <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(34,199,199,.045)', border: '1px solid rgba(34,199,199,.12)' }}>
-            <ShieldCheck className="h-3.5 w-3.5 text-[#22C7C7]" />
+            <ShieldCheck className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300">Administração</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground">Administração</p>
               <p className="mt-0.5 text-[9px] text-muted-foreground">controle da plataforma</p>
             </div>
           </div>
         </div>
 
         <nav aria-label="Administração" className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
-          <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[#22C7C7]">Operação</p>
+          <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[var(--shapeos-brand)]">Operação</p>
           <div className="space-y-1">
             {novasFerramentas.map((item) => linkDesktop(item))}
           </div>
@@ -125,8 +125,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="space-y-1">{linkDesktop(contaLink)}</div>
         </nav>
 
-        <div className="flex-shrink-0 space-y-1 p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
-          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-white/[.03] hover:text-zinc-300">
+        <div className="flex-shrink-0 space-y-1 p-4" style={{ borderTop: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
+          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground">
             <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao app
           </Link>
           <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-red-400/[.05] hover:text-red-300">
@@ -135,13 +135,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
 
         {user && (
-          <div className="flex-shrink-0 p-4" style={{ borderTop: '1px solid rgba(255,255,255,.055)' }}>
+          <div className="flex-shrink-0 p-4" style={{ borderTop: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
             <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[#121719]" style={{ background: '#22C7C7' }}>
+              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[var(--shapeos-on-brand)]" style={{ background: 'var(--shapeos-brand)' }}>
                 {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-xs font-semibold text-zinc-200">{user.nome}</p>
+                <p className="truncate text-xs font-semibold text-foreground">{user.nome}</p>
                 <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{user.email}</p>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         )}
       </aside>
 
-      <div className="sticky top-0 z-40 border-b border-white/[.06] bg-[#121719]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-border bg-[var(--shapeos-bg)]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between">
           <Logo size="sm" />
           <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">

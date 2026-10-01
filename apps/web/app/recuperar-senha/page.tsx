@@ -161,13 +161,13 @@ export default function RecuperarSenhaPage() {
           className="rounded-xl p-6 sm:p-7"
           style={{
             background: "var(--shapeos-surface)",
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)',
             boxShadow: 'none',
           }}
         >
           <div className="mb-6">
             <h1
-              className="text-2xl tracking-tight text-[#edf2f3]"
+              className="text-2xl tracking-tight text-[var(--shapeos-text)]"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
             >
               {titulo}
@@ -179,7 +179,7 @@ export default function RecuperarSenhaPage() {
 
           {mode === 'loading' ? (
             <div className="flex flex-col items-center py-8 text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <Loader2 className="mb-3 h-7 w-7 animate-spin text-[#22C7C7]" />
+              <Loader2 className="mb-3 h-7 w-7 animate-spin text-[var(--shapeos-brand)]" />
               <span className="text-sm">Validando seu link...</span>
             </div>
           ) : null}
@@ -201,8 +201,8 @@ export default function RecuperarSenhaPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="voce@shapeos.app"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[#edf2f3] outline-none transition-all placeholder:text-muted-foreground focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
                   />
                 </div>
               </div>
@@ -211,8 +211,8 @@ export default function RecuperarSenhaPage() {
                 type="submit"
                 data-testid="recovery-send-button"
                 disabled={mode === 'sending'}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[#121719] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: '#e3b66a', boxShadow: "none" }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
+                style={{ background: '#936300', boxShadow: "none" }}
               >
                 {mode === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
                 {mode === 'sending' ? 'Enviando...' : 'Enviar link de recuperação'}
@@ -222,8 +222,8 @@ export default function RecuperarSenhaPage() {
 
           {mode === 'sent' ? (
             <div className="space-y-5 text-center" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#22C7C7]/30 bg-[#22C7C7]/10">
-                <CheckCircle2 className="h-8 w-8 text-[#22C7C7]" />
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[var(--shapeos-brand)]/30 bg-[var(--shapeos-brand)]/10">
+                <CheckCircle2 className="h-8 w-8 text-[var(--shapeos-brand)]" />
               </div>
               <button
                 type="button"
@@ -231,7 +231,7 @@ export default function RecuperarSenhaPage() {
                   setErro(null)
                   setMode('request')
                 }}
-                className="text-sm font-medium text-[#22C7C7] hover:underline"
+                className="text-sm font-medium text-[var(--shapeos-brand)] hover:underline"
               >
                 Enviar para outro e-mail
               </button>
@@ -256,8 +256,8 @@ export default function RecuperarSenhaPage() {
                     value={novaSenha}
                     onChange={(event) => setNovaSenha(event.target.value)}
                     placeholder="Mínimo de 8 caracteres"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[#edf2f3] outline-none transition-all placeholder:text-muted-foreground focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
                   />
                 </div>
               </div>
@@ -278,8 +278,8 @@ export default function RecuperarSenhaPage() {
                     value={confirmarSenha}
                     onChange={(event) => setConfirmarSenha(event.target.value)}
                     placeholder="Repita a nova senha"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[#edf2f3] outline-none transition-all placeholder:text-muted-foreground focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
                   />
                 </div>
               </div>
@@ -288,8 +288,8 @@ export default function RecuperarSenhaPage() {
                 type="submit"
                 data-testid="recovery-save-password-button"
                 disabled={mode === 'saving'}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[#121719] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: '#e3b66a', boxShadow: "none" }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
+                style={{ background: '#936300', boxShadow: "none" }}
               >
                 {mode === 'saving' ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
                 {mode === 'saving' ? 'Salvando...' : 'Salvar nova senha'}
@@ -299,12 +299,12 @@ export default function RecuperarSenhaPage() {
 
           {mode === 'success' ? (
             <div className="space-y-5 text-center" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#22C7C7]/30 bg-[#22C7C7]/10">
-                <CheckCircle2 className="h-8 w-8 text-[#22C7C7]" />
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[var(--shapeos-brand)]/30 bg-[var(--shapeos-brand)]/10">
+                <CheckCircle2 className="h-8 w-8 text-[var(--shapeos-brand)]" />
               </div>
               <a
                 href="/login"
-                className="flex w-full items-center justify-center rounded-2xl bg-[#22C7C7] py-3.5 font-semibold text-[#121719] transition-all hover:brightness-110"
+                className="flex w-full items-center justify-center rounded-2xl bg-[var(--shapeos-brand)] py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:brightness-110"
               >
                 Voltar para o login
               </a>
@@ -323,12 +323,12 @@ export default function RecuperarSenhaPage() {
 
           {mode !== 'success' ? (
             <div className="mt-6 flex items-center justify-between gap-3 text-xs" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <a href="/login" className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[#edf2f3]">
+              <a href="/login" className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--shapeos-text)]">
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Voltar ao login
               </a>
               <span className="flex items-center gap-1.5 text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#22C7C7]" />
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
                 Link seguro
               </span>
             </div>

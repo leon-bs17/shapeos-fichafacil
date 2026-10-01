@@ -85,7 +85,7 @@ export default function AdminAuditoriaPage() {
   return (
     <div className="space-y-8">
       <header>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#22C7C7]">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
           <Activity className="h-4 w-4" /> Auditoria
         </div>
         <h1 className="mt-2 text-2xl font-bold tracking-tight">Histórico administrativo</h1>

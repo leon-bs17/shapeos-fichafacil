@@ -40,8 +40,9 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
     className="relative rounded-2xl p-5 overflow-hidden transition-transform hover:-translate-y-0.5"
     style={{
       background: "var(--shapeos-surface)",
-      border: "1px solid rgba(255,255,255,0.07)",
-      boxShadow: "0 12px 30px rgba(0,0,0,0.3)",
+      border: "1px solid rgba(var(--shapeos-neutral-rgb),0.07)",
+      boxShadow: "0 12px 30px rgba(17,53,71,0.06)",
+      borderTop: `3px solid ${accent || "var(--shapeos-brand)"}`,
     }}
   >
     <div className="relative">
@@ -54,7 +55,7 @@ const StatCard = ({ icon: Icon, label, value, unit, accent, testId }) => (
       </div>
       <div className="mt-3 flex items-baseline gap-1">
         <span
-          className="text-4xl text-[#edf2f3]"
+          className="text-4xl text-[var(--shapeos-text)]"
           style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
         >
           {value}
@@ -94,8 +95,8 @@ const DayPicker = ({ student, onChange }) => {
               onClick={() => setOpenDay(isOpen ? null : day.key)}
               className="w-full rounded-xl p-2 md:p-2.5 transition-all hover:-translate-y-0.5"
               style={{
-                background: isRest ? "rgba(255,255,255,0.02)" : "rgba(34,199,199,0.06)",
-                border: `1px solid ${isRest ? "rgba(255,255,255,0.06)" : "rgba(34,199,199,0.25)"}`,
+                background: isRest ? "rgba(var(--shapeos-neutral-rgb),0.02)" : "rgba(34,199,199,0.06)",
+                border: `1px solid ${isRest ? "rgba(var(--shapeos-neutral-rgb),0.06)" : "rgba(34,199,199,0.25)"}`,
                 boxShadow: isOpen ? "0 0 14px rgba(34,199,199,0.25)" : "none",
               }}
             >
@@ -106,7 +107,7 @@ const DayPicker = ({ student, onChange }) => {
                 {day.short}
               </div>
               <div
-                className={`mt-1 text-xs md:text-sm ${isRest ? "text-muted-foreground" : "text-[#22C7C7]"}`}
+                className={`mt-1 text-xs md:text-sm ${isRest ? "text-muted-foreground" : "text-[var(--shapeos-brand)]"}`}
                 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
               >
                 {isRest ? "Off" : template?.id}
@@ -122,8 +123,8 @@ const DayPicker = ({ student, onChange }) => {
                 <div
                   className="absolute z-40 top-full mt-2 left-1/2 -translate-x-1/2 w-52 rounded-xl p-2 shadow-2xl"
                   style={{
-                    background: "rgba(24,24,24,0.98)",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    background: "var(--shapeos-surface)",
+                    border: "1px solid rgba(var(--shapeos-neutral-rgb),0.1)",
                     backdropFilter: "blur(8px)",
                   }}
                   data-testid={`schedule-popover-${student.id}-${day.key}`}
@@ -149,12 +150,12 @@ const DayPicker = ({ student, onChange }) => {
                             className="w-2 h-2 rounded-full flex-shrink-0"
                             style={{ background: t.accent }}
                           />
-                          <span className="text-[#edf2f3] truncate">{t.code}</span>
+                          <span className="text-[var(--shapeos-text)] truncate">{t.code}</span>
                           {t.id !== "rest" && (
                             <span className="text-xs text-muted-foreground truncate">· {t.title}</span>
                           )}
                         </span>
-                        {selected && <CheckCheck className="w-3.5 h-3.5 text-[#22C7C7] flex-shrink-0" />}
+                        {selected && <CheckCheck className="w-3.5 h-3.5 text-[var(--shapeos-brand)] flex-shrink-0" />}
                       </button>
                     );
                   })}
@@ -177,7 +178,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
       className="rounded-2xl p-4 md:p-5 transition-all duration-300"
       style={{
         background: "var(--shapeos-surface)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        border: "1px solid rgba(var(--shapeos-neutral-rgb),0.07)",
         boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
       }}
     >
@@ -189,7 +190,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             style={{
               background: "var(--shapeos-surface)",
               border: "1px solid rgba(34,199,199,0.3)",
-              color: "#22C7C7",
+              color: "var(--shapeos-brand)",
               fontFamily: "'Sora', sans-serif",
               fontWeight: 600,
             }}
@@ -199,7 +200,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3
-                className="text-[#edf2f3] truncate"
+                className="text-[var(--shapeos-text)] truncate"
                 style={{
                   fontFamily: "'Sora', sans-serif",
                   fontWeight: 500,
@@ -211,15 +212,15 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
               </h3>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest ${
-                  student.status === "ativo" ? "text-[#22C7C7]" : "text-muted-foreground"
+                  student.status === "ativo" ? "text-[var(--shapeos-brand)]" : "text-muted-foreground"
                 }`}
                 style={{
                   background:
                     student.status === "ativo"
                       ? "rgba(34,199,199,0.1)"
-                      : "rgba(255,255,255,0.05)",
+                      : "rgba(var(--shapeos-neutral-rgb),0.05)",
                   border: `1px solid ${
-                    student.status === "ativo" ? "rgba(34,199,199,0.3)" : "rgba(255,255,255,0.08)"
+                    student.status === "ativo" ? "rgba(34,199,199,0.3)" : "rgba(var(--shapeos-neutral-rgb),0.08)"
                   }`,
                   fontFamily: "'Sora', sans-serif",
                 }}
@@ -248,16 +249,16 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           >
             Aderência
           </div>
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(var(--shapeos-neutral-rgb),0.06)" }}>
             <div
               className="h-full rounded-full"
               style={{
                 width: `${student.progress}%`,
-                background: student.progress > 70 ? "#22C7C7" : "#e3b66a",
+                background: student.progress > 70 ? "var(--shapeos-brand)" : "#936300",
               }}
             />
           </div>
-          <div className="text-xs text-[#edf2f3] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <div className="text-xs text-[var(--shapeos-text)] mt-1.5" style={{ fontFamily: "'Sora', sans-serif" }}>
             {student.progress}% <span className="text-muted-foreground">· {student.streak}d</span>
           </div>
         </div>
@@ -272,9 +273,9 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             onClick={() => setScheduleOpen((v) => !v)}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm transition-all"
             style={{
-              background: scheduleOpen ? "rgba(34,199,199,0.12)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${scheduleOpen ? "rgba(34,199,199,0.35)" : "rgba(255,255,255,0.08)"}`,
-              color: scheduleOpen ? "#22C7C7" : "#edf2f3",
+              background: scheduleOpen ? "rgba(34,199,199,0.12)" : "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: `1px solid ${scheduleOpen ? "rgba(34,199,199,0.35)" : "rgba(var(--shapeos-neutral-rgb),0.08)"}`,
+              color: scheduleOpen ? "var(--shapeos-brand)" : "var(--shapeos-text)",
             }}
           >
             <Calendar className="w-3.5 h-3.5" /> Cronograma
@@ -282,10 +283,10 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           </button>
           <button
             data-testid={`view-ficha-btn-${student.id}`}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
             }}
           >
             <Eye className="w-3.5 h-3.5" /> Ver
@@ -293,10 +294,10 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
           <button
             data-testid={`edit-ficha-btn-${student.id}`}
             onClick={() => onEdit(student)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
             }}
           >
             <Pencil className="w-3.5 h-3.5" /> Editar
@@ -306,9 +307,9 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             onClick={() => onClone(student.id)}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
             style={{
-              background: cloned ? "#22C7C7" : "rgba(34,199,199,0.1)",
-              color: cloned ? "#121719" : "#22C7C7",
-              border: `1px solid ${cloned ? "#22C7C7" : "rgba(34,199,199,0.3)"}`,
+              background: cloned ? "var(--shapeos-brand)" : "rgba(34,199,199,0.1)",
+              color: cloned ? "var(--shapeos-bg)" : "var(--shapeos-brand)",
+              border: `1px solid ${cloned ? "var(--shapeos-brand)" : "rgba(34,199,199,0.3)"}`,
               boxShadow: cloned ? "0 6px 18px rgba(34,199,199,0.35)" : "none",
             }}
           >
@@ -329,7 +330,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all hover:scale-105"
             style={{
               background: "rgba(255,80,80,0.08)",
-              color: "#f18d8d",
+              color: "#c13d4a",
               border: "1px solid rgba(255,80,80,0.25)",
             }}
           >
@@ -342,7 +343,7 @@ const StudentRow = ({ student, onClone, cloned, onEdit, onDelete, onScheduleChan
       {scheduleOpen && (
         <div
           className="mt-4 pt-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderTop: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)" }}
         >
           <div
             className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3"
@@ -387,8 +388,8 @@ const ModalShell = ({ children, onClose, testId }) => (
       className="relative w-full max-w-md rounded-3xl p-7 animate-in fade-in-0 zoom-in-95 duration-200"
       style={{
         background: "var(--shapeos-surface)",
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
+        border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
+        boxShadow: "0 30px 70px rgba(0,0,0,0.6), inset 0 1px 0 rgba(var(--shapeos-neutral-rgb),0.06)",
       }}
     >
       {children}
@@ -400,7 +401,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
   <ModalShell onClose={onCancel} testId="delete-ficha-modal">
     <button
       onClick={onCancel}
-      className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
+      className="absolute top-4 right-4 text-muted-foreground hover:text-[var(--shapeos-text)] transition-colors"
       aria-label="Fechar"
     >
       <X className="w-4 h-4" />
@@ -410,18 +411,18 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
         className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)" }}
       >
-        <AlertTriangle className="w-5 h-5 text-[#f18d8d]" />
+        <AlertTriangle className="w-5 h-5 text-[#c13d4a]" />
       </div>
       <div className="flex-1">
         <h2
-          className="text-xl text-[#edf2f3]"
+          className="text-xl text-[var(--shapeos-text)]"
           style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
         >
           Apagar ficha?
         </h2>
         <p className="text-sm text-muted-foreground mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
           Você está prestes a apagar a ficha de{" "}
-          <span className="text-[#edf2f3] font-semibold">{student.name}</span>. Essa ação
+          <span className="text-[var(--shapeos-text)] font-semibold">{student.name}</span>. Essa ação
           remove o aluno e o cronograma. Não pode ser desfeita.
         </p>
       </div>
@@ -430,10 +431,10 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-cancel-button"
         onClick={onCancel}
-        className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+        className="flex-1 py-3 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
         style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+          border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
         }}
       >
         Cancelar
@@ -441,7 +442,7 @@ const DeleteFichaModal = ({ student, onCancel, onConfirm }) => (
       <button
         data-testid="delete-confirm-button"
         onClick={onConfirm}
-        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[#edf2f3] transition-all hover:scale-[1.01]"
+        className="flex-1 py-3 rounded-xl text-sm font-semibold text-[var(--shapeos-text)] transition-all hover:scale-[1.01]"
         style={{
           background: "#e64545",
           boxShadow: "none",
@@ -461,7 +462,7 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="edit-ficha-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-[var(--shapeos-text)] transition-colors"
         aria-label="Fechar"
       >
         <X className="w-4 h-4" />
@@ -471,11 +472,11 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
           className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: "rgba(34,199,199,0.1)", border: "1px solid rgba(34,199,199,0.3)" }}
         >
-          <Pencil className="w-4 h-4 text-[#22C7C7]" />
+          <Pencil className="w-4 h-4 text-[var(--shapeos-brand)]" />
         </div>
         <div>
           <h2
-            className="text-xl text-[#edf2f3] leading-tight"
+            className="text-xl text-[var(--shapeos-text)] leading-tight"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Editar ficha
@@ -494,8 +495,8 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
             type="text"
             value={workout}
             onChange={(e) => setWorkout(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[var(--shapeos-text)] outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+            style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
           />
         </div>
         <div>
@@ -504,13 +505,13 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
             data-testid="edit-plan-select"
             value={plan}
             onChange={(e) => setPlan(e.target.value)}
-            className="mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+            className="mt-2 w-full px-4 py-3 rounded-xl text-[var(--shapeos-text)] outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+            style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
           >
-            <option value="Hipertrofia" style={{ background: "#121719" }}>Hipertrofia</option>
-            <option value="Emagrecimento" style={{ background: "#121719" }}>Emagrecimento</option>
-            <option value="Força Máxima" style={{ background: "#121719" }}>Força Máxima</option>
-            <option value="Resistência" style={{ background: "#121719" }}>Resistência</option>
+            <option value="Hipertrofia" style={{ background: "var(--shapeos-bg)" }}>Hipertrofia</option>
+            <option value="Emagrecimento" style={{ background: "var(--shapeos-bg)" }}>Emagrecimento</option>
+            <option value="Força Máxima" style={{ background: "var(--shapeos-bg)" }}>Força Máxima</option>
+            <option value="Resistência" style={{ background: "var(--shapeos-bg)" }}>Resistência</option>
           </select>
         </div>
       </div>
@@ -519,10 +520,10 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-cancel-button"
           onClick={onCancel}
-          className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+          className="flex-1 py-3 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
           style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+            border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
           }}
         >
           Cancelar
@@ -530,9 +531,9 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
         <button
           data-testid="edit-save-button"
           onClick={() => onSave({ ...student, currentWorkout: workout, plan })}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01]"
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01]"
           style={{
-            background: "#22C7C7",
+            background: "var(--shapeos-brand)",
             boxShadow: "none",
           }}
         >
@@ -545,9 +546,9 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
 
 const PLANS = ["Hipertrofia", "Emagrecimento", "Força Máxima", "Resistência"];
 
-const fieldStyle = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" };
+const fieldStyle = { background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" };
 const fieldClass =
-  "mt-2 w-full px-4 py-3 rounded-xl text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20";
+  "mt-2 w-full px-4 py-3 rounded-xl text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20";
 
 const NewStudentModal = ({ onCancel, onSave }) => {
   const [name, setName] = useState("");
@@ -568,7 +569,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
     <ModalShell onClose={onCancel} testId="new-student-modal">
       <button
         onClick={onCancel}
-        className="absolute top-4 right-4 text-muted-foreground hover:text-[#edf2f3] transition-colors"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-[var(--shapeos-text)] transition-colors"
         aria-label="Fechar"
         data-testid="new-student-close-button"
       >
@@ -583,7 +584,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
         </div>
         <div>
           <h2
-            className="text-xl text-[#edf2f3] leading-tight"
+            className="text-xl text-[var(--shapeos-text)] leading-tight"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
           >
             Novo aluno
@@ -633,14 +634,14 @@ const NewStudentModal = ({ onCancel, onSave }) => {
               style={fieldStyle}
             >
               {PLANS.map((p) => (
-                <option key={p} value={p} style={{ background: "#121719" }}>{p}</option>
+                <option key={p} value={p} style={{ background: "var(--shapeos-bg)" }}>{p}</option>
               ))}
             </select>
           </div>
         </div>
 
         {error && (
-          <p data-testid="new-student-error" className="text-xs text-[#f18d8d] flex items-center gap-1.5">
+          <p data-testid="new-student-error" className="text-xs text-[#c13d4a] flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5" /> {error}
           </p>
         )}
@@ -650,7 +651,7 @@ const NewStudentModal = ({ onCancel, onSave }) => {
             type="button"
             data-testid="new-student-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
             style={fieldStyle}
           >
             Cancelar
@@ -658,9 +659,9 @@ const NewStudentModal = ({ onCancel, onSave }) => {
           <button
             type="submit"
             data-testid="new-student-save-button"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01]"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01]"
             style={{
-              background: "#22C7C7",
+              background: "var(--shapeos-brand)",
               boxShadow: "none",
             }}
           >
@@ -794,17 +795,17 @@ export const PersonalView = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#121719]" data-testid="personal-view">
+    <div className="min-h-screen bg-[var(--shapeos-bg)]" data-testid="personal-view">
       {/* Desktop navigation */}
       <aside
-        className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col lg:flex"
+        className="shapeos-navigation fixed inset-y-0 left-0 z-40 hidden w-64 flex-col lg:flex"
         style={{
           background: "var(--shapeos-surface)",
-          borderRight: "1px solid #354249",
+          borderRight: "1px solid var(--shapeos-border)",
           boxShadow: "none",
         }}
       >
-        <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid #354249" }}>
+        <div className="flex h-20 items-center px-5" style={{ borderBottom: "1px solid var(--shapeos-border)" }}>
           <Logo size="sm" />
         </div>
 
@@ -813,10 +814,10 @@ export const PersonalView = ({
             className="flex items-center gap-2 rounded-xl px-3 py-2.5"
             style={{ background: "rgba(34,199,199,0.08)", border: "1px solid rgba(34,199,199,0.16)" }}
           >
-            <PanelLeft className="h-3.5 w-3.5 text-[#22C7C7]" />
+            <PanelLeft className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-200">Espaço do personal</p>
-              <p className="mt-0.5 truncate text-[9px] text-[#91a3ac]">Alunos e programação</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground">Espaço do personal</p>
+              <p className="mt-0.5 truncate text-[9px] text-[var(--shapeos-subtle)]">Alunos e programação</p>
             </div>
           </div>
         </div>
@@ -832,17 +833,17 @@ export const PersonalView = ({
                 onClick={() => goToSection(id)}
                 className="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all"
                 style={{
-                  color: active ? "#edf2f3" : "#a9b8be",
+                  color: active ? "var(--shapeos-text)" : "var(--shapeos-muted)",
                   background: active ? "rgba(34,199,199,0.10)" : "transparent",
                   border: active ? "1px solid rgba(34,199,199,0.18)" : "1px solid transparent",
                 }}
               >
-                {active && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[#22C7C7]" />}
-                <Icon className="h-4 w-4" style={{ color: active ? "#22C7C7" : undefined }} />
+                {active && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[var(--shapeos-brand)]" />}
+                <Icon className="h-4 w-4" style={{ color: active ? "var(--shapeos-brand)" : undefined }} />
                 <span className="flex-1">{label}</span>
                 <ChevronRight
                   className="h-3.5 w-3.5 transition-all"
-                  style={{ color: active ? "#22C7C7" : "#637780", opacity: active ? 1 : 0.55 }}
+                  style={{ color: active ? "var(--shapeos-brand)" : "#637780", opacity: active ? 1 : 0.55 }}
                 />
               </button>
             );
@@ -855,31 +856,31 @@ export const PersonalView = ({
             onClick={() => setCreating(true)}
             className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5"
             style={{
-              background: "#22C7C7",
-              color: "#121719",
+              background: "var(--shapeos-brand)",
+              color: "var(--shapeos-on-brand)",
               boxShadow: "none",
             }}
           >
             <UserPlus className="h-4 w-4" /> Novo aluno
           </button>
-          <div className="mt-3 rounded-xl px-3 py-3" style={{ background: "#1b2327", border: "1px solid #354249" }}>
+          <div className="mt-3 rounded-xl px-3 py-3" style={{ background: "var(--shapeos-surface)", border: "1px solid var(--shapeos-border)" }}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.16em] text-[#91a3ac]">Sua base</p>
-                <p className="mt-1 text-sm font-semibold text-[#edf2f3]">{students.length} alunos ativos</p>
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[var(--shapeos-subtle)]">Sua base</p>
+                <p className="mt-1 text-sm font-semibold text-[var(--shapeos-text)]">{students.length} alunos ativos</p>
               </div>
               <div className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: "rgba(34,199,199,0.10)" }}>
-                <Users className="h-3.5 w-3.5 text-[#22C7C7]" />
+                <Users className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-4" style={{ borderTop: "1px solid #354249" }}>
+        <div className="p-4" style={{ borderTop: "1px solid var(--shapeos-border)" }}>
           <button
             data-testid="personal-logout-button"
             onClick={onLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-[#91a3ac] transition-colors hover:bg-red-400/[0.05] hover:text-red-300"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs text-[var(--shapeos-subtle)] transition-colors hover:bg-red-400/[0.05] hover:text-red-300"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             <LogOut className="h-3.5 w-3.5" /> Sair da conta
@@ -890,7 +891,7 @@ export const PersonalView = ({
       {/* Mobile navigation */}
       <div
         className="sticky top-0 z-40 lg:hidden"
-        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid #354249", backdropFilter: "blur(18px)" }}
+        style={{ background: "rgba(14,17,22,0.94)", borderBottom: "1px solid var(--shapeos-border)", backdropFilter: "blur(18px)" }}
       >
         <div className="flex items-center justify-between px-4 py-3">
           <Logo size="sm" />
@@ -898,8 +899,8 @@ export const PersonalView = ({
             <button
               type="button"
               onClick={() => setCreating(true)}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#121719]"
-              style={{ background: "#22C7C7" }}
+              className="grid h-9 w-9 place-items-center rounded-xl text-[var(--shapeos-on-brand)]"
+              style={{ background: "var(--shapeos-brand)" }}
               aria-label="Novo aluno"
             >
               <UserPlus className="h-4 w-4" />
@@ -907,8 +908,8 @@ export const PersonalView = ({
             <button
               data-testid="personal-logout-button-mobile"
               onClick={onLogout}
-              className="grid h-9 w-9 place-items-center rounded-xl text-[#91a3ac]"
-              style={{ background: "#1b2327", border: "1px solid #354249" }}
+              className="grid h-9 w-9 place-items-center rounded-xl text-[var(--shapeos-subtle)]"
+              style={{ background: "var(--shapeos-surface)", border: "1px solid var(--shapeos-border)" }}
               aria-label="Sair"
             >
               <LogOut className="h-4 w-4" />
@@ -926,9 +927,9 @@ export const PersonalView = ({
                 onClick={() => goToSection(id)}
                 className="flex flex-shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-medium"
                 style={{
-                  background: active ? "rgba(34,199,199,0.11)" : "#1b2327",
-                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid #354249",
-                  color: active ? "#22C7C7" : "#a9b8be",
+                  background: active ? "rgba(34,199,199,0.11)" : "var(--shapeos-surface)",
+                  border: active ? "1px solid rgba(34,199,199,0.20)" : "1px solid var(--shapeos-border)",
+                  color: active ? "var(--shapeos-brand)" : "var(--shapeos-muted)",
                 }}
               >
                 <Icon className="h-3.5 w-3.5" /> {label}
@@ -952,10 +953,10 @@ export const PersonalView = ({
               Painel do Personal
             </div>
             <h1
-              className="mt-3 text-3xl sm:text-4xl text-[#edf2f3] leading-tight"
+              className="mt-3 text-3xl sm:text-4xl text-[var(--shapeos-text)] leading-tight"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}
             >
-              Bem-vindo, <span className="text-[#22C7C7]">Personal</span>
+              Bem-vindo, <span className="text-[var(--shapeos-brand)]">Personal</span>
             </h1>
             <p
               className="mt-3 text-base md:text-lg text-muted-foreground"
@@ -970,8 +971,8 @@ export const PersonalView = ({
             onClick={() => setCreating(true)}
             className="flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold transition-all hover:scale-[1.02] self-start md:self-auto"
             style={{
-              background: "#22C7C7",
-              color: "#121719",
+              background: "var(--shapeos-brand)",
+              color: "var(--shapeos-on-brand)",
               boxShadow: "none",
               fontFamily: "'Sora', sans-serif",
               letterSpacing: "0.02em",
@@ -988,14 +989,14 @@ export const PersonalView = ({
             icon={Users}
             label="Alunos Ativos"
             value={students.length}
-            accent="#22C7C7"
+            accent="var(--shapeos-brand)"
           />
           <StatCard
             testId="stat-workouts"
             icon={ClipboardList}
             label="Fichas Criadas"
             value={personalStats.workoutsCreated}
-            accent="#8cbbe4"
+            accent="#2162b4"
           />
           <StatCard
             testId="stat-adherence"
@@ -1003,7 +1004,7 @@ export const PersonalView = ({
             label="Aderência semanal"
             value={personalStats.weeklyAdherence}
             unit="%"
-            accent="#22C7C7"
+            accent="var(--shapeos-brand)"
           />
         </div>
         </section>
@@ -1012,7 +1013,7 @@ export const PersonalView = ({
         <section id="workouts" className="scroll-mt-32 lg:scroll-mt-8 mb-10" data-testid="workout-templates-section">
           <div className="flex items-center justify-between mb-4">
             <h2
-              className="text-lg text-[#edf2f3]"
+              className="text-lg text-[var(--shapeos-text)]"
               style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
             >
               Meus Treinos <span className="text-muted-foreground">(edite os exercícios de cada ficha)</span>
@@ -1032,7 +1033,7 @@ export const PersonalView = ({
                     style={{
                       background:
                         "var(--shapeos-surface)",
-                      border: "1px solid rgba(255,255,255,0.07)",
+                      border: "1px solid rgba(var(--shapeos-neutral-rgb),0.07)",
                       boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
                     }}
                   >
@@ -1054,10 +1055,10 @@ export const PersonalView = ({
                         >
                           {t.id}
                         </span>
-                        <Pencil className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#22C7C7] transition-colors" />
+                        <Pencil className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[var(--shapeos-brand)] transition-colors" />
                       </div>
                       <h3
-                        className="mt-4 text-xl text-[#edf2f3] leading-tight"
+                        className="mt-4 text-xl text-[var(--shapeos-text)] leading-tight"
                         style={{
                           fontFamily: "'Sora', sans-serif",
                           fontWeight: 600,
@@ -1077,7 +1078,7 @@ export const PersonalView = ({
                         style={{ fontFamily: "'Sora', sans-serif" }}
                       >
                         <span className="inline-flex items-center gap-1">
-                          <Dumbbell className="w-3 h-3 text-[#22C7C7]" />
+                          <Dumbbell className="w-3 h-3 text-[var(--shapeos-brand)]" />
                           {w?.exercises?.length || 0} exercícios
                         </span>
                         {w?.duration && (
@@ -1098,7 +1099,7 @@ export const PersonalView = ({
         {/* Search + list header */}
         <div className="flex items-center justify-between mb-4">
           <h2
-            className="text-lg text-[#edf2f3]"
+            className="text-lg text-[var(--shapeos-text)]"
             style={{ fontFamily: "'Sora', sans-serif", fontWeight: 500 }}
           >
             Sua base <span className="text-muted-foreground">({filtered.length})</span>
@@ -1111,10 +1112,10 @@ export const PersonalView = ({
               placeholder="Buscar aluno..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
               style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
                 fontFamily: "'Sora', sans-serif",
               }}
             />
@@ -1138,8 +1139,8 @@ export const PersonalView = ({
             <div
               className="text-center py-10 rounded-2xl text-muted-foreground text-sm"
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px dashed rgba(255,255,255,0.08)",
+                background: "rgba(var(--shapeos-neutral-rgb),0.02)",
+                border: "1px dashed rgba(var(--shapeos-neutral-rgb),0.08)",
                 fontFamily: "'Sora', sans-serif",
               }}
             >
@@ -1191,7 +1192,7 @@ export const PersonalView = ({
           style={{
             background: "rgba(20,20,20,0.95)",
             border: `1px solid ${toast.tone === "danger" ? "rgba(255,80,80,0.4)" : "rgba(34,199,199,0.4)"}`,
-            color: toast.tone === "danger" ? "#f18d8d" : "#22C7C7",
+            color: toast.tone === "danger" ? "#c13d4a" : "var(--shapeos-brand)",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
             fontFamily: "'Sora', sans-serif",
           }}

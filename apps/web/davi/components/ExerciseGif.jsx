@@ -79,9 +79,9 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
         data-testid="exercise-gif-fallback"
         aria-label={`Demonstração indisponível: ${alt}`}
       >
-        <Dumbbell className="w-8 h-8 text-[#22C7C7] opacity-80" strokeWidth={1.5} />
+        <Dumbbell className="w-8 h-8 text-[var(--shapeos-brand)] opacity-80" strokeWidth={1.5} />
         <span
-          className="mt-1.5 px-1.5 text-[8px] uppercase tracking-widest text-zinc-300 text-center leading-tight"
+          className="mt-1.5 px-1.5 text-[8px] uppercase tracking-widest text-foreground text-center leading-tight"
           style={{ fontFamily: "'Sora', sans-serif" }}
         >
           {alt}
@@ -95,7 +95,7 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
       <button
         type="button"
         onClick={() => setExpanded(true)}
-        className="group relative rounded-xl overflow-hidden flex-shrink-0 bg-black cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C7C7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121719]"
+        className="group relative rounded-xl overflow-hidden flex-shrink-0 bg-black cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--shapeos-brand)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--shapeos-bg)]"
         style={{ width: size, height: size }}
         data-testid="exercise-gif"
         aria-label={`Ampliar demonstração da execução: ${alt}`}
@@ -128,14 +128,14 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
 
         <div className="absolute inset-0 ring-1 ring-white/5 rounded-xl pointer-events-none" />
         <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/25 pointer-events-none">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white opacity-0 scale-90 transition-all group-hover:opacity-100 group-hover:scale-100">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-foreground opacity-0 scale-90 transition-all group-hover:opacity-100 group-hover:scale-100">
             <Maximize2 className="h-4 w-4" />
           </div>
         </div>
         <div className="absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur pointer-events-none">
-          <Play className="w-2.5 h-2.5 text-[#22C7C7]" fill="#22C7C7" />
+          <Play className="w-2.5 h-2.5 text-[var(--shapeos-brand)]" fill="var(--shapeos-brand)" />
           <span
-            className="text-[9px] uppercase tracking-widest text-[#edf2f3]"
+            className="text-[9px] uppercase tracking-widest text-[var(--shapeos-text)]"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             Execução
@@ -152,18 +152,18 @@ export const ExerciseGif = ({ src, alt, size = 112, frameDuration = 700 }) => {
           onMouseDown={() => setExpanded(false)}
         >
           <div
-            className="relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#121719] shadow-2xl"
+            className="relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[var(--shapeos-bg)] shadow-2xl"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-5">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#22C7C7]">Execução do exercício</p>
-                <p className="truncate text-sm font-semibold text-white sm:text-base">{alt}</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--shapeos-brand)]">Execução do exercício</p>
+                <p className="truncate text-sm font-semibold text-foreground sm:text-base">{alt}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setExpanded(false)}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C7C7]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--shapeos-brand)]"
                 aria-label="Fechar demonstração ampliada"
               >
                 <X className="h-5 w-5" />

@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#121719',
-  colorScheme: 'dark',
+  themeColor: '#f2f7f8',
+  colorScheme: 'light',
   viewportFit: 'cover',
 }
 
@@ -36,7 +36,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
+          forcedTheme="light"
           enableSystem={false}
           disableTransitionOnChange
         >

@@ -65,7 +65,7 @@ export default function AdminAtividadePage() {
     <div className="space-y-7">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#22C7C7]">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
             <Activity className="h-4 w-4" /> Atividade
           </div>
           <h1 className="mt-2 text-2xl font-bold tracking-tight">Movimentação da plataforma</h1>
@@ -91,7 +91,7 @@ export default function AdminAtividadePage() {
           {data.eventos.map((evento) => (
             <Card key={evento.id}>
               <CardContent className="flex items-start gap-4 p-4">
-                <div className={`grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl ${evento.tipo === 'cadastro' ? 'bg-[#22C7C7]/10 text-[#22C7C7]' : 'bg-warning/10 text-warning'}`}>
+                <div className={`grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl ${evento.tipo === 'cadastro' ? 'bg-[var(--shapeos-brand)]/10 text-[var(--shapeos-brand)]' : 'bg-warning/10 text-warning'}`}>
                   {evento.tipo === 'cadastro' ? <UserPlus className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0 flex-1">

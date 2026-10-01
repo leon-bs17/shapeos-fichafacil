@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
 import { Shield, Loader2, ArrowRight, Mail } from 'lucide-react'
-import { Logo } from '@/components/layout/logo'
+import Logo from '@/davi/components/Logo'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
 
   if (limpandoSessao) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#121719]">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--shapeos-bg)]">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </main>
     )

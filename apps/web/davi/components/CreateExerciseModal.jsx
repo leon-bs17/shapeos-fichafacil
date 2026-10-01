@@ -85,14 +85,14 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
         className="relative w-full max-w-xl rounded-3xl flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
         style={{
           background: "var(--shapeos-surface)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
           boxShadow: "0 30px 70px rgba(0,0,0,0.6)",
           maxHeight: "90vh",
         }}
       >
         <div
           className="flex items-start gap-3 p-6"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderBottom: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)" }}
         >
           <div
             className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
@@ -101,12 +101,12 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
               border: "1px solid rgba(34,199,199,0.35)",
             }}
           >
-            <Sparkles className="w-5 h-5 text-[#22C7C7]" />
+            <Sparkles className="w-5 h-5 text-[var(--shapeos-brand)]" />
           </div>
           <div className="flex-1">
             <h3
               id="create-exercise-title"
-              className="text-xl text-[#edf2f3] leading-tight"
+              className="text-xl text-[var(--shapeos-text)] leading-tight"
               style={{
                 fontFamily: "'Unbounded', sans-serif",
                 fontWeight: 600,
@@ -142,8 +142,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="ex: Supino Reto na Máquina"
-                className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -154,8 +154,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   value={muscle}
                   onChange={(event) => setMuscle(event.target.value)}
                   placeholder="ex: Peitoral"
-                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                  style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
                 />
               </div>
               <div>
@@ -165,8 +165,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   value={equipment}
                   onChange={(event) => setEquipment(event.target.value)}
                   placeholder="ex: Máquina"
-                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                  style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
                 />
               </div>
             </div>
@@ -179,9 +179,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#edf2f3]">Demonstração em GIF</span>
+                  <span className="text-xs font-semibold text-[var(--shapeos-text)]">Demonstração em GIF</span>
                   <span
-                    className="rounded-full px-2 py-0.5 text-[9px] uppercase tracking-widest text-[#22C7C7]"
+                    className="rounded-full px-2 py-0.5 text-[9px] uppercase tracking-widest text-[var(--shapeos-brand)]"
                     style={{ background: "rgba(34,199,199,0.08)", border: "1px solid rgba(34,199,199,0.2)" }}
                   >
                     Opcional
@@ -205,8 +205,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             <div
               className="grid grid-cols-2 gap-1 p-1 rounded-xl"
               style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                border: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
               }}
               data-testid="create-source-tabs"
             >
@@ -215,9 +215,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 data-testid="source-tab-url"
                 onClick={() => setSource("url")}
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
-                  source === "url" ? "text-[#121719]" : "text-muted-foreground hover:text-[#edf2f3]"
+                  source === "url" ? "text-[var(--shapeos-on-brand)]" : "text-muted-foreground hover:text-[var(--shapeos-text)]"
                 }`}
-                style={{ background: source === "url" ? "#22C7C7" : "transparent" }}
+                style={{ background: source === "url" ? "var(--shapeos-brand)" : "transparent" }}
               >
                 <LinkIcon className="w-3.5 h-3.5" /> URL do GIF
               </button>
@@ -226,9 +226,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 data-testid="source-tab-upload"
                 onClick={() => setSource("upload")}
                 className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all ${
-                  source === "upload" ? "text-[#121719]" : "text-muted-foreground hover:text-[#edf2f3]"
+                  source === "upload" ? "text-[var(--shapeos-on-brand)]" : "text-muted-foreground hover:text-[var(--shapeos-text)]"
                 }`}
-                style={{ background: source === "upload" ? "#22C7C7" : "transparent" }}
+                style={{ background: source === "upload" ? "var(--shapeos-brand)" : "transparent" }}
               >
                 <Upload className="w-3.5 h-3.5" /> Enviar GIF
               </button>
@@ -249,8 +249,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                       }}
                       placeholder="https://exemplo.com/exercicio.gif"
                       inputMode="url"
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#edf2f3] placeholder:text-muted-foreground outline-none focus:border-[#22C7C7]/60 focus:ring-2 focus:ring-[#22C7C7]/20"
-                      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
+                      style={{ background: "rgba(var(--shapeos-neutral-rgb),0.03)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)" }}
                     />
                   </div>
                   <p className="mt-2 text-[11px] text-muted-foreground">
@@ -269,8 +269,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   data-testid="create-dropzone"
                   className="rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all"
                   style={{
-                    background: dragOver ? "rgba(34,199,199,0.08)" : "rgba(255,255,255,0.03)",
-                    border: `1.5px dashed ${dragOver ? "rgba(34,199,199,0.6)" : "rgba(255,255,255,0.12)"}`,
+                    background: dragOver ? "rgba(34,199,199,0.08)" : "rgba(var(--shapeos-neutral-rgb),0.03)",
+                    border: `1.5px dashed ${dragOver ? "rgba(34,199,199,0.6)" : "rgba(var(--shapeos-neutral-rgb),0.12)"}`,
                   }}
                 >
                   <input
@@ -285,16 +285,16 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                     className="w-12 h-12 rounded-xl flex items-center justify-center"
                     style={{ background: "rgba(34,199,199,0.1)", border: "1px solid rgba(34,199,199,0.25)" }}
                   >
-                    <Upload className="w-5 h-5 text-[#22C7C7]" />
+                    <Upload className="w-5 h-5 text-[var(--shapeos-brand)]" />
                   </div>
-                  <div className="mt-3 text-sm text-[#edf2f3]">
+                  <div className="mt-3 text-sm text-[var(--shapeos-text)]">
                     {fileName ? (
                       <>
-                        Arquivo pronto: <span className="text-[#22C7C7]">{fileName}</span>
+                        Arquivo pronto: <span className="text-[var(--shapeos-brand)]">{fileName}</span>
                       </>
                     ) : (
                       <>
-                        Arraste um <span className="text-[#22C7C7]">GIF</span> aqui ou clique para escolher
+                        Arraste um <span className="text-[var(--shapeos-brand)]">GIF</span> aqui ou clique para escolher
                       </>
                     )}
                   </div>
@@ -310,7 +310,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 style={{
                   background: "rgba(255,80,80,0.08)",
                   border: "1px solid rgba(255,80,80,0.3)",
-                  color: "#f18d8d",
+                  color: "#c13d4a",
                 }}
               >
                 {error}
@@ -322,7 +322,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Pré-visualização</label>
             <div
               className="mt-2 flex items-center gap-4 p-3 rounded-2xl"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ background: "rgba(var(--shapeos-neutral-rgb),0.02)", border: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)" }}
             >
               {previewSrc ? (
                 <ExerciseGif src={previewSrc} alt={name || "Exercício"} size={96} />
@@ -330,8 +330,8 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                 <div
                   className="w-24 h-24 rounded-xl flex flex-col items-center justify-center flex-shrink-0 gap-1.5"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px dashed rgba(255,255,255,0.1)",
+                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+                    border: "1px dashed rgba(var(--shapeos-neutral-rgb),0.1)",
                   }}
                 >
                   <ImageIcon className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
@@ -343,7 +343,7 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
                   {muscle || "Grupo muscular"} · {equipment || "Equipamento"}
                 </div>
                 <div
-                  className="text-sm text-[#edf2f3] mt-1 truncate"
+                  className="text-sm text-[var(--shapeos-text)] mt-1 truncate"
                   style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
                 >
                   {name || "Nome do exercício"}
@@ -359,17 +359,17 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
         <div
           className="flex gap-3 p-6"
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
             fontFamily: "'Sora', sans-serif",
           }}
         >
           <button
             data-testid="create-cancel-button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl text-sm text-[#edf2f3] transition-all hover:bg-white/5"
+            className="flex-1 py-3 rounded-xl text-sm text-[var(--shapeos-text)] transition-all hover:bg-white/5"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
+              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
             }}
           >
             Cancelar
@@ -378,9 +378,9 @@ export const CreateExerciseModal = ({ onCancel, onCreate }) => {
             data-testid="create-save-button"
             onClick={handleSubmit}
             disabled={!canSave}
-            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#121719] transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
             style={{
-              background: "#22C7C7",
+              background: "var(--shapeos-brand)",
               boxShadow: canSave
                 ? "0 10px 24px rgba(34,199,199,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)"
                 : "none",

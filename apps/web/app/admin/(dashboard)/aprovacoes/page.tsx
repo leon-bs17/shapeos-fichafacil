@@ -82,7 +82,7 @@ export default function AdminAprovacoesPage() {
   return (
     <div className="space-y-7">
       <header>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#22C7C7]">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--shapeos-brand)]">
           <ClipboardCheck className="h-4 w-4" /> Aprovações
         </div>
         <h1 className="mt-2 text-2xl font-bold tracking-tight">Fila de novos Personais</h1>
@@ -128,7 +128,7 @@ export default function AdminAprovacoesPage() {
               <Card key={personal.id}>
                 <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-[#22C7C7]/10 font-bold text-[#22C7C7]">
+                    <div className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-xl bg-[var(--shapeos-brand)]/10 font-bold text-[var(--shapeos-brand)]">
                       {personal.nome?.charAt(0)?.toUpperCase() ?? 'P'}
                     </div>
                     <div>

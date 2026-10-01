@@ -12,7 +12,7 @@ const features = [
 
 export default function ApresentacaoPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="shapeos-hero min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-5 md:px-8">
           <Link href="/apresentacao" aria-label="ShapeOS — apresentação"><Logo size="sm" /></Link>
@@ -37,7 +37,7 @@ export default function ApresentacaoPage() {
           <p className="mt-5 flex items-center gap-2 text-xs text-muted-foreground"><Check className="h-3.5 w-3.5" aria-hidden="true" /> Acesso pelo navegador, no computador e no celular.</p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/20" aria-label="Exemplo ilustrativo do painel ShapeOS">
+        <div className="overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-xl shadow-primary/10" aria-label="Exemplo ilustrativo do painel ShapeOS">
           <div className="flex items-center justify-between border-b border-border px-5 py-4"><span className="flex items-center gap-2 text-sm font-medium"><LayoutDashboard className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> Seu espaço de trabalho</span><span className="text-xs text-muted-foreground">Ilustração</span></div>
           <div className="p-5 sm:p-7">
             <p className="text-xs text-muted-foreground">PAINEL DO PERSONAL</p>
@@ -58,7 +58,7 @@ export default function ApresentacaoPage() {
         <div className="mx-auto max-w-7xl px-5 py-16 md:px-8">
           <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Do planejamento à rotina</p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">Menos ferramentas espalhadas. Mais organização.</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">{features.map(({ icon: Icon, title, text }) => <Card key={title}><CardHeader><Icon className="mb-3 h-5 w-5 text-muted-foreground" aria-hidden="true" /><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent><CardDescription className="leading-relaxed">{text}</CardDescription></CardContent></Card>)}</div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">{features.map(({ icon: Icon, title, text }, index) => <Card key={title} className={["shapeos-feature-teal", "shapeos-feature-coral", "shapeos-feature-gold"][index]}><CardHeader><Icon className="mb-3 h-5 w-5 text-muted-foreground" aria-hidden="true" /><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent><CardDescription className="leading-relaxed text-inherit opacity-90">{text}</CardDescription></CardContent></Card>)}</div>
         </div>
       </section>
       <section className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8"><div><h2 className="text-2xl font-semibold tracking-tight">Seu trabalho merece um espaço organizado.</h2><p className="mt-3 text-sm text-muted-foreground">Conheça a ShapeOS e encontre seu próximo passo.</p></div><Link href="/login" className={buttonVariants({ size: 'lg' })}>Acessar a plataforma <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></section>
