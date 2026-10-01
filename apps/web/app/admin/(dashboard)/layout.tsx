@@ -87,7 +87,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--shapeos-bg)] text-[var(--shapeos-text)]" style={{ fontFamily: "'Sora', sans-serif" }}>
+    <div data-admin-route={pathname} className="min-h-screen bg-[var(--shapeos-bg)] text-[var(--shapeos-text)]" style={{ fontFamily: "'Sora', sans-serif" }}>
       <aside
         className="shapeos-navigation fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
         style={{
@@ -167,7 +167,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex"><span>ShapeOS</span><span aria-hidden="true">/</span><span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span></div>
-          {children}
+          <div data-admin-content={pathname}>{children}</div>
         </div>
       </main>
     </div>
