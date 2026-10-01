@@ -138,7 +138,7 @@ export default function AdminAprovacoesPage() {
           </p>
         </div>
 
-        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[42%] overflow-hidden lg:block">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] overflow-visible lg:block">
           <div
             className="absolute right-[18%] top-[18%] h-64 w-40 rounded-[48%] blur-[1px]"
             style={{
@@ -152,12 +152,13 @@ export default function AdminAprovacoesPage() {
             style={{ background: 'rgba(0, 255, 204, 0.10)' }}
           />
           <div
-            className="absolute right-3 top-7 max-w-[290px] rotate-[-5deg] text-right leading-[0.92] text-white/85 dark:text-white/80"
+            className="absolute right-4 top-1/2 w-[min(100%,360px)] -translate-y-1/2 rotate-[-5deg] text-right leading-[0.92] text-white/85 dark:text-white/80"
             style={{
               fontFamily: '"Segoe Print", "Bradley Hand", "Comic Sans MS", cursive',
-              fontSize: 'clamp(2rem, 3.2vw, 3.35rem)',
+              fontSize: 'clamp(1.75rem, 2.8vw, 3rem)',
               fontWeight: 500,
-              letterSpacing: '-0.035em',
+              letterSpacing: '-0.03em',
+              whiteSpace: 'normal',
               textShadow: '0 2px 18px rgba(0,0,0,0.22)',
             }}
           >
