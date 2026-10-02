@@ -1,18 +1,20 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   Activity,
   ArrowLeft,
   BarChart3,
+  Bell,
   BellRing,
   ClipboardCheck,
   Dumbbell,
   History,
   KeyRound,
   LogOut,
+  Search,
   ServerCog,
   ShieldCheck,
   UserCheck,
@@ -44,6 +46,8 @@ const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
+  const [busca, setBusca] = useState('')
+  const buscaRef = useRef<HTMLInputElement>(null)
 
   const { data: user } = useQuery({
     queryKey: ['admin-user'],
@@ -56,11 +60,37 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     },
   })
 
+  useEffect(() => {
+    if (pathname !== '/admin/aprovacoes') return
+
+    const focarBusca = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        buscaRef.current?.focus()
+      }
+    }
+
+    window.addEventListener('keydown', focarBusca)
+    return () => window.removeEventListener('keydown', focarBusca)
+  }, [pathname])
+
   async function sair() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/admin/login')
     router.refresh()
+  }
+
+  function buscarNoAdmin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const termo = busca.trim().toLocaleLowerCase('pt-BR')
+    if (!termo) return
+
+    const destino = todosLinks.find((item) => item.label.toLocaleLowerCase('pt-BR').includes(termo))
+    if (!destino) return
+
+    setBusca('')
+    router.push(destino.href)
   }
 
   function linkDesktop(item: typeof contaLink) {
@@ -167,6 +197,42 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex"><span>ShapeOS</span><span aria-hidden="true">/</span><span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span></div>
+
+          {pathname === '/admin/aprovacoes' ? (
+            <div className="mb-6 flex items-center gap-3">
+              <form onSubmit={buscarNoAdmin} className="min-w-0 flex-1 sm:max-w-[620px]">
+                <label className="flex h-12 items-center gap-3 rounded-2xl border border-border bg-card/95 px-4 text-muted-foreground shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl sm:h-14 sm:px-5 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
+                  <Search className="h-5 w-5 shrink-0 text-foreground/70" strokeWidth={1.8} />
+                  <input
+                    ref={buscaRef}
+                    value={busca}
+                    onChange={(event) => setBusca(event.target.value)}
+                    list="shapeos-admin-search"
+                    placeholder="Buscar algo no ShapeOS..."
+                    aria-label="Buscar no painel administrativo"
+                    className="min-w-0 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
+                  />
+                  <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-border bg-accent/50 px-2.5 py-1 text-[11px] font-semibold text-muted-foreground sm:flex">
+                    <span>Ctrl/⌘</span>
+                    <span>K</span>
+                  </kbd>
+                </label>
+                <datalist id="shapeos-admin-search">
+                  {todosLinks.map((item) => <option key={item.href} value={item.label} />)}
+                </datalist>
+              </form>
+
+              <Link
+                href="/admin/notificacoes"
+                aria-label="Abrir notificações"
+                title="Notificações"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-[var(--shapeos-brand)]/40 hover:text-[var(--shapeos-brand)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.08)] sm:h-14 sm:w-14 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]"
+              >
+                <Bell className="h-5 w-5" strokeWidth={1.8} />
+              </Link>
+            </div>
+          ) : null}
+
           <div data-admin-content={pathname}>{children}</div>
         </div>
       </main>
