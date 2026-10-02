@@ -1,0 +1,35 @@
+/* Garante a exibição dos personais no hero em larguras desktop comuns,
+   inclusive quando o viewport efetivo fica entre 1024px e 1099px por causa
+   de escala do Windows, zoom do navegador ou densidade de tela. */
+
+@media (min-width: 1024px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    left: 42% !important;
+    bottom: 0 !important;
+    width: 430px !important;
+    height: 252px !important;
+    background-image: url("/images/admin/aprovacoes-personais.webp") !important;
+    background-repeat: no-repeat !important;
+    background-position: center bottom !important;
+    background-size: contain !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, rgba(0,0,0,.9) 92%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 82%, rgba(0,0,0,.9) 92%, transparent 100%) !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    left: 39% !important;
+    width: 340px !important;
+    height: 232px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    display: none !important;
+  }
+}
