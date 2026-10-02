@@ -125,4 +125,52 @@
   border-top-color: #d7e0ea !important;
 }
 
+/* CARDS — reforço horizontal no modo claro -------------------------
+   Deixa topo e base dos quadros mais perceptíveis sem pesar as laterais. */
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-left-color: rgba(232, 184, 72, .28) !important;
+  border-right-color: rgba(232, 184, 72, .28) !important;
+  border-top-color: rgba(221, 161, 34, .52) !important;
+  border-bottom-color: rgba(221, 161, 34, .52) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(221,161,34,.07),
+    0 7px 18px rgba(15,23,42,.035) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-left-color: rgba(42, 190, 185, .20) !important;
+  border-right-color: rgba(42, 190, 185, .20) !important;
+  border-top-color: rgba(25, 163, 158, .36) !important;
+  border-bottom-color: rgba(25, 163, 158, .36) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(25,163,158,.055),
+    0 7px 18px rgba(15,23,42,.035) !important;
+}
+
+/* Barra de busca/filtros: enquadramento horizontal mais definido. */
+.light [data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) {
+  border-left-color: #e2e8f0 !important;
+  border-right-color: #e2e8f0 !important;
+  border-top-color: #cbd5e1 !important;
+  border-bottom-color: #cbd5e1 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.80),
+    inset 0 -1px 0 rgba(148,163,184,.08),
+    0 8px 24px rgba(15,23,42,.035) !important;
+}
+
+/* Cards informativos inferiores: mesma leitura horizontal do quadro. */
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div {
+  border-left-color: #e2e8f0 !important;
+  border-right-color: #e2e8f0 !important;
+  border-top-color: #cbd5e1 !important;
+  border-bottom-color: #cbd5e1 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.78),
+    inset 0 -1px 0 rgba(148,163,184,.065),
+    0 6px 20px rgba(15,23,42,.04) !important;
+}
+
 /* Mantém este arquivo como ponto único da referência visual dos status. */
