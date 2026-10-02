@@ -5,6 +5,10 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (
+    // API handlers authenticate and authorize requests themselves. Page-role
+    // redirects must never turn an API response into an HTML dashboard.
+    pathname === '/api' ||
+    pathname.startsWith('/api/') ||
     pathname === '/apresentacao' ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||

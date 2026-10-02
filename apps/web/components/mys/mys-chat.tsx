@@ -67,6 +67,9 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     controller.current = abort
     try {
       const response = await fetch('/api/mys', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: context }), signal: abort.signal })
+      if (response.redirected || !response.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('Sua sessão não foi reconhecida. Atualize a página e entre novamente se necessário.')
+      }
       const result = await response.json()
       if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'Não foi possível enviar a mensagem.')
       if (typeof result.message !== 'string') throw new Error('A Mys não retornou uma resposta válida.')
