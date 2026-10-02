@@ -1,0 +1,210 @@
+/* Aprovações — composição inspirada na referência visual gerada no ChatGPT.
+   Usa os elementos decorativos já existentes da página para evitar camadas extras
+   e mantém contraste separado entre modo claro e escuro. */
+
+/* A referência usa a busca como cabeçalho visual; o breadcrumb fica oculto apenas
+   nesta rota para aproximar a hierarquia da composição aprovada. */
+.light [data-admin-route="/admin/aprovacoes"] main > div > div:first-child,
+.dark [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
+  display: none !important;
+}
+
+/* Hero — preserva o conteúdo real e transforma o bloco decorativo existente em
+   anéis concêntricos amplos, recortados pelas bordas do card. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3),
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  background:
+    radial-gradient(circle at 49% 118%, transparent 0 41%, rgba(20,184,166,.035) 41% 45%, transparent 45% 100%);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  background:
+    radial-gradient(circle at 49% 118%, transparent 0 40%, rgba(45,212,191,.055) 40% 45%, transparent 45% 100%);
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div,
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div {
+  left: auto !important;
+  bottom: auto !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Anel externo */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1),
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
+  width: 520px !important;
+  height: 520px !important;
+  right: -164px !important;
+  top: -282px !important;
+  border-width: 52px !important;
+  border-style: solid !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
+  border-color: rgba(6,182,212,.075) !important;
+  box-shadow: 0 0 70px rgba(20,184,166,.025) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
+  border-color: rgba(6,182,212,.13) !important;
+  box-shadow: 0 0 90px rgba(6,182,212,.055) !important;
+}
+
+/* Anel intermediário */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2),
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
+  width: 388px !important;
+  height: 388px !important;
+  right: -28px !important;
+  top: -216px !important;
+  border-width: 42px !important;
+  border-style: solid !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
+  border-color: rgba(20,184,166,.075) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
+  border-color: rgba(20,184,166,.16) !important;
+}
+
+/* Anel interno */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3),
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
+  width: 260px !important;
+  height: 260px !important;
+  right: 74px !important;
+  top: -140px !important;
+  border-width: 30px !important;
+  border-style: solid !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
+  border-color: rgba(45,212,191,.09) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
+  border-color: rgba(45,212,191,.19) !important;
+}
+
+/* Estado vazio — um único conjunto concêntrico no canto inferior direito, como
+   na imagem de referência, e um halo discreto atrás do ícone central. */
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before,
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 620px !important;
+  height: 620px !important;
+  right: -255px !important;
+  bottom: -390px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  transform: none !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  background: radial-gradient(circle,
+    transparent 0 31%,
+    rgba(20,184,166,.05) 31% 39%,
+    transparent 39% 49%,
+    rgba(45,212,191,.075) 49% 57%,
+    transparent 57% 66%,
+    rgba(6,182,212,.055) 66% 73%,
+    transparent 73% 100%) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  background: radial-gradient(circle,
+    transparent 0 31%,
+    rgba(45,212,191,.085) 31% 39%,
+    transparent 39% 49%,
+    rgba(20,184,166,.13) 49% 57%,
+    transparent 57% 66%,
+    rgba(6,182,212,.095) 66% 73%,
+    transparent 73% 100%) !important;
+  filter: drop-shadow(0 0 36px rgba(20,184,166,.035));
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after,
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  content: "" !important;
+  position: absolute !important;
+  width: 250px !important;
+  height: 250px !important;
+  left: 50% !important;
+  right: auto !important;
+  top: -58px !important;
+  bottom: auto !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  background: radial-gradient(circle, rgba(20,184,166,.085) 0, rgba(20,184,166,.025) 28%, transparent 68%) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  background: radial-gradient(circle, rgba(45,212,191,.12) 0, rgba(20,184,166,.035) 30%, transparent 70%) !important;
+}
+
+/* Refinamento do modo escuro para aproximar superfícies e bordas da referência. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  border-color: rgba(34,211,197,.28) !important;
+  background:
+    radial-gradient(circle at 76% 8%, rgba(13,148,136,.18), transparent 23%),
+    radial-gradient(circle at 48% 120%, rgba(79,70,229,.13), transparent 42%),
+    linear-gradient(118deg, #07111a 0%, #07141f 54%, #06282b 100%) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  background:
+    radial-gradient(circle at 50% 20%, rgba(45,212,191,.10), transparent 14%),
+    linear-gradient(135deg, #08131d 0%, #07131c 65%, #06282b 100%) !important;
+}
+
+/* No claro, os mesmos anéis ficam bem mais leves para não competir com o texto. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  background:
+    radial-gradient(circle at 76% 8%, rgba(20,184,166,.055), transparent 23%),
+    radial-gradient(circle at 48% 120%, rgba(99,102,241,.035), transparent 42%),
+    linear-gradient(118deg, #ffffff 0%, #fbfdfe 56%, #f0fbfc 100%) !important;
+}
+
+@media (max-width: 1199px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1),
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
+    right: -245px !important;
+  }
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2),
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
+    right: -105px !important;
+  }
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3),
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
+    right: 8px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3),
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+    opacity: .58 !important;
+  }
+  .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before,
+  .dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+    width: 430px !important;
+    height: 430px !important;
+    right: -250px !important;
+    bottom: -260px !important;
+  }
+}
