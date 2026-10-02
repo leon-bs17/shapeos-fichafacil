@@ -10,10 +10,14 @@ import {
   Ban,
   CalendarDays,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
+  Eye,
   FileCheck2,
   Loader2,
   Mail,
+  MoreVertical,
   Search,
   ShieldCheck,
   Sparkles,
@@ -35,11 +39,20 @@ type PersonalCadastro = {
   criado_em: string
 }
 
+const ITENS_POR_PAGINA = 5
+
 function normalizarTexto(valor: string) {
   return valor
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLocaleLowerCase('pt-BR')
+}
+
+function iniciais(nome: string, email: string) {
+  const partes = nome?.trim().split(/\s+/).filter(Boolean) ?? []
+  if (partes.length >= 2) return `${partes[0][0]}${partes[1][0]}`.toUpperCase()
+  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase()
+  return email?.charAt(0)?.toUpperCase() || 'P'
 }
 
 export default function AdminAprovacoesPage() {
@@ -48,6 +61,9 @@ export default function AdminAprovacoesPage() {
   const [buscaLocal, setBuscaLocal] = useState('')
   const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
   const [filtroPeriodo, setFiltroPeriodo] = useState<FiltroPeriodo>('TODOS')
+  const [pagina, setPagina] = useState(1)
+  const [menuAberto, setMenuAberto] = useState<string | null>(null)
+  const [personalSelecionado, setPersonalSelecionado] = useState<PersonalCadastro | null>(null)
 
   const { data: cadastros, isLoading } = useQuery({
     queryKey: ['admin-aprovacoes'],
@@ -65,16 +81,21 @@ export default function AdminAprovacoesPage() {
   })
 
   useEffect(() => {
-    const focarBusca = (event: KeyboardEvent) => {
+    const atalhos = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault()
         buscaRef.current?.focus()
         buscaRef.current?.select()
       }
+
+      if (event.key === 'Escape') {
+        setMenuAberto(null)
+        setPersonalSelecionado(null)
+      }
     }
 
-    window.addEventListener('keydown', focarBusca)
-    return () => window.removeEventListener('keydown', focarBusca)
+    window.addEventListener('keydown', atalhos)
+    return () => window.removeEventListener('keydown', atalhos)
   }, [])
 
   const pendentes = useMemo(
@@ -101,6 +122,15 @@ export default function AdminAprovacoesPage() {
         .some((valor) => normalizarTexto(valor ?? '').includes(termo))
     })
   }, [buscaLocal, cadastros, filtroPeriodo, filtroStatus])
+
+  useEffect(() => {
+    setPagina(1)
+  }, [buscaLocal, filtroPeriodo, filtroStatus])
+
+  const totalPaginas = Math.max(1, Math.ceil(cadastrosFiltrados.length / ITENS_POR_PAGINA))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const inicioPagina = (paginaAtual - 1) * ITENS_POR_PAGINA
+  const cadastrosPaginados = cadastrosFiltrados.slice(inicioPagina, inicioPagina + ITENS_POR_PAGINA)
 
   const acao = useMutation({
     mutationFn: async ({
@@ -156,6 +186,8 @@ export default function AdminAprovacoesPage() {
       if (auditError) throw auditError
     },
     onSuccess: async () => {
+      setMenuAberto(null)
+      setPersonalSelecionado(null)
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['admin-aprovacoes'] }),
         queryClient.invalidateQueries({ queryKey: ['admin-usuarios'] }),
@@ -267,9 +299,9 @@ export default function AdminAprovacoesPage() {
         </Card>
       </div>
 
-      <section className="rounded-[22px] border border-slate-200 bg-white/95 p-3 shadow-[0_10px_28px_rgba(15,23,42,0.035)] backdrop-blur sm:p-4 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <label className="flex h-12 min-w-0 flex-1 items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/65 px-4 text-slate-500 transition focus-within:border-cyan-300 focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.08)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30 dark:focus-within:bg-white/[0.05] dark:focus-within:shadow-[0_0_0_3px_rgba(0,255,204,0.06)]">
+      <section className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
+          <label className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition focus-within:border-cyan-300 focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.07)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30">
             <Search className="h-5 w-5 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
             <input
               ref={buscaRef}
@@ -277,7 +309,7 @@ export default function AdminAprovacoesPage() {
               onChange={(event) => setBuscaLocal(event.target.value)}
               placeholder="Buscar por nome, e-mail ou status..."
               aria-label="Buscar cadastros na página Aprovações"
-              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+              className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-800 outline-none placeholder:font-medium placeholder:text-slate-500 dark:text-white dark:placeholder:text-slate-500"
             />
 
             {buscaLocal ? (
@@ -289,18 +321,18 @@ export default function AdminAprovacoesPage() {
                 }}
                 aria-label="Limpar busca"
                 title="Limpar busca"
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-200/75 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white"
               >
                 <X className="h-4 w-4" strokeWidth={1.9} />
               </button>
             ) : null}
 
-            <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white/85 px-2.5 py-1 text-[10px] font-bold text-slate-500 shadow-sm sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
+            <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
               Ctrl/⌘ K
             </kbd>
           </label>
 
-          <div className="flex flex-wrap items-center gap-2" aria-label="Filtros de cadastro">
+          <div className="flex flex-wrap items-center gap-2.5" aria-label="Filtros de cadastro">
             {([
               ['TODOS', 'Todos'],
               ['PENDENTE', 'Pendentes'],
@@ -311,17 +343,17 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setFiltroStatus(valor)}
                 aria-pressed={filtroStatus === valor}
-                className={`h-11 rounded-2xl border px-5 text-xs font-bold transition ${
+                className={`h-12 rounded-[18px] px-5 text-xs font-bold transition ${
                   filtroStatus === valor
-                    ? 'border-cyan-300 bg-cyan-50 text-cyan-700 shadow-[0_6px_16px_rgba(6,182,212,0.08)] dark:border-primary/35 dark:bg-primary/10 dark:text-primary'
-                    : 'border-slate-200 bg-white text-slate-500 hover:border-cyan-200 hover:bg-cyan-50/40 hover:text-cyan-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
+                    ? 'border border-cyan-300 bg-cyan-50/80 text-cyan-800 shadow-[0_7px_18px_rgba(6,182,212,0.08)] dark:border-primary/35 dark:bg-primary/10 dark:text-primary'
+                    : 'border border-transparent bg-transparent text-slate-400 hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-white/[0.035] dark:hover:text-white'
                 }`}
               >
                 {label}
               </button>
             ))}
 
-            <label className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 transition hover:border-cyan-200 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:border-primary/20">
+            <label className="flex h-12 items-center gap-2 rounded-[18px] border border-slate-100 bg-white px-4 text-xs font-bold text-slate-400 shadow-[0_4px_14px_rgba(15,23,42,0.02)] transition hover:border-cyan-200 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:border-primary/20">
               <CalendarDays className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
               <select
                 value={filtroPeriodo}
@@ -336,10 +368,8 @@ export default function AdminAprovacoesPage() {
           </div>
         </div>
 
-        <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3 text-[11px] font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
-          <span>
-            {cadastrosFiltrados.length} {cadastrosFiltrados.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
-          </span>
+        <div className="mt-4 flex flex-col gap-2 px-0.5 text-[11px] font-semibold text-slate-500 sm:flex-row sm:items-center sm:justify-between dark:text-slate-500">
+          <span>{cadastrosFiltrados.length} {cadastrosFiltrados.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}</span>
           {filtrosAtivos ? (
             <button
               type="button"
@@ -401,82 +431,162 @@ export default function AdminAprovacoesPage() {
           </button>
         </section>
       ) : (
-        <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
-          <div className="hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_160px_120px_220px] gap-4 border-b border-slate-100 bg-slate-50/65 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
+        <section className="rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+          <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] gap-4 rounded-t-[24px] border-b border-slate-100 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#536a9c] md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
             <span>Nome</span>
             <span>E-mail</span>
             <span>Data do cadastro</span>
             <span>Status</span>
-            <span className="text-right">Ações</span>
+            <span className="text-center">Ações</span>
           </div>
 
           <div className="divide-y divide-slate-100 dark:divide-white/10">
-            {cadastrosFiltrados.map((personal) => {
+            {cadastrosPaginados.map((personal) => {
               const processando = acao.isPending && acao.variables?.personal.id === personal.id
               const status = statusVisual(personal.status_conta)
+              const pendente = personal.status_conta === 'PENDENTE'
 
               return (
-                <div key={personal.id} className="grid gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_160px_120px_220px] md:items-center">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-teal-50 text-xs font-black text-teal-700 ring-1 ring-teal-100 dark:bg-primary/10 dark:text-primary dark:ring-primary/15">
-                      {personal.nome?.charAt(0)?.toUpperCase() ?? 'P'}
+                <div key={personal.id} className="grid min-h-[78px] gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] md:items-center">
+                  <div className="flex min-w-0 items-center gap-3.5">
+                    <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-[12px] font-semibold text-white shadow-[0_5px_12px_rgba(64,82,122,0.16)] ring-1 ring-[#5f74a3]/15 dark:bg-[linear-gradient(145deg,#5974a7,#344966)] dark:ring-white/10">
+                      {iniciais(personal.nome, personal.email)}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-slate-950 dark:text-white">{personal.nome}</p>
+                      <p className="truncate text-[13px] font-semibold text-[#0d2148] dark:text-white">
+                        {personal.nome?.trim() || 'Personal sem nome'}
+                      </p>
                       <p className="mt-0.5 text-[11px] text-slate-400 md:hidden dark:text-slate-500">Personal</p>
                     </div>
                   </div>
 
-                  <p className="flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <p className="flex min-w-0 items-center gap-1.5 truncate text-[12px] font-medium text-[#6076a3] dark:text-slate-400">
                     <Mail className="h-3.5 w-3.5 shrink-0 md:hidden" strokeWidth={1.7} />
                     {personal.email}
                   </p>
 
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <p className="text-[12px] font-medium text-[#6076a3] dark:text-slate-400">
                     {new Date(personal.criado_em).toLocaleDateString('pt-BR')}
                   </p>
 
                   <div>
-                    <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-bold ${status.className}`}>
+                    <span className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
                       {status.label}
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 md:justify-end">
-                    {personal.status_conta === 'PENDENTE' ? (
-                      <>
-                        <Button
-                          onClick={() => acao.mutate({ personal, novoStatus: 'ATIVO' })}
-                          disabled={processando}
-                          size="sm"
-                          className="gap-1.5 rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+                  <div className="relative flex items-center justify-start gap-2 md:justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setPersonalSelecionado(personal)}
+                      className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition hover:border-cyan-200 hover:bg-cyan-50 dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white dark:hover:bg-primary/10"
+                    >
+                      <Eye className="h-4 w-4 text-cyan-600 dark:text-primary" strokeWidth={1.9} />
+                      {pendente ? 'Analisar' : 'Ver'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setMenuAberto((id) => id === personal.id ? null : personal.id)}
+                      aria-label={`Mais ações para ${personal.nome || personal.email}`}
+                      aria-expanded={menuAberto === personal.id}
+                      className="grid h-10 w-10 place-items-center rounded-[13px] border border-slate-200 bg-white text-[#526a9c] shadow-[0_2px_8px_rgba(15,23,42,0.025)] transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:bg-white/[0.06]"
+                    >
+                      <MoreVertical className="h-4 w-4" strokeWidth={1.9} />
+                    </button>
+
+                    {menuAberto === personal.id ? (
+                      <div className="absolute right-0 top-12 z-30 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10 dark:border-white/10 dark:bg-[#0c1721] dark:shadow-black/30">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPersonalSelecionado(personal)
+                            setMenuAberto(null)
+                          }}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/[0.06]"
                         >
-                          {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.8} />}
-                          Aprovar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => acao.mutate({ personal, novoStatus: 'BLOQUEADO' })}
-                          disabled={processando}
-                          className="gap-1.5 rounded-lg border-red-200 bg-white text-red-700 hover:bg-red-50 dark:border-destructive/20 dark:bg-transparent dark:text-destructive dark:hover:bg-destructive/10"
-                        >
-                          <Ban className="h-3.5 w-3.5" strokeWidth={1.8} />
-                          Bloquear
-                        </Button>
-                      </>
-                    ) : (
-                      <span className="self-center text-xs font-semibold text-slate-400 dark:text-slate-500">Sem ação pendente</span>
-                    )}
+                          <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
+                          Ver detalhes
+                        </button>
+
+                        {pendente ? (
+                          <>
+                            <button
+                              type="button"
+                              disabled={processando}
+                              onClick={() => acao.mutate({ personal, novoStatus: 'ATIVO' })}
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                            >
+                              {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.8} />}
+                              Aprovar
+                            </button>
+                            <button
+                              type="button"
+                              disabled={processando}
+                              onClick={() => acao.mutate({ personal, novoStatus: 'BLOQUEADO' })}
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 transition hover:bg-red-50 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-400/10"
+                            >
+                              <Ban className="h-3.5 w-3.5" strokeWidth={1.8} />
+                              Bloquear
+                            </button>
+                          </>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               )
             })}
           </div>
 
-          <div className="flex flex-col gap-1 border-t border-slate-100 px-5 py-3 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
-            <span>Mostrando {cadastrosFiltrados.length} de {cadastros?.length ?? 0} cadastros</span>
-            <span>Busca e filtros aplicados instantaneamente</span>
+          <div className="flex flex-col gap-3 rounded-b-[24px] border-t border-slate-100 px-5 py-4 text-[12px] font-medium text-[#6076a3] sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
+            <span>
+              Mostrando {cadastrosFiltrados.length ? inicioPagina + 1 : 0} a {Math.min(inicioPagina + ITENS_POR_PAGINA, cadastrosFiltrados.length)} de {cadastrosFiltrados.length} resultados
+            </span>
+
+            <div className="flex items-center gap-1.5" aria-label="Paginação">
+              <button
+                type="button"
+                onClick={() => setPagina(1)}
+                disabled={paginaAtual === 1}
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                aria-label="Primeira página"
+              >
+                <ChevronLeft className="h-3.5 w-3.5 -mr-1" strokeWidth={1.8} />
+                <ChevronLeft className="h-3.5 w-3.5 -ml-1" strokeWidth={1.8} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setPagina((atual) => Math.max(1, atual - 1))}
+                disabled={paginaAtual === 1}
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                aria-label="Página anterior"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
+              </button>
+              <span className="grid h-8 min-w-8 place-items-center rounded-lg bg-gradient-to-b from-cyan-400 to-teal-500 px-2 text-xs font-bold text-white shadow-[0_5px_14px_rgba(20,184,166,0.20)]">
+                {paginaAtual}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPagina((atual) => Math.min(totalPaginas, atual + 1))}
+                disabled={paginaAtual === totalPaginas}
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                aria-label="Próxima página"
+              >
+                <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.8} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setPagina(totalPaginas)}
+                disabled={paginaAtual === totalPaginas}
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                aria-label="Última página"
+              >
+                <ChevronRight className="h-3.5 w-3.5 -mr-1" strokeWidth={1.8} />
+                <ChevronRight className="h-3.5 w-3.5 -ml-1" strokeWidth={1.8} />
+              </button>
+            </div>
           </div>
         </section>
       )}
@@ -518,6 +628,73 @@ export default function AdminAprovacoesPage() {
           </CardContent>
         </Card>
       </div>
+
+      {personalSelecionado ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-[2px]" onMouseDown={() => setPersonalSelecionado(null)}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Detalhes do personal"
+            onMouseDown={(event) => event.stopPropagation()}
+            className="w-full max-w-lg rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/20 dark:border-white/10 dark:bg-[#0b1721]"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-3.5">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-sm font-semibold text-white">
+                  {iniciais(personalSelecionado.nome, personalSelecionado.email)}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate text-lg font-black text-slate-950 dark:text-white">{personalSelecionado.nome?.trim() || 'Personal sem nome'}</h3>
+                  <p className="truncate text-sm text-slate-500 dark:text-slate-400">{personalSelecionado.email}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPersonalSelecionado(null)}
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/[0.06]"
+                aria-label="Fechar detalhes"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="mt-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-sm dark:border-white/10 dark:bg-white/[0.025]">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-slate-500 dark:text-slate-400">Data do cadastro</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-slate-500 dark:text-slate-400">Status</span>
+                <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${statusVisual(personalSelecionado.status_conta).className}`}>
+                  {statusVisual(personalSelecionado.status_conta).label}
+                </span>
+              </div>
+            </div>
+
+            {personalSelecionado.status_conta === 'PENDENTE' ? (
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'BLOQUEADO' })}
+                  disabled={acao.isPending}
+                  className="gap-2 rounded-xl border-red-200 text-red-700 hover:bg-red-50 dark:border-red-400/20 dark:bg-transparent dark:text-red-300 dark:hover:bg-red-400/10"
+                >
+                  <Ban className="h-4 w-4" />
+                  Bloquear
+                </Button>
+                <Button
+                  onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'ATIVO' })}
+                  disabled={acao.isPending}
+                  className="gap-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 dark:bg-primary dark:text-primary-foreground"
+                >
+                  {acao.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                  Aprovar
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
