@@ -1,0 +1,245 @@
+/* Paridade visual do modo claro aplicada ao modo escuro da página Aprovações. */
+
+.dark [data-admin-route="/admin/aprovacoes"] {
+  --approvals-bg: #061019;
+  --approvals-surface: #0a1620;
+  --approvals-border: rgba(148, 163, 184, .16);
+  --approvals-text: #f8fafc;
+  --approvals-muted: #9aa9ba;
+  --approvals-teal: #22d3c5;
+  background:
+    radial-gradient(circle at 74% 0%, rgba(34, 211, 197, .075), transparent 27%),
+    radial-gradient(circle at 20% 100%, rgba(56, 189, 248, .045), transparent 28%),
+    linear-gradient(180deg, #061019 0%, #07131c 100%) !important;
+}
+
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  --background: 203 48% 7%;
+  --foreground: 210 40% 98%;
+  --card: 204 43% 9%;
+  --card-foreground: 210 40% 98%;
+  --muted-foreground: 215 18% 65%;
+  --accent: 174 40% 13%;
+  --border: 215 26% 18%;
+  --primary: 174 72% 47%;
+  --shapeos-bg: #061019;
+  --shapeos-surface: #091620;
+  --shapeos-surface-strong: #0d1b26;
+  --shapeos-text: #f8fafc;
+  --shapeos-muted: #94a3b8;
+  --shapeos-subtle: #8190a3;
+  --shapeos-brand: #22d3c5;
+  --shapeos-on-brand: #042f2e;
+  --shapeos-border: rgba(148, 163, 184, .16);
+  --shapeos-neutral-rgb: 34, 211, 197;
+  background: rgba(6, 16, 25, .98) !important;
+  color: #f8fafc !important;
+  border-right-color: rgba(148, 163, 184, .14) !important;
+  box-shadow: 12px 0 38px rgba(0, 0, 0, .18) !important;
+}
+
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation nav a {
+  min-height: 44px;
+  border-radius: 12px !important;
+}
+
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation nav svg { opacity: .76; }
+
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation [aria-current="page"] {
+  background: linear-gradient(90deg, rgba(20, 184, 166, .16), rgba(34, 211, 197, .09)) !important;
+  color: #5eead4 !important;
+  border-color: rgba(45, 212, 191, .22) !important;
+  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, .04), 0 8px 24px rgba(0, 0, 0, .10);
+}
+
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation [aria-current="page"] svg {
+  color: #2dd4bf !important;
+  opacity: 1;
+}
+
+.dark [data-admin-route="/admin/aprovacoes"] main { background: transparent !important; }
+.dark [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
+  border-color: rgba(148, 163, 184, .14) !important;
+  color: #94a3b8 !important;
+}
+
+/* Hero: mesma hierarquia, proporção e efeito decorativo do modo claro. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  min-height: 252px !important;
+  background:
+    radial-gradient(circle at 70% 14%, rgba(34, 211, 197, .13), transparent 19%),
+    radial-gradient(circle at 82% 84%, rgba(56, 189, 248, .075), transparent 23%),
+    linear-gradient(112deg, #07111a 0%, #091722 48%, #0a2427 100%) !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  box-shadow: 0 24px 58px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(1) { display: none !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2) { display: block !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  display: block !important;
+  opacity: .74 !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  color: #f8fafc !important;
+  font-size: clamp(2.35rem, 3.6vw, 3.15rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 span { color: #2dd4bf !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  color: #a8b4c2 !important;
+  max-width: 520px !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child { width: 27% !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  right: 1.1rem !important;
+  width: 275px !important;
+  color: rgba(226, 232, 240, .93) !important;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, .34) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+/* Cards de métricas. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
+  min-height: 126px;
+  background: rgba(9, 22, 32, .96) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .22) !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .30) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-color: rgba(245, 158, 11, .22) !important;
+  background: linear-gradient(120deg, #0a1620 0%, #17170f 100%) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-color: rgba(45, 212, 191, .22) !important;
+  background: linear-gradient(120deg, #0a1620 0%, #09201f 100%) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) p { color: #94a3b8 !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) p[class*="font-black"] { color: #f8fafc !important; }
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
+  width: 64px !important;
+  height: 64px !important;
+  background: rgba(245, 158, 11, .11) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, .18) !important;
+  box-shadow: 0 12px 30px rgba(245, 158, 11, .07) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
+  width: 64px !important;
+  height: 64px !important;
+  background: rgba(20, 184, 166, .11) !important;
+  color: #2dd4bf !important;
+  border-color: rgba(45, 212, 191, .18) !important;
+  box-shadow: 0 12px 30px rgba(20, 184, 166, .08) !important;
+}
+
+/* Estado vazio com a mesma composição decorativa do modo claro. */
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  min-height: 372px !important;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(34, 211, 197, .105), transparent 15%),
+    linear-gradient(135deg, #08131c 0%, #08131c 64%, #092226 100%) !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .24) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before,
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 48%;
+  border: 34px solid rgba(45, 212, 191, .065);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  width: 310px;
+  height: 430px;
+  right: -86px;
+  bottom: -180px;
+  transform: rotate(18deg);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  width: 170px;
+  height: 250px;
+  right: 90px;
+  bottom: -140px;
+  border-width: 24px;
+  transform: rotate(16deg);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
+  color: #f8fafc !important;
+  font-size: 2rem !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] p { color: #9aa9ba !important; }
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  width: 78px !important;
+  height: 78px !important;
+  background: linear-gradient(145deg, rgba(20, 184, 166, .15), rgba(13, 148, 136, .09)) !important;
+  color: #5eead4 !important;
+  border-color: rgba(45, 212, 191, .22) !important;
+  box-shadow: 0 18px 48px rgba(20, 184, 166, .10), 0 0 0 18px rgba(45, 212, 191, .025) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
+  min-width: 292px !important;
+  background: linear-gradient(90deg, #14b8a6, #0d9488) !important;
+  color: #f0fdfa !important;
+  box-shadow: 0 13px 32px rgba(20, 184, 166, .20) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button:hover {
+  background: linear-gradient(90deg, #2dd4bf, #14b8a6) !important;
+  color: #042f2e !important;
+}
+
+/* Lista de pendentes. */
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="space-y-3"] > div {
+  background: #091620 !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .21) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="space-y-3"] p[class*="font-bold"] { color: #f8fafc !important; }
+
+/* Benefícios inferiores. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div {
+  min-height: 104px;
+  background: rgba(9, 22, 32, .97) !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div div[class*="rounded-2xl"] { transform: scale(1.08); }
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child p[class*="font-bold"] { color: #f8fafc !important; }
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child p:not([class*="font-bold"]) { color: #94a3b8 !important; }
+
+@media (max-width: 767px) {
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child { min-height: 220px !important; }
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 { font-size: 2.15rem !important; }
+}
