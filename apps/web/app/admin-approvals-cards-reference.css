@@ -72,3 +72,34 @@
   color: #66738c !important;
   opacity: .92 !important;
 }
+
+/* BADGES DE STATUS DA TABELA ---------------------------------------
+   Medidas e paleta aproximadas diretamente da referência enviada:
+   87 × 31 px, tipografia maior e fundos pastel mais presentes. */
+.light [data-admin-content="/admin/aprovacoes"] span[class*="text-amber-800"],
+.light [data-admin-content="/admin/aprovacoes"] span[class*="text-emerald-700"] {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  min-width: 87px !important;
+  height: 31px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] span[class*="text-amber-800"] {
+  background: #fef6e2 !important;
+  color: #fb8f13 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] span[class*="text-emerald-700"] {
+  background: #d8f9eb !important;
+  color: #14975a !important;
+}
