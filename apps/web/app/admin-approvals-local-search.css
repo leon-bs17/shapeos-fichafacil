@@ -1,0 +1,10 @@
+/* Aprovações — opção 3: a busca desta tela é local aos cadastros.
+   A busca global antiga é ocultada somente nesta rota; o sino permanece. */
+
+[data-admin-route="/admin/aprovacoes"] main form {
+  display: none !important;
+}
+
+[data-admin-route="/admin/aprovacoes"] main form + a {
+  margin-left: auto !important;
+}
