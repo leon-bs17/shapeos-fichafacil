@@ -1,0 +1,167 @@
+/* Aprovações — replica no modo escuro a mesma composição visual do modo claro.
+   Mantém a geometria dos arcos, pontos e halos, adaptando apenas luminosidade e contraste. */
+
+/* HERO --------------------------------------------------------------- */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  min-height: 226px !important;
+  border-color: rgba(94,234,212,.16) !important;
+  background:
+    radial-gradient(circle at 55% 16%, rgba(82,244,236,.82) 0 1.2px, transparent 1.7px),
+    radial-gradient(circle at 58.5% 38%, rgba(61,232,226,.74) 0 1.15px, transparent 1.65px),
+    radial-gradient(circle at 62% 26%, rgba(91,245,239,.72) 0 1.05px, transparent 1.55px),
+    radial-gradient(circle at 66% 54%, rgba(57,226,226,.72) 0 1.25px, transparent 1.75px),
+    radial-gradient(circle at 71.5% 31%, rgba(64,237,231,.76) 0 1.1px, transparent 1.6px),
+    radial-gradient(circle at 79% 19%, rgba(75,236,235,.72) 0 1.05px, transparent 1.6px),
+    radial-gradient(circle at 88% 25%, rgba(68,242,235,.78) 0 1.2px, transparent 1.7px),
+    radial-gradient(circle at 94% 14%, rgba(57,229,231,.72) 0 1.05px, transparent 1.6px),
+    radial-gradient(circle 330px at 40% 145%,
+      rgba(103,116,255,.16) 0 118px,
+      rgba(91,112,231,.12) 119px 150px,
+      rgba(96,165,250,.07) 151px 176px,
+      transparent 177px 194px,
+      rgba(34,211,238,.10) 195px 238px,
+      rgba(45,212,191,.26) 239px 242px,
+      rgba(34,211,238,.12) 243px 254px,
+      transparent 255px 330px),
+    radial-gradient(circle 455px at 89% 42%,
+      transparent 0 122px,
+      rgba(45,212,191,.20) 123px 176px,
+      transparent 177px 218px,
+      rgba(34,211,238,.18) 219px 279px,
+      transparent 280px 322px,
+      rgba(94,234,212,.15) 323px 386px,
+      transparent 387px 455px),
+    radial-gradient(circle 410px at 88% 44%, rgba(45,212,191,.10), transparent 70%),
+    linear-gradient(112deg, #07111a 0%, #08141e 47%, #091923 70%, #092127 100%) !important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+/* Remove as camadas antigas do JSX para que a composição nova fique visível,
+   assim como no modo claro. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2),
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  display: none !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  color: #f7fbff !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 span {
+  color: #47e3d7 !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  color: #aebdcc !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  color: rgba(236,247,251,.91) !important;
+  text-shadow: 0 3px 18px rgba(0,0,0,.48) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child span:last-child {
+  background: linear-gradient(90deg, #35e1cf 0%, #22d3d8 100%) !important;
+  box-shadow: 0 0 18px rgba(45,212,191,.28) !important;
+}
+
+/* ESTADO VAZIO ------------------------------------------------------- */
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  min-height: 382px !important;
+  border-color: rgba(94,234,212,.14) !important;
+  background:
+    radial-gradient(circle 160px at 50% 23%, rgba(45,212,191,.105), rgba(34,211,238,.045) 38%, transparent 72%),
+    radial-gradient(circle 420px at 101% 4%, rgba(20,184,166,.13), rgba(34,211,238,.055) 42%, transparent 74%),
+    linear-gradient(180deg, #07131c 0%, #07141d 58%, #081b22 100%) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.20) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 670px !important;
+  height: 670px !important;
+  right: -275px !important;
+  bottom: -410px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  transform: none !important;
+  background: radial-gradient(circle,
+    transparent 0 132px,
+    rgba(45,212,191,.17) 133px 183px,
+    transparent 184px 220px,
+    rgba(34,211,238,.15) 221px 274px,
+    transparent 275px 310px,
+    rgba(94,234,212,.13) 311px 365px,
+    transparent 366px 670px) !important;
+  filter: blur(.15px);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  content: "" !important;
+  position: absolute !important;
+  width: 250px !important;
+  height: 250px !important;
+  left: 50% !important;
+  top: -34px !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  background: radial-gradient(circle,
+    rgba(45,212,191,.14) 0 12%,
+    rgba(34,211,238,.075) 13% 30%,
+    rgba(94,234,212,.025) 31% 50%,
+    transparent 70%) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  border-color: rgba(94,234,212,.22) !important;
+  background: linear-gradient(145deg, rgba(20,184,166,.14), rgba(8,47,55,.74)) !important;
+  color: #5eead4 !important;
+  box-shadow:
+    0 16px 40px rgba(20,184,166,.11),
+    0 0 0 14px rgba(45,212,191,.025) !important;
+}
+
+/* RESPONSIVO --------------------------------------------------------- */
+@media (max-width: 1199px) {
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+    background:
+      radial-gradient(circle at 72% 22%, rgba(45,212,191,.13), transparent 25%),
+      radial-gradient(circle 390px at 93% 44%, transparent 0 115px, rgba(45,212,191,.18) 116px 168px, transparent 169px 210px, rgba(34,211,238,.15) 211px 270px, transparent 271px),
+      radial-gradient(circle 300px at 46% 146%, rgba(99,102,241,.14) 0 120px, transparent 150px 182px, rgba(34,211,238,.13) 183px 232px, transparent 233px),
+      linear-gradient(112deg, #07111a 0%, #08151f 56%, #092126 100%) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+    min-height: 220px !important;
+    background:
+      radial-gradient(circle 300px at 108% 28%, transparent 0 90px, rgba(45,212,191,.16) 91px 135px, transparent 136px 170px, rgba(34,211,238,.13) 171px 220px, transparent 221px),
+      linear-gradient(112deg, #07111a 0%, #081820 100%) !important;
+  }
+
+  .dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+    width: 460px !important;
+    height: 460px !important;
+    right: -245px !important;
+    bottom: -275px !important;
+    background: radial-gradient(circle,
+      transparent 0 92px,
+      rgba(45,212,191,.16) 93px 130px,
+      transparent 131px 158px,
+      rgba(34,211,238,.13) 159px 196px,
+      transparent 197px 230px,
+      rgba(94,234,212,.11) 231px 268px,
+      transparent 269px) !important;
+  }
+}
