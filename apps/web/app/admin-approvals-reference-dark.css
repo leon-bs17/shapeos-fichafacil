@@ -165,3 +165,237 @@
       transparent 269px) !important;
   }
 }
+
+/* ======================================================================
+   REFINO DO DARK MODE — referência aprovada (#101917 + verdes + teal)
+   Ordem de impacto: hero > cards > ações > filtros/tabela > microcontraste.
+   ====================================================================== */
+
+.dark [data-admin-route="/admin/aprovacoes"] {
+  --approvals-canvas: #101917;
+  --approvals-surface: #14211c;
+  --approvals-surface-soft: #17261f;
+  --approvals-surface-deep: #0f1d19;
+  --approvals-line: rgba(142, 181, 167, .16);
+  --approvals-line-strong: rgba(77, 221, 198, .24);
+  --approvals-text: #eff5ed;
+  --approvals-muted: #a5b8ae;
+  --approvals-subtle: #789086;
+  --approvals-teal: #4dddc6;
+  background: var(--approvals-canvas) !important;
+}
+
+/* 1. HERO — remove o navy e troca os arcos antigos por um wireframe teal. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  min-height: 226px !important;
+  border-color: rgba(77, 221, 198, .30) !important;
+  background:
+    radial-gradient(circle at 60% 23%, rgba(77,221,198,.76) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 67% 39%, rgba(77,221,198,.62) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 78% 28%, rgba(77,221,198,.68) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 88% 18%, rgba(77,221,198,.72) 0 1px, transparent 1.7px),
+    linear-gradient(112deg, #0d1917 0%, #101d19 52%, #10241f 100%) !important;
+  box-shadow: 0 18px 42px rgba(2, 8, 7, .16), inset 0 1px 0 rgba(255,255,255,.018) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 470px;
+  height: 470px;
+  right: 17%;
+  top: -164px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: .42;
+  transform: rotate(-8deg) scaleX(1.28);
+  background:
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 14px, rgba(77,221,198,.34) 15px 16px, transparent 17px 28px),
+    repeating-conic-gradient(from 8deg at 50% 50%, rgba(77,221,198,.30) 0 .7deg, transparent .9deg 10deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%);
+  mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 520px;
+  height: 280px;
+  right: 7%;
+  top: -34px;
+  pointer-events: none;
+  background: radial-gradient(ellipse, rgba(47, 148, 116, .15), transparent 68%);
+  filter: blur(10px);
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  color: #f4f8f6 !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 span {
+  color: #58d9bd !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  color: #b5c4be !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  color: rgba(239,245,237,.90) !important;
+  text-shadow: 0 3px 18px rgba(0,0,0,.36) !important;
+}
+
+/* 2. CARDS DE RESUMO — superfícies próximas ao canvas, cor só no status. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child {
+  background: linear-gradient(115deg, #121b17 0%, #151b16 100%) !important;
+  border-color: rgba(217, 164, 39, .42) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.10) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child {
+  background: linear-gradient(115deg, #10201b 0%, #10251f 100%) !important;
+  border-color: rgba(77, 221, 198, .28) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.10) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child [class*="bg-warning"] {
+  background: rgba(217,164,39,.09) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child [class*="bg-primary"] {
+  background: rgba(77,221,198,.08) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) p[class*="text-slate-300"],
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) p[class*="text-slate-400"] {
+  color: var(--approvals-muted) !important;
+}
+
+/* Sidebar e sino entram no mesmo ambiente cromático. */
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  background: #101917 !important;
+  border-right-color: rgba(142,181,167,.15) !important;
+  box-shadow: none !important;
+}
+.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation :is(a,button)[aria-current="page"] {
+  background: rgba(77,221,198,.09) !important;
+  color: #67e2cc !important;
+  border-color: rgba(77,221,198,.23) !important;
+}
+.dark [data-admin-route="/admin/aprovacoes"] a[aria-label="Abrir notificações"] {
+  background: #14211c !important;
+  border-color: rgba(142,181,167,.18) !important;
+  color: #dce8e2 !important;
+  box-shadow: none !important;
+}
+
+/* 3. BOTÕES VER / ANALISAR — saem do branco e viram outline escuro. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) button[class*="min-w-[116px]"] {
+  background: rgba(255,255,255,.018) !important;
+  border-color: rgba(142,181,167,.18) !important;
+  color: #dce8e2 !important;
+  box-shadow: none !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) button[class*="min-w-[116px]"]:hover {
+  background: rgba(77,221,198,.07) !important;
+  border-color: rgba(77,221,198,.30) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) button[class*="min-w-[116px]"] svg {
+  color: #58d9bd !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) button[aria-label^="Mais ações"] {
+  background: rgba(255,255,255,.018) !important;
+  border-color: rgba(142,181,167,.18) !important;
+  color: #a9bbb4 !important;
+  box-shadow: none !important;
+}
+
+/* 4. BUSCA/FILTROS — verde escuro discreto, sem olive excessivo. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) {
+  background: #14211c !important;
+  border-color: rgba(142,181,167,.16) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.09) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) label:first-child {
+  background: #16241f !important;
+  border-color: rgba(142,181,167,.16) !important;
+  color: var(--approvals-muted) !important;
+  box-shadow: none !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) input {
+  color: #dce8e2 !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) input::placeholder {
+  color: #789086 !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) button[aria-pressed="true"] {
+  background: rgba(77,221,198,.09) !important;
+  border-color: rgba(77,221,198,.28) !important;
+  color: #67e2cc !important;
+  box-shadow: none !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) label:has(select) {
+  background: #16241f !important;
+  border-color: rgba(142,181,167,.16) !important;
+  color: #d3dfda !important;
+  box-shadow: none !important;
+}
+
+/* 5. TABELA — menor diferença de luminosidade e linhas finas. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) {
+  background: #13201b !important;
+  border-color: rgba(142,181,167,.16) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.08) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) > div:first-child {
+  background: rgba(255,255,255,.012) !important;
+  border-bottom-color: rgba(142,181,167,.15) !important;
+  color: #829c92 !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) > div:nth-child(2) {
+  --tw-divide-opacity: 1;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) > div:nth-child(2) > div {
+  border-color: rgba(142,181,167,.12) !important;
+  background: transparent !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) p[class*="dark:text-white"] {
+  color: #eff5ed !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) p[class*="dark:text-slate-400"] {
+  color: #9fb4ac !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) > div:nth-child(2) > div > div:first-child > div:first-child {
+  background: linear-gradient(145deg,#5b7098,#405473) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,.14) !important;
+  ring-color: rgba(255,255,255,.06) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(3) > div:last-child {
+  border-top-color: rgba(142,181,167,.14) !important;
+  color: #81988f !important;
+}
+
+/* Menus e cards inferiores seguem a mesma família de superfícies. */
+.dark [data-admin-content="/admin/aprovacoes"] div[class*="absolute"][class*="w-44"] {
+  background: #14211c !important;
+  border-color: rgba(142,181,167,.18) !important;
+}
+.dark [data-admin-content="/admin/aprovacoes"] > div > div[class*="md:grid-cols-3"] > div {
+  background: #14211c !important;
+  border-color: rgba(142,181,167,.14) !important;
+}
+
+@media (max-width: 1199px) {
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    right: 6%;
+    opacity: .32;
+  }
+}
+
+@media (max-width: 767px) {
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+    min-height: 220px !important;
+  }
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    width: 320px;
+    height: 320px;
+    right: -120px;
+    top: -108px;
+    opacity: .24;
+  }
+}
