@@ -1,8 +1,9 @@
 /* ShapeOS — tema das áreas internas.
-   Este arquivo é escopado aos shells internos da plataforma.
-   A rota /apresentacao não usa estes seletores e preserva o visual próprio.
+   IMPORTANTE: este arquivo é deliberadamente escopado aos shells internos
+   da plataforma. A rota /apresentacao não usa nenhum destes seletores e
+   mantém integralmente a identidade visual própria da página de apresentação.
 
-   Referência clara: branco frio + slate + teal, seguindo a tela de Aprovações.
+   Referência clara: fundo #F7F8F2.
    Referência escura: fundo #101917. */
 
 /* --------------------------------------------------------------------------
@@ -14,55 +15,53 @@ html.light [data-testid="personal-view"],
 html.light [data-testid="aluno-view"],
 html.light .shapeos-auth,
 html.light .shapeos-workspace {
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
+  --background: 70 30% 96.08%;
+  --foreground: 168.75 26.67% 11.76%;
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card-foreground: 168.75 26.67% 11.76%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --popover-foreground: 168.75 26.67% 11.76%;
   --primary: 173 80% 32%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 210 40% 98%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 210 40% 98%;
-  --muted-foreground: 215 16% 47%;
-  --accent: 173 58% 94%;
-  --accent-foreground: 173 82% 23%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
+  --secondary: 80 23.08% 92.35%;
+  --secondary-foreground: 168.75 26.67% 11.76%;
+  --muted: 80 23.08% 92.35%;
+  --muted-foreground: 160 7.54% 39.02%;
+  --accent: 160 33% 93%;
+  --accent-foreground: 168.75 26.67% 11.76%;
+  --border: 102 13.51% 85.49%;
+  --input: 102 13.51% 85.49%;
   --ring: 173 80% 32%;
   --success: 157 58% 36%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 42%;
   --warning-foreground: 25 70% 18%;
 
-  --shapeos-bg: #f7fafc;
+  --shapeos-bg: #f7f8f2;
   --shapeos-surface: #ffffff;
-  --shapeos-surface-strong: #f8fafc;
-  --shapeos-sidebar: #ffffff;
-  --shapeos-border: #e2e8f0;
-  --shapeos-text: #0f172a;
-  --shapeos-muted: #64748b;
-  --shapeos-subtle: #94a3b8;
+  --shapeos-surface-strong: #edf0e7;
+  --shapeos-sidebar: #fbfcf8;
+  --shapeos-border: #d8dfd5;
+  --shapeos-text: #162623;
+  --shapeos-muted: #5c6b66;
+  --shapeos-subtle: #71807a;
   --shapeos-brand: #0f9f95;
-  --shapeos-brand-hover: #0f766e;
-  --shapeos-brand-soft: #e8faf7;
+  --shapeos-brand-hover: #0b7f77;
+  --shapeos-brand-soft: #e1f5ef;
   --shapeos-on-brand: #ffffff;
-  --shapeos-neutral-rgb: 15, 23, 42;
+  --shapeos-neutral-rgb: 22, 38, 35;
 
   color-scheme: light;
 }
 
-/* Canvas claro: elimina o tom creme/amarelado e replica a base fria da referência. */
+/* O canvas claro da aplicação segue o fundo escolhido da referência. */
 html.light [data-shapeos-app-shell],
 html.light [data-admin-route],
 html.light [data-testid="personal-view"],
 html.light [data-testid="aluno-view"],
 html.light .shapeos-auth {
-  background:
-    radial-gradient(circle at 74% 0%, rgba(20, 184, 166, 0.035), transparent 28%),
-    linear-gradient(180deg, #fbfdfe 0%, #f7fafc 100%) !important;
-  color: #0f172a;
+  background: #f7f8f2 !important;
+  color: #162623;
 }
 
 /* --------------------------------------------------------------------------
@@ -113,6 +112,7 @@ html.dark .shapeos-workspace {
   color-scheme: dark;
 }
 
+/* Fundo escuro exato selecionado para todo o produto interno. */
 html.dark [data-shapeos-app-shell],
 html.dark [data-admin-route],
 html.dark [data-testid="personal-view"],
@@ -123,35 +123,35 @@ html.dark .shapeos-auth {
 }
 
 /* --------------------------------------------------------------------------
-   MENU LATERAL / NAVEGAÇÃO
+   MENU LATERAL / NAVEGAÇÃO — herda o mesmo tema em todas as áreas internas.
+   Não há seletor global de body/html para não tocar em /apresentacao.
    -------------------------------------------------------------------------- */
 html.light .shapeos-navigation {
-  --background: 0 0% 100%;
-  --foreground: 222 47% 11%;
+  --background: 70 30% 96.08%;
+  --foreground: 168.75 26.67% 11.76%;
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --muted-foreground: 215 16% 47%;
-  --accent: 173 58% 94%;
-  --border: 214 32% 91%;
+  --card-foreground: 168.75 26.67% 11.76%;
+  --muted-foreground: 160 7.54% 39.02%;
+  --accent: 160 33% 93%;
+  --border: 102 13.51% 85.49%;
   --primary: 173 80% 32%;
 
-  --shapeos-bg: #ffffff;
-  --shapeos-surface: #ffffff;
-  --shapeos-surface-strong: #f8fafc;
-  --shapeos-border: #e2e8f0;
-  --shapeos-text: #0f172a;
-  --shapeos-muted: #64748b;
-  --shapeos-subtle: #94a3b8;
+  --shapeos-bg: #fbfcf8;
+  --shapeos-surface: #fbfcf8;
+  --shapeos-surface-strong: #edf0e7;
+  --shapeos-border: #d8dfd5;
+  --shapeos-text: #162623;
+  --shapeos-muted: #5c6b66;
+  --shapeos-subtle: #71807a;
   --shapeos-brand: #0f9f95;
-  --shapeos-brand-hover: #0f766e;
-  --shapeos-brand-soft: #e8faf7;
+  --shapeos-brand-hover: #0b7f77;
+  --shapeos-brand-soft: #e1f5ef;
   --shapeos-on-brand: #ffffff;
-  --shapeos-neutral-rgb: 15, 23, 42;
+  --shapeos-neutral-rgb: 22, 38, 35;
 
-  background: rgba(255, 255, 255, 0.985) !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 10px 0 34px rgba(15, 23, 42, 0.025) !important;
+  background: #fbfcf8 !important;
+  color: #162623 !important;
+  border-color: #d8dfd5 !important;
 }
 
 html.dark .shapeos-navigation {
@@ -182,17 +182,11 @@ html.dark .shapeos-navigation {
   border-color: #2e4239 !important;
 }
 
-/* Estado ativo seguindo exatamente o vocabulário da referência clara. */
+/* Estado ativo do menu no mesmo vocabulário visual das referências. */
 html.light .shapeos-navigation :is(a, button)[aria-current="page"] {
-  background: linear-gradient(90deg, #e8faf7 0%, #eefaf9 100%) !important;
-  color: #0f766e !important;
-  border-color: #d6f3ee !important;
-  box-shadow: inset 0 0 0 1px rgba(13, 148, 136, 0.025) !important;
-}
-
-html.light .shapeos-navigation :is(a, button)[aria-current="page"] svg {
-  color: #0f9f95 !important;
-  opacity: 1 !important;
+  background: #e6f5ef !important;
+  color: #0b766d !important;
+  border-color: #cceae0 !important;
 }
 
 html.dark .shapeos-navigation :is(a, button)[aria-current="page"] {
@@ -202,7 +196,7 @@ html.dark .shapeos-navigation :is(a, button)[aria-current="page"] {
 }
 
 /* --------------------------------------------------------------------------
-   SHELLS E COMPONENTES SEMÂNTICOS
+   SHELLS, CARDS E COMPONENTES SEMÂNTICOS
    -------------------------------------------------------------------------- */
 html.light [data-shapeos-app-shell] main,
 html.light [data-admin-route] main,
@@ -215,9 +209,10 @@ html.dark [data-testid="aluno-view"] .shapeos-workspace {
   background: transparent !important;
 }
 
+/* Mantém os efeitos técnicos muito sutis para o fundo escolhido continuar dominante. */
 html.light [data-shapeos-app-shell] > .tech-grid-subtle,
 html.light [data-shapeos-app-shell] > .tech-noise {
-  opacity: 0.02 !important;
+  opacity: 0.035 !important;
 }
 
 html.dark [data-shapeos-app-shell] > .tech-grid-subtle,
@@ -225,6 +220,7 @@ html.dark [data-shapeos-app-shell] > .tech-noise {
   opacity: 0.08 !important;
 }
 
+/* Autofill acompanha as superfícies de cada tema sem vazar para a apresentação. */
 html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) input:-webkit-autofill,
 html.dark :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) input:-webkit-autofill {
   -webkit-text-fill-color: var(--shapeos-text) !important;
@@ -232,11 +228,10 @@ html.dark :is([data-shapeos-app-shell], [data-admin-route], [data-testid="person
   caret-color: var(--shapeos-brand);
 }
 
-/* Aprovações mantém o CSS detalhado próprio, mas sem ser contaminada pelo antigo creme. */
+/* A página de Aprovações tem CSS próprio e mais detalhado. Estes overrides finais
+   garantem apenas que canvas e sidebar sigam os dois fundos aprovados. */
 html.light [data-admin-route="/admin/aprovacoes"] {
-  background:
-    radial-gradient(circle at 74% 0%, rgba(20, 184, 166, 0.055), transparent 26%),
-    linear-gradient(180deg, #fbfdfe 0%, #f7fafc 100%) !important;
+  background: #f7f8f2 !important;
 }
 
 html.dark [data-admin-route="/admin/aprovacoes"] {
@@ -244,8 +239,8 @@ html.dark [data-admin-route="/admin/aprovacoes"] {
 }
 
 html.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
-  background: rgba(255, 255, 255, 0.98) !important;
-  border-right-color: #e2e8f0 !important;
+  background: #fbfcf8 !important;
+  border-right-color: #d8dfd5 !important;
 }
 
 html.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
