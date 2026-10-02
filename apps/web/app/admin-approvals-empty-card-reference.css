@@ -1,0 +1,16 @@
+/* Aprovações — dimensões do card "Tudo em dia!" alinhadas à referência.
+   Escopo somente do modo claro. Mantém conteúdo, cores e comportamento atuais. */
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  min-height: 290px !important;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+@media (max-width: 767px) {
+  .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+    min-height: 280px !important;
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+}
