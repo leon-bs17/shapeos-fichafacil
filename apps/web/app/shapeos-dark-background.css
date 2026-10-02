@@ -1,0 +1,23 @@
+/* ShapeOS — canvas global do modo escuro.
+   Aplica apenas a cor de fundo da apresentação (#101917), sem alterar
+   a paleta de cards, textos, bordas, navegação ou estados dos componentes. */
+
+html.dark {
+  --background: 166.67 21.95% 8.04%;
+  --shapeos-bg: #101917;
+  background: #101917;
+}
+
+html.dark body,
+html.dark #main-content {
+  background: #101917 !important;
+}
+
+/* Raízes das áreas principais: remove gradientes/fundos locais apenas do canvas. */
+html.dark [data-admin-route],
+html.dark .shapeos-workspace,
+html.dark [data-testid="personal-view"],
+html.dark [data-testid="aluno-view"],
+html.dark .shapeos-auth {
+  background: #101917 !important;
+}
