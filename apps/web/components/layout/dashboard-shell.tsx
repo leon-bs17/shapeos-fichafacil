@@ -5,7 +5,7 @@ import { MobileNav } from '@/components/layout/mobile-nav'
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen tech-bg">
+    <div data-shapeos-app-shell="dashboard" className="flex min-h-screen tech-bg">
       <div className="fixed inset-0 tech-grid-subtle pointer-events-none" aria-hidden="true" />
       <div className="fixed inset-0 tech-noise pointer-events-none" aria-hidden="true" />
       <Sidebar />
