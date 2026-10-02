@@ -1,35 +1,51 @@
-/* Garante a exibição dos personais no hero em larguras desktop comuns,
-   inclusive quando o viewport efetivo fica entre 1024px e 1099px por causa
-   de escala do Windows, zoom do navegador ou densidade de tela. */
+/* Correção definitiva da exibição dos personais no hero de Aprovações.
+   Em vez de depender de ::before, reutiliza o terceiro elemento real do hero
+   como camada visual. Isso elimina conflitos entre pseudo-elementos e fallbacks. */
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+}
 
 @media (min-width: 1024px) {
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     display: block !important;
     visibility: visible !important;
-    opacity: 1 !important;
-    left: 42% !important;
+    position: absolute !important;
+    inset: auto !important;
+    left: 40% !important;
     bottom: 0 !important;
     width: 430px !important;
     height: 252px !important;
+    z-index: 6 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
     background-image: url("/images/admin/aprovacoes-personais.webp") !important;
     background-repeat: no-repeat !important;
     background-position: center bottom !important;
     background-size: contain !important;
+    filter: saturate(.98) contrast(1.025) brightness(1.01) !important;
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, rgba(0,0,0,.9) 92%, transparent 100%) !important;
     mask-image: linear-gradient(to bottom, #000 0%, #000 82%, rgba(0,0,0,.9) 92%, transparent 100%) !important;
+  }
+
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > * {
+    display: none !important;
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     left: 39% !important;
-    width: 340px !important;
+    width: 345px !important;
     height: 232px !important;
   }
 }
 
 @media (max-width: 1023px) {
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     display: none !important;
   }
 }
