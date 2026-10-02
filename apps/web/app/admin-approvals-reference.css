@@ -19,25 +19,32 @@
     radial-gradient(circle at 88% 25%, #22d4d5 0 1.2px, transparent 1.7px),
     radial-gradient(circle at 94% 14%, #19c8d2 0 1.05px, transparent 1.6px),
     radial-gradient(circle 330px at 40% 145%,
-      rgba(208,216,255,.22) 0 118px,
-      rgba(221,230,255,.16) 119px 150px,
-      rgba(232,241,255,.08) 151px 176px,
+      rgba(208,216,255,.26) 0 118px,
+      rgba(221,230,255,.20) 119px 150px,
+      rgba(232,241,255,.11) 151px 176px,
       transparent 177px 194px,
-      rgba(165,225,244,.20) 195px 238px,
-      rgba(60,207,227,.30) 239px 242px,
-      rgba(116,224,238,.16) 243px 254px,
+      rgba(165,225,244,.25) 195px 238px,
+      rgba(60,207,227,.38) 239px 242px,
+      rgba(116,224,238,.21) 243px 254px,
       transparent 255px 330px),
     radial-gradient(circle 455px at 89% 42%,
       transparent 0 122px,
-      rgba(125,236,231,.24) 123px 176px,
+      rgba(125,236,231,.32) 123px 176px,
       transparent 177px 218px,
-      rgba(102,228,231,.22) 219px 279px,
+      rgba(102,228,231,.30) 219px 279px,
       transparent 280px 322px,
-      rgba(114,226,239,.20) 323px 386px,
+      rgba(114,226,239,.27) 323px 386px,
       transparent 387px 455px),
-    radial-gradient(circle 410px at 88% 44%, rgba(196,248,248,.25), transparent 70%),
+    radial-gradient(circle 410px at 88% 44%, rgba(196,248,248,.32), transparent 70%),
     linear-gradient(112deg, #ffffff 0%, #fdfefe 47%, #f7fcfd 70%, #f2fbfc 100%) !important;
   box-shadow: 0 12px 32px rgba(15,67,89,.045) !important;
+}
+
+/* A camada branca original do JSX ficava por cima do background do hero e
+   escondia completamente os anéis. No modo claro ela é removida para deixar
+   a composição de referência realmente visível. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:first-child {
+  display: none !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
@@ -193,9 +200,9 @@
 @media (max-width: 1199px) {
   .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
     background:
-      radial-gradient(circle at 72% 22%, rgba(80,220,230,.13), transparent 25%),
-      radial-gradient(circle 390px at 93% 44%, transparent 0 115px, rgba(96,231,225,.20) 116px 168px, transparent 169px 210px, rgba(104,226,236,.16) 211px 270px, transparent 271px),
-      radial-gradient(circle 300px at 46% 146%, rgba(214,222,255,.17) 0 120px, transparent 150px 182px, rgba(117,221,240,.16) 183px 232px, transparent 233px),
+      radial-gradient(circle at 72% 22%, rgba(80,220,230,.17), transparent 25%),
+      radial-gradient(circle 390px at 93% 44%, transparent 0 115px, rgba(96,231,225,.25) 116px 168px, transparent 169px 210px, rgba(104,226,236,.21) 211px 270px, transparent 271px),
+      radial-gradient(circle 300px at 46% 146%, rgba(214,222,255,.22) 0 120px, transparent 150px 182px, rgba(117,221,240,.21) 183px 232px, transparent 233px),
       linear-gradient(112deg, #ffffff 0%, #fdfefe 56%, #f4fcfc 100%) !important;
   }
 }
@@ -204,7 +211,7 @@
   .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
     min-height: 220px !important;
     background:
-      radial-gradient(circle 300px at 108% 28%, transparent 0 90px, rgba(96,231,225,.16) 91px 135px, transparent 136px 170px, rgba(106,224,238,.13) 171px 220px, transparent 221px),
+      radial-gradient(circle 300px at 108% 28%, transparent 0 90px, rgba(96,231,225,.20) 91px 135px, transparent 136px 170px, rgba(106,224,238,.17) 171px 220px, transparent 221px),
       linear-gradient(112deg, #ffffff 0%, #f9fdfd 100%) !important;
   }
 
