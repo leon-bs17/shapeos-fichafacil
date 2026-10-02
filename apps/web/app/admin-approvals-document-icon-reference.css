@@ -1,0 +1,29 @@
+/* Aprovações — ícone de documento do estado vazio inspirado na referência.
+   Escopo apenas do modo claro; não altera o layout, textos ou comportamento. */
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] > svg {
+  opacity: 0 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 108px;
+  height: 108px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: drop-shadow(0 5px 10px rgba(6, 182, 212, .08));
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='none'%3E%3Cpath d='M30 20.5h26.5L70.5 34v39c0 3.04-2.46 5.5-5.5 5.5H30c-3.04 0-5.5-2.46-5.5-5.5V26c0-3.04 2.46-5.5 5.5-5.5Z' stroke='%2312C6D0' stroke-width='3.35' stroke-linejoin='round'/%3E%3Cpath d='M56.5 20.5V34h14' stroke='%2312C6D0' stroke-width='3.35' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='35.5' cy='43.5' r='2.65' fill='%2312C6D0'/%3E%3Cpath d='M43 43.5h17.5' stroke='%2312C6D0' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='54.5' r='2.65' fill='%2312C6D0'/%3E%3Cpath d='M43 54.5h17.5' stroke='%2312C6D0' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='65.5' r='2.65' fill='%2312C6D0'/%3E%3Cpath d='M43 65.5h13.5' stroke='%2312C6D0' stroke-width='3.1' stroke-linecap='round'/%3E%3Cpath d='M15 49.2c.9 4.2 3.3 6.6 7.5 7.5-4.2.9-6.6 3.3-7.5 7.5-.9-4.2-3.3-6.6-7.5-7.5 4.2-.9 6.6-3.3 7.5-7.5Z' fill='%2312D2D8'/%3E%3Cpath d='M73.5 11.5c.55 2.65 2.1 4.2 4.75 4.75-2.65.55-4.2 2.1-4.75 4.75-.55-2.65-2.1-4.2-4.75-4.75 2.65-.55 4.2-2.1 4.75-4.75Z' fill='%2312D2D8'/%3E%3Ccircle cx='79.5' cy='39.5' r='1.7' fill='%2312D2D8'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 767px) {
+  .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"]::after {
+    width: 100px;
+    height: 100px;
+  }
+}
