@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -7,30 +8,38 @@ import { Card, CardContent } from '@/components/ui/card'
 import {
   ArrowRight,
   Ban,
+  CalendarDays,
   CheckCircle2,
   Clock3,
   FileCheck2,
   Loader2,
   Mail,
+  Search,
   ShieldCheck,
   Sparkles,
   UserCheck,
   Users,
 } from 'lucide-react'
 
-type PersonalPendente = {
+type StatusConta = 'PENDENTE' | 'ATIVO' | 'BLOQUEADO'
+type FiltroStatus = 'TODOS' | 'PENDENTE' | 'ATIVO'
+
+type PersonalCadastro = {
   id: string
   nome: string
   email: string
   tipo: 'PERSONAL'
-  status_conta: 'PENDENTE'
+  status_conta: StatusConta
   criado_em: string
 }
 
 export default function AdminAprovacoesPage() {
   const queryClient = useQueryClient()
+  const [buscaLocal, setBuscaLocal] = useState('')
+  const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
+  const [ultimos30Dias, setUltimos30Dias] = useState(false)
 
-  const { data: pendentes, isLoading } = useQuery({
+  const { data: cadastros, isLoading } = useQuery({
     queryKey: ['admin-aprovacoes'],
     queryFn: async () => {
       const supabase = createClient()
@@ -38,19 +47,38 @@ export default function AdminAprovacoesPage() {
         .from('usuarios')
         .select('id, nome, email, tipo, status_conta, criado_em')
         .eq('tipo', 'PERSONAL')
-        .eq('status_conta', 'PENDENTE')
-        .order('criado_em', { ascending: true })
+        .order('criado_em', { ascending: false })
+        .limit(100)
       if (error) throw error
-      return (data ?? []) as PersonalPendente[]
+      return (data ?? []) as PersonalCadastro[]
     },
   })
+
+  const pendentes = useMemo(
+    () => (cadastros ?? []).filter((personal) => personal.status_conta === 'PENDENTE'),
+    [cadastros],
+  )
+
+  const cadastrosFiltrados = useMemo(() => {
+    const termo = buscaLocal.trim().toLocaleLowerCase('pt-BR')
+    const limite30Dias = Date.now() - 30 * 24 * 60 * 60 * 1000
+
+    return (cadastros ?? []).filter((personal) => {
+      if (filtroStatus !== 'TODOS' && personal.status_conta !== filtroStatus) return false
+      if (ultimos30Dias && new Date(personal.criado_em).getTime() < limite30Dias) return false
+      if (!termo) return true
+
+      return [personal.nome, personal.email, personal.status_conta]
+        .some((valor) => valor?.toLocaleLowerCase('pt-BR').includes(termo))
+    })
+  }, [buscaLocal, cadastros, filtroStatus, ultimos30Dias])
 
   const acao = useMutation({
     mutationFn: async ({
       personal,
       novoStatus,
     }: {
-      personal: PersonalPendente
+      personal: PersonalCadastro
       novoStatus: 'ATIVO' | 'BLOQUEADO'
     }) => {
       const supabase = createClient()
@@ -108,7 +136,26 @@ export default function AdminAprovacoesPage() {
     },
   })
 
-  const totalPendentes = pendentes?.length ?? 0
+  const totalPendentes = pendentes.length
+
+  function statusVisual(status: StatusConta) {
+    if (status === 'PENDENTE') {
+      return {
+        label: 'Pendente',
+        className: 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-300/20 dark:bg-amber-400/10 dark:text-amber-300',
+      }
+    }
+    if (status === 'ATIVO') {
+      return {
+        label: 'Aprovado',
+        className: 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-300/20 dark:bg-emerald-400/10 dark:text-emerald-300',
+      }
+    }
+    return {
+      label: 'Bloqueado',
+      className: 'border-red-200 bg-red-50 text-red-700 dark:border-red-300/20 dark:bg-red-400/10 dark:text-red-300',
+    }
+  }
 
   return (
     <div className="space-y-6 pb-8">
@@ -183,6 +230,56 @@ export default function AdminAprovacoesPage() {
         </Card>
       </div>
 
+      <section className="rounded-[22px] border border-slate-200 bg-white/95 p-3 shadow-[0_10px_28px_rgba(15,23,42,0.035)] backdrop-blur sm:p-4 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <label className="flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 text-slate-500 transition focus-within:border-teal-300 focus-within:bg-white dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30 dark:focus-within:bg-white/[0.05]">
+            <Search className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+            <input
+              value={buscaLocal}
+              onChange={(event) => setBuscaLocal(event.target.value)}
+              placeholder="Buscar por nome, e-mail ou status..."
+              aria-label="Buscar cadastros na página Aprovações"
+              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+            />
+          </label>
+
+          <div className="flex flex-wrap gap-2" aria-label="Filtros de cadastro">
+            {([
+              ['TODOS', 'Todos'],
+              ['PENDENTE', 'Pendentes'],
+              ['ATIVO', 'Aprovados'],
+            ] as const).map(([valor, label]) => (
+              <button
+                key={valor}
+                type="button"
+                onClick={() => setFiltroStatus(valor)}
+                aria-pressed={filtroStatus === valor}
+                className={`h-10 rounded-xl border px-4 text-xs font-bold transition ${
+                  filtroStatus === valor
+                    ? 'border-teal-300 bg-teal-50 text-teal-700 shadow-sm dark:border-primary/30 dark:bg-primary/10 dark:text-primary'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-teal-200 hover:text-teal-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setUltimos30Dias((ativo) => !ativo)}
+              aria-pressed={ultimos30Dias}
+              className={`flex h-10 items-center gap-2 rounded-xl border px-4 text-xs font-bold transition ${
+                ultimos30Dias
+                  ? 'border-teal-300 bg-teal-50 text-teal-700 shadow-sm dark:border-primary/30 dark:bg-primary/10 dark:text-primary'
+                  : 'border-slate-200 bg-white text-slate-500 hover:border-teal-200 hover:text-teal-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
+              }`}
+            >
+              <CalendarDays className="h-3.5 w-3.5" strokeWidth={1.8} />
+              Últimos 30 dias
+            </button>
+          </div>
+        </div>
+      </section>
+
       {acao.error ? (
         <div role="alert" className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {acao.error instanceof Error ? acao.error.message : 'Não foi possível concluir a ação.'}
@@ -191,9 +288,9 @@ export default function AdminAprovacoesPage() {
 
       {isLoading ? (
         <div className="space-y-3">
-          {[0, 1, 2].map((n) => <div key={n} className="h-28 rounded-2xl skeleton" />)}
+          {[0, 1, 2].map((n) => <div key={n} className="h-20 rounded-2xl skeleton" />)}
         </div>
-      ) : !pendentes?.length ? (
+      ) : !(cadastros?.length) ? (
         <section className="relative flex min-h-[355px] flex-col items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-white px-6 py-14 text-center shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:px-10 dark:border-white/10 dark:bg-[#07131c] dark:shadow-2xl dark:shadow-black/15">
           <div className="pointer-events-none absolute left-1/2 top-[12%] h-48 w-48 -translate-x-1/2 rounded-full bg-teal-100/45 blur-3xl dark:bg-primary/10" />
           <div className="relative mx-auto grid h-[72px] w-[72px] place-items-center rounded-[22px] border border-teal-100 bg-teal-50 text-teal-600 shadow-[0_12px_35px_rgba(13,148,136,0.10)] dark:border-primary/20 dark:bg-primary/10 dark:text-primary dark:shadow-[0_0_45px_rgba(0,255,204,0.12)]">
@@ -212,60 +309,90 @@ export default function AdminAprovacoesPage() {
             <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
           </Button>
         </section>
+      ) : !cadastrosFiltrados.length ? (
+        <section className="rounded-[24px] border border-slate-200 bg-white px-6 py-12 text-center shadow-[0_10px_28px_rgba(15,23,42,0.035)] dark:border-white/10 dark:bg-card/70">
+          <Search className="mx-auto h-8 w-8 text-teal-500 dark:text-primary" strokeWidth={1.6} />
+          <h2 className="mt-4 text-lg font-black text-slate-950 dark:text-white">Nenhum cadastro encontrado</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Ajuste a busca ou os filtros para visualizar outros profissionais.</p>
+        </section>
       ) : (
-        <section className="space-y-3">
-          {pendentes.map((personal) => {
-            const processando = acao.isPending && acao.variables?.personal.id === personal.id
-            return (
-              <Card
-                key={personal.id}
-                className="overflow-hidden rounded-2xl border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition-all duration-200 hover:border-teal-300 dark:border-white/10 dark:bg-card/80 dark:shadow-lg dark:shadow-black/10 dark:hover:border-primary/25"
-              >
-                <CardContent className="flex flex-col gap-5 p-5 sm:p-6 md:flex-row md:items-center md:justify-between">
-                  <div className="flex min-w-0 items-center gap-4">
-                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-teal-50 font-black text-teal-700 ring-1 ring-teal-100 dark:bg-primary/10 dark:text-primary dark:ring-primary/15">
+        <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+          <div className="hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_160px_120px_220px] gap-4 border-b border-slate-100 bg-slate-50/65 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
+            <span>Nome</span>
+            <span>E-mail</span>
+            <span>Data do cadastro</span>
+            <span>Status</span>
+            <span className="text-right">Ações</span>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-white/10">
+            {cadastrosFiltrados.map((personal) => {
+              const processando = acao.isPending && acao.variables?.personal.id === personal.id
+              const status = statusVisual(personal.status_conta)
+
+              return (
+                <div key={personal.id} className="grid gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_160px_120px_220px] md:items-center">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-teal-50 text-xs font-black text-teal-700 ring-1 ring-teal-100 dark:bg-primary/10 dark:text-primary dark:ring-primary/15">
                       {personal.nome?.charAt(0)?.toUpperCase() ?? 'P'}
                     </div>
                     <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-bold text-slate-950 dark:text-white">{personal.nome}</p>
-                        <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:border-amber-300/20 dark:bg-amber-400/10 dark:text-amber-300">
-                          Pendente
-                        </span>
-                      </div>
-                      <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-slate-500 dark:text-muted-foreground">
-                        <Mail className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
-                        {personal.email}
-                      </p>
-                      <p className="mt-1 text-[11px] text-slate-500 dark:text-muted-foreground">
-                        Cadastrado em {new Date(personal.criado_em).toLocaleString('pt-BR')}
-                      </p>
+                      <p className="truncate text-sm font-bold text-slate-950 dark:text-white">{personal.nome}</p>
+                      <p className="mt-0.5 text-[11px] text-slate-400 md:hidden dark:text-slate-500">Personal</p>
                     </div>
                   </div>
 
-                  <div className="flex w-full gap-2 md:w-auto md:justify-end">
-                    <Button
-                      onClick={() => acao.mutate({ personal, novoStatus: 'ATIVO' })}
-                      disabled={processando}
-                      className="flex-1 gap-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 sm:flex-none dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
-                    >
-                      {processando ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />}
-                      Aprovar
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => acao.mutate({ personal, novoStatus: 'BLOQUEADO' })}
-                      disabled={processando}
-                      className="flex-1 gap-2 rounded-xl border-red-200 bg-white text-red-700 hover:bg-red-50 sm:flex-none dark:border-destructive/20 dark:bg-transparent dark:text-destructive dark:hover:bg-destructive/10"
-                    >
-                      <Ban className="h-4 w-4" strokeWidth={1.8} />
-                      Bloquear
-                    </Button>
+                  <p className="flex min-w-0 items-center gap-1.5 truncate text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <Mail className="h-3.5 w-3.5 shrink-0 md:hidden" strokeWidth={1.7} />
+                    {personal.email}
+                  </p>
+
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    {new Date(personal.criado_em).toLocaleDateString('pt-BR')}
+                  </p>
+
+                  <div>
+                    <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-bold ${status.className}`}>
+                      {status.label}
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
-            )
-          })}
+
+                  <div className="flex flex-wrap gap-2 md:justify-end">
+                    {personal.status_conta === 'PENDENTE' ? (
+                      <>
+                        <Button
+                          onClick={() => acao.mutate({ personal, novoStatus: 'ATIVO' })}
+                          disabled={processando}
+                          size="sm"
+                          className="gap-1.5 rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+                        >
+                          {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.8} /> : <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.8} />}
+                          Aprovar
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => acao.mutate({ personal, novoStatus: 'BLOQUEADO' })}
+                          disabled={processando}
+                          className="gap-1.5 rounded-lg border-red-200 bg-white text-red-700 hover:bg-red-50 dark:border-destructive/20 dark:bg-transparent dark:text-destructive dark:hover:bg-destructive/10"
+                        >
+                          <Ban className="h-3.5 w-3.5" strokeWidth={1.8} />
+                          Bloquear
+                        </Button>
+                      </>
+                    ) : (
+                      <span className="self-center text-xs font-semibold text-slate-400 dark:text-slate-500">Sem ação pendente</span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex flex-col gap-1 border-t border-slate-100 px-5 py-3 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
+            <span>Mostrando {cadastrosFiltrados.length} de {cadastros?.length ?? 0} cadastros</span>
+            <span>Busca e filtros aplicados localmente</span>
+          </div>
         </section>
       )}
 
