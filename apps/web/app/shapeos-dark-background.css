@@ -247,3 +247,331 @@ html.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
   background: #101917 !important;
   border-right-color: #2e4239 !important;
 }
+
+/* ========================================================================== 
+   MODO CLARO V2 — linguagem editorial inspirada na página de apresentação.
+   Escopo: somente áreas internas do produto. /apresentacao não é afetada.
+   O modo escuro acima permanece inalterado.
+   ========================================================================== */
+
+html.light [data-shapeos-app-shell],
+html.light [data-admin-route],
+html.light [data-testid="personal-view"],
+html.light [data-testid="aluno-view"],
+html.light .shapeos-auth,
+html.light .shapeos-workspace {
+  --background: 70 30% 96.08%;
+  --foreground: 168.75 26.67% 11.76%;
+  --card: 72 44% 98.2%;
+  --card-foreground: 168.75 26.67% 11.76%;
+  --popover: 72 44% 98.2%;
+  --popover-foreground: 168.75 26.67% 11.76%;
+  --secondary: 84 22% 92.8%;
+  --secondary-foreground: 168.75 26.67% 11.76%;
+  --muted: 84 22% 92.8%;
+  --muted-foreground: 157 8% 40%;
+  --accent: 151 34% 92%;
+  --accent-foreground: 166 36% 23%;
+  --border: 101 15% 85%;
+  --input: 101 15% 85%;
+  --ring: 168 70% 34%;
+
+  --shapeos-bg: #f7f8f2;
+  --shapeos-surface: #fcfdf9;
+  --shapeos-surface-strong: #eef1e9;
+  --shapeos-sidebar: #fafbf6;
+  --shapeos-border: #d7ded3;
+  --shapeos-text: #162623;
+  --shapeos-muted: #5f6f68;
+  --shapeos-subtle: #7b8983;
+  --shapeos-brand: #129b89;
+  --shapeos-brand-hover: #0d7e70;
+  --shapeos-brand-soft: #e4f3eb;
+  --shapeos-on-brand: #ffffff;
+  --shapeos-neutral-rgb: 22, 38, 35;
+}
+
+html.light [data-shapeos-app-shell],
+html.light [data-admin-route],
+html.light [data-testid="personal-view"],
+html.light [data-testid="aluno-view"],
+html.light .shapeos-auth {
+  background: #f7f8f2 !important;
+  color: #162623 !important;
+}
+
+/* Navegação: mesma base off-white do editorial, sem branco estourado. */
+html.light .shapeos-navigation {
+  --background: 72 40% 98%;
+  --foreground: 168.75 26.67% 11.76%;
+  --card: 72 40% 98%;
+  --card-foreground: 168.75 26.67% 11.76%;
+  --muted-foreground: 157 8% 40%;
+  --accent: 151 34% 92%;
+  --border: 101 15% 85%;
+  --primary: 168 70% 34%;
+
+  --shapeos-bg: #fafbf6;
+  --shapeos-surface: #fafbf6;
+  --shapeos-surface-strong: #eef1e9;
+  --shapeos-border: #d7ded3;
+  --shapeos-text: #162623;
+  --shapeos-muted: #5f6f68;
+  --shapeos-subtle: #7b8983;
+  --shapeos-brand: #129b89;
+  --shapeos-brand-hover: #0d7e70;
+  --shapeos-brand-soft: #e4f3eb;
+
+  background: #fafbf6 !important;
+  color: #162623 !important;
+  border-color: #d7ded3 !important;
+  box-shadow: none !important;
+}
+
+html.light .shapeos-navigation :is(a, button)[aria-current="page"] {
+  background: linear-gradient(90deg, #e4f3eb 0%, #edf6f0 100%) !important;
+  color: #0d7669 !important;
+  border-color: #cce5d9 !important;
+  box-shadow: inset 0 0 0 1px rgba(18,155,137,.025) !important;
+}
+
+html.light .shapeos-navigation :is(a, button)[aria-current="page"] svg {
+  color: #129b89 !important;
+  opacity: 1 !important;
+}
+
+/* Normalização das superfícies mais comuns das páginas internas. */
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) [class~="bg-white"] {
+  background-color: #fcfdf9 !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) [class~="bg-card"] {
+  background-color: #fcfdf9 !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) [class~="bg-slate-50"] {
+  background-color: #f0f3eb !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is([class~="border-slate-100"], [class~="border-slate-200"], [class~="border-border"]) {
+  border-color: #d7ded3 !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is([class~="text-slate-950"], [class~="text-slate-900"], [class~="text-foreground"]) {
+  color: #162623 !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is([class~="text-slate-700"], [class~="text-slate-600"]) {
+  color: #4d5f57 !important;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is([class~="text-slate-500"], [class~="text-slate-400"], [class~="text-muted-foreground"]) {
+  color: #708079 !important;
+}
+
+/* Inputs, selects e textareas passam a parecer parte do papel, não caixas brancas. */
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is(input, select, textarea) {
+  border-color: #d7ded3;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"], .shapeos-auth) :is(input, textarea)::placeholder {
+  color: #87948e;
+}
+
+/* Tabelas: linhas discretas e fundo editorial uniforme. */
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"]) table {
+  background: #fcfdf9;
+  color: #162623;
+}
+
+html.light :is([data-shapeos-app-shell], [data-admin-route], [data-testid="personal-view"], [data-testid="aluno-view"]) :is(th, td) {
+  border-color: #dfe5da;
+}
+
+/* --------------------------------------------------------------------------
+   APROVAÇÕES — tradução direta do dark escolhido para o novo light editorial.
+   -------------------------------------------------------------------------- */
+html.light [data-admin-route="/admin/aprovacoes"] {
+  background: #f7f8f2 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  background: #fafbf6 !important;
+  border-right-color: #d7ded3 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  position: relative !important;
+  border-color: #c9ded4 !important;
+  background:
+    radial-gradient(circle at 58% 20%, rgba(18,155,137,.78) 0 1.15px, transparent 1.65px),
+    radial-gradient(circle at 66% 43%, rgba(18,155,137,.58) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 73% 24%, rgba(18,155,137,.64) 0 1.1px, transparent 1.6px),
+    radial-gradient(circle at 82% 34%, rgba(18,155,137,.62) 0 1.05px, transparent 1.55px),
+    linear-gradient(108deg, #fcfdf9 0%, #fafcf7 58%, #f1f7f1 100%) !important;
+  box-shadow: 0 10px 28px rgba(22,38,35,.035) !important;
+}
+
+/* Malha inspirada no wireframe da apresentação. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 640px !important;
+  height: 640px !important;
+  right: -55px !important;
+  top: -205px !important;
+  z-index: 0 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+  opacity: .82 !important;
+  background:
+    repeating-radial-gradient(ellipse at center,
+      transparent 0 20px,
+      rgba(45,154,132,.23) 21px 22px),
+    repeating-conic-gradient(from 4deg,
+      rgba(45,154,132,.13) 0deg .65deg,
+      transparent .65deg 7deg) !important;
+  transform: rotate(12deg) scaleX(.72) !important;
+  -webkit-mask-image: radial-gradient(circle, #000 0 63%, transparent 78%);
+  mask-image: radial-gradient(circle, #000 0 63%, transparent 78%);
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  color: #162623 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 span {
+  color: #129b89 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  color: #5f6f68 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  color: #162623 !important;
+  text-shadow: 0 2px 12px rgba(247,248,242,.92) !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child span:last-child {
+  background: #129b89 !important;
+  box-shadow: none !important;
+}
+
+/* Cards de resumo: cores funcionais sobre superfícies quentes e suaves. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-color: #e6c980 !important;
+  background:
+    radial-gradient(circle at 8% 50%, rgba(246,211,128,.20), transparent 26%),
+    linear-gradient(115deg, #fcfbf5 0%, #fcfdf9 72%, #faf8ef 100%) !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-color: #bedfd3 !important;
+  background:
+    radial-gradient(circle at 8% 50%, rgba(123,208,184,.17), transparent 26%),
+    linear-gradient(115deg, #fbfdf8 0%, #fcfdf9 72%, #f3f8f3 100%) !important;
+  box-shadow: none !important;
+}
+
+/* Busca/filtros: um único painel de papel, pouco contraste e sem aspecto azulado. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) {
+  border-color: #d7ded3 !important;
+  background: #fbfcf7 !important;
+  box-shadow: 0 8px 22px rgba(22,38,35,.025) !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) label {
+  border-color: #d7ded3 !important;
+  background: #fdfdf9 !important;
+  color: #66766f !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-of-type(2) button[aria-pressed="true"] {
+  border-color: #8dcfbc !important;
+  background: #e6f4ed !important;
+  color: #0d7669 !important;
+  box-shadow: none !important;
+}
+
+/* Tabela da fila: superfície quase igual ao canvas e separadores discretos. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) {
+  border-color: #d7ded3 !important;
+  background: #fbfcf7 !important;
+  box-shadow: 0 8px 24px rgba(22,38,35,.025) !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) > div:first-child {
+  border-bottom-color: #dfe5da !important;
+  background: #f8faf4 !important;
+  color: #687970 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) > div:nth-child(2) {
+  --tw-divide-opacity: 1 !important;
+  border-color: #dfe5da !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) > div:nth-child(2) > div {
+  border-bottom-color: #dfe5da !important;
+  background: transparent !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) p[class*="text-[#6076a3]"] {
+  color: #6d7d76 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) p[class*="text-[#0d2148]"] {
+  color: #162623 !important;
+}
+
+/* Ações deixam de parecer botões brancos isolados. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) button[class*="border-cyan-100"] {
+  border-color: #cfd9d0 !important;
+  background: #f8faf4 !important;
+  color: #263b35 !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) button[class*="border-cyan-100"] svg {
+  color: #129b89 !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:nth-last-of-type(1) button[class*="border-slate-200"] {
+  border-color: #d7ded3 !important;
+  background: #f8faf4 !important;
+  color: #60716a !important;
+  box-shadow: none !important;
+}
+
+/* Cards inferiores e diálogos seguem o mesmo papel editorial. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div {
+  border-color: #d7ded3 !important;
+  background: #fbfcf7 !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-content="/admin/aprovacoes"] [role="dialog"] {
+  border-color: #d7ded3 !important;
+  background: #fcfdf9 !important;
+  color: #162623 !important;
+}
+
+@media (max-width: 1199px) {
+  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    right: -210px !important;
+    opacity: .70 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    width: 430px !important;
+    height: 430px !important;
+    right: -250px !important;
+    top: -115px !important;
+    opacity: .52 !important;
+  }
+}
