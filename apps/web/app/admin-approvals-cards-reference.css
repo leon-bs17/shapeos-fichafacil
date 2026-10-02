@@ -113,16 +113,22 @@
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:first-child {
-  border-bottom-color: #d7e0ea !important;
-  background: rgba(248, 250, 252, .82) !important;
+  border-bottom-color: #cbd5e1 !important;
+  background: rgba(248, 250, 252, .88) !important;
 }
 
-.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > * + * {
-  border-top-color: #d9e2ec !important;
+/* Linhas horizontais explícitas sob cada cadastro/e-mail. */
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div {
+  border-top-width: 0 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div:last-child {
+  border-bottom-color: #cbd5e1 !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:last-child {
-  border-top-color: #d7e0ea !important;
+  border-top-color: #cbd5e1 !important;
 }
 
 /* CARDS — reforço horizontal no modo claro -------------------------
