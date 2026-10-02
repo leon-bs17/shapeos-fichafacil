@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -19,10 +19,12 @@ import {
   Sparkles,
   UserCheck,
   Users,
+  X,
 } from 'lucide-react'
 
 type StatusConta = 'PENDENTE' | 'ATIVO' | 'BLOQUEADO'
 type FiltroStatus = 'TODOS' | 'PENDENTE' | 'ATIVO'
+type FiltroPeriodo = 'TODOS' | '30_DIAS'
 
 type PersonalCadastro = {
   id: string
@@ -33,11 +35,19 @@ type PersonalCadastro = {
   criado_em: string
 }
 
+function normalizarTexto(valor: string) {
+  return valor
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+}
+
 export default function AdminAprovacoesPage() {
   const queryClient = useQueryClient()
+  const buscaRef = useRef<HTMLInputElement>(null)
   const [buscaLocal, setBuscaLocal] = useState('')
   const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
-  const [ultimos30Dias, setUltimos30Dias] = useState(false)
+  const [filtroPeriodo, setFiltroPeriodo] = useState<FiltroPeriodo>('TODOS')
 
   const { data: cadastros, isLoading } = useQuery({
     queryKey: ['admin-aprovacoes'],
@@ -54,24 +64,43 @@ export default function AdminAprovacoesPage() {
     },
   })
 
+  useEffect(() => {
+    const focarBusca = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        buscaRef.current?.focus()
+        buscaRef.current?.select()
+      }
+    }
+
+    window.addEventListener('keydown', focarBusca)
+    return () => window.removeEventListener('keydown', focarBusca)
+  }, [])
+
   const pendentes = useMemo(
     () => (cadastros ?? []).filter((personal) => personal.status_conta === 'PENDENTE'),
     [cadastros],
   )
 
   const cadastrosFiltrados = useMemo(() => {
-    const termo = buscaLocal.trim().toLocaleLowerCase('pt-BR')
+    const termo = normalizarTexto(buscaLocal.trim())
     const limite30Dias = Date.now() - 30 * 24 * 60 * 60 * 1000
 
     return (cadastros ?? []).filter((personal) => {
       if (filtroStatus !== 'TODOS' && personal.status_conta !== filtroStatus) return false
-      if (ultimos30Dias && new Date(personal.criado_em).getTime() < limite30Dias) return false
+      if (filtroPeriodo === '30_DIAS' && new Date(personal.criado_em).getTime() < limite30Dias) return false
       if (!termo) return true
 
-      return [personal.nome, personal.email, personal.status_conta]
-        .some((valor) => valor?.toLocaleLowerCase('pt-BR').includes(termo))
+      const statusLegivel = personal.status_conta === 'PENDENTE'
+        ? 'pendente'
+        : personal.status_conta === 'ATIVO'
+          ? 'aprovado ativo'
+          : 'bloqueado'
+
+      return [personal.nome, personal.email, personal.status_conta, statusLegivel]
+        .some((valor) => normalizarTexto(valor ?? '').includes(termo))
     })
-  }, [buscaLocal, cadastros, filtroStatus, ultimos30Dias])
+  }, [buscaLocal, cadastros, filtroPeriodo, filtroStatus])
 
   const acao = useMutation({
     mutationFn: async ({
@@ -137,6 +166,14 @@ export default function AdminAprovacoesPage() {
   })
 
   const totalPendentes = pendentes.length
+  const filtrosAtivos = Boolean(buscaLocal.trim()) || filtroStatus !== 'TODOS' || filtroPeriodo !== 'TODOS'
+
+  function limparFiltros() {
+    setBuscaLocal('')
+    setFiltroStatus('TODOS')
+    setFiltroPeriodo('TODOS')
+    buscaRef.current?.focus()
+  }
 
   function statusVisual(status: StatusConta) {
     if (status === 'PENDENTE') {
@@ -232,18 +269,38 @@ export default function AdminAprovacoesPage() {
 
       <section className="rounded-[22px] border border-slate-200 bg-white/95 p-3 shadow-[0_10px_28px_rgba(15,23,42,0.035)] backdrop-blur sm:p-4 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <label className="flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 text-slate-500 transition focus-within:border-teal-300 focus-within:bg-white dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30 dark:focus-within:bg-white/[0.05]">
-            <Search className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+          <label className="flex h-12 min-w-0 flex-1 items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/65 px-4 text-slate-500 transition focus-within:border-cyan-300 focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.08)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30 dark:focus-within:bg-white/[0.05] dark:focus-within:shadow-[0_0_0_3px_rgba(0,255,204,0.06)]">
+            <Search className="h-5 w-5 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
             <input
+              ref={buscaRef}
               value={buscaLocal}
               onChange={(event) => setBuscaLocal(event.target.value)}
               placeholder="Buscar por nome, e-mail ou status..."
               aria-label="Buscar cadastros na página Aprovações"
               className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
             />
+
+            {buscaLocal ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setBuscaLocal('')
+                  buscaRef.current?.focus()
+                }}
+                aria-label="Limpar busca"
+                title="Limpar busca"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-200/75 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                <X className="h-4 w-4" strokeWidth={1.9} />
+              </button>
+            ) : null}
+
+            <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white/85 px-2.5 py-1 text-[10px] font-bold text-slate-500 shadow-sm sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
+              Ctrl/⌘ K
+            </kbd>
           </label>
 
-          <div className="flex flex-wrap gap-2" aria-label="Filtros de cadastro">
+          <div className="flex flex-wrap items-center gap-2" aria-label="Filtros de cadastro">
             {([
               ['TODOS', 'Todos'],
               ['PENDENTE', 'Pendentes'],
@@ -254,29 +311,46 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setFiltroStatus(valor)}
                 aria-pressed={filtroStatus === valor}
-                className={`h-10 rounded-xl border px-4 text-xs font-bold transition ${
+                className={`h-11 rounded-2xl border px-5 text-xs font-bold transition ${
                   filtroStatus === valor
-                    ? 'border-teal-300 bg-teal-50 text-teal-700 shadow-sm dark:border-primary/30 dark:bg-primary/10 dark:text-primary'
-                    : 'border-slate-200 bg-white text-slate-500 hover:border-teal-200 hover:text-teal-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
+                    ? 'border-cyan-300 bg-cyan-50 text-cyan-700 shadow-[0_6px_16px_rgba(6,182,212,0.08)] dark:border-primary/35 dark:bg-primary/10 dark:text-primary'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-cyan-200 hover:bg-cyan-50/40 hover:text-cyan-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
                 }`}
               >
                 {label}
               </button>
             ))}
+
+            <label className="flex h-11 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 transition hover:border-cyan-200 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:border-primary/20">
+              <CalendarDays className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
+              <select
+                value={filtroPeriodo}
+                onChange={(event) => setFiltroPeriodo(event.target.value as FiltroPeriodo)}
+                aria-label="Filtrar por período"
+                className="cursor-pointer bg-transparent pr-1 outline-none"
+              >
+                <option value="TODOS">Todo período</option>
+                <option value="30_DIAS">Últimos 30 dias</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3 text-[11px] font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
+          <span>
+            {cadastrosFiltrados.length} {cadastrosFiltrados.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
+          </span>
+          {filtrosAtivos ? (
             <button
               type="button"
-              onClick={() => setUltimos30Dias((ativo) => !ativo)}
-              aria-pressed={ultimos30Dias}
-              className={`flex h-10 items-center gap-2 rounded-xl border px-4 text-xs font-bold transition ${
-                ultimos30Dias
-                  ? 'border-teal-300 bg-teal-50 text-teal-700 shadow-sm dark:border-primary/30 dark:bg-primary/10 dark:text-primary'
-                  : 'border-slate-200 bg-white text-slate-500 hover:border-teal-200 hover:text-teal-700 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-400 dark:hover:border-primary/20 dark:hover:text-primary'
-              }`}
+              onClick={limparFiltros}
+              className="w-fit text-cyan-700 transition hover:text-cyan-800 dark:text-primary dark:hover:text-primary/80"
             >
-              <CalendarDays className="h-3.5 w-3.5" strokeWidth={1.8} />
-              Últimos 30 dias
+              Limpar busca e filtros
             </button>
-          </div>
+          ) : (
+            <span>Busca instantânea por nome, e-mail ou status</span>
+          )}
         </div>
       </section>
 
@@ -313,7 +387,18 @@ export default function AdminAprovacoesPage() {
         <section className="rounded-[24px] border border-slate-200 bg-white px-6 py-12 text-center shadow-[0_10px_28px_rgba(15,23,42,0.035)] dark:border-white/10 dark:bg-card/70">
           <Search className="mx-auto h-8 w-8 text-teal-500 dark:text-primary" strokeWidth={1.6} />
           <h2 className="mt-4 text-lg font-black text-slate-950 dark:text-white">Nenhum cadastro encontrado</h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Ajuste a busca ou os filtros para visualizar outros profissionais.</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {buscaLocal.trim()
+              ? <>Nenhum resultado para <span className="font-bold text-slate-700 dark:text-slate-300">“{buscaLocal.trim()}”</span>. Ajuste a busca ou os filtros.</>
+              : 'Ajuste os filtros para visualizar outros profissionais.'}
+          </p>
+          <button
+            type="button"
+            onClick={limparFiltros}
+            className="mt-4 text-sm font-bold text-cyan-700 hover:text-cyan-800 dark:text-primary dark:hover:text-primary/80"
+          >
+            Limpar filtros
+          </button>
         </section>
       ) : (
         <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
@@ -391,7 +476,7 @@ export default function AdminAprovacoesPage() {
 
           <div className="flex flex-col gap-1 border-t border-slate-100 px-5 py-3 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
             <span>Mostrando {cadastrosFiltrados.length} de {cadastros?.length ?? 0} cadastros</span>
-            <span>Busca e filtros aplicados localmente</span>
+            <span>Busca e filtros aplicados instantaneamente</span>
           </div>
         </section>
       )}
