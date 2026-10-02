@@ -17,10 +17,15 @@ for (const tipo of ['ADMIN','PERSONAL']) {
 }
 let access = null, calls = 0, sent, providerStatus = 200
 const environment = { DEEPSEEK_API_KEY: 'test-key-not-real' }
+const dataTools = load('apps/web/lib/mys/data-tools.ts', {})
+const generate = load('apps/web/lib/mys/generate.ts', { './contract':contract, './data-tools':dataTools }, { fetch: async (url, init) => { calls++; sent = JSON.parse(init.body); return Response.json({ choices: [{ message: { content: 'Resposta de teste' }, finish_reason: 'stop' }] }, { status: providerStatus }) } })
 const api = load('apps/web/app/api/mys/route.ts', {
   'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
   '@/lib/mys/access': { getMysAccess: async () => access },
   '@/lib/mys/contract': contract,
+  '@/lib/mys/generate': generate,
+  '@/lib/mys/data-tools': dataTools,
+  '@/lib/supabase/server': { createClient: async () => ({}) },
 }, { process: { env: environment }, fetch: async (url, init) => { calls++; sent = JSON.parse(init.body); return Response.json({ choices: [{ message: { content: 'Resposta de teste' }, finish_reason: 'stop' }] }, { status: providerStatus }) } })
 const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'}]}, origin = 'https://shapeos.test') => new Request('https://shapeos.test/api/mys', { method:'POST', headers:{origin,'Content-Type':'application/json'}, body:JSON.stringify(body) })
 ;(async () => {
@@ -38,7 +43,8 @@ const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'
   assert.equal(ok.status,200)
   assert.equal(ok.headers.get('cache-control'),'no-store')
   assert.match(sent.messages[0].content,/atende o PERSONAL/)
-  assert.match(sent.messages[0].content,/NÃO tem ferramentas/)
+  assert.match(sent.messages[0].content,/CONSULTA ao banco/)
+  assert.equal(sent.tools.length,4)
   assert.equal((await ok.json()).message,'Resposta de teste')
   providerStatus=401
   const bad=await api.POST(req())

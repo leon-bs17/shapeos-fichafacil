@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getMysAccess } from '@/lib/mys/access'
-import { mysInstructions, parseMessages } from '@/lib/mys/contract'
+import { parseMessages } from '@/lib/mys/contract'
+import { createClient } from '@/lib/supabase/server'
+import { createMysDataReader } from '@/lib/mys/data-tools'
+import { generateMysReply, MysProviderError } from '@/lib/mys/generate'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -50,23 +53,16 @@ export async function POST(request: Request) {
   } catch (error) { return failure(error instanceof SyntaxError ? 'Pedido inválido.' : error instanceof Error ? error.message : 'Mensagem inválida.', 400) }
   if (!acceptRequest(access.id)) return failure('Você enviou várias mensagens em sequência. Aguarde um minuto.', 429)
   try {
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: process.env.DEEPSEEK_MODEL || 'deepseek-flash', messages: [{ role: 'system', content: mysInstructions(access.role) }, ...messages], max_tokens: 1800, thinking: { type: 'disabled' }, stream: false }),
-      cache: 'no-store',
-      signal: AbortSignal.any([request.signal, AbortSignal.timeout(50000)]),
-    })
-    if (!response.ok) {
-      if (response.status === 429) return failure('A Mys está recebendo muitas solicitações. Tente novamente em instantes.', 429)
-      if ([401,402,403].includes(response.status)) return failure('A conexão da Mys precisa ser revisada pelo administrador.', 503)
+    const signal = AbortSignal.any([request.signal, AbortSignal.timeout(50000)])
+    const reader = createMysDataReader(await createClient(), access, signal)
+    const result = await generateMysReply({ key, model: process.env.DEEPSEEK_MODEL || 'deepseek-flash', role: access.role, messages, signal, reader })
+    return NextResponse.json(result, { headers: { 'Cache-Control': 'no-store' } })
+  } catch (error) {
+    if (error instanceof MysProviderError) {
+      if (error.status === 429) return failure('A Mys está recebendo muitas solicitações. Tente novamente em instantes.', 429)
+      if ([401,402,403].includes(error.status)) return failure('A conexão da Mys precisa ser revisada pelo administrador.', 503)
       return failure('Não foi possível receber uma resposta. Tente novamente.', 502)
     }
-    const result = await response.json()
-    const content = result?.choices?.[0]?.message?.content
-    if (typeof content !== 'string' || !content.trim()) return failure('A Mys não retornou uma resposta. Tente novamente.', 502)
-    return NextResponse.json({ message: content.trim(), truncated: result.choices[0].finish_reason === 'length' }, { headers: { 'Cache-Control': 'no-store' } })
-  } catch (error) {
     if (request.signal.aborted) return failure('Geração interrompida.', 499)
     return failure(error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError') ? 'A resposta demorou mais que o esperado. Tente novamente.' : 'Não foi possível conectar à Mys. Tente novamente.', 504)
   }

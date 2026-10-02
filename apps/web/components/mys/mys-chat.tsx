@@ -5,10 +5,10 @@ import { ArrowUp, ArrowUpRight, Check, Copy, Dumbbell, LoaderCircle, MessageCirc
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
 import s from './mys.module.css'
 
-type Message = MysMessage & { id: string; truncated?: boolean }
+type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string }
 const prompts = {
   ADMIN: [
-    { icon: ShieldCheck, title: 'Uma gestão mais clara', text: 'Quais indicadores devo acompanhar na gestão de uma academia?' },
+    { icon: ShieldCheck, title: 'Uma gestão mais clara', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
     { icon: Users, title: 'Melhore a experiência', text: 'Como organizar uma boa jornada de acompanhamento para os alunos?' },
     { icon: MessageCircle, title: 'Resuma informações', text: 'Quero resumir informações da operação. Me ajude a organizar os dados que preciso fornecer.' },
     { icon: Dumbbell, title: 'Converse sobre academia', text: 'Quais práticas ajudam a incentivar a consistência nos treinos?' },
@@ -16,7 +16,7 @@ const prompts = {
   PERSONAL: [
     { icon: Dumbbell, title: 'Planeje um treino', text: 'Me ajude a planejar um treino. Quais informações do aluno você precisa?' },
     { icon: RotateCcw, title: 'Revise uma ficha', text: 'Quero revisar uma ficha de treino. Me diga o que preciso compartilhar para você analisar.' },
-    { icon: Users, title: 'Acompanhe seu aluno', text: 'Como avaliar a evolução de um aluno além do peso na balança?' },
+    { icon: Users, title: 'Acompanhe seu aluno', text: 'Consulte meus alunos vinculados na ShapeOS e liste seus nomes. Depois quero analisar a evolução de um deles.' },
     { icon: MessageCircle, title: 'Prepare uma orientação', text: 'Me ajude a escrever uma mensagem acolhedora para um aluno que perdeu a rotina de treinos.' },
   ],
 }
@@ -73,7 +73,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
       const result = await response.json()
       if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'Não foi possível enviar a mensagem.')
       if (typeof result.message !== 'string') throw new Error('A Mys não retornou uma resposta válida.')
-      setMessages([...next, { role: 'assistant', content: result.message, id: crypto.randomUUID(), truncated: Boolean(result.truncated) }])
+      setMessages([...next, { role: 'assistant', content: result.message, id: crypto.randomUUID(), truncated: Boolean(result.truncated), sources: Array.isArray(result.sources) ? result.sources.filter((source: unknown): source is string => typeof source === 'string') : [], consultedAt: typeof result.consultedAt === 'string' ? result.consultedAt : undefined }])
     } catch (error) {
       if (abort.signal.aborted) setError('Resposta interrompida. Você pode tentar novamente ou editar a pergunta.')
       else setError(error instanceof Error ? error.message : 'Não foi possível conectar à Mys.')
@@ -94,7 +94,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Espaço do administrador' : 'Espaço do personal'}</span><span className={s.connectionState}>{configured ? 'Pronta para conversar' : 'Aguardando conexão'}</span></div>
     <div className={s.chatPanel}>
       <div className={s.thread} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
-        {!messages.length ? <div className={s.welcome}><div className={s.welcomeBrand}><MysMark/><span>mys<span className={s.brandDot}>.</span></span></div><p className={s.greeting}>Olá, {firstName}.</p><h2>{admin ? <>Um novo olhar<br/>para sua gestão.</> : <>Seu conhecimento.<br/>Uma força a mais.</>}</h2><p className={s.intro}>{admin ? 'Converse sobre academia, organize ideias e transforme informações em próximos passos.' : 'Explore ideias de treino, prepare orientações e pense no próximo passo de cada aluno.'}</p><div className={s.suggestions}>{prompts[role].map(({ icon: Icon, title, text }) => <button key={title} onClick={() => choose(text)}><Icon size={18}/><span>{title}</span><ArrowUpRight size={15}/></button>)}</div></div> : <div className={s.messages}>{messages.map(message => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>{message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span></div>}<div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>{message.role === 'assistant' && <div className={s.answerActions}><button onClick={() => void copy(message)} aria-label={copied === message.id ? 'Resposta copiada' : 'Copiar resposta'}>{copied === message.id ? <Check size={14}/> : <Copy size={14}/>} {copied === message.id ? 'Copiado' : 'Copiar'}</button>{message.truncated && <span>Resposta atingiu o limite. Peça para continuar.</span>}</div>}</article>)}</div>}
+        {!messages.length ? <div className={s.welcome}><div className={s.welcomeBrand}><MysMark/><span>mys<span className={s.brandDot}>.</span></span></div><p className={s.greeting}>Olá, {firstName}.</p><h2>{admin ? <>Um novo olhar<br/>para sua gestão.</> : <>Seu conhecimento.<br/>Uma força a mais.</>}</h2><p className={s.intro}>{admin ? 'Converse sobre academia, organize ideias e transforme informações em próximos passos.' : 'Explore ideias de treino, prepare orientações e pense no próximo passo de cada aluno.'}</p><div className={s.suggestions}>{prompts[role].map(({ icon: Icon, title, text }) => <button key={title} onClick={() => choose(text)}><Icon size={18}/><span>{title}</span><ArrowUpRight size={15}/></button>)}</div></div> : <div className={s.messages}>{messages.map(message => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>{message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span></div>}<div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>{message.role === 'assistant' && <div className={s.answerActions}><button onClick={() => void copy(message)} aria-label={copied === message.id ? 'Resposta copiada' : 'Copiar resposta'}>{copied === message.id ? <Check size={14}/> : <Copy size={14}/>} {copied === message.id ? 'Copiado' : 'Copiar'}</button>{Boolean(message.sources?.length) && <span title={message.sources?.join(' · ')}>Consultou a ShapeOS{message.consultedAt && !Number.isNaN(Date.parse(message.consultedAt)) ? ` às ${new Date(message.consultedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}</span>}{message.truncated && <span>Resposta atingiu o limite. Peça para continuar.</span>}</div>}</article>)}</div>}
         {loading && <div className={s.thinking} role="status"><MysMark small/><LoaderCircle size={15} className={s.spin}/><span>Mys está preparando uma resposta…</span></div>}
         <div ref={end}/>
       </div>
@@ -107,6 +107,6 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
         <p className={s.footnote}>Mys pode cometer erros. Revise as sugestões antes de aplicar.</p>
       </div>
     </div>
-    <details className={s.scope}><summary>O que a Mys pode fazer neste espaço?</summary><p>{admin ? 'Apoiar a gestão da academia, explicar conceitos de treinamento e resumir informações que você compartilhar.' : 'Ajudar com planejamento, revisão de treinos e acompanhamento a partir das informações que você compartilhar.'} Nesta etapa, os dados da plataforma ainda não são consultados automaticamente. A Mys não altera fichas nem contas. As mensagens são enviadas à DeepSeek e ficam visíveis nesta página até você sair ou iniciar outra conversa.</p></details>
+    <details className={s.scope}><summary>O que a Mys pode fazer neste espaço?</summary><p>{admin ? 'Consultar contagens gerais da plataforma, buscar alunos e analisar suas fichas, sessões e avaliações.' : 'Consultar seus alunos com vínculo ativo, suas fichas e a evolução registrada para ajudar no planejamento e acompanhamento.'} A Mys consulta apenas os dados permitidos para sua conta e não altera fichas nem contas. As mensagens e os dados necessários para responder são enviados à DeepSeek e ficam visíveis nesta página até você sair ou iniciar outra conversa.</p></details>
   </section>
 }
