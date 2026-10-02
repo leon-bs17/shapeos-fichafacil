@@ -186,7 +186,7 @@
 .word {
   color: #c7f59c;
   display: inline-block;
-  width: 3.02em;
+  width: auto;
 }
 .word > span {
   display: inline-block;
@@ -241,7 +241,7 @@
 .motionToggle {
   position: absolute;
   bottom: 13px;
-  right: 15px;
+  left: 20px;
   width: 28px;
   height: 28px;
   display: grid;
@@ -743,6 +743,12 @@
 .page[data-paused="true"] * {
   animation-play-state: paused !important;
 }
+.page[data-paused="true"] .word > span {
+  animation: none !important;
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
 .page[data-paused="true"] [data-reveal] {
   opacity: 1 !important;
   transform: none !important;
@@ -910,7 +916,7 @@
     letter-spacing: -0.07em;
   }
   .word {
-    width: 3.02em;
+    width: auto;
   }
   .orbit {
     width: 800px;
