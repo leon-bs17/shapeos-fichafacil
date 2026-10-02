@@ -1,0 +1,163 @@
+/* Efeito de anéis concêntricos da página Aprovações.
+   O efeito é puramente decorativo, não recebe eventos e funciona nos dois temas. */
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after,
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  right: -150px;
+  top: -255px;
+  border: 0 !important;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 2;
+  transform: none !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  background:
+    radial-gradient(circle,
+      transparent 0 34%,
+      rgba(13, 148, 136, .045) 34% 40%,
+      transparent 40% 49%,
+      rgba(45, 212, 191, .075) 49% 56%,
+      transparent 56% 66%,
+      rgba(6, 182, 212, .06) 66% 72%,
+      transparent 72% 100%);
+  opacity: .95;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  background:
+    radial-gradient(circle,
+      transparent 0 34%,
+      rgba(45, 212, 191, .085) 34% 40%,
+      transparent 40% 49%,
+      rgba(34, 211, 197, .13) 49% 56%,
+      transparent 56% 66%,
+      rgba(6, 182, 212, .10) 66% 72%,
+      transparent 72% 100%);
+  opacity: .92;
+}
+
+/* Anéis maiores no estado vazio, como na referência visual. */
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before,
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  content: "" !important;
+  position: absolute;
+  width: 540px !important;
+  height: 540px !important;
+  right: -205px !important;
+  bottom: -310px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  pointer-events: none;
+  z-index: 0;
+  transform: none !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  background:
+    radial-gradient(circle,
+      transparent 0 31%,
+      rgba(20, 184, 166, .045) 31% 38%,
+      transparent 38% 48%,
+      rgba(45, 212, 191, .075) 48% 55%,
+      transparent 55% 65%,
+      rgba(6, 182, 212, .055) 65% 72%,
+      transparent 72% 100%);
+  opacity: .9;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  background:
+    radial-gradient(circle,
+      transparent 0 31%,
+      rgba(45, 212, 191, .08) 31% 38%,
+      transparent 38% 48%,
+      rgba(34, 211, 197, .12) 48% 55%,
+      transparent 55% 65%,
+      rgba(6, 182, 212, .085) 65% 72%,
+      transparent 72% 100%);
+  opacity: .95;
+}
+
+/* Halo concêntrico mais discreto ao redor do ícone central. */
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after,
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  content: "" !important;
+  position: absolute;
+  width: 250px !important;
+  height: 250px !important;
+  left: 50% !important;
+  right: auto !important;
+  top: -58px !important;
+  bottom: auto !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  pointer-events: none;
+  z-index: 0;
+  transform: translateX(-50%) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  background:
+    radial-gradient(circle,
+      rgba(20, 184, 166, .055) 0 18%,
+      transparent 18% 35%,
+      rgba(45, 212, 191, .05) 35% 41%,
+      transparent 41% 58%,
+      rgba(6, 182, 212, .035) 58% 64%,
+      transparent 64% 100%);
+  opacity: .85;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  background:
+    radial-gradient(circle,
+      rgba(45, 212, 191, .09) 0 18%,
+      transparent 18% 35%,
+      rgba(34, 211, 197, .085) 35% 41%,
+      transparent 41% 58%,
+      rgba(6, 182, 212, .06) 58% 64%,
+      transparent 64% 100%);
+  opacity: .9;
+}
+
+@media (max-width: 1023px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after,
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+    width: 390px;
+    height: 390px;
+    right: -190px;
+    top: -205px;
+    opacity: .68;
+  }
+}
+
+@media (max-width: 639px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after,
+  .dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+    display: none !important;
+  }
+
+  .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before,
+  .dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+    width: 360px !important;
+    height: 360px !important;
+    right: -210px !important;
+    bottom: -215px !important;
+    opacity: .7;
+  }
+
+  .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after,
+  .dark [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+    width: 190px !important;
+    height: 190px !important;
+    top: -36px !important;
+    opacity: .65;
+  }
+}
