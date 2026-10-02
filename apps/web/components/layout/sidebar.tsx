@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Dumbbell, FileBarChart, LayoutDashboard, Library, LogOut, Users } from 'lucide-react'
+import { Dumbbell, FileBarChart, LayoutDashboard, Library, MessageCircle, LogOut, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: '/treinos', label: 'Treinos', icon: Dumbbell },
   { href: '/exercicios', label: 'Biblioteca', icon: Library },
   { href: '/relatorios', label: 'Relatórios', icon: FileBarChart },
+  { href: '/mys', label: 'Mys', icon: MessageCircle },
 ]
 
 export function Sidebar() {

@@ -14,6 +14,7 @@ import {
   History,
   KeyRound,
   LogOut,
+  MessageCircle,
   Search,
   ServerCog,
   ShieldCheck,
@@ -25,6 +26,7 @@ import { useQuery } from '@tanstack/react-query'
 import Logo from '@/davi/components/Logo'
 
 const novasFerramentas = [
+  { href: '/admin/mys', label: 'Mys · Assistente', icone: MessageCircle },
   { href: '/admin', label: 'Central de controle', icone: ShieldCheck },
   { href: '/admin/aprovacoes', label: 'Aprovações', icone: ClipboardCheck },
   { href: '/admin/atividade', label: 'Atividade', icone: Activity },

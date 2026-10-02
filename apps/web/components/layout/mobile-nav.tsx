@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Dumbbell, FileBarChart, LayoutDashboard, Library, Users } from 'lucide-react'
+import { Dumbbell, FileBarChart, LayoutDashboard, Library, MessageCircle, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = [
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: '/treinos', label: 'Treinos', icon: Dumbbell },
   { href: '/exercicios', label: 'Biblioteca', icon: Library },
   { href: '/relatorios', label: 'Evolução', icon: FileBarChart },
+  { href: '/mys', label: 'Mys', icon: MessageCircle },
 ]
 
 export function MobileNav() {
@@ -31,7 +32,7 @@ export function MobileNav() {
           >
             <div
               className={cn(
-                'flex h-8 w-14 items-center justify-center rounded-full transition-all duration-200',
+                'flex h-8 w-10 sm:w-14 items-center justify-center rounded-full transition-all duration-200',
                 active && 'bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)/0.15)]'
               )}
             >
