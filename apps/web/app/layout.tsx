@@ -14,6 +14,7 @@ import './admin-approvals-cards-reference.css'
 import './admin-approvals-empty-card-reference.css'
 import './admin-approvals-document-icon-reference.css'
 import './admin-approvals-local-search.css'
+import './shapeos-presentation-theme.css'
 
 export const metadata: Metadata = {
   title: 'ShapeOS · Ficha Fácil',
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f2f7f8',
+  themeColor: '#f7f8f2',
   colorScheme: 'light dark',
   viewportFit: 'cover',
 }
