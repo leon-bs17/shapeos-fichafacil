@@ -104,4 +104,25 @@
   color: #14975a !important;
 }
 
+/* TABELA — linhas mais perceptíveis no modo claro -------------------
+   Mantém o aspecto leve da referência, mas melhora a separação visual
+   entre cabeçalho, registros e rodapé. */
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .045) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:first-child {
+  border-bottom-color: #d7e0ea !important;
+  background: rgba(248, 250, 252, .82) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > * + * {
+  border-top-color: #d9e2ec !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:last-child {
+  border-top-color: #d7e0ea !important;
+}
+
 /* Mantém este arquivo como ponto único da referência visual dos status. */
