@@ -1,306 +1,229 @@
-/* Aprovações — reprodução visual da referência gerada no ChatGPT.
-   Escopo propositalmente restrito ao MODO CLARO para preservar o dark atual. */
+/* Aprovações — reprodução visual da imagem de referência.
+   Escopo exclusivo do modo claro; o dark mode permanece intacto. */
 
-/* A referência usa a busca funcional como cabeçalho visual. */
 .light [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
   display: none !important;
 }
 
-/* HERO */
+/* HERO --------------------------------------------------------------- */
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
   min-height: 226px !important;
-  border-color: #cdeff2 !important;
+  border-color: #ccebf0 !important;
   background:
-    radial-gradient(circle at 64% 31%, rgba(6,182,212,.50) 0 1.4px, transparent 1.9px),
-    radial-gradient(circle at 69% 45%, rgba(20,184,166,.36) 0 1.25px, transparent 1.8px),
-    radial-gradient(circle at 74% 23%, rgba(6,182,212,.38) 0 1.15px, transparent 1.7px),
-    radial-gradient(circle at 82% 56%, rgba(20,184,166,.32) 0 1.2px, transparent 1.7px),
-    radial-gradient(circle at 48% 120%, rgba(99,102,241,.050), transparent 38%),
-    linear-gradient(112deg, #ffffff 0%, #fbfdff 54%, #f1fdff 100%) !important;
-  box-shadow: 0 16px 38px rgba(15,23,42,.045) !important;
+    radial-gradient(circle at 55% 16%, #19cad4 0 1.2px, transparent 1.7px),
+    radial-gradient(circle at 58.5% 38%, #1bc8d3 0 1.15px, transparent 1.65px),
+    radial-gradient(circle at 62% 26%, #28d5d6 0 1.05px, transparent 1.55px),
+    radial-gradient(circle at 66% 54%, #1ec6d1 0 1.25px, transparent 1.75px),
+    radial-gradient(circle at 71.5% 31%, #21d0d3 0 1.1px, transparent 1.6px),
+    radial-gradient(circle at 79% 19%, #24cbd4 0 1.05px, transparent 1.6px),
+    radial-gradient(circle at 88% 25%, #22d4d5 0 1.2px, transparent 1.7px),
+    radial-gradient(circle at 94% 14%, #19c8d2 0 1.05px, transparent 1.6px),
+    radial-gradient(circle 330px at 40% 145%,
+      rgba(208,216,255,.22) 0 118px,
+      rgba(221,230,255,.16) 119px 150px,
+      rgba(232,241,255,.08) 151px 176px,
+      transparent 177px 194px,
+      rgba(165,225,244,.20) 195px 238px,
+      rgba(60,207,227,.30) 239px 242px,
+      rgba(116,224,238,.16) 243px 254px,
+      transparent 255px 330px),
+    radial-gradient(circle 455px at 89% 42%,
+      transparent 0 122px,
+      rgba(125,236,231,.24) 123px 176px,
+      transparent 177px 218px,
+      rgba(102,228,231,.22) 219px 279px,
+      transparent 280px 322px,
+      rgba(114,226,239,.20) 323px 386px,
+      transparent 387px 455px),
+    radial-gradient(circle 410px at 88% 44%, rgba(196,248,248,.25), transparent 70%),
+    linear-gradient(112deg, #ffffff 0%, #fdfefe 47%, #f7fcfd 70%, #f2fbfc 100%) !important;
+  box-shadow: 0 12px 32px rgba(15,67,89,.045) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  display: none !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
   font-size: clamp(2.5rem, 3.9vw, 3.45rem) !important;
   line-height: .98 !important;
   letter-spacing: -.058em !important;
-  color: #08152d !important;
+  color: #06162f !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 span {
-  color: #16b8bb !important;
+  color: #13bac2 !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
-  color: #5e6c86 !important;
+  color: #566787 !important;
   max-width: 600px !important;
 }
 
-/* Anéis do hero usando as três camadas decorativas já existentes no JSX. */
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
-  display: block !important;
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  opacity: 1 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  z-index: 1 !important;
-  background: transparent !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div {
-  position: absolute !important;
-  left: auto !important;
-  bottom: auto !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  filter: none !important;
-  transform: none !important;
-}
-
-/* Arco grande que nasce da região central inferior, como na referência. */
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
-  width: 430px !important;
-  height: 430px !important;
-  left: 38% !important;
-  right: auto !important;
-  top: 72px !important;
-  border: 58px solid rgba(96,205,229,.125) !important;
-  box-shadow: 0 0 72px rgba(34,211,238,.025) !important;
-}
-
-/* Anel externo superior direito. */
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
-  width: 510px !important;
-  height: 510px !important;
-  right: -118px !important;
-  top: -238px !important;
-  border: 56px solid rgba(86,221,226,.105) !important;
-}
-
-/* Anel interno superior direito. */
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
-  width: 352px !important;
-  height: 352px !important;
-  right: 4px !important;
-  top: -144px !important;
-  border: 47px solid rgba(45,212,191,.115) !important;
-}
-
-/* Frase manuscrita com posição e contraste próximos à referência. */
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child {
-  width: 29% !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
-  right: 1.1rem !important;
-  width: 315px !important;
-  color: #0b2a43 !important;
-  text-shadow: 0 2px 10px rgba(255,255,255,.75) !important;
+  width: 30% !important;
 }
 
-/* Cards superiores: superfície muito clara + bordas temáticas sutis. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  right: 1.15rem !important;
+  width: 315px !important;
+  color: #08233d !important;
+  text-shadow: 0 2px 12px rgba(255,255,255,.92) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child span:last-child {
+  background: linear-gradient(90deg, #16d6d0 0%, #08c8d1 100%) !important;
+  box-shadow: 0 3px 10px rgba(6,182,212,.15) !important;
+}
+
+/* CARDS DE RESUMO ---------------------------------------------------- */
 .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
   min-height: 130px !important;
-  background: rgba(255,255,255,.92) !important;
-  box-shadow: 0 10px 26px rgba(15,23,42,.04) !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
-  border-color: #f3cf75 !important;
-  background: linear-gradient(120deg, #ffffff 0%, #fffdfa 100%) !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
-  border-color: #bceee8 !important;
-  background: linear-gradient(120deg, #ffffff 0%, #f9fffe 100%) !important;
+  box-shadow: 0 8px 22px rgba(15,23,42,.035) !important;
 }
 
-/* ESTADO VAZIO — aproxima o grande card branco da referência. */
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-color: #efd385 !important;
+  background:
+    radial-gradient(circle at 7% 50%, rgba(255,224,150,.18), transparent 24%),
+    linear-gradient(115deg, #fffefd 0%, #ffffff 65%, #fffdf7 100%) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-color: #bfe9e7 !important;
+  background:
+    radial-gradient(circle at 7% 50%, rgba(151,238,228,.16), transparent 24%),
+    linear-gradient(115deg, #ffffff 0%, #fbfefe 65%, #f7fdfc 100%) !important;
+}
+
+/* ESTADO VAZIO ------------------------------------------------------- */
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
   min-height: 382px !important;
-  border-color: #d7e6ee !important;
+  border-color: #d4e8ec !important;
   background:
-    radial-gradient(circle at 50% 19%, rgba(34,211,238,.085), transparent 15%),
-    linear-gradient(136deg, #ffffff 0%, #ffffff 65%, #effdff 100%) !important;
-  box-shadow: 0 14px 34px rgba(15,23,42,.042) !important;
+    radial-gradient(circle 160px at 50% 23%, rgba(118,236,235,.115), rgba(211,250,248,.055) 38%, transparent 72%),
+    radial-gradient(circle 420px at 101% 4%, rgba(183,247,244,.27), rgba(218,252,250,.12) 42%, transparent 74%),
+    linear-gradient(180deg, #ffffff 0%, #fefefe 58%, #fbfefe 100%) !important;
+  box-shadow: 0 10px 30px rgba(15,67,89,.038) !important;
 }
 
-/* Grande conjunto concêntrico recortado no canto inferior direito. */
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
   content: "" !important;
   position: absolute !important;
-  width: 610px !important;
-  height: 610px !important;
-  right: -250px !important;
-  bottom: -372px !important;
+  width: 670px !important;
+  height: 670px !important;
+  right: -275px !important;
+  bottom: -410px !important;
   border: 0 !important;
   border-radius: 999px !important;
-  transform: none !important;
   pointer-events: none !important;
   z-index: 0 !important;
+  transform: none !important;
   background: radial-gradient(circle,
-    transparent 0 31%,
-    rgba(111,224,225,.095) 31% 39%,
-    transparent 39% 48%,
-    rgba(88,216,225,.13) 48% 56%,
-    transparent 56% 65%,
-    rgba(45,212,191,.10) 65% 73%,
-    transparent 73% 100%) !important;
+    transparent 0 132px,
+    rgba(96,231,225,.24) 133px 183px,
+    transparent 184px 220px,
+    rgba(74,218,229,.22) 221px 274px,
+    transparent 275px 310px,
+    rgba(111,230,237,.20) 311px 365px,
+    transparent 366px 670px) !important;
+  filter: blur(.15px);
 }
 
-/* Halo suave atrás do ícone central. */
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
   content: "" !important;
   position: absolute !important;
-  width: 270px !important;
-  height: 270px !important;
+  width: 250px !important;
+  height: 250px !important;
   left: 50% !important;
+  top: -34px !important;
   right: auto !important;
-  top: -46px !important;
   bottom: auto !important;
+  transform: translateX(-50%) !important;
   border: 0 !important;
   border-radius: 999px !important;
-  transform: translateX(-50%) !important;
   pointer-events: none !important;
   z-index: 0 !important;
   background: radial-gradient(circle,
-    rgba(34,211,238,.11) 0 12%,
-    rgba(45,212,191,.055) 12% 27%,
-    transparent 62%) !important;
+    rgba(97,230,235,.12) 0 12%,
+    rgba(170,244,241,.08) 13% 30%,
+    rgba(220,252,250,.035) 31% 50%,
+    transparent 70%) !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
   width: 82px !important;
   height: 82px !important;
-  border-color: #bfeff0 !important;
-  background: linear-gradient(145deg, #effefe, #e8fbfb) !important;
-  color: #10b9bd !important;
-  box-shadow: 0 16px 40px rgba(6,182,212,.11), 0 0 0 18px rgba(34,211,238,.028) !important;
+  border-color: #b7edf0 !important;
+  background: linear-gradient(145deg, #f3ffff 0%, #e9fbfb 100%) !important;
+  color: #12bec8 !important;
+  box-shadow: 0 14px 34px rgba(6,182,212,.105), 0 0 0 14px rgba(103,232,249,.027) !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
-  color: #07152d !important;
+  color: #06162f !important;
   font-size: 2.15rem !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] p {
-  color: #60708b !important;
+  color: #61708d !important;
 }
 
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
   min-width: 300px !important;
-  background: linear-gradient(90deg, #11b8ae, #04c7c5) !important;
-  color: #042f2e !important;
-  box-shadow: 0 12px 26px rgba(20,184,166,.18) !important;
+  background: linear-gradient(90deg, #0ed2c6 0%, #10d7d5 52%, #08c9d1 100%) !important;
+  color: #052f35 !important;
+  border: 1px solid rgba(6,182,212,.16) !important;
+  box-shadow: 0 10px 24px rgba(6,182,212,.19) !important;
 }
+
 .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button:hover {
-  background: linear-gradient(90deg, #0fa89f, #05b7b6) !important;
+  background: linear-gradient(90deg, #0bc4ba 0%, #0fc9cb 52%, #08bbc4 100%) !important;
   color: #ffffff !important;
 }
 
-/* Benefícios inferiores: branco limpo e ícones com cor contida. */
+/* BENEFÍCIOS --------------------------------------------------------- */
 .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:last-child > div {
   min-height: 112px !important;
-  border-color: #dfe8ef !important;
-  background: rgba(255,255,255,.98) !important;
-  box-shadow: 0 7px 20px rgba(15,23,42,.035) !important;
+  border-color: #dde7ed !important;
+  background: rgba(255,255,255,.985) !important;
+  box-shadow: 0 6px 18px rgba(15,23,42,.03) !important;
 }
 
-/* Preserva legibilidade e composição em telas menores. */
 @media (max-width: 1199px) {
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
-    left: 46% !important;
-  }
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
-    right: -210px !important;
-  }
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
-    right: -75px !important;
+  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+    background:
+      radial-gradient(circle at 72% 22%, rgba(80,220,230,.13), transparent 25%),
+      radial-gradient(circle 390px at 93% 44%, transparent 0 115px, rgba(96,231,225,.20) 116px 168px, transparent 169px 210px, rgba(104,226,236,.16) 211px 270px, transparent 271px),
+      radial-gradient(circle 300px at 46% 146%, rgba(214,222,255,.17) 0 120px, transparent 150px 182px, rgba(117,221,240,.16) 183px 232px, transparent 233px),
+      linear-gradient(112deg, #ffffff 0%, #fdfefe 56%, #f4fcfc 100%) !important;
   }
 }
 
 @media (max-width: 767px) {
   .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
     min-height: 220px !important;
+    background:
+      radial-gradient(circle 300px at 108% 28%, transparent 0 90px, rgba(96,231,225,.16) 91px 135px, transparent 136px 170px, rgba(106,224,238,.13) 171px 220px, transparent 221px),
+      linear-gradient(112deg, #ffffff 0%, #f9fdfd 100%) !important;
   }
-  .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
-    opacity: .45 !important;
-  }
+
   .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
     font-size: 2.15rem !important;
   }
+
   .light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
-    width: 430px !important;
-    height: 430px !important;
-    right: -250px !important;
-    bottom: -250px !important;
+    width: 460px !important;
+    height: 460px !important;
+    right: -245px !important;
+    bottom: -275px !important;
+    background: radial-gradient(circle,
+      transparent 0 92px,
+      rgba(96,231,225,.20) 93px 130px,
+      transparent 131px 158px,
+      rgba(74,218,229,.17) 159px 196px,
+      transparent 197px 230px,
+      rgba(111,230,237,.15) 231px 268px,
+      transparent 269px) !important;
   }
-}
-
-/* Ajuste cromático final — aproxima o modo claro da referência:
-   branco frio, cyan leitoso e teal pálido, sem aparência neon. */
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
-  border-color: #d4eef2 !important;
-  background:
-    radial-gradient(circle at 63% 29%, rgba(103,232,249,.16), transparent 20%),
-    radial-gradient(circle at 76% 18%, rgba(94,234,212,.11), transparent 18%),
-    radial-gradient(circle at 88% 38%, rgba(125,211,252,.13), transparent 23%),
-    radial-gradient(circle at 92% 76%, rgba(153,246,228,.085), transparent 25%),
-    linear-gradient(115deg, #ffffff 0%, #fafcfd 40%, #f3fbfb 70%, #eef8fc 100%) !important;
-  box-shadow: 0 16px 40px rgba(14,116,144,.045) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
-  border-color: rgba(125,211,252,.16) !important;
-  box-shadow: 0 0 66px rgba(103,232,249,.035) !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
-  border-color: rgba(94,234,212,.15) !important;
-  box-shadow: 0 0 54px rgba(94,234,212,.025) !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
-  border-color: rgba(103,232,249,.135) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
-  border-color: #dbecef !important;
-  background:
-    radial-gradient(circle at 52% 20%, rgba(94,234,212,.085), transparent 20%),
-    radial-gradient(circle at 90% 90%, rgba(125,211,252,.11), transparent 28%),
-    linear-gradient(180deg, #ffffff 0%, #fcfefe 56%, #f4fbfb 100%) !important;
-  box-shadow: 0 14px 36px rgba(14,116,144,.04) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
-  background: radial-gradient(circle,
-    transparent 0 31%,
-    rgba(153,246,228,.09) 31% 39%,
-    transparent 39% 48%,
-    rgba(125,211,252,.12) 48% 56%,
-    transparent 56% 65%,
-    rgba(94,234,212,.09) 65% 73%,
-    transparent 73% 100%) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
-  background: radial-gradient(circle,
-    rgba(103,232,249,.10) 0 14%,
-    rgba(94,234,212,.05) 14% 30%,
-    transparent 64%) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
-  border-color: #c8eef0 !important;
-  background: linear-gradient(145deg, #f2ffff 0%, #eafafa 100%) !important;
-  color: #12aeb4 !important;
-  box-shadow: 0 14px 36px rgba(34,211,238,.10), 0 0 0 18px rgba(103,232,249,.025) !important;
-}
-
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
-  background: linear-gradient(90deg, #12b6ad 0%, #18c7c7 54%, #35c9da 100%) !important;
-  color: #07363a !important;
-  box-shadow: 0 12px 28px rgba(20,184,166,.16) !important;
-}
-.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button:hover {
-  background: linear-gradient(90deg, #0fa59d 0%, #12b9ba 54%, #28b9cb 100%) !important;
-  color: #ffffff !important;
 }
