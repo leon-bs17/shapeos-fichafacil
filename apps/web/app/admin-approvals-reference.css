@@ -235,3 +235,72 @@
     bottom: -250px !important;
   }
 }
+
+/* Ajuste cromático final — aproxima o modo claro da referência:
+   branco frio, cyan leitoso e teal pálido, sem aparência neon. */
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  border-color: #d4eef2 !important;
+  background:
+    radial-gradient(circle at 63% 29%, rgba(103,232,249,.16), transparent 20%),
+    radial-gradient(circle at 76% 18%, rgba(94,234,212,.11), transparent 18%),
+    radial-gradient(circle at 88% 38%, rgba(125,211,252,.13), transparent 23%),
+    radial-gradient(circle at 92% 76%, rgba(153,246,228,.085), transparent 25%),
+    linear-gradient(115deg, #ffffff 0%, #fafcfd 40%, #f3fbfb 70%, #eef8fc 100%) !important;
+  box-shadow: 0 16px 40px rgba(14,116,144,.045) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(1) {
+  border-color: rgba(125,211,252,.16) !important;
+  box-shadow: 0 0 66px rgba(103,232,249,.035) !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(2) {
+  border-color: rgba(94,234,212,.15) !important;
+  box-shadow: 0 0 54px rgba(94,234,212,.025) !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > div:nth-child(3) {
+  border-color: rgba(103,232,249,.135) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  border-color: #dbecef !important;
+  background:
+    radial-gradient(circle at 52% 20%, rgba(94,234,212,.085), transparent 20%),
+    radial-gradient(circle at 90% 90%, rgba(125,211,252,.11), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #fcfefe 56%, #f4fbfb 100%) !important;
+  box-shadow: 0 14px 36px rgba(14,116,144,.04) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::before {
+  background: radial-gradient(circle,
+    transparent 0 31%,
+    rgba(153,246,228,.09) 31% 39%,
+    transparent 39% 48%,
+    rgba(125,211,252,.12) 48% 56%,
+    transparent 56% 65%,
+    rgba(94,234,212,.09) 65% 73%,
+    transparent 73% 100%) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"]::after {
+  background: radial-gradient(circle,
+    rgba(103,232,249,.10) 0 14%,
+    rgba(94,234,212,.05) 14% 30%,
+    transparent 64%) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  border-color: #c8eef0 !important;
+  background: linear-gradient(145deg, #f2ffff 0%, #eafafa 100%) !important;
+  color: #12aeb4 !important;
+  box-shadow: 0 14px 36px rgba(34,211,238,.10), 0 0 0 18px rgba(103,232,249,.025) !important;
+}
+
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
+  background: linear-gradient(90deg, #12b6ad 0%, #18c7c7 54%, #35c9da 100%) !important;
+  color: #07363a !important;
+  box-shadow: 0 12px 28px rgba(20,184,166,.16) !important;
+}
+.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button:hover {
+  background: linear-gradient(90deg, #0fa59d 0%, #12b9ba 54%, #28b9cb 100%) !important;
+  color: #ffffff !important;
+}
