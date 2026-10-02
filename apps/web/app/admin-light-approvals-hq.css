@@ -1,12 +1,18 @@
 /* Refinamento de nitidez exclusivo do modo claro da tela de Aprovações.
-   A imagem é servida como WebP dedicado e exibida sempre abaixo da resolução nativa. */
+   A imagem agora é um asset estático real para evitar o middleware de autenticação
+   que redirecionava a antiga rota /api para /login e fazia os personais sumirem. */
 
 .light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
   left: 42.5% !important;
   bottom: 0 !important;
   width: 430px !important;
   height: 252px !important;
-  background-image: url("/api/admin/aprovacoes/personais-hq") !important;
+  z-index: 6 !important;
+  pointer-events: none !important;
+  background-image: url("/images/admin/aprovacoes-personais.webp") !important;
   background-repeat: no-repeat !important;
   background-position: center bottom !important;
   background-size: contain !important;
