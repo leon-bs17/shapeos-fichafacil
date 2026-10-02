@@ -1,0 +1,7 @@
+/* Aprovações — restaura o breadcrumb superior no modo claro.
+   Mantém o comportamento responsivo original: visível apenas em desktop. */
+@media (min-width: 1024px) {
+  html.light [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
+    display: flex !important;
+  }
+}
