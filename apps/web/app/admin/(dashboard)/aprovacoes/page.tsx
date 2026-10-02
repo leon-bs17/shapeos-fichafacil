@@ -7,15 +7,11 @@ import { Card, CardContent } from '@/components/ui/card'
 import {
   ArrowRight,
   Ban,
-  Bell,
   CheckCircle2,
-  ChevronDown,
   Clock3,
   FileCheck2,
   Loader2,
-  LockKeyhole,
   Mail,
-  Search,
   ShieldCheck,
   Sparkles,
   UserCheck,
@@ -116,33 +112,6 @@ export default function AdminAprovacoesPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div
-        aria-hidden="true"
-        className="hidden items-center justify-between gap-4 lg:flex"
-      >
-        <div className="flex h-14 w-full max-w-[540px] items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 text-slate-500 shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b141d]/90 dark:text-slate-400 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
-          <Search className="h-5 w-5 shrink-0 text-slate-600 dark:text-slate-300" strokeWidth={1.8} />
-          <span className="min-w-0 flex-1 truncate text-sm font-medium">Buscar algo no ShapeOS...</span>
-          <span className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-500 shadow-sm dark:border-white/10 dark:bg-white/[0.045] dark:text-slate-400">
-            <span className="text-[13px]">⌘</span>
-            <span>K</span>
-          </span>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-3">
-          <div className="relative grid h-14 w-14 place-items-center rounded-full border border-slate-200/90 bg-white/95 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b141d]/90 dark:text-slate-200 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
-            <Bell className="h-5 w-5" strokeWidth={1.8} />
-            <span className="absolute right-[12px] top-[11px] h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500 dark:border-[#0b141d]" />
-          </div>
-
-          <div className="flex h-14 min-w-[230px] items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 text-slate-800 shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b141d]/90 dark:text-slate-100 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
-            <LockKeyhole className="h-5 w-5 shrink-0 text-slate-700 dark:text-slate-300" strokeWidth={1.8} />
-            <span className="flex-1 text-sm font-semibold">Acesso controlado</span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
-          </div>
-        </div>
-      </div>
-
       <section className="relative isolate min-h-[232px] overflow-hidden rounded-[28px] border border-slate-200 bg-white px-7 py-9 shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:px-10 sm:py-10 dark:border-white/10 dark:bg-[#08131c] dark:shadow-2xl dark:shadow-black/20">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(112deg,#ffffff_0%,#fbfdfe_50%,#f0fbfc_100%)] dark:hidden" />
         <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_76%_24%,rgba(0,255,204,0.18),transparent_25%),radial-gradient(circle_at_58%_105%,rgba(116,55,255,0.16),transparent_38%),linear-gradient(120deg,#07101a,#0a1520_55%,#092b30)] dark:block" />
