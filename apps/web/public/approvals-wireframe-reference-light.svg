@@ -56,4 +56,14 @@
     <ellipse cx="335" cy="62" rx="270" ry="128" transform="rotate(170 335 62)"/>
     <ellipse cx="335" cy="62" rx="270" ry="128" transform="rotate(175 335 62)"/>
   </g>
+  <!-- Pontos da referência, ancorados ao mesmo enquadramento da malha. -->
+  <g fill="#129b89" fill-opacity=".68">
+    <circle cx="34" cy="58.5" r="1"/>
+    <circle cx="7" cy="107.7" r="1"/>
+    <circle cx="42" cy="174.5" r="1"/>
+    <circle cx="268" cy="63.2" r="1"/>
+    <circle cx="359" cy="28.1" r="1"/>
+    <circle cx="349" cy="101.9" r="1"/>
+    <circle cx="305" cy="140.5" r="1"/>
+  </g>
 </svg>

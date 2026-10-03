@@ -53,10 +53,6 @@ html.dark [data-admin-route="/admin/aprovacoes"] {
 [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
   min-height: 226px !important;
   background:
-    radial-gradient(circle at 60% 23%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 67% 39%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 78% 28%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 88% 18%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
     linear-gradient(112deg, var(--approvals-hero-start) 0%, var(--approvals-hero-mid) 52%, var(--approvals-hero-end) 100%) !important;
 }
 

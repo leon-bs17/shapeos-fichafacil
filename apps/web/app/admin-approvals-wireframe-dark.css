@@ -26,7 +26,7 @@ html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:
   border-radius: 0 !important;
   background-color: transparent !important;
   background-image:
-    url('/approvals-wireframe-reference.svg?v=reference-c-3'),
+    url('/approvals-wireframe-reference.svg?v=reference-dots-4'),
     radial-gradient(ellipse at 68% 90%, rgba(31, 121, 93, .14), transparent 70%) !important;
   background-repeat: no-repeat !important;
   background-position: right center !important;
@@ -43,7 +43,7 @@ html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:
 /* Somente a paleta varia: os dois assets têm a mesma geometria vetorial. */
 html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
   background-image:
-    url('/approvals-wireframe-reference-light.svg?v=reference-c-1'),
+    url('/approvals-wireframe-reference-light.svg?v=reference-dots-2'),
     radial-gradient(ellipse at 68% 90%, rgba(45, 154, 132, .055), transparent 70%) !important;
 }
 
