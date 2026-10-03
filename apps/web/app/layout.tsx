@@ -16,6 +16,7 @@ import './admin-approvals-document-icon-reference.css'
 import './admin-approvals-local-search.css'
 import './admin-approvals-breadcrumb-light.css'
 import './shapeos-dark-background.css'
+import './admin-approvals-dark-cards-reference.css'
 
 export const metadata: Metadata = {
   title: 'ShapeOS · Ficha Fácil',
