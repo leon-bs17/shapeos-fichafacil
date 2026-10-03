@@ -665,7 +665,7 @@ export default function AdminAprovacoesPage() {
             <div className="mt-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-sm dark:border-white/10 dark:bg-white/[0.025]">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Data do cadastro</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</span>
+                <span data-approvals-registration-date className="font-semibold text-slate-800 dark:text-slate-200">{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Status</span>

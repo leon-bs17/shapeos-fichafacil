@@ -312,3 +312,17 @@ html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/apr
     padding-right: 14px !important;
   }
 }
+
+/* Explicit value colors avoid broad utility overrides making the date pale. */
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-registration-date] {
+  color: #1e293b !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-registration-date] {
+  color: #e2e8f0 !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-registration-date] {
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums;
+}
