@@ -1,0 +1,79 @@
+/* Aprovações — ajuste fino dos dois cards de resumo no modo escuro.
+   Valores calibrados a partir da referência aprovada para reproduzir a mesma
+   profundidade, direção de luz e família cromática, sem tocar no modo claro. */
+
+/* PENDENTES ---------------------------------------------------------
+   A referência parte de um verde-preto (~#111916) e aquece suavemente até
+   oliva escuro (~#191c15), com âmbar concentrado apenas próximo ao ícone. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child {
+  border-color: rgba(214, 161, 39, .40) !important;
+  background:
+    radial-gradient(circle at 10% 50%, rgba(218, 166, 43, .115) 0%, rgba(218, 166, 43, .055) 19%, transparent 42%),
+    radial-gradient(circle at 92% 18%, rgba(115, 126, 57, .035) 0%, transparent 34%),
+    linear-gradient(108deg, #111916 0%, #121b17 34%, #151c16 68%, #191c15 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .018),
+    0 14px 34px rgba(0, 0, 0, .10) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"],
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child div[class*="place-items-center"] {
+  background: #232216 !important;
+  border-color: transparent !important;
+  color: #f2b90e !important;
+  box-shadow: none !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] svg,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child div[class*="place-items-center"] svg {
+  color: #f2b90e !important;
+  filter: none !important;
+}
+
+/* SÓ APROVADOS ------------------------------------------------------
+   A referência é mais verde e luminosa que a implementação anterior:
+   começa em ~#0e1d1c e termina perto de #0f221e, sem cair para navy. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child {
+  border-color: rgba(77, 221, 198, .29) !important;
+  background:
+    radial-gradient(circle at 10% 50%, rgba(53, 211, 184, .125) 0%, rgba(53, 211, 184, .058) 21%, transparent 44%),
+    radial-gradient(circle at 88% 20%, rgba(53, 211, 184, .035) 0%, transparent 36%),
+    linear-gradient(108deg, #0e1d1c 0%, #0d1e1c 38%, #0d201d 70%, #0f221e 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .018),
+    0 14px 34px rgba(0, 0, 0, .10) !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"],
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child div[class*="place-items-center"] {
+  background: #102c26 !important;
+  border-color: transparent !important;
+  color: #45d9c1 !important;
+  box-shadow: none !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] svg,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child div[class*="place-items-center"] svg {
+  color: #45d9c1 !important;
+  filter: none !important;
+}
+
+/* Microcontraste igual ao exemplo: textos auxiliares cinza-esverdeados e
+   setas discretas, sem azul dominante. */
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div p {
+  color: #aab9b2 !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p[class*="font-black"],
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div p[class*="font-black"] {
+  color: #f4f8f6 !important;
+}
+
+.dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div > div > svg:last-child,
+.dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div > div > svg:last-child {
+  color: #91a39b !important;
+  opacity: .92 !important;
+}
