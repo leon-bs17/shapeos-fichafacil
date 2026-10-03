@@ -14,6 +14,7 @@ import Logo from "@/davi/components/Logo";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
+import { ExercisePreview } from '@/components/fitness/exercise-demonstration';
 import { ProgressPanel } from "@/components/fitness/progress-panel";
 import { AgendaPanel } from "@/components/fitness/agenda-panel";
 import { AssessmentPanel } from "@/components/fitness/assessment-panel";
@@ -359,14 +360,15 @@ export default function StudentPage() {
                                 key={e.id}
                                 className="flex justify-between gap-3 border-t pt-2"
                               >
-                                <span>
+                                <div>
                                   {e.nome}
                                   {e.config.superset && (
                                     <span className="text-xs text-primary ml-2">
                                       Superset {e.config.superset}
                                     </span>
                                   )}
-                                </span>
+                                  <ExercisePreview name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url}/>
+                                </div>
                                 <span className="text-muted-foreground shrink-0">
                                   {e.series} ×{" "}
                                   {e.config.duracao_segundos

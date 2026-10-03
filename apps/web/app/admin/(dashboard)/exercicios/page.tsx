@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
+import { ExercisePreview } from '@/components/fitness/exercise-demonstration'
 
 const GRUPOS_MUSCULAREIS = [
   'Peito', 'Costas', 'Ombros', 'Biceps', 'Triceps', 'Quadriceps',
@@ -35,7 +36,7 @@ function ExerciciosConteudo() {
       const supabase = createClient()
       const { data } = await supabase
         .from('exercicios')
-        .select('id, nome, grupo_muscular, equipamento, criado_por')
+        .select('id, nome, grupo_muscular, equipamento, criado_por, video_url')
         .order('grupo_muscular')
         .order('nome')
       return data ?? []
@@ -177,6 +178,7 @@ function ExerciciosConteudo() {
                     {e.equipamento && (
                       <p className="text-muted-foreground text-xs mt-1">Equipamento: {e.equipamento}</p>
                     )}
+                    <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
                   </div>
                   <button
                     onClick={() => excluirExercicio.mutate(e.id)}

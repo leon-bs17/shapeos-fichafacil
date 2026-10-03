@@ -11,6 +11,7 @@ import { useCriarExercicio, useExercicios, useEditarExercicio, useExcluirExercic
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import type { ExercicioBiblioteca } from '@/services/exercicios'
+import { ExercisePreview } from '@/components/fitness/exercise-demonstration'
 
 const GRUPO_ICONS: Record<string, React.ReactNode> = {
   Peito: <Dumbbell className="h-4 w-4" />,
@@ -166,6 +167,7 @@ function ExerciciosConteudo() {
                       {e.equipamento ? ` · ${e.equipamento}` : ''}
                       {e.proprio ? ' · seu' : ''}
                     </p>
+                    <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
                   </div>
                 </div>
                 

@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ExerciseDemonstration } from '@/components/fitness/exercise-demonstration'
 
 interface ExercicioExecucao {
   id: string
@@ -293,6 +294,8 @@ export function ModoExecucao({
           <X className="h-5 w-5" />
         </Button>
       </header>
+
+      <ExerciseDemonstration key={exercicio.id} name={exercicio.nome} />
 
       <div className="space-y-1.5">
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">

@@ -4,6 +4,7 @@ import { Check, ChevronRight, Clock, Pause, Play, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ExerciseDemonstration } from '@/components/fitness/exercise-demonstration';
 import {
   completion,
   loadSuggestion,
@@ -280,16 +281,7 @@ export function SessionRunner({
               {e.config.observacoes}
             </p>
           )}
-          {e.video_url && /^https:\/\//.test(e.video_url) && (
-            <a
-              className="mt-3 inline-block text-sm text-primary underline"
-              href={e.video_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ver demonstração
-            </a>
-          )}
+          <ExerciseDemonstration key={e.exercicio_id} name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url} />
         </div>
         {prev[0] && (
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm">
