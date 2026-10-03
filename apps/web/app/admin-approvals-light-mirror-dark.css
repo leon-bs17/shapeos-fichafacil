@@ -26,41 +26,12 @@ html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child 
   display: none !important;
 }
 
-/* Mesma caixa geométrica do wireframe do dark, preservando o desenho e as
-   cores já definidos pelo modo claro nos arquivos anteriores. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  z-index: 1 !important;
-  width: 470px !important;
-  height: 470px !important;
-  left: auto !important;
-  right: 17% !important;
-  top: -164px !important;
-  bottom: auto !important;
-  border-width: 0 !important;
-  border-radius: 50% !important;
-  pointer-events: none !important;
-  opacity: .42 !important;
-  -webkit-mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
-  mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
-}
-
+/* No modo claro o hero fica limpo: remove o wireframe circular e o halo
+   associado a ele, sem alterar o efeito equivalente do modo escuro. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
 html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  z-index: 0 !important;
-  width: 520px !important;
-  height: 280px !important;
-  left: auto !important;
-  right: 7% !important;
-  top: -34px !important;
-  bottom: auto !important;
-  border-width: 0 !important;
-  border-radius: 50% !important;
-  pointer-events: none !important;
+  content: none !important;
+  display: none !important;
 }
 
 /* Mesmas métricas tipográficas do dark. */
@@ -127,12 +98,6 @@ html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px
 }
 
 /* RESPONSIVIDADE -------------------------------------------------------- */
-@media (max-width: 1199px) {
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
-    right: 6% !important;
-  }
-}
-
 @media (max-width: 767px) {
   html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
     min-height: 220px !important;
@@ -140,13 +105,6 @@ html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px
 
   html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
     font-size: 2.15rem !important;
-  }
-
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
-    width: 320px !important;
-    height: 320px !important;
-    right: -120px !important;
-    top: -108px !important;
   }
 
   /* Em telas estreitas preserva o respiro original dos cards sem forçar
