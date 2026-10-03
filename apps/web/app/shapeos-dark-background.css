@@ -404,10 +404,6 @@ html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child 
   position: relative !important;
   border-color: #c9ded4 !important;
   background:
-    radial-gradient(circle at 58% 20%, rgba(18,155,137,.78) 0 1.15px, transparent 1.65px),
-    radial-gradient(circle at 66% 43%, rgba(18,155,137,.58) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 73% 24%, rgba(18,155,137,.64) 0 1.1px, transparent 1.6px),
-    radial-gradient(circle at 82% 34%, rgba(18,155,137,.62) 0 1.05px, transparent 1.55px),
     linear-gradient(108deg, #fcfdf9 0%, #fafcf7 58%, #f1f7f1 100%) !important;
   box-shadow: 0 10px 28px rgba(22,38,35,.035) !important;
 }

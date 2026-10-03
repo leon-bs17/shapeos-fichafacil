@@ -10,14 +10,6 @@
   min-height: 226px !important;
   border-color: #ccebf0 !important;
   background:
-    radial-gradient(circle at 55% 16%, #19cad4 0 1.2px, transparent 1.7px),
-    radial-gradient(circle at 58.5% 38%, #1bc8d3 0 1.15px, transparent 1.65px),
-    radial-gradient(circle at 62% 26%, #28d5d6 0 1.05px, transparent 1.55px),
-    radial-gradient(circle at 66% 54%, #1ec6d1 0 1.25px, transparent 1.75px),
-    radial-gradient(circle at 71.5% 31%, #21d0d3 0 1.1px, transparent 1.6px),
-    radial-gradient(circle at 79% 19%, #24cbd4 0 1.05px, transparent 1.6px),
-    radial-gradient(circle at 88% 25%, #22d4d5 0 1.2px, transparent 1.7px),
-    radial-gradient(circle at 94% 14%, #19c8d2 0 1.05px, transparent 1.6px),
     radial-gradient(circle 330px at 40% 145%,
       rgba(208,216,255,.26) 0 118px,
       rgba(221,230,255,.20) 119px 150px,
