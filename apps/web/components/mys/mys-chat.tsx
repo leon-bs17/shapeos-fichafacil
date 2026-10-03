@@ -88,20 +88,18 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     catch { setNotice('Não foi possível copiar automaticamente. Selecione o texto da resposta para copiar.') }
   }
 
-  return <section className={s.workspace} aria-label="Mys, assistente ShapeOS">
+  return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
     <header className={s.header}>
       <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
-      <button className={s.newChat} disabled={loading} title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={16}/><span>Nova conversa</span></button>
+      {Boolean(messages.length) && <button className={s.newChat} disabled={loading} title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={16}/><span>Nova conversa</span></button>}
     </header>
-    <div className={s.chatPanel}>
-      <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>
-      <div className={s.thread} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
+    <div className={`${s.chatPanel} ${messages.length ? '' : s.emptyPanel}`}>
+      {Boolean(messages.length) && <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>}
+      <div className={`${s.thread} ${messages.length ? '' : s.emptyThread}`} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
         {!messages.length ? <div className={s.welcome}>
-          <div className={s.welcomeBrand}><MysMark/><span>mys<span className={s.brandDot}>.</span></span></div>
-          <p className={s.greeting}>Olá, {firstName}.</p><h2>{admin ? <>Mais clareza.<br/><span>Melhores decisões.</span></> : <>Seu conhecimento.<br/><span>Uma força a mais.</span></>}</h2>
-          <p className={s.intro}>{admin ? 'Do panorama da plataforma ao próximo passo da sua gestão. Vamos olhar os dados juntos?' : 'Planeje treinos, acompanhe a evolução e encontre o próximo passo de cada aluno.'}</p>
-          <div className={s.suggestions}>{prompts[role].map(({ icon: Icon, title, text }, index) => <button key={title} onClick={() => choose(text)}><span className={s.suggestionIcon}><Icon size={19}/></span><div><strong>{title}</strong><span>{(admin ? ['Consulte os números da plataforma', 'Organize o acompanhamento dos alunos', 'Transforme informações em próximos passos', 'Explore conceitos e boas práticas'] : ['Organize objetivos e exercícios', 'Analise uma ficha com mais clareza', 'Consulte seus alunos na ShapeOS', 'Escreva com clareza e acolhimento'])[index]}</span></div><ArrowUpRight size={15}/></button>)}</div>
-          <div className={s.welcomeNote}><ShieldCheck size={13}/><span>Consultas de leitura, dentro do acesso da sua conta.</span></div>
+          <p className={s.greeting}>Olá, {firstName}.</p>
+          <h2>Como posso ajudar?</h2>
+          <div className={s.quickPrompts}>{(admin ? [prompts.ADMIN[0], prompts.ADMIN[3]] : [prompts.PERSONAL[0], prompts.PERSONAL[2]]).map(({ icon: Icon, title, text }) => <button key={title} onClick={() => choose(text)}><Icon size={15}/><span>{title}</span></button>)}</div>
         </div> : <div className={s.messages}>{messages.map((message, index) => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>
           {message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span><span className={s.answerLabel}>ASSISTENTE</span></div>}
           <div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>

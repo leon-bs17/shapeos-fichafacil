@@ -11,3 +11,16 @@
 @media(max-width:750px){.workspace{padding-bottom:75px}.header{gap:12px;margin-bottom:15px}.identity h1{font-size:21px}.identity p{font-size:10px}.newChat{padding:10px}.newChat>span{display:none}.contextBar{padding:13px 15px;font-size:9px}.connectionState{font-size:8px}.connectionState svg{display:none}.chatPanel{height:calc(100dvh - 210px);min-height:590px;border-radius:15px}.thread{padding:26px 16px}.welcome{padding:0 0 10px}.mark{width:46px;height:46px;border-radius:14px}.mark svg{width:30px;height:30px}.welcomeBrand>span:last-child{font-size:40px}.welcome h2{font-size:30px}.intro{font-size:11px;margin-bottom:21px}.suggestions{gap:8px}.suggestions button{padding:12px 10px;gap:9px}.suggestionIcon{width:28px;height:28px;border-radius:8px}.suggestionIcon svg{width:16px}.suggestions strong{font-size:10px}.suggestions button>div>span{font-size:8px}.suggestions button>svg:last-child{display:none}.welcomeNote{font-size:8px;margin-top:17px}.composerArea{padding:10px 12px 13px}.composer{padding:12px 12px 9px}.composer textarea{font-size:16px}.count{display:none}.bubble>p,.answer{font-size:12px}.assistantMessage .bubble,.answerActions{padding-left:0}.dataCards,.sources{margin-left:0}.userMessage{max-width:92%}.userMessage .bubble{padding:12px 15px}.footnote{font-size:8px}.thinking{font-size:10px;gap:7px}.thinking>div{gap:7px}.thinkingDots{gap:3px}.answerActions{gap:14px}}
 @media(max-width:380px){.suggestions{grid-template-columns:1fr}.suggestions button>div>span{display:none}.welcome h2{font-size:27px}.welcomeNote{display:none}.intro{margin:12px auto 18px}.connectionState{max-width:135px}}
 @media(prefers-reduced-motion:reduce){.workspace *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* The empty state has intrinsic height; scrolling begins with the conversation. */
+.emptyWorkspace{padding-bottom:0}
+.emptyPanel{height:auto;min-height:0}
+.emptyThread{flex:none;overflow:visible;padding:clamp(28px,6dvh,56px) 20px 24px}
+.emptyThread .welcome{padding:0;max-width:600px}
+.emptyThread .greeting{margin-bottom:10px}
+.emptyThread .welcome h2{font-size:clamp(25px,3vw,34px);line-height:1.25}
+.quickPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px}
+.quickPrompts button{display:flex;align-items:center;gap:8px;border:1px solid var(--mys-line);border-radius:999px;background:transparent;color:hsl(var(--muted-foreground));padding:9px 13px;font-size:11px}
+.quickPrompts button:hover{background:var(--mys-soft);border-color:hsl(var(--primary)/.35);color:hsl(var(--foreground))}
+.quickPrompts svg{color:var(--mys-accent)}
+@media(max-width:750px){.emptyThread{padding:28px 14px 20px}.quickPrompts{margin-top:18px;gap:7px}.quickPrompts button{font-size:10px;padding:8px 10px}.emptyPanel .composerArea{padding-bottom:12px}.emptyPanel .composer textarea{resize:none}}
