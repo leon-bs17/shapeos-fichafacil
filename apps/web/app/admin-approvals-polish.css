@@ -319,10 +319,42 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/ap
 }
 
 html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-registration-date] {
-  color: #e2e8f0 !important;
+  color: #e5f0e9 !important;
 }
 
 html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-registration-date] {
   font-weight: 600 !important;
   font-variant-numeric: tabular-nums;
+}
+
+/* Detail surfaces and avatars follow the green palette in the dark theme. */
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-overlay] {
+  background: rgba(2, 12, 8, .35) !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] {
+  background: #101f1a !important;
+  border-color: #2c4037 !important;
+  color: #eff6f3 !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-details] {
+  background: #14261f !important;
+  border-color: #2c453a !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] p,
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-details] span[class*="text-slate-500"] {
+  color: #9fb7ab !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] button[aria-label="Fechar detalhes"] {
+  border-color: #2c453a !important;
+  color: #b3c9bd !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-avatar],
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div > div:first-child > div[data-approvals-avatar] {
+  background: linear-gradient(145deg, #306655, #204738) !important;
+  color: #f0faf4 !important;
 }

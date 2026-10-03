@@ -453,7 +453,7 @@ export default function AdminAprovacoesPage() {
               return (
                 <div key={personal.id} className="grid min-h-[78px] gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] md:items-center">
                   <div className="flex min-w-0 items-center gap-3.5">
-                    <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-[12px] font-semibold text-white shadow-[0_5px_12px_rgba(64,82,122,0.16)] ring-1 ring-[#5f74a3]/15 dark:bg-[linear-gradient(145deg,#5974a7,#344966)] dark:ring-white/10">
+                    <div data-approvals-avatar className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-[12px] font-semibold text-white shadow-[0_5px_12px_rgba(64,82,122,0.16)] ring-1 ring-[#5f74a3]/15 dark:bg-[linear-gradient(145deg,#5974a7,#344966)] dark:ring-white/10">
                       {iniciais(personal.nome, personal.email)}
                     </div>
                     <div className="min-w-0">
@@ -634,7 +634,7 @@ export default function AdminAprovacoesPage() {
       </div>
 
       {personalSelecionado ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-[2px]" onMouseDown={() => setPersonalSelecionado(null)}>
+        <div data-approvals-overlay className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-[2px]" onMouseDown={() => setPersonalSelecionado(null)}>
           <div
             role="dialog"
             aria-modal="true"
@@ -644,7 +644,7 @@ export default function AdminAprovacoesPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3.5">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-sm font-semibold text-white">
+                <div data-approvals-avatar className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-sm font-semibold text-white">
                   {iniciais(personalSelecionado.nome, personalSelecionado.email)}
                 </div>
                 <div className="min-w-0">
@@ -662,7 +662,7 @@ export default function AdminAprovacoesPage() {
               </button>
             </div>
 
-            <div className="mt-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-sm dark:border-white/10 dark:bg-white/[0.025]">
+            <div data-approvals-details className="mt-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-sm dark:border-white/10 dark:bg-white/[0.025]">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Data do cadastro</span>
                 <span data-approvals-registration-date className="font-semibold text-slate-800 dark:text-slate-200">{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</span>
