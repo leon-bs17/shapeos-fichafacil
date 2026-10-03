@@ -1,6 +1,6 @@
-/* Aprovações — arco em C da referência, exclusivo do modo escuro. */
-html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
-html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+/* Aprovações — mesmo arco vetorial em C nos modos claro e escuro. */
+html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
+html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
   content: none !important;
   display: none !important;
   background: none !important;
@@ -9,7 +9,7 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::
 
 /* SVG alinhado à direita e dimensionado pela altura do hero, sem distorção.
    A abertura fica no topo e a malha desaparece antes da frase à direita. */
-html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
   display: block !important;
   position: absolute !important;
   z-index: 1 !important;
@@ -36,12 +36,19 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child >
   filter: none !important;
 }
 
-html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > * {
+html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > * {
   display: none !important;
 }
 
+/* Somente a paleta varia: os dois assets têm a mesma geometria vetorial. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  background-image:
+    url('/approvals-wireframe-reference-light.svg?v=reference-c-1'),
+    radial-gradient(ellipse at 68% 90%, rgba(45, 154, 132, .055), transparent 70%) !important;
+}
+
 @media (max-width: 1199px) {
-  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     width: 75% !important;
     right: 0 !important;
     top: 0 !important;
@@ -50,7 +57,7 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child >
 }
 
 @media (max-width: 900px) {
-  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     width: 80% !important;
     right: -6% !important;
     top: 0 !important;
@@ -59,7 +66,7 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child >
 }
 
 @media (max-width: 767px) {
-  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  html:is(.dark, .light) [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     display: none !important;
   }
 }
