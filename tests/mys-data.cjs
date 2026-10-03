@@ -34,6 +34,7 @@ const personal=dataModule.createMysDataReader(db,{id:'personal-server-id',role:'
   assert.match(await personal.run('buscar_alunos','{"nome":"Teste","personal_id":"forged"}'),/Argumentos não permitidos/)
   assert.equal(queries.length,0)
   assert.match(await personal.run('consultar_aluno',JSON.stringify({aluno_id:id})),/fora do seu acesso/)
+  assert.equal(personal.cards.length,0)
   assert.equal(queries.length,1)
   assert.equal(queries[0].table,'personal_alunos')
   assert.ok(queries[0].ops.some(o=>o[0]==='eq'&&o[1]==='personal_id'&&o[2]==='personal-server-id'))
@@ -42,11 +43,15 @@ const personal=dataModule.createMysDataReader(db,{id:'personal-server-id',role:'
   assert.ok(queries[0].ops.some(o=>o[0]==='eq'&&o[1]==='status'&&o[2]==='ATIVO'))
   assert.ok(queries[0].ops.some(o=>o[0]==='eq'&&o[1]==='personal_id'&&o[2]==='personal-server-id'))
   queries.length=0
+  assert.equal(personal.cards[0].title,'Aluno Teste')
+  assert.match(personal.cards[0].prompt,new RegExp(id))
   assert.ok(JSON.parse(await personal.run('consultar_treino',JSON.stringify({treino_id:workoutId}))).dados.ficha)
   assert.ok(queries[0].ops.some(o=>o[0]==='eq'&&o[1]==='personal_id'&&o[2]==='personal-server-id'))
   assert.equal(queries[1].table,'personal_alunos')
   dbError=true
+  const cardsBeforeError=personal.cards.length
   assert.match(await personal.run('resumo_shapeos','{}'),/indisponível/)
+  assert.equal(personal.cards.length,cardsBeforeError)
   assert.doesNotMatch(await personal.run('consultar_aluno',JSON.stringify({aluno_id:id})),/private-db-error/)
   dbError=false;queries.length=0
   const admin=dataModule.createMysDataReader(db,{id:'admin-server-id',role:'ADMIN'},signal)
@@ -60,6 +65,7 @@ const personal=dataModule.createMysDataReader(db,{id:'personal-server-id',role:'
   const reply=await generator.generateMysReply({key:'fake',model:'deepseek-flash',role:'PERSONAL',messages:[{role:'user',content:'Quantos alunos tenho?'}],signal,reader:personal})
   assert.equal(reply.message,'Você tem 2 alunos vinculados.')
   assert.ok(reply.sources.includes('Resumo da ShapeOS'))
+  assert.equal(reply.cards.find(card=>card.kind==='summary').metrics[0].value,'2')
   assert.equal(requests[1].messages.at(-1).role,'tool')
   assert.match(requests[1].messages.at(-1).content,/alunosVinculadosAtivos/)
   console.log('Mys: consultas, vínculo ativo, IDs e argumentos, erros, contagens e ciclo de ferramentas validados.')

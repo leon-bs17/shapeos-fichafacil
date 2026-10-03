@@ -1,5 +1,6 @@
 import { mysInstructions, type MysMessage, type MysRole } from './contract'
 import { mysDataTools } from './data-tools'
+import type { MysDataCard } from './data-cards'
 
 type ToolCall = { id: string; type: 'function'; function: { name: string; arguments: string } }
 type ProviderMessage = { role: string; content: string | null; tool_calls?: ToolCall[]; tool_call_id?: string }
@@ -9,7 +10,7 @@ export class MysProviderError extends Error {
 
 export async function generateMysReply(options: {
   key: string; model: string; role: MysRole; messages: MysMessage[]; signal: AbortSignal
-  reader: { run(name: string, raw: string): Promise<string>; sources: Set<string> }
+  reader: { run(name: string, raw: string): Promise<string>; sources: Set<string>; cards: MysDataCard[] }
 }) {
   const conversation: ProviderMessage[] = [{ role: 'system', content: mysInstructions(options.role) }, ...options.messages]
   let calls = 0, dataBytes = 0
@@ -25,7 +26,7 @@ export async function generateMysReply(options: {
     const toolCalls = message?.tool_calls
     if (!Array.isArray(toolCalls) || !toolCalls.length) {
       if (typeof message?.content !== 'string' || !message.content.trim()) throw new MysProviderError(502)
-      return { message: message.content.trim(), truncated: result.choices[0].finish_reason === 'length', sources: [...options.reader.sources], consultedAt: options.reader.sources.size ? new Date().toISOString() : null }
+      return { message: message.content.trim(), truncated: result.choices[0].finish_reason === 'length', sources: [...options.reader.sources], cards: options.reader.cards, consultedAt: options.reader.sources.size ? new Date().toISOString() : null }
     }
     if (round === 3 || toolCalls.length > 6 || toolCalls.some(call => typeof call.id !== 'string' || call.id.length > 100 || call.type !== 'function' || typeof call.function?.name !== 'string' || typeof call.function?.arguments !== 'string')) throw new MysProviderError(502)
     conversation.push({ role:'assistant', content: typeof message.content === 'string' ? message.content : null, tool_calls:toolCalls })

@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { ArrowUp, ArrowUpRight, Check, Copy, Dumbbell, LoaderCircle, MessageCircle, Plus, RotateCcw, ShieldCheck, Square, Users, X } from 'lucide-react'
+import { ArrowUp, ArrowUpRight, Check, Copy, Dumbbell, MessageCircle, Plus, RotateCcw, ShieldCheck, Square, Users, X, Database, ChevronDown, Activity, CheckCheck } from 'lucide-react'
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
+import { MessageResponse } from '@/components/ai-elements/message'
+import type { MysDataCard } from '@/lib/mys/data-cards'
 import s from './mys.module.css'
 
-type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string }
+type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
 const prompts = {
   ADMIN: [
     { icon: ShieldCheck, title: 'Uma gestão mais clara', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
@@ -25,14 +27,11 @@ function MysMark({ small = false }: { small?: boolean }) {
   return <span className={small ? s.smallMark : s.mark} aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 29V11L20 25L33 11V29" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/><path d="M14 31L20 25L26 31" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
 }
 
-// Text-only rendering: model content never becomes raw HTML or executable links.
+// Links and remote images are intentionally rendered as plain text/omitted.
+// Markdown is presentation only; it cannot execute actions or render raw HTML.
+const markdownComponents = { a: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>, img: () => null }
 function Answer({ content }: { content: string }) {
-  return <div className={s.answer}>{content.split('\n').map((line, index) => {
-    const heading = /^#{1,4}\s/.test(line)
-    const text = line.replace(/^#{1,4}\s+/, '')
-    const parts = text.split(/(\*\*[^*]+\*\*)/g).map((part, i) => part.startsWith('**') && part.endsWith('**') ? <strong key={i}>{part.slice(2, -2)}</strong> : part)
-    return heading ? <h3 key={index}>{parts}</h3> : <p key={index}>{parts.length === 1 && parts[0] === '' ? '\u00a0' : parts}</p>
-  })}</div>
+  return <MessageResponse className={s.answer} mode="static" controls={false} skipHtml components={markdownComponents}>{content}</MessageResponse>
 }
 
 export function MysChat({ role, name, configured }: { role: MysRole; name: string; configured: boolean }) {
@@ -53,12 +52,12 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   useEffect(() => () => { controller.current?.abort(); if (copyTimer.current) clearTimeout(copyTimer.current) }, [])
   useEffect(() => { if (messages.length) end.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' }) }, [messages, loading])
 
-  async function send(retry = false) {
+  async function send(retry = false, regenerate = false) {
     if (busy.current || !configured) return
-    const previous = retry ? messages.slice(0, -1) : messages
-    const text = retry ? messages.at(-1)?.content || '' : draft.trim()
+    const previous = regenerate ? messages.slice(0, -2) : retry ? messages.slice(0, -1) : messages
+    const text = regenerate ? messages.at(-2)?.content || '' : retry ? messages.at(-1)?.content || '' : draft.trim()
     if (!text || text.length > 2000) return
-    if (!retry && messages.at(-1)?.role === 'user') return
+    if (!retry && !regenerate && messages.at(-1)?.role === 'user') return
     const next: Message[] = [...previous, { role: 'user', content: text, id: crypto.randomUUID() }]
     // Retain the latest nine completed exchanges plus this request.
     const context = next.slice(-19).map(({ role, content }) => ({ role, content }))
@@ -73,7 +72,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
       const result = await response.json()
       if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'Não foi possível enviar a mensagem.')
       if (typeof result.message !== 'string') throw new Error('A Mys não retornou uma resposta válida.')
-      setMessages([...next, { role: 'assistant', content: result.message, id: crypto.randomUUID(), truncated: Boolean(result.truncated), sources: Array.isArray(result.sources) ? result.sources.filter((source: unknown): source is string => typeof source === 'string') : [], consultedAt: typeof result.consultedAt === 'string' ? result.consultedAt : undefined }])
+      setMessages([...next, { role: 'assistant', content: result.message, id: crypto.randomUUID(), truncated: Boolean(result.truncated), sources: Array.isArray(result.sources) ? result.sources.filter((source: unknown): source is string => typeof source === 'string') : [], consultedAt: typeof result.consultedAt === 'string' ? result.consultedAt : undefined, cards: Array.isArray(result.cards) ? result.cards.slice(0, 8) : [] }])
     } catch (error) {
       if (abort.signal.aborted) setError('Resposta interrompida. Você pode tentar novamente ou editar a pergunta.')
       else setError(error instanceof Error ? error.message : 'Não foi possível conectar à Mys.')
@@ -90,23 +89,40 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   }
 
   return <section className={s.workspace} aria-label="Mys, assistente ShapeOS">
-    <header className={s.header}><div className={s.identity}><MysMark small/><div><h1>Mys<span>Assistente ShapeOS</span></h1><p>{admin ? 'Gestão, academia e novas perspectivas.' : 'Mais clareza para planejar e acompanhar.'}</p></div></div><button className={s.newChat} disabled={loading} onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={16}/><span>Nova conversa</span></button></header>
-    <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Espaço do administrador' : 'Espaço do personal'}</span><span className={s.connectionState}>{configured ? 'Pronta para conversar' : 'Aguardando conexão'}</span></div>
+    <header className={s.header}>
+      <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
+      <button className={s.newChat} disabled={loading} title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={16}/><span>Nova conversa</span></button>
+    </header>
     <div className={s.chatPanel}>
+      <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>
       <div className={s.thread} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
-        {!messages.length ? <div className={s.welcome}><div className={s.welcomeBrand}><MysMark/><span>mys<span className={s.brandDot}>.</span></span></div><p className={s.greeting}>Olá, {firstName}.</p><h2>{admin ? <>Um novo olhar<br/>para sua gestão.</> : <>Seu conhecimento.<br/>Uma força a mais.</>}</h2><p className={s.intro}>{admin ? 'Converse sobre academia, organize ideias e transforme informações em próximos passos.' : 'Explore ideias de treino, prepare orientações e pense no próximo passo de cada aluno.'}</p><div className={s.suggestions}>{prompts[role].map(({ icon: Icon, title, text }) => <button key={title} onClick={() => choose(text)}><Icon size={18}/><span>{title}</span><ArrowUpRight size={15}/></button>)}</div></div> : <div className={s.messages}>{messages.map(message => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>{message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span></div>}<div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>{message.role === 'assistant' && <div className={s.answerActions}><button onClick={() => void copy(message)} aria-label={copied === message.id ? 'Resposta copiada' : 'Copiar resposta'}>{copied === message.id ? <Check size={14}/> : <Copy size={14}/>} {copied === message.id ? 'Copiado' : 'Copiar'}</button>{Boolean(message.sources?.length) && <span title={message.sources?.join(' · ')}>Consultou a ShapeOS{message.consultedAt && !Number.isNaN(Date.parse(message.consultedAt)) ? ` às ${new Date(message.consultedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}</span>}{message.truncated && <span>Resposta atingiu o limite. Peça para continuar.</span>}</div>}</article>)}</div>}
-        {loading && <div className={s.thinking} role="status"><MysMark small/><LoaderCircle size={15} className={s.spin}/><span>Mys está preparando uma resposta…</span></div>}
+        {!messages.length ? <div className={s.welcome}>
+          <div className={s.welcomeBrand}><MysMark/><span>mys<span className={s.brandDot}>.</span></span></div>
+          <p className={s.greeting}>Olá, {firstName}.</p><h2>{admin ? <>Mais clareza.<br/><span>Melhores decisões.</span></> : <>Seu conhecimento.<br/><span>Uma força a mais.</span></>}</h2>
+          <p className={s.intro}>{admin ? 'Do panorama da plataforma ao próximo passo da sua gestão. Vamos olhar os dados juntos?' : 'Planeje treinos, acompanhe a evolução e encontre o próximo passo de cada aluno.'}</p>
+          <div className={s.suggestions}>{prompts[role].map(({ icon: Icon, title, text }, index) => <button key={title} onClick={() => choose(text)}><span className={s.suggestionIcon}><Icon size={19}/></span><div><strong>{title}</strong><span>{(admin ? ['Consulte os números da plataforma', 'Organize o acompanhamento dos alunos', 'Transforme informações em próximos passos', 'Explore conceitos e boas práticas'] : ['Organize objetivos e exercícios', 'Analise uma ficha com mais clareza', 'Consulte seus alunos na ShapeOS', 'Escreva com clareza e acolhimento'])[index]}</span></div><ArrowUpRight size={15}/></button>)}</div>
+          <div className={s.welcomeNote}><ShieldCheck size={13}/><span>Consultas de leitura, dentro do acesso da sua conta.</span></div>
+        </div> : <div className={s.messages}>{messages.map((message, index) => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>
+          {message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span><span className={s.answerLabel}>ASSISTENTE</span></div>}
+          <div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>
+          {message.role === 'assistant' && Boolean(message.cards?.length) && <div className={s.dataCards} aria-label="Dados consultados na ShapeOS">{message.cards?.map((card, cardIndex) => <div className={s.dataCard} key={`${card.kind}-${cardIndex}`}><div className={s.cardHeading}>{card.kind === 'student' ? <Users size={16}/> : card.kind === 'workout' ? <Dumbbell size={16}/> : <Activity size={16}/>}<span>{card.kind === 'student' ? 'ALUNO' : card.kind === 'workout' ? 'FICHA DE TREINO' : 'DADOS DA SHAPEOS'}</span><CheckCheck size={13}/></div><h3>{card.title}</h3><p>{card.detail}</p>{Boolean(card.metrics?.length) && <dl>{card.metrics?.map(metric => <div key={metric.label}><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}{card.prompt && <button disabled={loading || Boolean(error)} onClick={() => choose(card.prompt!)}>Explorar {card.kind === 'student' ? 'aluno' : 'ficha'}<ArrowUpRight size={13}/></button>}</div>)}</div>}
+          {message.role === 'assistant' && <>
+            {Boolean(message.sources?.length) && <details className={s.sources}><summary><Database size={13}/><span>Consultou {message.sources?.length} {message.sources?.length === 1 ? 'fonte' : 'fontes'} da ShapeOS</span><ChevronDown size={13}/></summary><ul>{message.sources?.map(source => <li key={source}><Check size={12}/>{source}</li>)}</ul>{message.consultedAt && !Number.isNaN(Date.parse(message.consultedAt)) && <p>Consulta às {new Date(message.consultedAt).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}. Os dados podem mudar.</p>}</details>}
+            <div className={s.answerActions}><button onClick={() => void copy(message)} aria-label={copied === message.id ? 'Resposta copiada' : 'Copiar resposta'}>{copied === message.id ? <Check size={14}/> : <Copy size={14}/>} {copied === message.id ? 'Copiado' : 'Copiar'}</button>{index === messages.length - 1 && <button disabled={loading} onClick={() => void send(false, true)}><RotateCcw size={14}/>Refazer</button>}{message.truncated && <span>Peça para continuar a resposta.</span>}</div>
+          </>}
+        </article>)}</div>}
+        {loading && <div className={s.thinking} role="status"><MysMark small/><div><span>Mys está preparando uma resposta</span><div className={s.thinkingDots}><i/><i/><i/></div></div></div>}
         <div ref={end}/>
       </div>
       <div className={s.composerArea}>
         {confirmClear && <div className={s.confirm} role="alert"><span>Começar outra conversa? As mensagens atuais serão descartadas.</span><button onClick={clear}>Começar</button><button onClick={() => setConfirmClear(false)} aria-label="Manter conversa"><X size={16}/></button></div>}
-        {!configured && <div className={s.setup}><span className={s.dot}/><p>A Mys está sendo conectada. Você já pode explorar as sugestões e preparar sua primeira pergunta.</p></div>}
+        {!configured && <div className={s.setup}><span className={s.dot}/><p>A Mys está sendo conectada. Você já pode preparar sua primeira pergunta.</p></div>}
         {error && <div className={s.error} role="alert"><p>{error}</p><div><button onClick={() => void send(true)}><RotateCcw size={14}/> Tentar novamente</button><button onClick={editQuestion}>Editar pergunta</button></div></div>}
         {notice && <p className={s.notice} role="status">{notice}</p>}
-        <form className={s.composer} onSubmit={submit}><label className={s.srOnly} htmlFor="mys-message">Mensagem para a Mys</label><textarea id="mys-message" ref={input} rows={2} maxLength={2000} value={draft} onChange={event => setDraft(event.target.value)} placeholder={admin ? 'O que vamos organizar hoje?' : 'O que vamos desenvolver hoje?'} disabled={loading || Boolean(error)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send() } }}/><div className={s.composerBottom}><span><MessageCircle size={13}/><span>Conversa temporária</span></span><div><span className={s.count}>{draft.length}/2000</span>{loading ? <button className={s.send} type="button" onClick={() => controller.current?.abort()} aria-label="Interromper resposta"><Square size={16}/></button> : <button className={s.send} type="submit" disabled={!configured || !draft.trim() || Boolean(error)} aria-label="Enviar mensagem"><ArrowUp size={19}/></button>}</div></div></form>
+        <form className={s.composer} onSubmit={submit}><label className={s.srOnly} htmlFor="mys-message">Mensagem para a Mys</label><textarea id="mys-message" ref={input} rows={2} maxLength={2000} value={draft} onChange={event => setDraft(event.target.value)} placeholder={admin ? 'Pergunte sobre sua gestão ou os dados da ShapeOS…' : 'Pergunte sobre treinos, fichas ou seus alunos…'} disabled={loading || Boolean(error)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send() } }}/><div className={s.composerBottom}><span><MessageCircle size={13}/><span>Conversa temporária</span></span><div><span className={s.count}>{draft.length > 1500 ? `${draft.length}/2000` : 'Enter para enviar'}</span>{loading ? <button className={s.send} type="button" onClick={() => controller.current?.abort()} aria-label="Interromper resposta"><Square size={16}/></button> : <button className={s.send} type="submit" disabled={!configured || !draft.trim() || Boolean(error)} aria-label="Enviar mensagem"><ArrowUp size={19}/></button>}</div></div></form>
         <p className={s.footnote}>Mys pode cometer erros. Revise as sugestões antes de aplicar.</p>
       </div>
     </div>
-    <details className={s.scope}><summary>O que a Mys pode fazer neste espaço?</summary><p>{admin ? 'Consultar contagens gerais da plataforma, buscar alunos e analisar suas fichas, sessões e avaliações.' : 'Consultar seus alunos com vínculo ativo, suas fichas e a evolução registrada para ajudar no planejamento e acompanhamento.'} A Mys consulta apenas os dados permitidos para sua conta e não altera fichas nem contas. As mensagens e os dados necessários para responder são enviados à DeepSeek e ficam visíveis nesta página até você sair ou iniciar outra conversa.</p></details>
+    <details className={s.scope}><summary><ShieldCheck size={13}/>Seu espaço, seus dados<ChevronDown size={13}/></summary><p>{admin ? 'Consulte contagens gerais, alunos, fichas, sessões e avaliações.' : 'Consulte seus alunos com vínculo ativo, suas fichas e a evolução registrada.'} A Mys tem acesso de leitura, limitado às permissões da sua conta. As mensagens e os dados necessários para responder são enviados à DeepSeek. Esta conversa fica na página até você sair ou começar outra.</p></details>
   </section>
 }

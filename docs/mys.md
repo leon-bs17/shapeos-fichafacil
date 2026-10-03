@@ -22,6 +22,12 @@ Sem a chave, a interface permite preparar perguntas e mostra que a conexão est�
 - Existe proteção contra rajadas por usuário e instância (8 chamadas/minuto). Não é uma cota distribuída de custos. Uma cota compartilhada deve acompanhar a expansão futura da integração.
 - O conteúdo retornado é renderizado como texto e formatação limitada, nunca como HTML bruto.
 
+## Interface
+
+Mys usa o componente MessageResponse do registro oficial AI Elements, adaptado e com atribuição Apache-2.0 em docs/licenses/ai-elements.txt. Streamdown renderiza Markdown, listas e tabelas sem HTML bruto ou imagens externas. O campo de mensagem e a organização seguem referências do Prompt Kit e assistant-ui, com visual integrado aos temas da ShapeOS.
+
+Consultas bem-sucedidas retornam até oito cartões produzidos pelo servidor a partir dos mesmos dados autorizados: indicadores, alunos e fichas. Fontes e horário aparecem junto da resposta. Explorar um cartão prepara uma pergunta para o usuário enviar. A conversa permite copiar a resposta, refazer a última e começar novamente; não há histórico persistente.
+
 ## Validação
 
 Execute `node tests/mys-api.cjs`, `node tests/mys-data.cjs` e `node tests/mys-middleware.cjs` na raiz. Os testes usam um provedor simulado e cobrem autorização por perfil, origem, mensagens inválidas, tamanhos, chave ausente, falhas do provedor, rate limit e escopo obtido do servidor. Eles não atestam uma chamada paga real à DeepSeek.

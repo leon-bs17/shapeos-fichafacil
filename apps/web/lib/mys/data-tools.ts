@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { MysRole } from './contract'
+import type { MysDataCard } from './data-cards'
 
 export const mysDataTools = [
   { name: 'resumo_shapeos', description: 'Consulta contagens atuais. Admin: usuários por perfil e status, fichas e sessões nos últimos 30 dias. Personal: seus vínculos ativos e suas fichas.', properties: {}, required: [] },
@@ -17,6 +18,7 @@ type CountQuery = PromiseLike<{ count: number | null; error: unknown }> & { abor
 export function createMysDataReader(db: SupabaseClient, access: { id: string; role: MysRole }, signal: AbortSignal) {
   const admin = access.role === 'ADMIN'
   const sources = new Set<string>()
+  const cards: MysDataCard[] = []
   const timed = <T extends { abortSignal(signal: AbortSignal): T }>(query: T) => query.abortSignal(signal)
   const checked = (result: { data: unknown; error: unknown }) => {
     if (result.error) throw new Error('Não foi possível consultar estes dados. Não interprete como resultado vazio.')
@@ -41,6 +43,7 @@ export function createMysDataReader(db: SupabaseClient, access: { id: string; ro
       const allowedArgs = new Set<string>(definition.function.parameters.required)
       if (Object.keys(args).some(key => !allowedArgs.has(key))) throw new Error('Argumentos não permitidos.')
       let data: unknown
+      const pendingCards: MysDataCard[] = []
       if (name === 'resumo_shapeos') {
         if (admin) {
           const queries = [
@@ -51,12 +54,14 @@ export function createMysDataReader(db: SupabaseClient, access: { id: string; ro
           ]
           const [admins, personals, alunos, ativos, pendentes, bloqueados, fichasAtivas, sessoesConcluidas30Dias] = await Promise.all(queries)
           data = { usuarios: { admins, personals, alunos, ativos, pendentes, bloqueados }, fichasAtivas, sessoesConcluidas30Dias }
+          pendingCards.push({ kind:'summary', title:'Panorama da ShapeOS', detail:'Dados atuais da plataforma', metrics:[{label:'Alunos',value:String(alunos)},{label:'Personals',value:String(personals)},{label:'Fichas ativas',value:String(fichasAtivas)},{label:'Sessões em 30 dias',value:String(sessoesConcluidas30Dias)}] })
         } else {
           const [alunosVinculadosAtivos, fichasAtivas] = await Promise.all([
             count(db.from('personal_alunos').select('id', { count: 'exact', head: true }).eq('personal_id', access.id).eq('status', 'ATIVO')),
             count(db.from('treinos').select('id', { count: 'exact', head: true }).eq('personal_id', access.id).eq('ativo', true)),
           ])
           data = { alunosVinculadosAtivos, fichasAtivas, escopo: 'Somente seus vínculos e suas fichas.' }
+          pendingCards.push({ kind:'summary',title:'Seu acompanhamento',detail:'Seus vínculos e suas fichas',metrics:[{label:'Alunos vinculados',value:String(alunosVinculadosAtivos)},{label:'Fichas ativas',value:String(fichasAtivas)}] })
         }
       } else if (name === 'buscar_alunos') {
         if (typeof args.nome !== 'string' || args.nome.length > 80) throw new Error('Nome inválido.')
@@ -64,10 +69,15 @@ export function createMysDataReader(db: SupabaseClient, access: { id: string; ro
         if (admin) {
           const result = await timed(db.from('usuarios').select('id,nome,status_conta', { count: 'exact' }).eq('tipo', 'ALUNO').ilike('nome', pattern).order('nome').order('id').limit(20))
           data = { alunos: checked(result), total: result.count, limite: 20 }
+          for (const aluno of (result.data || []).slice(0,4)) pendingCards.push({kind:'student',title:aluno.nome,detail:`Conta ${String(aluno.status_conta).toLowerCase()}`,prompt:`Consulte no banco o aluno ${aluno.id} e resuma suas fichas e evolução registrada.`})
         } else {
           const result = await timed(db.from('personal_alunos').select('aluno:usuarios!personal_alunos_aluno_id_fkey!inner(id,nome,status_conta)', { count: 'exact' }).eq('personal_id', access.id).eq('status', 'ATIVO').ilike('aluno.nome', pattern).order('aluno_id').limit(20))
           checked(result)
           data = { alunos: (result.data || []).map(row => row.aluno), total: result.count, limite: 20 }
+          for (const row of (result.data || []).slice(0,4)) {
+            const aluno = Array.isArray(row.aluno) ? row.aluno[0] : row.aluno
+            if (aluno) pendingCards.push({kind:'student',title:aluno.nome,detail:`Conta ${String(aluno.status_conta).toLowerCase()}`,prompt:`Consulte no banco o aluno ${aluno.id} e resuma suas fichas e evolução registrada.`})
+          }
         }
       } else if (name === 'consultar_aluno') {
         if (typeof args.aluno_id !== 'string' || !uuid.test(args.aluno_id)) throw new Error('ID de aluno inválido.')
@@ -84,6 +94,7 @@ export function createMysDataReader(db: SupabaseClient, access: { id: string; ro
           timed(db.from('agenda_treino').select('treino_id,data').eq('aluno_id',args.aluno_id).gte('data',new Date().toISOString().slice(0,10)).order('data').limit(10)),
         ])
         data = { aluno, fichas: checked(fichas), totalFichas: fichas.count, sessoesRecentes: checked(sessoes), avaliacoesRecentes: checked(avaliacoes), proximosAgendamentos: checked(agenda), limites: { fichas:20, sessoes:10, avaliacoes:5, agenda:10 } }
+        for (const ficha of (fichas.data || []).slice(0,3)) pendingCards.push({kind:'workout',title:ficha.titulo,detail:ficha.ativo ? 'Ficha ativa' : 'Ficha inativa',prompt:`Consulte a ficha ${ficha.id} e analise seus exercícios e prescrição.`})
       } else {
         if (typeof args.treino_id !== 'string' || !uuid.test(args.treino_id)) throw new Error('ID de treino inválido.')
         let query = db.from('treinos').select('id,aluno_id,titulo,ativo').eq('id',args.treino_id)
@@ -94,14 +105,16 @@ export function createMysDataReader(db: SupabaseClient, access: { id: string; ro
         await allowedStudent(result.data.aluno_id)
         const items = await timed(db.from('itens_treino').select('series,repeticoes,descanso_segundos,ordem,exercicio:exercicios(nome,grupo_muscular,equipamento),prescricao:prescricoes_treino(carga_alvo,duracao_segundos,rpe_alvo,superset,aquecimento,incremento_kg)', { count:'exact' }).eq('treino_id',args.treino_id).order('ordem').limit(50))
         data = { ficha: result.data, exercicios: checked(items), totalExercicios: items.count, limite:50 }
+        pendingCards.push({kind:'workout',title:result.data.titulo,detail:result.data.ativo ? 'Ficha ativa' : 'Ficha inativa',metrics:[{label:'Exercícios',value:String(items.count ?? (items.data || []).length)}]})
       }
       const output = JSON.stringify({ consultadoEm: new Date().toISOString(), escopo: admin ? 'ADMIN' : 'PERSONAL: seus alunos e treinos', dados: data })
       if (output.length > 32000) throw new Error('Resultado grande demais. Faça uma consulta mais específica.')
       sources.add(labels[name])
+      for (const card of pendingCards) if (cards.length < 8 && !cards.some(existing => existing.kind === card.kind && existing.title === card.title && existing.detail === card.detail && existing.prompt === card.prompt)) cards.push(card)
       return output
     } catch (error) {
       return JSON.stringify({ erro: error instanceof Error && !/JSON/.test(error.message) ? error.message : 'Consulta inválida.', dados: null })
     }
   }
-  return { run, sources }
+  return { run, sources, cards }
 }

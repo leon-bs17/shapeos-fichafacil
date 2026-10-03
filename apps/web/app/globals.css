@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
+@source "../node_modules/streamdown/dist/*.js";
 
 @theme inline {
     --color-background: hsl(var(--background));
