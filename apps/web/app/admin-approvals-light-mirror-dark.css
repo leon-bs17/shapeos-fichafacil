@@ -1,173 +1,590 @@
-/* Aprovações — paridade de layout entre claro e escuro.
-   O modo escuro continua sendo a referência estrutural, mas este arquivo só
-   corrige diferenças reais de geometria que ainda existiam no light.
+/*
+ * APROVAÇÕES — camada final de produção
+ * -------------------------------------
+ * Esta folha é carregada por último e é a fonte de verdade visual da página.
+ * A geometria é única entre claro e escuro; o tema muda somente a paleta.
+ * Referência de desktop: 1600 × 900, sidebar 256 px e conteúdo ~1270 px.
+ */
 
-   Regra: NÃO altera paleta. Nada de background, color, border-color ou shadow.
-   Também não sobrescreve transform/translate/rotate dos elementos do JSX,
-   evitando somar transformações do Tailwind e causar cortes/deslocamentos.
-*/
+html.light [data-admin-route="/admin/aprovacoes"] {
+  --ap-hero-a: #fcfdf9;
+  --ap-hero-b: #fafcf7;
+  --ap-hero-c: #f3f8f3;
+  --ap-hero-border: rgba(20, 143, 137, .20);
+  --ap-hero-shadow: 0 14px 36px rgba(22, 38, 35, .035);
+  --ap-pending-a: #fff9e9;
+  --ap-pending-b: #fbfcf7;
+  --ap-pending-c: #f4f6ee;
+  --ap-pending-border: rgba(205, 145, 24, .46);
+  --ap-pending-icon-bg: #f3ead0;
+  --ap-pending-icon: #d29300;
+  --ap-approved-a: #eefaf5;
+  --ap-approved-b: #fafcf8;
+  --ap-approved-c: #f3f7f2;
+  --ap-approved-border: rgba(20, 143, 137, .30);
+  --ap-approved-icon-bg: #dcefe8;
+  --ap-approved-icon: #0c9d91;
+  --ap-panel: rgba(255, 255, 255, .72);
+  --ap-panel-strong: rgba(255, 255, 255, .90);
+  --ap-line: #d8e1de;
+  --ap-line-soft: #e7ece9;
+}
 
-/* TOPO / BREADCRUMB ------------------------------------------------------ */
+html.dark [data-admin-route="/admin/aprovacoes"] {
+  --ap-hero-a: #0d1917;
+  --ap-hero-b: #101d19;
+  --ap-hero-c: #10241f;
+  --ap-hero-border: rgba(77, 221, 198, .27);
+  --ap-hero-shadow: 0 16px 38px rgba(2, 8, 7, .12);
+  --ap-pending-a: #101713;
+  --ap-pending-b: #141916;
+  --ap-pending-c: #171912;
+  --ap-pending-border: rgba(199, 149, 35, .34);
+  --ap-pending-icon-bg: #232216;
+  --ap-pending-icon: #f2b90e;
+  --ap-approved-a: #0e1c1a;
+  --ap-approved-b: #0e211e;
+  --ap-approved-c: #0e2521;
+  --ap-approved-border: rgba(77, 221, 198, .24);
+  --ap-approved-icon-bg: #102c26;
+  --ap-approved-icon: #45d9c1;
+  --ap-panel: rgba(18, 32, 27, .82);
+  --ap-panel-strong: rgba(17, 31, 26, .96);
+  --ap-line: rgba(142, 181, 167, .16);
+  --ap-line-soft: rgba(142, 181, 167, .105);
+}
+
+/* TOPO — o sino não cria uma segunda linha no layout. */
+[data-admin-route="/admin/aprovacoes"] main > div {
+  position: relative !important;
+}
+
 @media (min-width: 1024px) {
-  html.light [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
+  [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
     display: flex !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 16px !important;
+  }
+
+  [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) {
+    position: absolute !important;
+    z-index: 30 !important;
+    top: -1px !important;
+    right: 0 !important;
+    width: auto !important;
+    height: 56px !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) > form {
+    display: none !important;
+  }
+
+  [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) > a {
+    width: 56px !important;
+    height: 56px !important;
+    transform: none !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] {
+    padding-top: 14px !important;
   }
 }
 
-/* HERO ------------------------------------------------------------------ */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
-  min-height: 226px !important;
+/* Ritmo vertical da referência: 18 px entre blocos. */
+[data-admin-content="/admin/aprovacoes"] > div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  padding-bottom: 32px !important;
 }
 
-/* O dark final não usa as três camadas decorativas originais do JSX. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(1),
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2),
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+[data-admin-content="/admin/aprovacoes"] > div > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0 !important;
+}
+
+/* HERO */
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  box-sizing: border-box !important;
+  min-height: 220px !important;
+  height: 220px !important;
+  padding: 36px 40px !important;
+  overflow: hidden !important;
+  border-width: 1px !important;
+  border-color: var(--ap-hero-border) !important;
+  border-radius: 24px !important;
+  background: linear-gradient(112deg, var(--ap-hero-a) 0%, var(--ap-hero-b) 54%, var(--ap-hero-c) 100%) !important;
+  box-shadow: var(--ap-hero-shadow) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(1),
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2),
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
   display: none !important;
 }
 
-/* Referência final: o wireframe aparece nos dois modos com a mesma geometria.
-   Aqui restauramos no light somente a composição visual clara; dimensões e
-   posição espelham o dark, enquanto as cores continuam sendo as do tema claro. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(4) {
+  position: relative !important;
+  z-index: 5 !important;
+  max-width: 650px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(4) > div:first-child {
+  margin-bottom: 14px !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  letter-spacing: .24em !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  margin: 0 !important;
+  font-size: clamp(2.65rem, 3.25vw, 3.30rem) !important;
+  font-weight: 900 !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 + p {
+  max-width: 520px !important;
+  margin-top: 14px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child {
+  width: 31% !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  right: 22px !important;
+  width: 305px !important;
+  font-size: clamp(2rem, 2.55vw, 2.65rem) !important;
+  line-height: .91 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child span:last-child {
+  width: 112px !important;
+  height: 4px !important;
+  margin-top: 12px !important;
+}
+
+/* Claro: sem o círculo/wireframe, conforme decisão atual. */
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
+html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Escuro: wireframe editorial da referência. */
+html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
   content: "" !important;
   display: block !important;
   position: absolute !important;
   z-index: 1 !important;
   width: 470px !important;
   height: 470px !important;
-  left: auto !important;
-  right: 17% !important;
-  top: -164px !important;
-  bottom: auto !important;
+  right: 18% !important;
+  top: -166px !important;
   border: 0 !important;
   border-radius: 50% !important;
-  pointer-events: none !important;
   opacity: .42 !important;
+  pointer-events: none !important;
   transform: rotate(-8deg) scaleX(1.28) !important;
   background:
-    repeating-radial-gradient(circle at 50% 50%,
-      transparent 0 14px,
-      rgba(45,154,132,.23) 15px 16px,
-      transparent 17px 28px),
-    repeating-conic-gradient(from 8deg at 50% 50%,
-      rgba(45,154,132,.13) 0 .7deg,
-      transparent .9deg 10deg) !important;
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 14px, rgba(77,221,198,.34) 15px 16px, transparent 17px 28px),
+    repeating-conic-gradient(from 8deg at 50% 50%, rgba(77,221,198,.30) 0 .7deg, transparent .9deg 10deg) !important;
   -webkit-mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
   mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
-  filter: none !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
   content: "" !important;
   display: block !important;
   position: absolute !important;
   z-index: 0 !important;
   width: 520px !important;
   height: 280px !important;
-  left: auto !important;
   right: 7% !important;
   top: -34px !important;
-  bottom: auto !important;
   border: 0 !important;
   border-radius: 50% !important;
   pointer-events: none !important;
-  transform: none !important;
-  background: radial-gradient(ellipse, rgba(45,154,132,.08), transparent 68%) !important;
+  background: radial-gradient(ellipse, rgba(47,148,116,.15), transparent 68%) !important;
   filter: blur(10px) !important;
 }
 
-/* Mesmas métricas tipográficas do dark. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
-  font-size: clamp(2.35rem, 3.6vw, 3.15rem) !important;
-  line-height: .98 !important;
-  letter-spacing: -.055em !important;
+/* CARDS DE RESUMO */
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) {
+  gap: 16px !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 + p {
-  width: auto !important;
-  max-width: 520px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
+  box-sizing: border-box !important;
+  min-height: 120px !important;
+  height: 120px !important;
+  overflow: hidden !important;
+  border-width: 1px !important;
+  border-radius: 18px !important;
+  transform: none !important;
 }
 
-/* Mesma área disponível para a frase manuscrita. A posição vertical,
-   translate e rotação ficam a cargo das classes do próprio JSX — exatamente
-   como no dark — para evitar a dupla transformação que estava cortando o texto. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child {
-  width: 27% !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:hover {
+  transform: none !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
-  right: 1.1rem !important;
-  width: 275px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  border-color: var(--ap-pending-border) !important;
+  background: linear-gradient(108deg, var(--ap-pending-a) 0%, var(--ap-pending-b) 52%, var(--ap-pending-c) 100%) !important;
+  box-shadow: 0 10px 28px rgba(10, 26, 21, .035) !important;
 }
 
-/* CARDS PENDENTES / SÓ APROVADOS --------------------------------------- */
-html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
-  min-height: 130px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  border-color: var(--ap-approved-border) !important;
+  background: linear-gradient(108deg, var(--ap-approved-a) 0%, var(--ap-approved-b) 52%, var(--ap-approved-c) 100%) !important;
+  box-shadow: 0 10px 28px rgba(10, 26, 21, .035) !important;
 }
 
-/* O dark efetivo usa 64px nos dois boxes de ícone. Replica somente a medida;
-   as cores do claro permanecem vindo de admin-approvals-cards-reference.css. */
-html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] {
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div > div {
+  box-sizing: border-box !important;
+  height: 100% !important;
+  padding: 22px 24px !important;
+  gap: 18px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] {
   box-sizing: border-box !important;
   width: 64px !important;
   height: 64px !important;
   flex: 0 0 64px !important;
+  border: 0 !important;
   border-radius: 16px !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] svg {
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
+  background: var(--ap-pending-icon-bg) !important;
+  color: var(--ap-pending-icon) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
+  background: var(--ap-approved-icon-bg) !important;
+  color: var(--ap-approved-icon) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] svg {
   width: 28px !important;
   height: 28px !important;
+  color: currentColor !important;
   stroke-width: 1.8 !important;
+  filter: none !important;
+  transform: none !important;
 }
 
-/* ESTADO VAZIO ---------------------------------------------------------- */
-html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
-  min-height: 382px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p {
+  line-height: 1.25 !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
-  width: 78px !important;
-  height: 78px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p:first-child {
+  font-size: 12px !important;
+  font-weight: 600 !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p[class*="text-3xl"] {
+  margin-top: 2px !important;
+  font-size: 30px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p[class*="text-2xl"] {
+  margin-top: 2px !important;
+  font-size: 25px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p:last-child {
+  margin-top: 2px !important;
+  font-size: 12px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div > div > svg:last-child {
+  width: 19px !important;
+  height: 19px !important;
+  opacity: .80 !important;
+}
+
+/* BUSCA + FILTROS */
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) {
+  box-sizing: border-box !important;
+  min-height: 112px !important;
+  padding: 16px 20px 14px !important;
+  border-width: 1px !important;
+  border-color: var(--ap-line) !important;
+  border-radius: 22px !important;
+  background: var(--ap-panel) !important;
+  box-shadow: 0 8px 24px rgba(10, 26, 21, .035) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) > div:first-child {
+  gap: 14px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) label:has(input) {
+  height: 48px !important;
+  border-radius: 16px !important;
+  border-color: var(--ap-line) !important;
+  box-shadow: none !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) input {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) div[aria-label="Filtros de cadastro"] {
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) div[aria-label="Filtros de cadastro"] > button,
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) div[aria-label="Filtros de cadastro"] > label {
+  height: 48px !important;
+  border-radius: 16px !important;
+  white-space: nowrap !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) > div:last-child {
+  margin-top: 12px !important;
+  min-height: 14px !important;
+  font-size: 11px !important;
+  line-height: 14px !important;
+}
+
+/* TABELA */
+[data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) {
+  border-width: 1px !important;
+  border-color: var(--ap-line) !important;
+  border-radius: 22px !important;
+  background: var(--ap-panel) !important;
+  box-shadow: 0 8px 24px rgba(10, 26, 21, .025) !important;
+}
+
+@media (min-width: 768px) {
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:first-child {
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 20px !important;
+    align-items: center !important;
+    grid-template-columns: minmax(0,1.25fr) minmax(0,1.55fr) 185px 140px 170px !important;
+    gap: 16px !important;
+    border-bottom-color: var(--ap-line) !important;
+    font-size: 10px !important;
+    letter-spacing: .12em !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div {
+    box-sizing: border-box !important;
+    min-height: 54px !important;
+    height: 54px !important;
+    padding: 6px 20px !important;
+    grid-template-columns: minmax(0,1.25fr) minmax(0,1.55fr) 185px 140px 170px !important;
+    gap: 16px !important;
+    align-items: center !important;
+    border-color: var(--ap-line-soft) !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div > div:first-child > div:first-child {
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    font-size: 11px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div p {
+    line-height: 1.2 !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div > div:first-child p:first-child {
+    font-size: 13px !important;
+    font-weight: 650 !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div > p {
+    font-size: 12px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) span[class*="rounded-full"] {
+    min-width: 84px !important;
+    height: 30px !important;
+    padding: 0 12px !important;
+    font-size: 11px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) button[class*="min-w-[116px]"] {
+    min-width: 92px !important;
+    height: 36px !important;
+    border-radius: 12px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) button[class*="w-10"] {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 11px !important;
+  }
+}
+
+[data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div:last-child {
+  min-height: 50px !important;
+  padding: 9px 20px !important;
+  border-top-color: var(--ap-line) !important;
+  font-size: 11px !important;
+}
+
+/* CARDS INFORMATIVOS INFERIORES */
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] {
+  gap: 12px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div {
+  min-height: 96px !important;
+  border-width: 1px !important;
+  border-color: var(--ap-line) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 18px rgba(10,26,21,.025) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div > div {
+  min-height: 96px !important;
+  padding: 18px !important;
+  gap: 14px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div div[class*="place-items-center"] {
+  width: 46px !important;
+  height: 46px !important;
+  flex: 0 0 46px !important;
+  border-radius: 13px !important;
+  transform: none !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div p:first-child {
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div p:last-child {
+  margin-top: 3px !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
+/* ESTADO VAZIO */
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
+  min-height: 330px !important;
+  padding: 34px 24px !important;
+  border-radius: 22px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  width: 80px !important;
+  height: 80px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
   font-size: 2rem !important;
+  line-height: 1 !important;
 }
 
-html.light [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
   min-width: 292px !important;
 }
 
-/* RESPONSIVIDADE -------------------------------------------------------- */
+/* SIDEBAR — refinamento somente na rota Aprovações. */
+[data-admin-route="/admin/aprovacoes"] .shapeos-navigation a[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--shapeos-brand) 26%, transparent) !important;
+  background: color-mix(in srgb, var(--shapeos-brand) 8%, transparent) !important;
+}
+
+[data-admin-route="/admin/aprovacoes"] .shapeos-navigation nav a {
+  min-height: 42px !important;
+}
+
+/* RESPONSIVIDADE */
 @media (max-width: 1199px) {
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
-    right: 6% !important;
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child {
+    width: 34% !important;
+  }
+
+  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    right: 7% !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) > form {
+    display: none !important;
+  }
+
+  [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) {
+    justify-content: flex-end !important;
+    margin-bottom: 14px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] > div {
+    gap: 14px !important;
   }
 }
 
 @media (max-width: 767px) {
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
     min-height: 220px !important;
+    height: auto !important;
+    padding: 28px 24px !important;
+    border-radius: 22px !important;
   }
 
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
     font-size: 2.15rem !important;
   }
 
-  html.light [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
-    width: 320px !important;
-    height: 320px !important;
-    right: -120px !important;
-    top: -108px !important;
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 + p {
+    font-size: 14px !important;
   }
 
-  /* Em telas estreitas preserva o respiro original dos cards sem forçar
-     larguras de desktop. */
-  html.light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] {
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child,
+  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
+  html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+    display: none !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
+    height: auto !important;
+    min-height: 108px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div > div {
+    padding: 18px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] {
     width: 56px !important;
     height: 56px !important;
     flex-basis: 56px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) {
+    min-height: 0 !important;
+    padding: 14px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(input[aria-label="Buscar cadastros na página Aprovações"]) div[aria-label="Filtros de cadastro"] {
+    flex-wrap: wrap !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section:has(> div.divide-y) > div.divide-y > div {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 16px !important;
   }
 }
