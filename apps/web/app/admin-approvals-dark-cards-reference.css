@@ -1,20 +1,25 @@
 /* Aprovações — ajuste fino dos dois cards de resumo no modo escuro.
-   Valores calibrados a partir da referência aprovada para reproduzir a mesma
-   profundidade, direção de luz e família cromática, sem tocar no modo claro. */
+   Calibração visual contra a referência aprovada. O objetivo aqui é manter
+   a geometria e os ícones atuais e corrigir apenas a distribuição da luz e
+   dos tons do fundo, sem alterar o modo claro. */
 
 /* PENDENTES ---------------------------------------------------------
-   A referência parte de um verde-preto (~#111916) e aquece suavemente até
-   oliva escuro (~#191c15), com âmbar concentrado apenas próximo ao ícone. */
+   Referência: quase preto/verde no lado esquerdo, aquecimento muito sutil
+   ao longo do card e âmbar restrito à região do ícone. */
 .dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child,
 .dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:first-child {
-  border-color: rgba(214, 161, 39, .40) !important;
+  border-color: rgba(214, 161, 39, .36) !important;
   background:
-    radial-gradient(circle at 10% 50%, rgba(218, 166, 43, .115) 0%, rgba(218, 166, 43, .055) 19%, transparent 42%),
-    radial-gradient(circle at 92% 18%, rgba(115, 126, 57, .035) 0%, transparent 34%),
-    linear-gradient(108deg, #111916 0%, #121b17 34%, #151c16 68%, #191c15 100%) !important;
+    radial-gradient(ellipse 30% 115% at 7% 50%, rgba(218, 166, 43, .040) 0%, rgba(218, 166, 43, .018) 36%, transparent 70%),
+    linear-gradient(108deg,
+      #141c16 0%,
+      #151c16 30%,
+      #161c16 58%,
+      #181d15 82%,
+      #1a1d15 100%) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .018),
-    0 14px 34px rgba(0, 0, 0, .10) !important;
+    inset 0 1px 0 rgba(255, 255, 255, .014),
+    0 12px 28px rgba(0, 0, 0, .075) !important;
 }
 
 .dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"],
@@ -32,18 +37,22 @@
 }
 
 /* SÓ APROVADOS ------------------------------------------------------
-   A referência é mais verde e luminosa que a implementação anterior:
-   começa em ~#0e1d1c e termina perto de #0f221e, sem cair para navy. */
+   Referência: petróleo/teal escuro muito uniforme. O teal atua como matiz,
+   não como spotlight; por isso a luz radial fica pequena e curta. */
 .dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child,
 .dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div:last-child {
-  border-color: rgba(77, 221, 198, .29) !important;
+  border-color: rgba(77, 221, 198, .25) !important;
   background:
-    radial-gradient(circle at 10% 50%, rgba(53, 211, 184, .125) 0%, rgba(53, 211, 184, .058) 21%, transparent 44%),
-    radial-gradient(circle at 88% 20%, rgba(53, 211, 184, .035) 0%, transparent 36%),
-    linear-gradient(108deg, #0e1d1c 0%, #0d1e1c 38%, #0d201d 70%, #0f221e 100%) !important;
+    radial-gradient(ellipse 28% 112% at 7% 50%, rgba(53, 211, 184, .032) 0%, rgba(53, 211, 184, .012) 34%, transparent 68%),
+    linear-gradient(108deg,
+      #0c1d1b 0%,
+      #0d1e1c 30%,
+      #0e1f1c 60%,
+      #0e201d 82%,
+      #0f211e 100%) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .018),
-    0 14px 34px rgba(0, 0, 0, .10) !important;
+    inset 0 1px 0 rgba(255, 255, 255, .014),
+    0 12px 28px rgba(0, 0, 0, .075) !important;
 }
 
 .dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"],
@@ -60,7 +69,7 @@
   filter: none !important;
 }
 
-/* Microcontraste igual ao exemplo: textos auxiliares cinza-esverdeados e
+/* Microcontraste da referência: textos auxiliares cinza-esverdeados e
    setas discretas, sem azul dominante. */
 .dark [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div p,
 .dark [data-admin-content="/admin/aprovacoes"] > div > div:nth-child(2) > div p {
