@@ -1,4 +1,4 @@
-/* Aprovações — malha vetorial nítida, exclusiva do modo escuro. */
+/* Aprovações — arco em C da referência, exclusivo do modo escuro. */
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
   content: none !important;
@@ -7,33 +7,32 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::
   filter: none !important;
 }
 
-/* Proporção igual ao viewBox: as curvas não sofrem achatamento.
-   O brilho fica no fundo; a malha permanece sem blur. */
+/* SVG alinhado à direita e dimensionado pela altura do hero, sem distorção.
+   A abertura fica no topo e a malha desaparece antes da frase à direita. */
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
   display: block !important;
   position: absolute !important;
   z-index: 1 !important;
-  width: 520px !important;
-  height: auto !important;
-  aspect-ratio: 1040 / 472 !important;
+  width: min(70%, 700px) !important;
+  height: 100% !important;
   left: auto !important;
-  right: 13.5% !important;
+  right: 0 !important;
   top: 0 !important;
   bottom: auto !important;
-  opacity: .9 !important;
+  opacity: 1 !important;
   transform: none !important;
   pointer-events: none !important;
   border: 0 !important;
   border-radius: 0 !important;
   background-color: transparent !important;
   background-image:
-    url('/approvals-wireframe-reference.svg?v=vector-2'),
-    radial-gradient(ellipse at 62% 84%, rgba(58, 155, 111, .24), rgba(28, 113, 91, .10) 40%, transparent 72%) !important;
+    url('/approvals-wireframe-reference.svg?v=reference-c-3'),
+    radial-gradient(ellipse at 68% 90%, rgba(31, 121, 93, .14), transparent 70%) !important;
   background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: contain !important;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 92%, transparent) !important;
-  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 92%, transparent) !important;
+  background-position: right center !important;
+  background-size: auto 100%, 100% 100% !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
   filter: none !important;
 }
 
@@ -43,19 +42,19 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child >
 
 @media (max-width: 1199px) {
   html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
-    width: 470px !important;
-    right: 7% !important;
-    top: 4px !important;
-    opacity: .82 !important;
+    width: 75% !important;
+    right: 0 !important;
+    top: 0 !important;
+    opacity: .9 !important;
   }
 }
 
 @media (max-width: 900px) {
   html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
-    width: 410px !important;
-    right: -2% !important;
-    top: 10px !important;
-    opacity: .72 !important;
+    width: 80% !important;
+    right: -6% !important;
+    top: 0 !important;
+    opacity: .65 !important;
   }
 }
 
