@@ -24,12 +24,14 @@
     0 7px 20px rgba(22,38,35,.035) !important;
 }
 
-/* ÍCONE PENDENTES — mesma geometria do dark (56px / 28px / stroke 1.8),
+/* ÍCONE PENDENTES — mesma geometria desktop do dark (64px / 28px / stroke 1.8),
    mas com a superfície oliva/âmbar traduzida para o claro. Sem glow e sem
    contorno extra: a profundidade vem apenas do contraste entre fundo e ícone. */
 .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
-  width: 56px !important;
-  height: 56px !important;
+  box-sizing: border-box !important;
+  width: 64px !important;
+  height: 64px !important;
+  flex: 0 0 64px !important;
   border: 0 !important;
   border-radius: 16px !important;
   background: #f3ead0 !important;
@@ -62,11 +64,13 @@
     0 7px 20px rgba(22,38,35,.035) !important;
 }
 
-/* ÍCONE APROVADOS — mesma geometria e peso do dark, com o teal traduzido
-   para uma superfície clara sólida e editorial. */
+/* ÍCONE APROVADOS — mesma geometria desktop e peso do dark, com o teal
+   traduzido para uma superfície clara sólida e editorial. */
 .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
-  width: 56px !important;
-  height: 56px !important;
+  box-sizing: border-box !important;
+  width: 64px !important;
+  height: 64px !important;
+  flex: 0 0 64px !important;
   border: 0 !important;
   border-radius: 16px !important;
   background: #dcefe8 !important;
@@ -168,6 +172,16 @@
     inset 0 1px 0 rgba(255,255,255,.78),
     inset 0 -1px 0 rgba(148,163,184,.065),
     0 6px 20px rgba(15,23,42,.04) !important;
+}
+
+/* Em telas estreitas, os dois temas usam o tamanho compacto sem alterar cores. */
+@media (max-width: 767px) {
+  .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child div[class*="place-items-center"],
+  .light [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
+    width: 56px !important;
+    height: 56px !important;
+    flex: 0 0 56px !important;
+  }
 }
 
 /* Mantém este arquivo como ponto único da referência visual dos status. */
