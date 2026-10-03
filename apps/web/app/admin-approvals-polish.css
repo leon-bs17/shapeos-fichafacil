@@ -1,0 +1,314 @@
+/* Final reference composition. Scope every rule to the approvals page. */
+html.light [data-admin-route="/admin/aprovacoes"] {
+  --shapeos-bg: #fbfcfd;
+  --shapeos-surface: #ffffff;
+  --shapeos-surface-strong: #f6f9fb;
+  --shapeos-border: #e4ebef;
+  --shapeos-text: #101a30;
+  --shapeos-muted: #67758b;
+  --shapeos-subtle: #8390a0;
+  --shapeos-brand: #0eaaa5;
+  --shapeos-brand-soft: #e3f9f4;
+  --shapeos-neutral-rgb: 16, 26, 48;
+  --foreground: 222 40% 13%;
+  --muted-foreground: 218 15% 47%;
+  --border: 202 26% 92%;
+  --approvals-hero-start: #ffffff;
+  --approvals-hero-mid: #f8fefe;
+  --approvals-hero-end: #effcfb;
+  --approvals-pending-start: #fffdf6;
+  --approvals-pending-mid: #fffefa;
+  --approvals-pending-end: #ffffff;
+  --approvals-approved-start: #f2fdfb;
+  --approvals-approved-mid: #f8fefd;
+  --approvals-approved-end: #ffffff;
+  --approvals-muted: #67758b;
+  background: #fbfcfd !important;
+  color: #101a30 !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] {
+  --shapeos-bg: #0b1815;
+  --shapeos-surface: #0b1815;
+  --shapeos-text: #eff6f3;
+  --shapeos-muted: #9aaea8;
+  --shapeos-subtle: #78918a;
+  --approvals-muted: #9aaea8;
+  --approvals-hero-start: #0d1b17;
+  --approvals-hero-mid: #0e211c;
+  --approvals-hero-end: #102b24;
+  --approvals-pending-start: #181d15;
+  --approvals-pending-mid: #172018;
+  --approvals-pending-end: #15231c;
+  --approvals-approved-start: #0d211c;
+  --approvals-approved-mid: #0e2822;
+  --approvals-approved-end: #0e2b24;
+  background: #0b1815 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  --shapeos-surface: #ffffff;
+  --shapeos-text: #101a30;
+  --shapeos-muted: #67758b;
+  --shapeos-brand: #0eaaa5;
+  --foreground: 222 40% 13%;
+  --muted-foreground: 218 15% 47%;
+  background: #ffffff !important;
+  border-right-color: #e8eef2 !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  background: #0b1815 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] a[aria-label="Abrir notificações"] {
+  background: #ffffff !important;
+  border-color: #e4ebf1 !important;
+  color: #3f536c !important;
+  box-shadow: 0 4px 16px rgba(24, 60, 74, .045) !important;
+}
+
+/* Shared spacing does not jump when switching themes. */
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] > div > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 20px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] {
+  border-radius: 20px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] p {
+  font-weight: 400 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] {
+  border-color: #d6f0ef !important;
+  box-shadow: 0 8px 26px rgba(24, 60, 74, .025) !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] h1 {
+  color: #08132b !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] h1 span {
+  color: #079ba1 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] p {
+  color: #344158 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] > div:last-child > div {
+  color: #10172e !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div {
+  min-height: 118px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div > div {
+  min-height: 116px !important;
+  padding: 20px 22px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) p:not([class*="font-black"]) {
+  color: var(--approvals-muted) !important;
+  font-weight: 400 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) p[class*="font-black"] {
+  color: #101a30 !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:first-child {
+  background: linear-gradient(110deg, var(--approvals-pending-start), var(--approvals-pending-mid) 55%, var(--approvals-pending-end)) !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:last-child {
+  background: linear-gradient(110deg, var(--approvals-approved-start), var(--approvals-approved-mid) 55%, var(--approvals-approved-end)) !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
+  background: #fff5df !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
+  background: #e1fbf5 !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] {
+  padding: 18px 22px !important;
+  border-radius: 18px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] > div:first-child > label {
+  height: 48px !important;
+  border-radius: 14px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] > div:last-child {
+  margin-top: 12px !important;
+  line-height: 16px !important;
+  color: var(--approvals-muted) !important;
+  font-weight: 400 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] {
+  background: #ffffff !important;
+  border-color: #e7edf2 !important;
+  box-shadow: 0 8px 24px rgba(24, 60, 74, .025) !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] label {
+  background: #fbfcfe !important;
+  border-color: #e3eaf0 !important;
+  color: #65758c !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] input::placeholder {
+  color: #8592a3 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] kbd {
+  background: #f4f7fb !important;
+  border-color: #e2e8f0 !important;
+  color: #536580 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters] button[aria-pressed="true"] {
+  background: #ddfaf3 !important;
+  border-color: #a5e8dc !important;
+  color: #117465 !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] {
+  border-radius: 18px !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] {
+  background: #ffffff !important;
+  border-color: #e6ecf2 !important;
+  box-shadow: 0 8px 24px rgba(24, 60, 74, .025) !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:first-child {
+  background: #f8fafc !important;
+  color: #6d7c93 !important;
+  border-color: #eaf0f5 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div {
+  border-color: #edf1f6 !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div > div:first-child > div:first-child {
+  background: linear-gradient(145deg, #e3e9ff, #ced8fc) !important;
+  color: #213d78 !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] p[class*="dark:text-slate-400"] {
+  color: #6d7c93 !important;
+  font-weight: 400 !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-filters],
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] {
+  background: #101f1a !important;
+  border-color: rgba(148, 184, 170, .15) !important;
+}
+
+@media (min-width: 1024px) {
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div {
+    position: relative;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
+    margin-bottom: 38px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:nth-child(2) {
+    position: absolute;
+    top: -2px;
+    right: 0;
+    margin: 0 !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] {
+    min-height: 218px !important;
+    padding: 34px 42px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] h1 {
+    font-size: clamp(2.5rem, 3.5vw, 3.5rem) !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] > div:last-child > div {
+    right: 34px !important;
+    width: 240px !important;
+    font-size: clamp(1.75rem, 2.25vw, 2.25rem) !important;
+    line-height: .96 !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-hero] > div:nth-child(3) {
+    right: 4% !important;
+    opacity: .8 !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] .shapeos-navigation > div:first-child {
+    height: 74px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] .shapeos-navigation > div:nth-child(2) {
+    padding-top: 10px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] .shapeos-navigation nav a {
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+}
+
+/* Keep stacked mobile rows and touch targets at their original sizes. */
+@media (min-width: 768px) {
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:first-child {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div {
+    min-height: 50px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div > div:first-child > div:first-child {
+    height: 36px !important;
+    width: 36px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] button[class*="min-w-[116px]"] {
+    min-width: 88px !important;
+    height: 36px !important;
+    padding: 0 12px !important;
+    border-radius: 12px !important;
+  }
+
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] button[aria-label^="Mais ações"] {
+    height: 36px !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:first-child,
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) 130px 100px 136px !important;
+    column-gap: 12px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+}

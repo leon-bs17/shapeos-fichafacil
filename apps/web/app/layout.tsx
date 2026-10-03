@@ -20,6 +20,7 @@ import './admin-approvals-dark-cards-reference.css'
 import './admin-approvals-theme-geometry.css'
 import './admin-approvals-light-mirror-dark.css'
 import './admin-approvals-wireframe-dark.css'
+import './admin-approvals-polish.css'
 
 export const metadata: Metadata = {
   title: 'ShapeOS · Ficha Fácil',

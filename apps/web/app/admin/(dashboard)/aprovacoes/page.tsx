@@ -228,7 +228,7 @@ export default function AdminAprovacoesPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <section className="relative isolate min-h-[232px] overflow-hidden rounded-[28px] border border-slate-200 bg-white px-7 py-9 shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:px-10 sm:py-10 dark:border-white/10 dark:bg-[#08131c] dark:shadow-2xl dark:shadow-black/20">
+      <section data-approvals-hero className="relative isolate min-h-[232px] overflow-hidden rounded-[28px] border border-slate-200 bg-white px-7 py-9 shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:px-10 sm:py-10 dark:border-white/10 dark:bg-[#08131c] dark:shadow-2xl dark:shadow-black/20">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(112deg,#ffffff_0%,#fbfdfe_50%,#f0fbfc_100%)] dark:hidden" />
         <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_76%_24%,rgba(0,255,204,0.18),transparent_25%),radial-gradient(circle_at_58%_105%,rgba(116,55,255,0.16),transparent_38%),linear-gradient(120deg,#07101a,#0a1520_55%,#092b30)] dark:block" />
 
@@ -262,14 +262,14 @@ export default function AdminAprovacoesPage() {
               textShadow: '0 2px 14px rgba(15,23,42,0.08)',
             }}
           >
-            <span className="block">Mais profissionais</span>
-            <span className="block">Mais resultados</span>
+            <span className="block">Mais<br />profissionais</span>
+            <span className="block">Mais<br />resultados</span>
             <span className="ml-auto mt-3 block h-1 w-28 -rotate-[7deg] rounded-full bg-teal-500 shadow-[0_0_16px_rgba(20,184,166,0.22)] dark:bg-[var(--shapeos-brand)] dark:shadow-[0_0_18px_rgba(0,255,204,0.40)]" />
           </div>
         </div>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
         <Card className="overflow-hidden rounded-2xl border-amber-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-gradient-to-br dark:from-amber-950/50 dark:via-slate-950/90 dark:to-slate-900/90 dark:shadow-xl dark:shadow-black/10">
           <CardContent className="flex items-center gap-5 p-5 sm:p-6">
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-warning/10 dark:text-warning dark:ring-0">
@@ -299,7 +299,7 @@ export default function AdminAprovacoesPage() {
         </Card>
       </div>
 
-      <section className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+      <section data-approvals-filters className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
           <label className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition focus-within:border-cyan-300 focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.07)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30">
             <Search className="h-5 w-5 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
@@ -431,7 +431,7 @@ export default function AdminAprovacoesPage() {
           </button>
         </section>
       ) : (
-        <section className="rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
+        <section data-approvals-table className="rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
           <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] gap-4 rounded-t-[24px] border-b border-slate-100 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#536a9c] md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
             <span>Nome</span>
             <span>E-mail</span>
