@@ -1,6 +1,6 @@
 /* Final reference composition. Scope every rule to the approvals page. */
 html.light [data-admin-route="/admin/aprovacoes"] {
-  --shapeos-bg: #fbfcfd;
+  --shapeos-bg: #f7f8f2;
   --shapeos-surface: #ffffff;
   --shapeos-surface-strong: #f6f9fb;
   --shapeos-border: #e4ebef;
@@ -23,7 +23,7 @@ html.light [data-admin-route="/admin/aprovacoes"] {
   --approvals-approved-mid: #f8fefd;
   --approvals-approved-end: #ffffff;
   --approvals-muted: #67758b;
-  background: #fbfcfd !important;
+  background: #f7f8f2 !important;
   color: #101a30 !important;
 }
 
