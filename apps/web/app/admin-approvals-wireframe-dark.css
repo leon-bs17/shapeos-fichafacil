@@ -1,40 +1,42 @@
-/* Aprovações — wireframe exclusivo do modo escuro.
-   Usa um asset extraído diretamente da referência e reaproveita uma camada DOM
-   já existente do hero. Assim evitamos conflitos de pseudo-elementos e mantemos
-   o modo claro completamente intacto. */
-
-/* Desativa qualquer wireframe anterior criado por pseudo-elementos. */
+/* Aprovações — malha vetorial nítida, exclusiva do modo escuro. */
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before,
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
   content: none !important;
   display: none !important;
   background: none !important;
-  background-image: none !important;
   filter: none !important;
 }
 
-/* A terceira camada decorativa do hero vira o wireframe fiel da referência. */
+/* Proporção igual ao viewBox: as curvas não sofrem achatamento.
+   O brilho fica no fundo; a malha permanece sem blur. */
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
   display: block !important;
   position: absolute !important;
   z-index: 1 !important;
   width: 520px !important;
-  height: 236px !important;
+  height: auto !important;
+  aspect-ratio: 1040 / 472 !important;
   left: auto !important;
   right: 13.5% !important;
   top: 0 !important;
   bottom: auto !important;
-  opacity: .68 !important;
+  opacity: .9 !important;
   transform: none !important;
   pointer-events: none !important;
-  background-image: url('/approvals-wireframe-reference.svg') !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    url('/approvals-wireframe-reference.svg?v=vector-2'),
+    radial-gradient(ellipse at 62% 84%, rgba(58, 155, 111, .24), rgba(28, 113, 91, .10) 40%, transparent 72%) !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
-  background-size: 100% 100% !important;
+  background-size: contain !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 92%, transparent) !important;
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 92%, transparent) !important;
   filter: none !important;
 }
 
-/* Remove os antigos ovais internos dessa camada para não contaminar a malha. */
 html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) > * {
   display: none !important;
 }
@@ -42,20 +44,18 @@ html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child >
 @media (max-width: 1199px) {
   html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     width: 470px !important;
-    height: 214px !important;
     right: 7% !important;
     top: 4px !important;
-    opacity: .62 !important;
+    opacity: .82 !important;
   }
 }
 
 @media (max-width: 900px) {
   html.dark [data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
     width: 410px !important;
-    height: 186px !important;
     right: -2% !important;
     top: 10px !important;
-    opacity: .54 !important;
+    opacity: .72 !important;
   }
 }
 
