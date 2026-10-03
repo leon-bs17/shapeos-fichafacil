@@ -1,28 +1,283 @@
-/* Aprovações — geometria compartilhada entre modo claro e escuro.
-   O tema pode alterar apenas cor, borda, sombra e efeitos decorativos;
-   medidas estruturais permanecem idênticas para eliminar saltos na troca. */
+/* Aprovações — geometria única entre modo claro e escuro.
+   Regra de produto: a troca de tema muda somente cores, bordas, sombras e
+   luminosidade. Conteúdo, dimensões, quebras de linha e posições permanecem
+   idênticos para eliminar qualquer salto visual na alternância. */
 
+/* --------------------------------------------------------------------------
+   TOKENS CROMÁTICOS DOS EFEITOS COMPARTILHADOS
+   A geometria abaixo é única; apenas estas cores mudam entre os temas.
+   -------------------------------------------------------------------------- */
+html.light [data-admin-route="/admin/aprovacoes"] {
+  --approvals-hero-start: #fcfdf9;
+  --approvals-hero-mid: #fafcf7;
+  --approvals-hero-end: #f1f7f1;
+  --approvals-hero-star: rgba(18, 155, 137, .68);
+  --approvals-wire-ring: rgba(45, 154, 132, .23);
+  --approvals-wire-ray: rgba(45, 154, 132, .13);
+  --approvals-wire-glow: rgba(45, 154, 132, .08);
+  --approvals-pending-glow-strong: rgba(245, 180, 35, .13);
+  --approvals-pending-glow-soft: rgba(245, 180, 35, .065);
+  --approvals-pending-start: #fff9e9;
+  --approvals-pending-mid: #fbfcf7;
+  --approvals-pending-end: #f4f6ee;
+  --approvals-approved-glow-strong: rgba(38, 190, 168, .13);
+  --approvals-approved-glow-soft: rgba(38, 190, 168, .065);
+  --approvals-approved-start: #eefaf5;
+  --approvals-approved-mid: #fafcf8;
+  --approvals-approved-end: #f3f7f2;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] {
+  --approvals-hero-start: #0d1917;
+  --approvals-hero-mid: #101d19;
+  --approvals-hero-end: #10241f;
+  --approvals-hero-star: rgba(77, 221, 198, .68);
+  --approvals-wire-ring: rgba(77, 221, 198, .34);
+  --approvals-wire-ray: rgba(77, 221, 198, .30);
+  --approvals-wire-glow: rgba(47, 148, 116, .15);
+  --approvals-pending-glow-strong: rgba(199, 149, 35, .040);
+  --approvals-pending-glow-soft: rgba(199, 149, 35, .018);
+  --approvals-pending-start: #101713;
+  --approvals-pending-mid: #151916;
+  --approvals-pending-end: #171912;
+  --approvals-approved-glow-strong: rgba(77, 221, 198, .040);
+  --approvals-approved-glow-soft: rgba(77, 221, 198, .018);
+  --approvals-approved-start: #0e1c1a;
+  --approvals-approved-mid: #0e211e;
+  --approvals-approved-end: #0e2521;
+}
+
+/* --------------------------------------------------------------------------
+   HERO — MESMAS MEDIDAS, TIPOGRAFIA, QUEBRAS E POSIÇÕES
+   -------------------------------------------------------------------------- */
 [data-admin-content="/admin/aprovacoes"] > div > section:first-child {
   min-height: 226px !important;
+  background:
+    radial-gradient(circle at 60% 23%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 67% 39%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 78% 28%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 88% 18%, var(--approvals-hero-star) 0 1px, transparent 1.7px),
+    linear-gradient(112deg, var(--approvals-hero-start) 0%, var(--approvals-hero-mid) 52%, var(--approvals-hero-end) 100%) !important;
 }
 
+/* As três camadas absolutas antigas do JSX variavam por tema. A composição
+   passa a usar apenas os pseudo-elementos compartilhados abaixo. */
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(1),
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(2),
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:nth-child(3) {
+  display: none !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  width: 470px !important;
+  height: 470px !important;
+  right: 17% !important;
+  top: -164px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+  opacity: .42 !important;
+  transform: rotate(-8deg) scaleX(1.28) !important;
+  background:
+    repeating-radial-gradient(circle at 50% 50%,
+      transparent 0 14px,
+      var(--approvals-wire-ring) 15px 16px,
+      transparent 17px 28px),
+    repeating-conic-gradient(from 8deg at 50% 50%,
+      var(--approvals-wire-ray) 0 .7deg,
+      transparent .9deg 10deg) !important;
+  -webkit-mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
+  mask: radial-gradient(circle, transparent 0 29%, #000 30% 61%, transparent 62% 100%) !important;
+  filter: none !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  width: 520px !important;
+  height: 280px !important;
+  right: 7% !important;
+  top: -34px !important;
+  left: auto !important;
+  bottom: auto !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+  transform: none !important;
+  background: radial-gradient(ellipse, var(--approvals-wire-glow), transparent 68%) !important;
+  filter: blur(10px) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+  font-size: clamp(2.35rem, 3.6vw, 3.15rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child p {
+  max-width: 520px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child {
+  width: 27% !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > section:first-child > div:last-child > div {
+  right: 1.1rem !important;
+  width: 275px !important;
+}
+
+/* --------------------------------------------------------------------------
+   CARDS DE RESUMO — MESMA GEOMETRIA E MESMO MAPA DE GRADIENTE
+   -------------------------------------------------------------------------- */
 [data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div {
   min-height: 130px !important;
+  transform: none !important;
 }
 
-[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div {
-  min-height: 112px !important;
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:hover {
+  transform: none !important;
 }
 
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:first-child {
+  background:
+    radial-gradient(circle at 8% 28%,
+      var(--approvals-pending-glow-strong) 0%,
+      var(--approvals-pending-glow-soft) 22%,
+      transparent 46%),
+    linear-gradient(135deg,
+      var(--approvals-pending-start) 0%,
+      var(--approvals-pending-mid) 58%,
+      var(--approvals-pending-end) 100%) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div:last-child {
+  background:
+    radial-gradient(circle at 8% 28%,
+      var(--approvals-approved-glow-strong) 0%,
+      var(--approvals-approved-glow-soft) 23%,
+      transparent 47%),
+    linear-gradient(135deg,
+      var(--approvals-approved-start) 0%,
+      var(--approvals-approved-mid) 58%,
+      var(--approvals-approved-end) 100%) !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] {
+  box-sizing: border-box !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-width: 0 !important;
+  border-radius: 16px !important;
+  transform: none !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid:nth-of-type(1) > div div[class*="place-items-center"] svg {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 1.8 !important;
+  transform: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   BADGES DA TABELA — MESMO TAMANHO EM TODOS OS ESTADOS E TEMAS
+   -------------------------------------------------------------------------- */
+[data-admin-content="/admin/aprovacoes"] span[class*="text-amber-800"],
+[data-admin-content="/admin/aprovacoes"] span[class*="text-emerald-700"],
+[data-admin-content="/admin/aprovacoes"] span[class*="text-red-700"] {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  min-width: 87px !important;
+  height: 31px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 14px !important;
+  border-radius: 9999px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: -.01em !important;
+}
+
+/* --------------------------------------------------------------------------
+   ESTADO VAZIO — MESMO ÍCONE, TÍTULO E BOTÃO
+   -------------------------------------------------------------------------- */
 [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
   min-height: 290px !important;
   padding-top: 24px !important;
   padding-bottom: 24px !important;
 }
 
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: 82px !important;
+  height: 82px !important;
+}
+
+/* O desenho do documento passa a ser o mesmo nos dois temas. A cor continua
+   herdando o tema pelo currentColor do container. */
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"] > svg {
+  opacity: 0 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"]::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 108px !important;
+  height: 108px !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+  background: currentColor !important;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='none'%3E%3Cpath d='M30 20.5h26.5L70.5 34v39c0 3.04-2.46 5.5-5.5 5.5H30c-3.04 0-5.5-2.46-5.5-5.5V26c0-3.04 2.46-5.5 5.5-5.5Z' stroke='black' stroke-width='3.35' stroke-linejoin='round'/%3E%3Cpath d='M56.5 20.5V34h14' stroke='black' stroke-width='3.35' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='35.5' cy='43.5' r='2.65' fill='black'/%3E%3Cpath d='M43 43.5h17.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='54.5' r='2.65' fill='black'/%3E%3Cpath d='M43 54.5h17.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='65.5' r='2.65' fill='black'/%3E%3Cpath d='M43 65.5h13.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Cpath d='M15 49.2c.9 4.2 3.3 6.6 7.5 7.5-4.2.9-6.6 3.3-7.5 7.5-.9-4.2-3.3-6.6-7.5-7.5 4.2-.9 6.6-3.3 7.5-7.5Z' fill='black'/%3E%3Cpath d='M73.5 11.5c.55 2.65 2.1 4.2 4.75 4.75-2.65.55-4.2 2.1-4.75 4.75-.55-2.65-2.1-4.2-4.75-4.75 2.65-.55 4.2-2.1 4.75-4.75Z' fill='black'/%3E%3Ccircle cx='79.5' cy='39.5' r='1.7' fill='black'/%3E%3C/svg%3E") !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='none'%3E%3Cpath d='M30 20.5h26.5L70.5 34v39c0 3.04-2.46 5.5-5.5 5.5H30c-3.04 0-5.5-2.46-5.5-5.5V26c0-3.04 2.46-5.5 5.5-5.5Z' stroke='black' stroke-width='3.35' stroke-linejoin='round'/%3E%3Cpath d='M56.5 20.5V34h14' stroke='black' stroke-width='3.35' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='35.5' cy='43.5' r='2.65' fill='black'/%3E%3Cpath d='M43 43.5h17.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='54.5' r='2.65' fill='black'/%3E%3Cpath d='M43 54.5h17.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Ccircle cx='35.5' cy='65.5' r='2.65' fill='black'/%3E%3Cpath d='M43 65.5h13.5' stroke='black' stroke-width='3.1' stroke-linecap='round'/%3E%3Cpath d='M15 49.2c.9 4.2 3.3 6.6 7.5 7.5-4.2.9-6.6 3.3-7.5 7.5-.9-4.2-3.3-6.6-7.5-7.5 4.2-.9 6.6-3.3 7.5-7.5Z' fill='black'/%3E%3Cpath d='M73.5 11.5c.55 2.65 2.1 4.2 4.75 4.75-2.65.55-4.2 2.1-4.75 4.75-.55-2.65-2.1-4.2-4.75-4.75 2.65-.55 4.2-2.1 4.75-4.75Z' fill='black'/%3E%3Ccircle cx='79.5' cy='39.5' r='1.7' fill='black'/%3E%3C/svg%3E") !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-size: contain !important;
+  mask-size: contain !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] h2 {
+  font-size: 2.15rem !important;
+  line-height: 1.05 !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] button {
+  min-width: 300px !important;
+}
+
+/* --------------------------------------------------------------------------
+   CARDS INFORMATIVOS INFERIORES — SEM ESCALA EXCLUSIVA POR TEMA
+   -------------------------------------------------------------------------- */
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div {
+  min-height: 112px !important;
+}
+
+[data-admin-content="/admin/aprovacoes"] > div > div.grid[class*="md:grid-cols-3"] > div div[class*="place-items-center"] {
+  transform: none !important;
+}
+
+/* Breadcrumb: mesma presença e mesma posição em desktop. */
 @media (min-width: 1024px) {
   [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
     display: flex !important;
+  }
+}
+
+/* Responsivo: as medidas também continuam compartilhadas. */
+@media (max-width: 1199px) {
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    right: 6% !important;
   }
 }
 
@@ -31,9 +286,25 @@
     min-height: 220px !important;
   }
 
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child h1 {
+    font-size: 2.15rem !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] > div > section:first-child::before {
+    width: 320px !important;
+    height: 320px !important;
+    right: -120px !important;
+    top: -108px !important;
+  }
+
   [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] {
     min-height: 280px !important;
     padding-top: 22px !important;
     padding-bottom: 22px !important;
+  }
+
+  [data-admin-content="/admin/aprovacoes"] section[class*="min-h-[355px]"] div[class*="place-items-center"]::after {
+    width: 100px !important;
+    height: 100px !important;
   }
 }
