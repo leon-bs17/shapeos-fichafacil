@@ -59,6 +59,7 @@ export default function AdminAprovacoesPage() {
   const queryClient = useQueryClient()
   const buscaRef = useRef<HTMLInputElement>(null)
   const [buscaLocal, setBuscaLocal] = useState('')
+  const [atalhoBusca, setAtalhoBusca] = useState('Ctrl + K')
   const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
   const [filtroPeriodo, setFiltroPeriodo] = useState<FiltroPeriodo>('TODOS')
   const [pagina, setPagina] = useState(1)
@@ -81,6 +82,8 @@ export default function AdminAprovacoesPage() {
   })
 
   useEffect(() => {
+    setAtalhoBusca(/Mac|iPhone|iPad|iPod/.test(navigator.platform) ? '⌘ + K' : 'Ctrl + K')
+
     const atalhos = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault()
@@ -309,6 +312,7 @@ export default function AdminAprovacoesPage() {
               onChange={(event) => setBuscaLocal(event.target.value)}
               placeholder="Buscar por nome, e-mail ou status..."
               aria-label="Buscar cadastros na página Aprovações"
+              aria-keyshortcuts={atalhoBusca === '⌘ + K' ? 'Meta+K' : 'Control+K'}
               className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-800 outline-none placeholder:font-medium placeholder:text-slate-500 dark:text-white dark:placeholder:text-slate-500"
             />
 
@@ -327,8 +331,8 @@ export default function AdminAprovacoesPage() {
               </button>
             ) : null}
 
-            <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
-              Ctrl/⌘ K
+            <kbd title={`Focar a pesquisa (${atalhoBusca})`} aria-label={`Atalho para focar a pesquisa: ${atalhoBusca}`} className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
+              {atalhoBusca}
             </kbd>
           </label>
 
