@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import React, { useId } from "react";
 
 /**
  * shapeOS logo — matches the brand asset:
@@ -9,10 +9,19 @@ import React from "react";
  *  - Wordmark "shape" white + "OS" aqua + tagline "ficha fácil"
  */
 export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
+  const instanceId = useId();
+  const svgIds = {
+    chrome: `${instanceId}-chrome`,
+    chromeBar: `${instanceId}-chrome-bar`,
+    aquaGlow: `${instanceId}-aqua-glow`,
+    ringGrad: `${instanceId}-ring`,
+    soft: `${instanceId}-soft`,
+  };
   const dim = size === "xl" ? 120 : size === "lg" ? 68 : size === "sm" ? 36 : 48;
 
   const mark = (
     <svg
+      className="shrink-0"
       viewBox="0 0 128 128"
       width={dim}
       height={dim}
@@ -21,49 +30,49 @@ export const Logo = ({ size = "md", showTagline = true, stacked = false }) => {
     >
       <defs>
         {/* Chrome gradient for dumbbells */}
-        <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={svgIds.chrome} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#8a8f96" />
           <stop offset="45%" stopColor="#d7dbe0" />
           <stop offset="55%" stopColor="#5b6067" />
           <stop offset="100%" stopColor="#20232a" />
         </linearGradient>
-        <linearGradient id="chromeBar" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={svgIds.chromeBar} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#9aa0a8" />
           <stop offset="50%" stopColor="#e2e6eb" />
           <stop offset="100%" stopColor="#3c4048" />
         </linearGradient>
         {/* Aqua glow */}
-        <radialGradient id="aquaGlow" cx="50%" cy="50%" r="50%">
+        <radialGradient id={svgIds.aquaGlow} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#7ffbfb" stopOpacity="1" />
           <stop offset="55%" stopColor="#22C7C7" stopOpacity="0.85" />
           <stop offset="100%" stopColor="#003a3a" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={svgIds.ringGrad} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#a9b0b8" />
           <stop offset="50%" stopColor="#3f434b" />
           <stop offset="100%" stopColor="#8f959d" />
         </linearGradient>
-        <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id={svgIds.soft} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="1.2" />
         </filter>
       </defs>
 
       {/* LEFT dumbbell */}
-      <rect x="4" y="52" width="8" height="24" rx="2" fill="url(#chrome)" />
-      <rect x="14" y="46" width="10" height="36" rx="2.5" fill="url(#chrome)" />
-      <rect x="26" y="58" width="18" height="12" rx="2" fill="url(#chromeBar)" />
+      <rect x="4" y="52" width="8" height="24" rx="2" fill={`url(#${svgIds.chrome})`} />
+      <rect x="14" y="46" width="10" height="36" rx="2.5" fill={`url(#${svgIds.chrome})`} />
+      <rect x="26" y="58" width="18" height="12" rx="2" fill={`url(#${svgIds.chromeBar})`} />
 
       {/* RIGHT dumbbell */}
-      <rect x="116" y="52" width="8" height="24" rx="2" fill="url(#chrome)" />
-      <rect x="104" y="46" width="10" height="36" rx="2.5" fill="url(#chrome)" />
-      <rect x="84" y="58" width="18" height="12" rx="2" fill="url(#chromeBar)" />
+      <rect x="116" y="52" width="8" height="24" rx="2" fill={`url(#${svgIds.chrome})`} />
+      <rect x="104" y="46" width="10" height="36" rx="2.5" fill={`url(#${svgIds.chrome})`} />
+      <rect x="84" y="58" width="18" height="12" rx="2" fill={`url(#${svgIds.chromeBar})`} />
 
       {/* Center bezel ring (metal) */}
-      <circle cx="64" cy="64" r="30" fill="#0e1116" stroke="url(#ringGrad)" strokeWidth="3.5" />
+      <circle cx="64" cy="64" r="30" fill="#0e1116" stroke={`url(#${svgIds.ringGrad})`} strokeWidth="3.5" />
       <circle cx="64" cy="64" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
 
       {/* Inner aqua glow */}
-      <circle cx="64" cy="64" r="22" fill="url(#aquaGlow)" opacity="0.9" filter="url(#soft)" />
+      <circle cx="64" cy="64" r="22" fill={`url(#${svgIds.aquaGlow})`} opacity="0.9" filter={`url(#${svgIds.soft})`} />
       <circle cx="64" cy="64" r="19" fill="none" stroke="#22C7C7" strokeWidth="2" opacity="0.85" />
 
       {/* Power symbol: open arc + vertical bar */}
