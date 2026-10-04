@@ -327,7 +327,7 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-conten
   font-variant-numeric: tabular-nums;
 }
 
-/* Detail surfaces and avatars follow the green palette in the dark theme. */
+/* Detail surfaces follow the green palette in the dark theme. */
 html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-overlay] {
   background: rgba(2, 12, 8, .35) !important;
 }
@@ -353,8 +353,9 @@ html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/apr
   color: #b3c9bd !important;
 }
 
-html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-avatar],
-html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div > div:first-child > div[data-approvals-avatar] {
-  background: linear-gradient(145deg, #306655, #204738) !important;
-  color: #f0faf4 !important;
+/* Avatars use the same blue tone in both themes and in the detail dialog. */
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [role="dialog"] [data-approvals-avatar],
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] section[data-approvals-table] > div:nth-child(2) > div > div:first-child > div[data-approvals-avatar] {
+  background: linear-gradient(145deg, #6f86b6, #4f678f) !important;
+  color: #ffffff !important;
 }
