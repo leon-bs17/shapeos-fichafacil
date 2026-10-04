@@ -5,6 +5,7 @@ import { ArrowUp, ArrowUpRight, ChartColumn, CircleCheck, Check, Copy, Dumbbell,
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
 import { MessageResponse } from '@/components/ai-elements/message'
 import type { MysDataCard } from '@/lib/mys/data-cards'
+import { MysWelcomeWireframe } from './mys-welcome-wireframe'
 import s from './mys.module.css'
 
 type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
@@ -95,7 +96,10 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
       {Boolean(messages.length) && <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>}
       <div className={`${s.thread} ${messages.length ? '' : s.emptyThread}`} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
         {!messages.length ? <div className={s.welcome}>
-          <div className={s.welcomeMark}><MysMark/></div>
+          <div className={s.welcomeMark}>
+            <span className={s.wireframeClip} aria-hidden="true"><MysWelcomeWireframe className={s.welcomeWireframe}/></span>
+            <MysMark/>
+          </div>
           <p className={s.greeting}>Olá, {firstName}.</p>
           <h2>Como posso ajudar hoje?</h2>
           <p className={s.welcomeSubtitle}>Clareza para decidir. Agilidade para agir.</p>
