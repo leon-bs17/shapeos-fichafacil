@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   ArrowLeft,
-  Bell,
   ChartColumn,
   CircleCheck,
   CircleUserRound,
@@ -14,6 +13,7 @@ import {
   FileText,
   LayoutGrid,
   LogOut,
+  Megaphone,
   MessageCircle,
   Search,
   Settings,
@@ -32,7 +32,7 @@ const novasFerramentas = [
   { href: '/admin/aprovacoes', label: 'Aprovações', icone: CircleCheck },
   { href: '/admin/atividade', label: 'Atividade', icone: ChartColumn },
   { href: '/admin/relatorios', label: 'Relatórios', icone: FileText },
-  { href: '/admin/notificacoes', label: 'Notificações', icone: Bell },
+  { href: '/admin/comunicados', label: 'Comunicados', icone: Megaphone },
   { href: '/admin/sistema', label: 'Sistema', icone: Settings },
 ]
 
@@ -233,12 +233,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </form>
 
               <Link
-                href="/admin/notificacoes"
-                aria-label="Abrir notificações"
-                title="Notificações"
+                href="/admin/comunicados"
+                aria-label="Abrir comunicados"
+                title="Comunicados"
                 className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-[var(--shapeos-brand)]/40 hover:text-[var(--shapeos-brand)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.08)] sm:h-14 sm:w-14 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]"
               >
-                <Bell className="h-5 w-5" strokeWidth={1.8} />
+                <Megaphone className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
               </Link>
               <div className="hidden lg:block"><ThemeToggle /></div>
             </div>
