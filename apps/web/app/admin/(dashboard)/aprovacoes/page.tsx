@@ -548,7 +548,7 @@ export default function AdminAprovacoesPage() {
               Mostrando {cadastrosFiltrados.length ? inicioPagina + 1 : 0} a {Math.min(inicioPagina + ITENS_POR_PAGINA, cadastrosFiltrados.length)} de {cadastrosFiltrados.length} resultados
             </span>
 
-            <div className="flex items-center gap-1.5" aria-label="Paginação">
+            <div data-approvals-pagination role="navigation" className="flex items-center gap-1.5" aria-label="Paginação">
               <button
                 type="button"
                 onClick={() => setPagina(1)}
@@ -568,7 +568,7 @@ export default function AdminAprovacoesPage() {
               >
                 <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
               </button>
-              <span className="grid h-8 min-w-8 place-items-center rounded-lg bg-gradient-to-b from-cyan-400 to-teal-500 px-2 text-xs font-bold text-white shadow-[0_5px_14px_rgba(20,184,166,0.20)]">
+              <span aria-current="page" aria-label={`Página atual: ${paginaAtual}`} className="grid h-8 min-w-8 place-items-center rounded-lg bg-primary px-2 text-xs font-bold text-primary-foreground">
                 {paginaAtual}
               </span>
               <button

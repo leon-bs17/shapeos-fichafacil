@@ -359,3 +359,37 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-conten
   background: linear-gradient(145deg, #6f86b6, #4f678f) !important;
   color: #ffffff !important;
 }
+
+/* Pagination uses the primary colors shared by selected controls. */
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] [aria-current="page"] {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  box-shadow: none !important;
+}
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] button {
+  background: #ffffff !important;
+  color: #64748b !important;
+  border-color: #e4ebef !important;
+}
+
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] button {
+  background: #14241d !important;
+  color: #9aaea8 !important;
+  border-color: rgba(148, 184, 170, .16) !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] button:not(:disabled):hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--primary)) !important;
+  border-color: hsl(var(--primary)) !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] button:disabled {
+  opacity: .35 !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] [data-approvals-pagination] button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
