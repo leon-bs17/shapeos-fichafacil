@@ -164,11 +164,11 @@
   .emptyWorkspace { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
   .emptyThread { padding: 20px 0; }
   .welcomeMark { margin-bottom: 14px; }
-  .wireframeClip { inset: -34px 0 -14px; }
+  .wireframeClip { inset: -10px 0 -12px; }
   .welcomeWireframe {
-    left: calc(50% + 8px);
-    width: 144px;
-    height: 104px;
+    left: calc(50% + 16px);
+    width: 112px;
+    height: 78px;
     opacity: .5;
   }
   :global(html.dark) .welcomeWireframe { opacity: .35; }
