@@ -393,3 +393,32 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-conten
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
 }
+
+/* Shared summary icon geometry: switching themes changes only the colors. */
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid {
+  --approvals-summary-icon-box: 64px;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div > div > div[class*="place-items-center"] {
+  box-sizing: border-box !important;
+  width: var(--approvals-summary-icon-box) !important;
+  height: var(--approvals-summary-icon-box) !important;
+  flex: 0 0 var(--approvals-summary-icon-box) !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+}
+
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div > div > div[class*="place-items-center"] > svg {
+  display: block;
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 auto !important;
+  stroke-width: 1.8 !important;
+  transform: none !important;
+}
+
+@media (max-width: 767px) {
+  html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid {
+    --approvals-summary-icon-box: 56px;
+  }
+}
