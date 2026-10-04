@@ -11,6 +11,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
   LandingMotion,
   RotatingWord,
@@ -103,27 +104,30 @@ export default function ApresentacaoPage() {
           >
             <Logo size="sm" showTagline={false} />
           </Link>
-          <nav className={s.nav} aria-label="Navegação da apresentação">
-            <a href="#visao">A visão</a>
-            <a href="#recursos">Recursos</a>
-            <a href="#conexao">Para você</a>
-            <Link href="/login" className={s.navCta}>
-              Entrar <ArrowUpRight size={16} />
-            </Link>
-          </nav>
-          <details className={s.mobileMenu}>
-            <summary>
-              Menu <Plus size={18} />
-            </summary>
-            <nav aria-label="Menu móvel">
+          <div className={s.headerActions}>
+            <nav className={s.nav} aria-label="Navegação da apresentação">
               <a href="#visao">A visão</a>
               <a href="#recursos">Recursos</a>
               <a href="#conexao">Para você</a>
-              <Link href="/login">
+              <Link href="/login" className={s.navCta}>
                 Entrar <ArrowUpRight size={16} />
               </Link>
             </nav>
-          </details>
+            <details className={s.mobileMenu}>
+              <summary>
+                Menu <Plus size={18} />
+              </summary>
+              <nav aria-label="Menu móvel">
+                <a href="#visao">A visão</a>
+                <a href="#recursos">Recursos</a>
+                <a href="#conexao">Para você</a>
+                <Link href="/login">
+                  Entrar <ArrowUpRight size={16} />
+                </Link>
+              </nav>
+            </details>
+            <ThemeToggle />
+          </div>
         </header>
         <div className={s.heroTitle}>
           <p className={s.eyebrow}>

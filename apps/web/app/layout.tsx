@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               {children}
             </div>
           </QueryProvider>
-          <div className="fixed bottom-24 right-4 z-[60] md:bottom-5"><ThemeToggle /></div>
+          <ThemeToggle floating />
           <RegisterSw />
         </ThemeProvider>
       </body>

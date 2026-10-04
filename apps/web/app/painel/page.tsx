@@ -11,6 +11,7 @@ import {
   WifiOff,
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
@@ -232,10 +233,13 @@ export default function StudentPage() {
       <header className="border-b bg-card">
         <div className="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
           <Logo size="sm" />
-          <Button variant="ghost" onClick={() => void logout()}>
-            <LogOut size={16} className="mr-2" />
-            Sair
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" onClick={() => void logout()}>
+              <LogOut size={16} className="mr-2" />
+              Sair
+            </Button>
+          </div>
         </div>
       </header>
       <main className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">

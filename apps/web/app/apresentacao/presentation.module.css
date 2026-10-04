@@ -103,6 +103,11 @@
   align-items: center;
   gap: 20px;
 }
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 .heroLogo {
   --foreground: 110 100% 98%;
   --primary: 171 75% 65%;
@@ -850,6 +855,7 @@
   }
 }
 @media (max-width: 720px) {
+  .headerActions { gap: 10px; }
   .page {
     padding: 8px;
   }

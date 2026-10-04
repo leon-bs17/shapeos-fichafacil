@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, CalendarDays, ClipboardList, Users } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 export function AuthShell({ children, compact = false, testId }: { children: ReactNode; compact?: boolean; testId?: string }) {
   return (
@@ -9,7 +10,10 @@ export function AuthShell({ children, compact = false, testId }: { children: Rea
       <div className="flex min-h-svh flex-col px-5 py-6 sm:px-10">
         <header className={`flex items-center justify-between gap-4 ${compact ? 'mx-auto w-full max-w-md' : ''}`}>
           <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
-          <Link href="/apresentacao" className="flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />Conhecer a ShapeOS</Link>
+          <div className="flex shrink-0 items-center gap-3">
+            <Link href="/apresentacao" aria-label="Conhecer a ShapeOS" className="flex min-h-11 items-center gap-2 text-xs text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /><span className="hidden sm:inline">Conhecer a ShapeOS</span></Link>
+            <ThemeToggle />
+          </div>
         </header>
         <div className="mx-auto flex w-full max-w-md flex-1 items-center py-10"><div className={`w-full ${compact ? "rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/5 sm:p-8" : ""}`}>{children}</div></div>
         <footer className="text-center text-xs text-muted-foreground">ShapeOS · Seu espaço para planejar e treinar</footer>

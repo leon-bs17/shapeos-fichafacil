@@ -24,6 +24,7 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import Logo from '@/davi/components/Logo'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 const novasFerramentas = [
   { href: '/admin/mys', label: 'Mys · Assistente', icone: MessageCircle },
@@ -184,9 +185,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="sticky top-0 z-40 border-b border-border bg-[var(--shapeos-bg)]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between">
           <Logo size="sm" />
-          <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">
-            <LogOut className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         <details className="mt-3 group">
           <summary className="cursor-pointer rounded-lg border border-border px-3 py-2.5 text-sm text-muted-foreground">Navegar · {todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</summary>
@@ -198,7 +202,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex"><span>ShapeOS</span><span aria-hidden="true">/</span><span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span></div>
+          <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+            <span>ShapeOS</span><span aria-hidden="true">/</span>
+            <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
+            {pathname !== '/admin/aprovacoes' && <div className="ml-auto"><ThemeToggle /></div>}
+          </div>
 
           {pathname === '/admin/aprovacoes' ? (
             <div className="mb-6 flex items-center gap-3">
@@ -232,6 +240,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               >
                 <Bell className="h-5 w-5" strokeWidth={1.8} />
               </Link>
+              <div className="hidden lg:block"><ThemeToggle /></div>
             </div>
           ) : null}
 

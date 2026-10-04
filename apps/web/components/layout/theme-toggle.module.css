@@ -1,0 +1,96 @@
+.control {
+  --control-surface: #fcfdf9;
+  --control-text: #162623;
+  --control-border: #d7ded3;
+  --control-hover: #e4f3eb;
+  --control-focus: #129b89;
+  position: relative;
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+
+:global(html.dark) .control {
+  --control-surface: #19261f;
+  --control-text: #eff5ed;
+  --control-border: #2e4239;
+  --control-hover: #20352d;
+  --control-focus: #4dddc6;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  background: var(--control-surface);
+  color: var(--control-text);
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+
+.button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 3px;
+}
+
+.button:disabled { cursor: default; }
+.button:active:enabled { background: var(--control-hover); }
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 70;
+  padding: 8px 10px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--control-text);
+  color: var(--control-surface);
+  font: 500 11px/1.5 'Sora', sans-serif;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.button:focus-visible + .tooltip { visibility: visible; opacity: 1; }
+
+@media (hover: hover) {
+  .button:hover:enabled {
+    background: var(--control-hover);
+    border-color: var(--control-focus);
+    color: var(--control-focus);
+  }
+  .control:hover .button:enabled + .tooltip { visibility: visible; opacity: 1; }
+}
+
+/* Routes without a header still have the same control in the top corner. */
+.floating {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 40;
+}
+
+/* Only the header control is visible on pages that provide one. */
+:global(body:has([data-shapeos-theme-inline])) .floating { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+}
