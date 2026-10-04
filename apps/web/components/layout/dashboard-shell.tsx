@@ -3,6 +3,7 @@
 import { Sidebar } from '@/components/layout/sidebar'
 import { MobileNav } from '@/components/layout/mobile-nav'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { NotificationBell } from '@/components/layout/notification-bell'
 import Logo from '@/davi/components/Logo'
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -15,7 +16,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <header className="mx-auto mb-6 flex max-w-6xl items-center justify-between gap-4 border-b border-border pb-4">
           <div className="md:hidden"><Logo size="sm" /></div>
           <span className="hidden text-xs text-muted-foreground md:inline">ShapeOS</span>
-          <ThemeToggle />
+          <div className="flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
         </header>
         {children}
       </main>

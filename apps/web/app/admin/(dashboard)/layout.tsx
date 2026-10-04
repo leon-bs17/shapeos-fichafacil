@@ -25,6 +25,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import Logo from '@/davi/components/Logo'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { NotificationBell } from '@/components/layout/notification-bell'
 
 const novasFerramentas = [
   { href: '/admin/mys', label: 'Mys · Assistente', icone: MessageCircle },
@@ -183,9 +184,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="sticky top-0 z-40 border-b border-border bg-[var(--shapeos-bg)]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Logo size="sm" />
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <ThemeToggle />
             <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">
               <LogOut className="h-4 w-4" />
@@ -205,7 +207,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
-            {pathname !== '/admin/aprovacoes' && <div className="ml-auto"><ThemeToggle /></div>}
+            <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
           </div>
 
           {pathname === '/admin/aprovacoes' ? (
@@ -232,15 +234,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 </datalist>
               </form>
 
-              <Link
-                href="/admin/comunicados"
-                aria-label="Abrir comunicados"
-                title="Comunicados"
-                className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-[var(--shapeos-brand)]/40 hover:text-[var(--shapeos-brand)] hover:shadow-[0_12px_28px_rgba(15,23,42,0.08)] sm:h-14 sm:w-14 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]"
-              >
-                <Megaphone className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
-              </Link>
-              <div className="hidden lg:block"><ThemeToggle /></div>
             </div>
           ) : null}
 

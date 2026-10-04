@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
@@ -231,13 +232,14 @@ export default function StudentPage() {
   return (
     <div className="min-h-screen pb-28">
       <header className="border-b bg-card">
-        <div className="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap gap-3 justify-between items-center">
           <Logo size="sm" />
           <div className="flex items-center gap-2">
+            {!active && <NotificationBell />}
             <ThemeToggle />
-            <Button variant="ghost" onClick={() => void logout()}>
-              <LogOut size={16} className="mr-2" />
-              Sair
+            <Button variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-4" aria-label="Sair" onClick={() => void logout()}>
+              <LogOut size={16} className="sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Sair</span>
             </Button>
           </div>
         </div>
