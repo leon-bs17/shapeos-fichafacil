@@ -4,21 +4,21 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Activity,
   ArrowLeft,
-  BarChart3,
   Bell,
-  BellRing,
-  ClipboardCheck,
+  ChartColumn,
+  CircleCheck,
+  CircleUserRound,
+  ClipboardList,
   Dumbbell,
-  History,
-  KeyRound,
+  FileText,
+  LayoutGrid,
   LogOut,
   MessageCircle,
   Search,
-  ServerCog,
+  Settings,
   ShieldCheck,
-  UserCheck,
+  UserRound,
   Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -27,22 +27,22 @@ import Logo from '@/davi/components/Logo'
 
 const novasFerramentas = [
   { href: '/admin/mys', label: 'Mys · Assistente', icone: MessageCircle },
-  { href: '/admin', label: 'Central de controle', icone: ShieldCheck },
-  { href: '/admin/aprovacoes', label: 'Aprovações', icone: ClipboardCheck },
-  { href: '/admin/atividade', label: 'Atividade', icone: Activity },
-  { href: '/admin/relatorios', label: 'Relatórios', icone: BarChart3 },
-  { href: '/admin/notificacoes', label: 'Notificações', icone: BellRing },
-  { href: '/admin/sistema', label: 'Sistema', icone: ServerCog },
+  { href: '/admin', label: 'Central de controle', icone: LayoutGrid },
+  { href: '/admin/aprovacoes', label: 'Aprovações', icone: CircleCheck },
+  { href: '/admin/atividade', label: 'Atividade', icone: ChartColumn },
+  { href: '/admin/relatorios', label: 'Relatórios', icone: FileText },
+  { href: '/admin/notificacoes', label: 'Notificações', icone: Bell },
+  { href: '/admin/sistema', label: 'Sistema', icone: Settings },
 ]
 
 const gestaoLinks = [
   { href: '/admin/usuarios', label: 'Usuários', icone: Users },
-  { href: '/admin/personais', label: 'Personais', icone: UserCheck },
+  { href: '/admin/personais', label: 'Personais', icone: UserRound },
   { href: '/admin/exercicios', label: 'Exercícios', icone: Dumbbell },
-  { href: '/admin/auditoria', label: 'Auditoria', icone: History },
+  { href: '/admin/auditoria', label: 'Auditoria', icone: ClipboardList },
 ]
 
-const contaLink = { href: '/admin/conta', label: 'Minha conta', icone: KeyRound }
+const contaLink = { href: '/admin/conta', label: 'Minha conta', icone: CircleUserRound }
 const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -111,7 +111,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }}
       >
         {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[var(--shapeos-brand)]" />}
-        <Icon className="h-4 w-4" aria-hidden="true" />
+        <Icon className="shapeos-menu-icon h-[18px] w-[18px] shrink-0" strokeWidth={1.8} aria-hidden="true" />
         <span className="flex-1">{item.label}</span>
 
       </Link>
@@ -159,10 +159,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         <div className="flex-shrink-0 space-y-1 p-4" style={{ borderTop: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
           <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground">
-            <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao app
+            <ArrowLeft className="shapeos-menu-icon h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden="true" /> Voltar ao app
           </Link>
           <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-red-400/[.05] hover:text-red-300">
-            <LogOut className="h-3.5 w-3.5" /> Sair
+            <LogOut className="shapeos-menu-icon h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden="true" /> Sair
           </button>
         </div>
 

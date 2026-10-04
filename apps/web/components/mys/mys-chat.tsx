@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { ArrowUp, ArrowUpRight, Check, Copy, Dumbbell, MessageCircle, Plus, RotateCcw, ShieldCheck, Square, Users, X, Database, ChevronDown, Activity, CheckCheck } from 'lucide-react'
+import { ArrowUp, ArrowUpRight, ChartColumn, CircleCheck, Check, Copy, Dumbbell, MessageCircle, Plus, RotateCcw, ShieldCheck, Square, Users, X, Database, ChevronDown, Activity, CheckCheck } from 'lucide-react'
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
 import { MessageResponse } from '@/components/ai-elements/message'
 import type { MysDataCard } from '@/lib/mys/data-cards'
@@ -10,10 +10,8 @@ import s from './mys.module.css'
 type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
 const prompts = {
   ADMIN: [
-    { icon: ShieldCheck, title: 'Uma gestão mais clara', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
-    { icon: Users, title: 'Melhore a experiência', text: 'Como organizar uma boa jornada de acompanhamento para os alunos?' },
-    { icon: MessageCircle, title: 'Resuma informações', text: 'Quero resumir informações da operação. Me ajude a organizar os dados que preciso fornecer.' },
-    { icon: Dumbbell, title: 'Converse sobre academia', text: 'Quais práticas ajudam a incentivar a consistência nos treinos?' },
+    { icon: CircleCheck, title: 'Revisar aprovações', text: 'Consulte os status das contas da ShapeOS e resuma os cadastros que aguardam aprovação. Me ajude a organizar a revisão dos acessos, sem alterar os dados.' },
+    { icon: ChartColumn, title: 'Analisar a plataforma', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
   ],
   PERSONAL: [
     { icon: Dumbbell, title: 'Planeje um treino', text: 'Me ajude a planejar um treino. Quais informações do aluno você precisa?' },
@@ -24,7 +22,7 @@ const prompts = {
 }
 
 function MysMark({ small = false }: { small?: boolean }) {
-  return <span className={small ? s.smallMark : s.mark} aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 29V11L20 25L33 11V29" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/><path d="M14 31L20 25L26 31" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+  return <span className={small ? s.smallMark : s.mark} aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M8 31V9L20 23L32 9V31" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
 }
 
 // Links and remote images are intentionally rendered as plain text/omitted.
@@ -91,15 +89,17 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
     <header className={s.header}>
       <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
-      {Boolean(messages.length) && <button className={s.newChat} disabled={loading} title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={16}/><span>Nova conversa</span></button>}
+      <button className={s.newChat} disabled={loading} aria-label="Nova conversa" title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={18} aria-hidden="true"/><span>Nova conversa</span></button>
     </header>
     <div className={`${s.chatPanel} ${messages.length ? '' : s.emptyPanel}`}>
       {Boolean(messages.length) && <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>}
       <div className={`${s.thread} ${messages.length ? '' : s.emptyThread}`} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
         {!messages.length ? <div className={s.welcome}>
+          <div className={s.welcomeMark}><MysMark/></div>
           <p className={s.greeting}>Olá, {firstName}.</p>
-          <h2>Como posso ajudar?</h2>
-          <div className={s.quickPrompts}>{(admin ? [prompts.ADMIN[0], prompts.ADMIN[3]] : [prompts.PERSONAL[0], prompts.PERSONAL[2]]).map(({ icon: Icon, title, text }) => <button key={title} onClick={() => choose(text)}><Icon size={15}/><span>{title}</span></button>)}</div>
+          <h2>Como posso ajudar hoje?</h2>
+          <p className={s.welcomeSubtitle}>Clareza para decidir. Agilidade para agir.</p>
+          <div className={s.quickPrompts}>{(admin ? prompts.ADMIN : [prompts.PERSONAL[0], prompts.PERSONAL[2]]).map(({ icon: Icon, title, text }) => <button key={title} type="button" disabled={loading} onClick={() => choose(text)}><Icon size={22} strokeWidth={1.8} aria-hidden="true"/><span>{title}</span></button>)}</div>
         </div> : <div className={s.messages}>{messages.map((message, index) => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>
           {message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span><span className={s.answerLabel}>ASSISTENTE</span></div>}
           <div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>

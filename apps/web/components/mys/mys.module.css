@@ -12,15 +12,138 @@
 @media(max-width:380px){.suggestions{grid-template-columns:1fr}.suggestions button>div>span{display:none}.welcome h2{font-size:27px}.welcomeNote{display:none}.intro{margin:12px auto 18px}.connectionState{max-width:135px}}
 @media(prefers-reduced-motion:reduce){.workspace *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
-/* The empty state has intrinsic height; scrolling begins with the conversation. */
-.emptyWorkspace{padding-bottom:0}
-.emptyPanel{height:auto;min-height:0}
-.emptyThread{flex:none;overflow:visible;padding:clamp(28px,6dvh,56px) 20px 24px}
-.emptyThread .welcome{padding:0;max-width:600px}
-.emptyThread .greeting{margin-bottom:10px}
-.emptyThread .welcome h2{font-size:clamp(25px,3vw,34px);line-height:1.25}
-.quickPrompts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px}
-.quickPrompts button{display:flex;align-items:center;gap:8px;border:1px solid var(--mys-line);border-radius:999px;background:transparent;color:hsl(var(--muted-foreground));padding:9px 13px;font-size:11px}
-.quickPrompts button:hover{background:var(--mys-soft);border-color:hsl(var(--primary)/.35);color:hsl(var(--foreground))}
-.quickPrompts svg{color:var(--mys-accent)}
-@media(max-width:750px){.emptyThread{padding:28px 14px 20px}.quickPrompts{margin-top:18px;gap:7px}.quickPrompts button{font-size:10px;padding:8px 10px}.emptyPanel .composerArea{padding-bottom:12px}.emptyPanel .composer textarea{resize:none}}
+/* Conversation-first welcome. Theme tokens keep the same geometry in both modes. */
+.header { margin-bottom: 24px; }
+.identity { min-width: 0; }
+.identity h1 { font-size: 24px; letter-spacing: -.04em; }
+.identity p { font-size: 12px; line-height: 1.6; }
+.identity h1 > span {
+  color: var(--mys-accent);
+  background: var(--mys-soft);
+  border-color: hsl(var(--primary) / .16);
+  border-radius: 999px;
+}
+.identity .smallMark { width: 44px; height: 44px; border-radius: 13px; }
+.identity .smallMark svg { width: 29px; height: 29px; }
+.newChat { min-height: 44px; flex-shrink: 0; font-size: 12px !important; }
+.newChat:focus-visible { outline-offset: 3px; }
+.emptyWorkspace { padding-bottom: 24px; }
+.emptyPanel {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.emptyThread {
+  flex: none;
+  overflow: visible;
+  padding: clamp(32px, 5dvh, 56px) 0 30px;
+}
+.emptyThread .welcome { padding: 0; max-width: 820px; }
+.welcomeMark { display: flex; justify-content: center; margin-bottom: 22px; }
+.welcomeMark .mark { width: 88px; height: 88px; border-radius: 24px; }
+.welcomeMark .mark svg { width: 54px; height: 54px; }
+.emptyThread .greeting {
+  font-size: 16px;
+  font-weight: 550;
+  color: hsl(var(--foreground));
+  margin: 0 0 10px;
+}
+.emptyThread .welcome h2 {
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+.welcomeSubtitle {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: hsl(var(--muted-foreground));
+  text-wrap: balance;
+}
+.quickPrompts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 620px;
+  margin: 30px auto 0;
+}
+.quickPrompts button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  min-height: 68px;
+  border: 1px solid var(--mys-line);
+  border-radius: 13px;
+  background: hsl(var(--card) / .55);
+  color: hsl(var(--foreground));
+  padding: 18px 22px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+  transition: border-color .15s, background .15s;
+}
+.quickPrompts button:hover:enabled {
+  background: var(--mys-soft);
+  border-color: hsl(var(--primary) / .4);
+}
+.quickPrompts svg { width: 22px; height: 22px; color: inherit; }
+.emptyPanel .composerArea {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+}
+.emptyPanel .composer {
+  border-radius: 18px;
+  background: hsl(var(--card) / .7);
+  padding: 18px 20px 14px;
+  box-shadow: none;
+}
+.emptyPanel .composer textarea { min-height: 64px; resize: none; font-size: 14px; }
+.workspace .composer textarea::placeholder { color: hsl(var(--muted-foreground)); }
+.emptyPanel .composerBottom { margin-top: 10px; }
+.emptyPanel .composerBottom > span { gap: 9px; font-size: 11px; }
+.emptyPanel .composerBottom > span > svg { width: 16px; height: 16px; }
+.emptyPanel .send { width: 40px; height: 40px; }
+.emptyPanel .footnote { font-size: 10px; margin-top: 12px; }
+.scope { max-width: 820px; margin: 16px auto 0; }
+.scope summary { width: fit-content; min-height: 36px; margin: 0 auto; }
+
+@media (max-width: 750px) {
+  .header { gap: 12px; margin-bottom: 16px; }
+  .identity h1 { font-size: 22px; }
+  .identity p { max-width: 230px; font-size: 11px; }
+  .identity .smallMark { width: 40px; height: 40px; border-radius: 12px; }
+  .identity .smallMark svg { width: 26px; height: 26px; }
+  .newChat { width: 44px; justify-content: center; padding: 10px; }
+  .emptyWorkspace { padding-bottom: 80px; }
+  .emptyThread { padding: 32px 0 24px; }
+  .welcomeMark { margin-bottom: 18px; }
+  .welcomeMark .mark { width: 68px; height: 68px; border-radius: 20px; }
+  .welcomeMark .mark svg { width: 43px; height: 43px; }
+  .emptyThread .greeting { font-size: 14px; }
+  .emptyThread .welcome h2 { font-size: clamp(27px, 5vw, 34px); }
+  .welcomeSubtitle { font-size: 13px; margin-top: 10px; }
+  .quickPrompts { gap: 10px; margin-top: 24px; }
+  .quickPrompts button { min-height: 60px; padding: 14px 16px; gap: 12px; font-size: 12px; }
+  .quickPrompts svg { width: 20px; height: 20px; }
+  .emptyPanel .composer { padding: 16px 14px 12px; border-radius: 16px; }
+  .emptyPanel .composer textarea { font-size: 16px; min-height: 72px; }
+  .emptyPanel .composerBottom > span { font-size: 10px; }
+  .emptyPanel .footnote { font-size: 9px; }
+  .confirm { flex-wrap: wrap; }
+  .confirm > span { flex-basis: 100%; }
+}
+@media (max-width: 520px) {
+  .quickPrompts { grid-template-columns: 1fr; max-width: 360px; }
+  .quickPrompts button { min-height: 56px; }
+}

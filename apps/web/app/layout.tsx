@@ -21,6 +21,7 @@ import './admin-approvals-theme-geometry.css'
 import './admin-approvals-light-mirror-dark.css'
 import './admin-approvals-wireframe-dark.css'
 import './admin-approvals-polish.css'
+import './admin-navigation-icons.css'
 
 export const metadata: Metadata = {
   title: 'ShapeOS · Ficha Fácil',

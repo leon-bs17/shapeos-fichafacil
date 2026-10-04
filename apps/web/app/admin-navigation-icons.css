@@ -1,0 +1,20 @@
+/* One icon family and one geometry for desktop and mobile navigation. */
+[data-admin-route] .shapeos-menu-icon {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px;
+  flex-shrink: 0;
+  stroke-width: 1.8;
+  opacity: 1 !important;
+}
+
+html:is(.light, .dark) [data-admin-route] nav a[aria-current="page"] .shapeos-menu-icon {
+  color: var(--shapeos-brand) !important;
+}
+
+/* The expanded mobile menu uses the same selected state as the sidebar. */
+[data-admin-route] nav[aria-label="Administração no celular"] a[aria-current="page"] {
+  background: var(--shapeos-brand-soft) !important;
+  color: var(--shapeos-brand) !important;
+  border-color: var(--shapeos-border) !important;
+}
