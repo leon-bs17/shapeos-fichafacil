@@ -46,22 +46,23 @@
 .welcomeMark { position: relative; isolation: isolate; display: flex; justify-content: center; margin-bottom: 20px; }
 .wireframeClip {
   position: absolute;
-  inset: -54px 0 -20px;
+  inset: -10px 0 -12px;
   overflow: hidden;
   pointer-events: none;
   z-index: -1;
 }
 .welcomeWireframe {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: calc(50% + 16px);
-  width: 200px;
-  height: 150px;
+  width: 112px;
+  height: 78px;
+  transform: translateY(-50%);
   color: var(--mys-accent);
-  opacity: .55;
+  opacity: .5;
   pointer-events: none;
 }
-:global(html.dark) .welcomeWireframe { opacity: .4; }
+:global(html.dark) .welcomeWireframe { opacity: .35; }
 .welcomeMark .mark { width: 76px; height: 76px; border-radius: 22px; }
 .welcomeMark .mark svg { width: 48px; height: 48px; }
 .emptyThread .greeting {
@@ -164,14 +165,6 @@
   .emptyWorkspace { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
   .emptyThread { padding: 20px 0; }
   .welcomeMark { margin-bottom: 14px; }
-  .wireframeClip { inset: -10px 0 -12px; }
-  .welcomeWireframe {
-    left: calc(50% + 16px);
-    width: 112px;
-    height: 78px;
-    opacity: .5;
-  }
-  :global(html.dark) .welcomeWireframe { opacity: .35; }
   .welcomeMark .mark { width: 56px; height: 56px; border-radius: 17px; }
   .welcomeMark .mark svg { width: 36px; height: 36px; }
   .emptyThread .greeting { font-size: 14px; }
