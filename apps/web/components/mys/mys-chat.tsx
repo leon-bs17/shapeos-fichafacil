@@ -10,14 +10,14 @@ import s from './mys.module.css'
 type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
 const prompts = {
   ADMIN: [
-    { icon: CircleCheck, title: 'Revisar aprovações', text: 'Consulte os status das contas da ShapeOS e resuma os cadastros que aguardam aprovação. Me ajude a organizar a revisão dos acessos, sem alterar os dados.' },
-    { icon: ChartColumn, title: 'Analisar a plataforma', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
+    { icon: CircleCheck, title: 'Revisar aprovações', description: 'Organize a revisão dos acessos pendentes.', text: 'Consulte os status das contas da ShapeOS e resuma os cadastros que aguardam aprovação. Me ajude a organizar a revisão dos acessos, sem alterar os dados.' },
+    { icon: ChartColumn, title: 'Analisar a plataforma', description: 'Veja um panorama dos dados da operação.', text: 'Consulte o banco e me dê um resumo atual da ShapeOS: usuários, status das contas, fichas ativas e sessões concluídas nos últimos 30 dias.' },
   ],
   PERSONAL: [
-    { icon: Dumbbell, title: 'Planeje um treino', text: 'Me ajude a planejar um treino. Quais informações do aluno você precisa?' },
-    { icon: RotateCcw, title: 'Revise uma ficha', text: 'Quero revisar uma ficha de treino. Me diga o que preciso compartilhar para você analisar.' },
-    { icon: Users, title: 'Acompanhe seu aluno', text: 'Consulte meus alunos vinculados na ShapeOS e liste seus nomes. Depois quero analisar a evolução de um deles.' },
-    { icon: MessageCircle, title: 'Prepare uma orientação', text: 'Me ajude a escrever uma mensagem acolhedora para um aluno que perdeu a rotina de treinos.' },
+    { icon: Dumbbell, title: 'Planeje um treino', description: 'Organize os próximos passos da prescrição.', text: 'Me ajude a planejar um treino. Quais informações do aluno você precisa?' },
+    { icon: RotateCcw, title: 'Revise uma ficha', description: 'Prepare uma análise do treino do aluno.', text: 'Quero revisar uma ficha de treino. Me diga o que preciso compartilhar para você analisar.' },
+    { icon: Users, title: 'Acompanhe seu aluno', description: 'Consulte os alunos vinculados à sua conta.', text: 'Consulte meus alunos vinculados na ShapeOS e liste seus nomes. Depois quero analisar a evolução de um deles.' },
+    { icon: MessageCircle, title: 'Prepare uma orientação', description: 'Escreva uma mensagem de acompanhamento.', text: 'Me ajude a escrever uma mensagem acolhedora para um aluno que perdeu a rotina de treinos.' },
   ],
 }
 
@@ -99,7 +99,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
           <p className={s.greeting}>Olá, {firstName}.</p>
           <h2>Como posso ajudar hoje?</h2>
           <p className={s.welcomeSubtitle}>Clareza para decidir. Agilidade para agir.</p>
-          <div className={s.quickPrompts}>{(admin ? prompts.ADMIN : [prompts.PERSONAL[0], prompts.PERSONAL[2]]).map(({ icon: Icon, title, text }) => <button key={title} type="button" disabled={loading} onClick={() => choose(text)}><Icon size={22} strokeWidth={1.8} aria-hidden="true"/><span>{title}</span></button>)}</div>
+          <div className={s.quickPrompts}>{(admin ? prompts.ADMIN : [prompts.PERSONAL[0], prompts.PERSONAL[2]]).map(({ icon: Icon, title, description, text }) => <button key={title} type="button" disabled={loading} onClick={() => choose(text)}><Icon size={22} strokeWidth={1.8} aria-hidden="true"/><span className={s.promptCopy}><strong>{title}</strong><span>{description}</span></span></button>)}</div>
         </div> : <div className={s.messages}>{messages.map((message, index) => <article key={message.id} className={message.role === 'user' ? s.userMessage : s.assistantMessage} aria-label={message.role === 'user' ? 'Sua mensagem' : 'Resposta da Mys'}>
           {message.role === 'assistant' && <div className={s.answerIdentity}><MysMark small/><span>Mys</span><span className={s.answerLabel}>ASSISTENTE</span></div>}
           <div className={s.bubble}>{message.role === 'assistant' ? <Answer content={message.content}/> : <p>{message.content}</p>}</div>
