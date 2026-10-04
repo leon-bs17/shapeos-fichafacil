@@ -1,48 +1,32 @@
 import { useId } from 'react'
 
-// A spherical surface patch. Geometry is shared by both themes and all sizes.
-function project(latitude: number, longitude: number): [number, number] {
-  const x = Math.cos(latitude) * Math.sin(longitude)
-  const y = -Math.sin(latitude) * Math.cos(.35) + Math.cos(latitude) * Math.cos(longitude) * Math.sin(.35)
-  const tilt = .12
-  return [34 + 140 * (x * Math.cos(tilt) - y * Math.sin(tilt)), 136 + 140 * (x * Math.sin(tilt) + y * Math.cos(tilt))]
-}
-
-function curve(points: Array<[number, number]>) {
-  return points.map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')
-}
-
-const steps = Array.from({ length: 41 }, (_, index) => index / 40)
-const paths = [
-  ...Array.from({ length: 11 }, (_, index) => curve(steps.map(step => project(.07 + index * .135, .12 + step * 1.45)))),
-  ...Array.from({ length: 12 }, (_, index) => curve(steps.map(step => project(.07 + step * 1.4, .12 + index * .132)))),
-]
+// A fine, flattened annulus: the same orbit scales with the welcome monogram.
+const rings = Array.from({ length: 9 }, (_, index) => ({
+  rx: 98 + index * 5.75,
+  ry: 28 + index * 1.875,
+}))
+const spokes = Array.from({ length: 36 }, (_, index) => {
+  const angle = index * Math.PI * 2 / 36
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
+  return `M${(150 + 98 * cos).toFixed(2)} ${(60 + 28 * sin).toFixed(2)}L${(150 + 144 * cos).toFixed(2)} ${(60 + 43 * sin).toFixed(2)}`
+})
 
 export function MysWelcomeWireframe({ className }: { className?: string }) {
   const fadeId = useId()
-  const bottomId = `${fadeId}-bottom`
-  const maskId = `${fadeId}-mask`
 
   return (
-    <svg className={className} viewBox="0 0 240 180" fill="none" aria-hidden="true" focusable="false">
+    <svg className={className} viewBox="0 0 300 120" fill="none" aria-hidden="true" focusable="false">
       <defs>
-        <linearGradient id={fadeId} x1="20" y1="0" x2="190" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
-          <stop offset=".2" stopColor="currentColor" stopOpacity="0" />
-          <stop offset=".55" stopColor="currentColor" stopOpacity="1" />
-          <stop offset=".9" stopColor="currentColor" stopOpacity=".5" />
-          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+        <linearGradient id={fadeId} x1="150" y1="10" x2="150" y2="110" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="currentColor" stopOpacity=".35" />
+          <stop offset=".45" stopColor="currentColor" stopOpacity=".65" />
+          <stop offset="1" stopColor="currentColor" />
         </linearGradient>
-        <linearGradient id={bottomId} x1="0" y1="0" x2="0" y2="180" gradientUnits="userSpaceOnUse">
-          <stop offset=".6" stopColor="white" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-        </linearGradient>
-        <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="180">
-          <rect width="240" height="180" fill={`url(#${bottomId})`} />
-        </mask>
       </defs>
-      <g stroke={`url(#${fadeId})`} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" mask={`url(#${maskId})`}>
-        {paths.map((path, index) => <path key={index} d={path} />)}
+      <g transform="rotate(-6 150 60)" stroke={`url(#${fadeId})`} strokeWidth=".8" strokeLinecap="round">
+        {rings.map(({ rx, ry }, index) => <ellipse key={index} cx="150" cy="60" rx={rx} ry={ry} />)}
+        {spokes.map((path, index) => <path key={index} d={path} />)}
       </g>
     </svg>
   )

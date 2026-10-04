@@ -43,10 +43,17 @@
   padding: clamp(24px, 4dvh, 40px) 0 26px;
 }
 .emptyThread .welcome { padding: 0; max-width: 820px; }
-.welcomeMark { position: relative; isolation: isolate; display: flex; justify-content: center; margin-bottom: 20px; }
+.welcomeMark {
+  --mys-welcome-mark-size: clamp(56px, 7.5vw, 76px);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 .wireframeClip {
   position: absolute;
-  inset: -10px 0 -12px;
+  inset: -20px 0;
   overflow: hidden;
   pointer-events: none;
   z-index: -1;
@@ -54,17 +61,23 @@
 .welcomeWireframe {
   position: absolute;
   top: 50%;
-  left: calc(50% + 16px);
-  width: 112px;
-  height: 78px;
-  transform: translateY(-50%);
+  left: 50%;
+  width: calc(var(--mys-welcome-mark-size) * 3.6);
+  max-width: calc(100% - 24px);
+  height: auto;
+  aspect-ratio: 5 / 2;
+  transform: translate(-50%, -50%);
   color: var(--mys-accent);
-  opacity: .5;
+  opacity: .48;
   pointer-events: none;
 }
-:global(html.dark) .welcomeWireframe { opacity: .35; }
-.welcomeMark .mark { width: 76px; height: 76px; border-radius: 22px; }
-.welcomeMark .mark svg { width: 48px; height: 48px; }
+:global(html.dark) .welcomeWireframe { opacity: .58; }
+.welcomeMark .mark {
+  width: var(--mys-welcome-mark-size);
+  height: var(--mys-welcome-mark-size);
+  border-radius: calc(var(--mys-welcome-mark-size) * .29);
+}
+.welcomeMark .mark svg { width: 64%; height: 64%; }
 .emptyThread .greeting {
   font-size: 16px;
   font-weight: 550;
@@ -165,8 +178,6 @@
   .emptyWorkspace { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
   .emptyThread { padding: 20px 0; }
   .welcomeMark { margin-bottom: 14px; }
-  .welcomeMark .mark { width: 56px; height: 56px; border-radius: 17px; }
-  .welcomeMark .mark svg { width: 36px; height: 36px; }
   .emptyThread .greeting { font-size: 14px; }
   .emptyThread .welcome h2 { font-size: clamp(26px, 4.5vw, 32px); }
   .welcomeSubtitle { font-size: 13px; margin-top: 10px; }
