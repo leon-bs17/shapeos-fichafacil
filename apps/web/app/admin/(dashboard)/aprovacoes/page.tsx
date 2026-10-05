@@ -736,6 +736,35 @@ export default function AdminAprovacoesPage() {
           :global(.approvals-workspace [data-approvals-hero] h1) { font-size:32px!important; }
           :global(.approvals-workspace [data-approvals-hero] h1+p) { font-size:14px!important; line-height:1.6!important; }
         }
+
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero]) {
+          min-height:224px!important; padding:32px 40px!important;
+          border:1px solid #1c4138!important; border-radius:18px!important;
+        }
+        :global(.dark [data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero]) {
+          --shapeos-brand:#00e9df;
+          background:radial-gradient(ellipse at 84% 60%,#073d32 0%,#071d18 43%,#041512 100%)!important;
+        }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:740px!important; }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1) {
+          font-size:clamp(28px,3.1vw,46px)!important; line-height:1.12!important;
+          font-weight:800!important; letter-spacing:-.045em!important;
+        }
+        :global(.dark [data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1 span) { color:#00e9df!important; }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1+p) {
+          max-width:740px!important; font-size:16px!important; font-weight:400!important;
+          line-height:1.6!important; margin-top:13px!important;
+        }
+        :global(.dark [data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1+p) { color:#a3becd!important; }
+        @media(max-width:1100px) {
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:80%!important; }
+        }
+        @media(max-width:639px) {
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero]) { padding:27px 23px!important; min-height:230px!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:100%!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1) { font-size:32px!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1+p) { font-size:14px!important; }
+        }
 `}</style>
     </div>
   )
