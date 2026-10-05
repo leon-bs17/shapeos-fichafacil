@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { GRUPOS_MUSCULARES, EQUIPAMENTOS } from '@shapeos/shared'
+import { validateExerciseUrl } from '@/lib/fitness/exercise-media'
 
 export interface ExercicioBiblioteca {
   id: string
@@ -34,7 +35,7 @@ export async function listarExercicios(
 export async function criarExercicio(
   supabase: SupabaseClient,
   personalId: string,
-  entrada: { nome: string; grupo_muscular: string; equipamento: string }
+  entrada: { nome: string; grupo_muscular: string; equipamento: string; video_url?: string | null }
 ): Promise<void> {
   if (!GRUPOS_MUSCULARES.includes(entrada.grupo_muscular as never)) {
     throw new Error('Grupo muscular inválido')
@@ -48,6 +49,7 @@ export async function criarExercicio(
     grupo_muscular: entrada.grupo_muscular,
     equipamento,
     criado_por: personalId,
+    video_url: validateExerciseUrl(entrada.video_url),
   })
 
   if (error) {
@@ -62,7 +64,7 @@ export async function editarExercicio(
   supabase: SupabaseClient,
   personalId: string,
   exercicioId: string,
-  entrada: { nome: string; grupo_muscular: string; equipamento: string }
+  entrada: { nome: string; grupo_muscular: string; equipamento: string; video_url?: string | null }
 ): Promise<void> {
   if (!GRUPOS_MUSCULARES.includes(entrada.grupo_muscular as never)) {
     throw new Error('Grupo muscular inválido')
@@ -77,6 +79,7 @@ export async function editarExercicio(
       nome: entrada.nome.trim(),
       grupo_muscular: entrada.grupo_muscular,
       equipamento,
+      ...(entrada.video_url !== undefined ? { video_url: validateExerciseUrl(entrada.video_url) } : {}),
     })
     .eq('id', exercicioId)
     .eq('criado_por', personalId)
@@ -107,3 +110,4 @@ export async function excluirExercicio(
     throw error
   }
 }
+

@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Dumbbell, Search, Plus, Trash2, X, Loader2 } from 'lucide-react'
+import { Dumbbell, Search, Plus, Trash2, X, Loader2, Pencil } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
+import { validateExerciseUrl } from '@/lib/fitness/exercise-media'
 import { ExercisePreview, ExerciseThumbnail } from '@/components/fitness/exercise-demonstration'
 
 type Exercicio = { id: string; nome: string; grupo_muscular: string; equipamento: string | null; criado_por: string | null; video_url: string | null }
@@ -27,6 +28,9 @@ function ExerciciosConteudo() {
   const [filtroGrupo, setFiltroGrupo] = useState<string | null>(null)
   const [modalAberto, setModalAberto] = useState(false)
   const [novoNome, setNovoNome] = useState('')
+  const [novaMedia, setNovaMedia] = useState('')
+  const [editandoMedia, setEditandoMedia] = useState<Exercicio | null>(null)
+  const [mediaUrl, setMediaUrl] = useState('')
   const [novoGrupo, setNovoGrupo] = useState('')
   const [novoEquipamento, setNovoEquipamento] = useState('')
   const [erro, setErro] = useState<string | null>(null)
@@ -54,6 +58,7 @@ function ExerciciosConteudo() {
         grupo_muscular: novoGrupo,
         equipamento: novoEquipamento.trim() || null,
         criado_por: user?.id ?? null,
+        video_url: validateExerciseUrl(novaMedia),
       })
       if (error) {
         if (error.code === '23505') throw new Error('Exercício já existe nesse grupo muscular.')
@@ -62,9 +67,25 @@ function ExerciciosConteudo() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin-exercicios'] })
-      setModalAberto(false); setNovoNome(''); setNovoGrupo(''); setNovoEquipamento(''); setErro(null)
+      setModalAberto(false); setNovoNome(''); setNovoGrupo(''); setNovoEquipamento(''); setNovaMedia(''); setErro(null)
     },
     onError: (e) => setErro(e instanceof Error ? e.message : 'Erro ao criar exercicio.'),
+  })
+
+  const salvarMedia = useMutation({
+    mutationFn: async () => {
+      if (!editandoMedia) throw new Error('Selecione o exercício.')
+      const supabase = createClient()
+      const { error } = await supabase.from('exercicios')
+        .update({ video_url: validateExerciseUrl(mediaUrl) })
+        .eq('id', editandoMedia.id).select('id').single()
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin-exercicios'] })
+      void queryClient.invalidateQueries({ queryKey: ['exercicios'] })
+      setEditandoMedia(null)
+    },
   })
 
   const excluirExercicio = useMutation({
@@ -178,7 +199,7 @@ function ExerciciosConteudo() {
             <Card key={e.id} className="exercise-card group">
               <CardContent className="p-4">
                 <div className="exercise-visual-row">
-                  <ExerciseThumbnail name={e.nome} exerciseId={e.id} />
+                  <ExerciseThumbnail name={e.nome} exerciseId={e.id} videoUrl={e.video_url} />
                   <div className="exercise-details min-w-0 flex-1">
                     <p className="exercise-name font-semibold">{e.nome}</p>
                     <p className="text-muted-foreground text-xs mt-0.5">{e.grupo_muscular}</p>
@@ -187,6 +208,10 @@ function ExerciciosConteudo() {
                     )}
                     <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
                   </div>
+                  <button type="button" onClick={() => { setEditandoMedia(e); setMediaUrl(e.video_url ?? ''); salvarMedia.reset() }}
+                    className="exercise-edit p-2 rounded-lg text-muted-foreground hover:bg-muted" aria-label={`Editar demonstração de ${e.nome}`} title="Editar demonstração">
+                    <Pencil className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={() => excluirExercicio.mutate(e.id)}
                     className="exercise-delete p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
@@ -229,6 +254,11 @@ function ExerciciosConteudo() {
             <Label htmlFor="ex-equipamento" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Equipamento (opcional)</Label>
             <Input id="ex-equipamento" placeholder="Ex: Barra, Halteres" value={novoEquipamento} onChange={(e) => setNovoEquipamento(e.target.value)} className="h-10" />
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="ex-media">GIF ou vídeo de demonstração (opcional)</Label>
+            <Input id="ex-media" type="url" value={novaMedia} onChange={e => setNovaMedia(e.target.value)} placeholder="https://.../exercicio.gif" />
+            <p className="text-sm text-muted-foreground">Link direto de GIF, WebP, MP4 ou WebM.</p>
+          </div>
           {erro && (
             <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
               <p className="text-destructive text-sm">{erro}</p>
@@ -244,6 +274,22 @@ function ExerciciosConteudo() {
               {criarExercicio.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Criar exercício
             </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal open={!!editandoMedia} onClose={() => setEditandoMedia(null)} titulo="Demonstração do exercício">
+        <div className="space-y-4">
+          <p className="font-medium">{editandoMedia?.nome}</p>
+          <div className="space-y-1.5">
+            <Label htmlFor="admin-media-url">Link do GIF ou vídeo</Label>
+            <Input id="admin-media-url" type="url" value={mediaUrl} onChange={e => setMediaUrl(e.target.value)} placeholder="https://.../exercicio.gif" />
+            <p className="text-sm text-muted-foreground">A mídia aparece para o aluno e o personal. Use um link direto de GIF, WebP, MP4 ou WebM.</p>
+          </div>
+          {salvarMedia.error && <p role="alert" className="text-sm text-destructive">{salvarMedia.error.message}</p>}
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setEditandoMedia(null)}>Cancelar</Button>
+            <Button onClick={() => salvarMedia.mutate()} disabled={salvarMedia.isPending}>{salvarMedia.isPending ? 'Salvando...' : 'Salvar demonstração'}</Button>
           </div>
         </div>
       </Modal>
@@ -276,6 +322,7 @@ function ExerciciosConteudo() {
         .exercises-workspace .exercise-visual-row { display:flex; align-items:center; gap:14px; position:relative; padding-right:22px; min-height:120px; }
         .exercises-workspace .exercise-details { align-self:center; }
         .exercises-workspace .exercise-delete { position:absolute; top:0; right:0; }
+        .exercises-workspace .exercise-edit { position:absolute; bottom:0; right:0; min-width:36px; min-height:36px; }
         .exercises-workspace .exercise-card .exercise-visual-row .exercise-details > button { min-height:34px; }
         .exercises-workspace .exercise-card .exercise-visual-row > div:first-child button { min-height:28px; padding:0; }
         .exercises-workspace .exercise-name { font-size:14px; color:var(--exercise-ink); line-height:1.5; overflow-wrap:anywhere; }

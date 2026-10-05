@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExercisePreview } from "@/components/fitness/exercise-demonstration";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import {
@@ -148,6 +149,7 @@ export function PrescriptionEditor({
             className="border rounded-xl p-4 space-y-3"
           >
             <h3 className="font-semibold">{ficha.itens[i].exercicio.nome}</h3>
+            <ExercisePreview name={ficha.itens[i].exercicio.nome} exerciseId={ficha.itens[i].exercicio.id} videoUrl={ficha.itens[i].exercicio.video_url} />
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {fields.map((f) => (
                 <div key={f.key}>
@@ -209,3 +211,4 @@ export function PrescriptionEditor({
     </Modal>
   );
 }
+

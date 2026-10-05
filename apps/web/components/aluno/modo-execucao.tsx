@@ -22,6 +22,8 @@ import { ExerciseDemonstration } from '@/components/fitness/exercise-demonstrati
 interface ExercicioExecucao {
   id: string
   nome: string
+  exercicio_id?: string
+  video_url?: string | null
   grupo_muscular: string
   series: number
   repeticoes: string
@@ -295,7 +297,7 @@ export function ModoExecucao({
         </Button>
       </header>
 
-      <ExerciseDemonstration key={exercicio.id} name={exercicio.nome} />
+      <ExerciseDemonstration key={exercicio.id} name={exercicio.nome} exerciseId={exercicio.exercicio_id} videoUrl={exercicio.video_url} />
 
       <div className="space-y-1.5">
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -445,3 +447,4 @@ export function ModoExecucao({
     </div>
   )
 }
+
