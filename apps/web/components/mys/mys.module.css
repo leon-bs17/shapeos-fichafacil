@@ -214,9 +214,9 @@
 /* Approved Mys concept 1: a centered, quiet conversation workspace. */
 .workspace { max-width: 1168px; --mys-accent: hsl(var(--primary)); }
 :global(html.dark) .workspace { --background: 164 46% 5%; --card: 164 34% 9%; --foreground: 180 20% 96%; --muted-foreground: 182 20% 72%; --border: 168 26% 20%; --primary: 177 90% 58%; --primary-foreground: 164 46% 5%; --mys-soft: hsl(var(--primary) / .07); --mys-line: hsl(var(--border)); }
-:global(html.dark [data-admin-route="/admin/mys"]) { --shapeos-bg: #081411; --shapeos-surface: #0b1a16; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; --border: 168 26% 20%; background: radial-gradient(ellipse at 60% 30%, #10241e 0%, transparent 55%), #081411; }
-:global(html.dark [data-admin-route="/admin/mys"] .shapeos-navigation) { --shapeos-surface: #091713; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; }
-:global([data-admin-route="/admin/mys"] .shapeos-navigation a[aria-current="page"]) { color: var(--shapeos-brand) !important; border-color: hsl(var(--primary) / .25) !important; background: hsl(var(--primary) / .08) !important; }
+:global(html.dark [data-admin-route="/admin/mys"]):has(.workspace) { --shapeos-bg: #081411; --shapeos-surface: #0b1a16; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; --border: 168 26% 20%; background: radial-gradient(ellipse at 60% 30%, #10241e 0%, transparent 55%), #081411; }
+:global(html.dark [data-admin-route="/admin/mys"]):has(.workspace) :global(.shapeos-navigation) { --shapeos-surface: #091713; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; }
+:global([data-admin-route="/admin/mys"]):has(.workspace) :global(.shapeos-navigation a[aria-current="page"]) { color: var(--shapeos-brand) !important; border-color: hsl(var(--primary) / .25) !important; background: hsl(var(--primary) / .08) !important; }
 .header { margin-bottom: 0; gap: 24px; }
 .identity { gap: 15px; }
 .identity h1 { font-size: 26px; font-weight: 650; letter-spacing: -.035em; }
