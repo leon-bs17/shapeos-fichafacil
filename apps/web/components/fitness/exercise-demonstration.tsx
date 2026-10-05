@@ -82,3 +82,43 @@ export function ExercisePreview(props:Props){
   useEffect(()=>{if(open)dialogRef.current?.showModal();else dialogRef.current?.close()},[open])
   return <><button type="button" className={s.previewButton} onClick={()=>setOpen(true)} aria-label={`Ver movimento de ${props.name}`}><Play size={13}/>Ver movimento</button><dialog className={s.dialog} ref={dialogRef} onCancel={()=>setOpen(false)} onClose={()=>setOpen(false)}><header><h3>{props.name}</h3><button type="button" onClick={()=>setOpen(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{open && <ExerciseDemonstration {...props}/>}</dialog></>
 }
+
+export function ExerciseThumbnail({name,exerciseId}:Props) {
+  const motion = findExerciseMotion(name,exerciseId)
+  const [playing,setPlaying] = useState(false)
+  const [visible,setVisible] = useState(false)
+  const [ready,setReady] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  useEffect(() => {
+    const media = matchMedia('(prefers-reduced-motion: reduce)')
+    setPlaying(!media.matches)
+    const change = () => setPlaying(!media.matches)
+    media.addEventListener('change',change)
+    return () => media.removeEventListener('change',change)
+  },[])
+  useEffect(() => {
+    const container = containerRef.current
+    if(!container) return
+    const observer = new IntersectionObserver(entries => {
+      const inView = entries[0]?.isIntersecting ?? false
+      setVisible(inView)
+      if(inView) setReady(true)
+    })
+    observer.observe(container)
+    return () => observer.disconnect()
+  },[])
+  useEffect(() => {
+    const svg = svgRef.current
+    if(!svg) return
+    if(playing && visible) svg.unpauseAnimations()
+    else svg.pauseAnimations()
+  },[playing,visible,ready,motion])
+  return (
+    <div ref={containerRef} className={s.thumbnail} data-exercise-motion={motion?.id ?? 'pending'} aria-label={`Prévia de ${name}`}>
+      {motion ? (ready ? <Mannequin motion={motion} svgRef={svgRef} /> : <span className={s.thumbnailPlaceholder}>Movimento</span>) : <span className={s.thumbnailPlaceholder}>Prévia indisponível</span>}
+      {motion && !motion.hold && ready ? <button type="button" className={s.thumbnailPause} onClick={() => setPlaying(value => !value)} aria-label={playing ? `Pausar prévia de ${name}` : `Reproduzir prévia de ${name}`}>{playing ? <Pause size={12} /> : <Play size={12} />}</button> : null}
+    </div>
+  )
+}
