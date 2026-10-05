@@ -19,9 +19,7 @@ import {
   Mail,
   MoreVertical,
   Search,
-  ShieldCheck,
   Sparkles,
-  UserCheck,
   Users,
   X,
 } from 'lucide-react'
@@ -200,6 +198,7 @@ export default function AdminAprovacoesPage() {
     },
   })
 
+  const totalAprovados = (cadastros ?? []).filter((personal) => personal.status_conta === 'ATIVO').length
   const totalPendentes = pendentes.length
   const filtrosAtivos = Boolean(buscaLocal.trim()) || filtroStatus !== 'TODOS' || filtroPeriodo !== 'TODOS'
 
@@ -230,16 +229,20 @@ export default function AdminAprovacoesPage() {
   }
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="approvals-workspace space-y-5 pb-8">
       <section data-approvals-hero className="relative isolate min-h-[232px] overflow-hidden rounded-[28px] border border-slate-200 bg-white px-7 py-9 shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:px-10 sm:py-10 dark:border-white/10 dark:bg-[#08131c] dark:shadow-2xl dark:shadow-black/20">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(112deg,#ffffff_0%,#fbfdfe_50%,#f0fbfc_100%)] dark:hidden" />
         <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_76%_24%,rgba(0,255,204,0.18),transparent_25%),radial-gradient(circle_at_58%_105%,rgba(116,55,255,0.16),transparent_38%),linear-gradient(120deg,#07101a,#0a1520_55%,#092b30)] dark:block" />
 
-        <div className="pointer-events-none absolute inset-y-0 right-[22%] hidden w-[31%] lg:block dark:opacity-50">
-          <div className="absolute left-[18%] top-[-32%] h-[285px] w-[150px] rotate-[10deg] rounded-[50%] border-[30px] border-cyan-100/55 dark:border-teal-400/10" />
-          <div className="absolute left-[35%] top-[22%] h-[250px] w-[132px] rotate-[8deg] rounded-[50%] border-[26px] border-teal-100/55 dark:border-teal-400/10" />
-          <div className="absolute left-[52%] top-[48%] h-[175px] w-[92px] rotate-[7deg] rounded-[50%] bg-cyan-100/35 blur-[1px] dark:bg-teal-400/10" />
-        </div>
+        <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeWidth="0.65">
+            {Array.from({ length: 34 }, (_, i) => (
+              <ellipse key={i} cx={250 + Math.sin(i * Math.PI / 17) * 35} cy="150"
+                rx={98 + i * 3.2} ry={118 + i * 2.5}
+                transform={`rotate(${i * 5.3} 250 150)`} />
+            ))}
+          </g>
+        </svg>
 
         <div className="relative z-10 max-w-[650px]">
           <div className="mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-teal-700 dark:text-[var(--shapeos-brand)]">
@@ -294,8 +297,8 @@ export default function AdminAprovacoesPage() {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">Acesso controlado</p>
-              <p className="mt-0.5 text-2xl font-black tracking-[-0.03em] text-slate-950 dark:text-white">Só aprovados</p>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Personais liberados pela administração</p>
+              <p className="mt-0.5 text-2xl font-black tracking-[-0.03em] text-slate-950 dark:text-white">{totalAprovados}</p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Profissionais aprovados pela administração</p>
             </div>
             <ArrowRight className="ml-auto h-5 w-5 text-slate-500 dark:text-slate-400" strokeWidth={1.7} />
           </CardContent>
@@ -436,7 +439,7 @@ export default function AdminAprovacoesPage() {
         </section>
       ) : (
         <section data-approvals-table className="rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
-          <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] gap-4 rounded-t-[24px] border-b border-slate-100 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#536a9c] md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
+          <div data-approvals-columns className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] gap-4 rounded-t-[24px] border-b border-slate-100 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#536a9c] md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
             <span>Nome</span>
             <span>E-mail</span>
             <span>Data do cadastro</span>
@@ -451,7 +454,7 @@ export default function AdminAprovacoesPage() {
               const pendente = personal.status_conta === 'PENDENTE'
 
               return (
-                <div key={personal.id} className="grid min-h-[78px] gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] md:items-center">
+                <div data-approvals-row key={personal.id} className="grid min-h-[78px] gap-4 px-5 py-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] md:items-center">
                   <div className="flex min-w-0 items-center gap-3.5">
                     <div data-approvals-avatar className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-[12px] font-semibold text-white shadow-[0_5px_12px_rgba(64,82,122,0.16)] ring-1 ring-[#5f74a3]/15 dark:bg-[linear-gradient(145deg,#5974a7,#344966)] dark:ring-white/10">
                       {iniciais(personal.nome, personal.email)}
@@ -474,7 +477,8 @@ export default function AdminAprovacoesPage() {
                   </p>
 
                   <div>
-                    <span className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
+                    <span data-approval-status={personal.status_conta} className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
+                      {pendente ? <Clock3 className="h-4 w-4" /> : personal.status_conta === 'ATIVO' ? <CheckCircle2 className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
                       {status.label}
                     </span>
                   </div>
@@ -482,11 +486,12 @@ export default function AdminAprovacoesPage() {
                   <div className="relative flex items-center justify-start gap-2 md:justify-end">
                     <button
                       type="button"
+                      data-approval-review={pendente ? 'pending' : 'approved'}
                       onClick={() => setPersonalSelecionado(personal)}
                       className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition hover:border-cyan-200 hover:bg-cyan-50 dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white dark:hover:bg-primary/10"
                     >
-                      <Eye className="h-4 w-4 text-cyan-600 dark:text-primary" strokeWidth={1.9} />
-                      {pendente ? 'Analisar' : 'Ver'}
+                      {pendente ? <Clock3 className="h-4 w-4" /> : <Eye className="h-4 w-4" strokeWidth={1.9} />}
+                      {pendente ? 'Revisar' : 'Ver'}
                     </button>
 
                     <button
@@ -545,7 +550,7 @@ export default function AdminAprovacoesPage() {
 
           <div className="flex flex-col gap-3 rounded-b-[24px] border-t border-slate-100 px-5 py-4 text-[12px] font-medium text-[#6076a3] sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
             <span>
-              Mostrando {cadastrosFiltrados.length ? inicioPagina + 1 : 0} a {Math.min(inicioPagina + ITENS_POR_PAGINA, cadastrosFiltrados.length)} de {cadastrosFiltrados.length} resultados
+              {cadastrosFiltrados.length ? inicioPagina + 1 : 0} – {Math.min(inicioPagina + ITENS_POR_PAGINA, cadastrosFiltrados.length)} de {cadastrosFiltrados.length} profissionais
             </span>
 
             <div data-approvals-pagination role="navigation" className="flex items-center gap-1.5" aria-label="Paginação">
@@ -594,44 +599,6 @@ export default function AdminAprovacoesPage() {
           </div>
         </section>
       )}
-
-      <div className="grid gap-3 md:grid-cols-3">
-        <Card className="rounded-2xl border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/60 dark:shadow-none">
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-violet-500/10 dark:text-violet-300">
-              <ShieldCheck className="h-5 w-5" strokeWidth={1.7} />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-950 dark:text-foreground">Controle total</p>
-              <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-muted-foreground">Aprove ou bloqueie com segurança.</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/60 dark:shadow-none">
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-50 text-violet-600 dark:bg-pink-500/10 dark:text-pink-300">
-              <FileCheck2 className="h-5 w-5" strokeWidth={1.7} />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-950 dark:text-foreground">Rastreabilidade</p>
-              <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-muted-foreground">Ações administrativas continuam auditadas.</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-card/60 dark:shadow-none">
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-600 dark:bg-blue-500/10 dark:text-blue-300">
-              <UserCheck className="h-5 w-5" strokeWidth={1.7} />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-950 dark:text-foreground">Acesso seguro</p>
-              <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-muted-foreground">Somente contas aprovadas entram.</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {personalSelecionado ? (
         <div data-approvals-overlay className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-[2px]" onMouseDown={() => setPersonalSelecionado(null)}>
@@ -699,6 +666,67 @@ export default function AdminAprovacoesPage() {
           </div>
         </div>
       ) : null}
+      <style jsx>{`
+        :global(.approvals-workspace) { --approval-surface:#fff; --approval-border:#dbe6e4; --approval-muted:#607b86; --approval-accent:#008d85; }
+        :global(.dark .approvals-workspace) { --approval-surface:#0b1b18; --approval-border:#203b34; --approval-muted:#a8c7d5; --approval-accent:#00efdf; }
+        :global(.dark [data-admin-route="/admin/aprovacoes"]) { background:#061411!important; --shapeos-brand:#00efdf; --primary:176 100% 47%; }
+        :global(.approvals-workspace [data-approvals-hero]) { min-height:210px!important; border-radius:18px!important; border-color:var(--approval-accent)!important; padding:28px 40px!important; background:var(--approval-surface)!important; box-shadow:none!important; }
+        :global(.dark .approvals-workspace [data-approvals-hero]) { background:radial-gradient(ellipse at 80% 65%,#07312a 0%,#081a16 45%,#061411 100%)!important; }
+        :global(.approvals-workspace [data-approvals-hero]>div:first-child),
+        :global(.approvals-workspace [data-approvals-hero]>div:nth-child(2)) { display:none!important; }
+        :global(.approvals-workspace [data-approvals-hero] h1) { font-size:clamp(34px,3.7vw,56px)!important; letter-spacing:-.045em!important; }
+        :global(.approvals-workspace [data-approvals-hero] h1 span) { color:var(--approval-accent)!important; }
+        :global(.approvals-workspace [data-approvals-hero] p) { max-width:550px; font-size:16px!important; line-height:1.5!important; }
+        :global(.approvals-workspace [data-approvals-hero]>div:last-child) { width:21%!important; }
+        :global(.approvals-workspace [data-approvals-hero]>div:last-child>div) { width:220px!important; font-size:36px!important; right:30px!important; }
+        :global(.approvals-workspace [data-approvals-wireframe]) { position:absolute; width:440px; height:290px; right:12%; top:-35px; color:var(--approval-accent); opacity:.23; pointer-events:none; }
+        :global(.approvals-workspace [data-approvals-summary]>div) { border-radius:17px!important; box-shadow:none!important; }
+        :global(.approvals-workspace [data-approvals-summary]>div:first-child) { border-color:#9e7d1b!important; }
+        :global(.approvals-workspace [data-approvals-summary]>div:last-child) { border-color:var(--approval-accent)!important; }
+        :global(.dark .approvals-workspace [data-approvals-summary]>div:first-child) { background:linear-gradient(110deg,#211f0f,#101c16)!important; }
+        :global(.dark .approvals-workspace [data-approvals-summary]>div:last-child) { background:linear-gradient(110deg,#08231d,#072b23)!important; }
+        :global(.approvals-workspace [data-approvals-summary]>div>div) { padding:23px!important; min-height:116px; }
+        :global(.approvals-workspace [data-approvals-summary]>div>div>div:first-child) { width:64px!important; height:64px!important; }
+        :global(.approvals-workspace [data-approvals-summary]>div:last-child p:nth-child(2)) { font-size:30px!important; }
+        :global(.approvals-workspace [data-approvals-filters]) { padding:16px!important; border-radius:17px!important; border-color:var(--approval-border)!important; background:var(--approval-surface)!important; box-shadow:none!important; }
+        :global(.approvals-workspace [data-approvals-filters]>div:first-child) { gap:16px!important; }
+        :global(.approvals-workspace [data-approvals-filters]>div:first-child>label) { height:48px!important; border-radius:12px!important; }
+        :global(.approvals-workspace [data-approvals-filters] button),
+        :global(.approvals-workspace [data-approvals-filters] label:has(select)) { height:48px!important; border-radius:12px!important; }
+        :global(.approvals-workspace [data-approvals-filters]>div:last-child) { display:none; }
+        :global(.approvals-workspace [data-approvals-table]) { border-radius:17px!important; background:var(--approval-surface)!important; border-color:var(--approval-border)!important; box-shadow:none!important; }
+        :global(.approvals-workspace [data-approvals-columns]) { padding:14px 20px!important; border-radius:17px 17px 0 0!important; background:transparent!important; }
+        :global(.approvals-workspace [data-approvals-row]) { min-height:54px!important; padding:7px 20px!important; gap:16px!important; }
+        :global(.approvals-workspace [data-approvals-row]>p) { color:var(--approval-muted)!important; }
+        :global(.approvals-workspace [data-approvals-avatar]) { width:40px!important; height:40px!important; background:linear-gradient(145deg,#8a9de5,#546cac)!important; }
+        :global(.approvals-workspace [data-approval-status]) { height:34px!important; gap:8px; }
+        :global(.dark .approvals-workspace [data-approval-status="PENDENTE"]),
+        :global(.dark .approvals-workspace [data-approval-review="pending"]) { border-color:#8a6a08!important; background:#302709!important; color:#ffd52d!important; }
+        :global(.dark .approvals-workspace [data-approval-status="ATIVO"]) { border-color:#006958!important; background:#032b24!important; color:#00efdf!important; }
+        :global(.approvals-workspace [data-approval-review]) { height:38px!important; border-radius:11px!important; }
+        :global(.approvals-workspace [data-approvals-pagination] button:first-child),
+        :global(.approvals-workspace [data-approvals-pagination] button:last-child) { display:none; }
+        :global(.approvals-workspace [data-approvals-pagination] [aria-current]) { color:var(--approval-accent)!important; background:transparent!important; border:1px solid var(--approval-accent); }
+        :global(.approvals-workspace button:focus-visible),
+        :global(.approvals-workspace select:focus-visible) { outline:2px solid var(--approval-accent); outline-offset:3px; }
+        @media(min-width:1100px) {
+          :global(.approvals-workspace [data-approvals-columns]),
+          :global(.approvals-workspace [data-approvals-row]) { display:grid!important; grid-template-columns:minmax(140px,1.2fr) minmax(160px,1.4fr) minmax(115px,.9fr) 125px 166px!important; }
+          :global(.approvals-workspace [data-approvals-filters]>div:first-child) { flex-direction:row!important; align-items:center; }
+        }
+        @media(max-width:1099px) {
+          :global(.approvals-workspace [data-approvals-columns]) { display:none!important; }
+          :global(.approvals-workspace [data-approvals-row]) { grid-template-columns:1fr 1fr!important; padding:18px!important; }
+          :global(.approvals-workspace [data-approvals-row]>div:last-child) { justify-content:flex-start!important; }
+          :global(.approvals-workspace [data-approvals-hero]>div:last-child) { display:none!important; }
+          :global(.approvals-workspace [data-approvals-wireframe]) { right:-160px; opacity:.12; }
+        }
+        @media(max-width:600px) {
+          :global(.approvals-workspace [data-approvals-hero]) { padding:26px 22px!important; }
+          :global(.approvals-workspace [data-approvals-row]) { grid-template-columns:1fr!important; gap:10px!important; }
+          :global(.approvals-workspace [data-approvals-filters] button) { padding:0 12px!important; }
+        }
+`}</style>
     </div>
   )
 }
