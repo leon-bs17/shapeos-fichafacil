@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
-import { Moon, Sun } from 'lucide-react'
+import { SunMoon } from 'lucide-react'
 import s from './theme-toggle.module.css'
 
 export function ThemeToggle({ floating = false }: { floating?: boolean }) {
@@ -13,7 +13,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
 
   const isDark = mounted && resolvedTheme === 'dark'
   const action = isDark ? 'Ativar modo claro' : 'Ativar modo escuro'
-  const Icon = isDark ? Sun : Moon
+  const Icon = SunMoon
 
   return (
     <div
