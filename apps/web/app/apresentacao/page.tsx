@@ -278,7 +278,7 @@ export default function ApresentacaoPage() {
             <span className={s.eyebrow}>02 / A CONEXÃO</span>
             <h2 id="connection-title">
               Dois lados.
-              <br />O mesmo
+              <br />O mesmo{" "}
               <br />
               <em>objetivo.</em>
             </h2>
