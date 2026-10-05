@@ -13,7 +13,7 @@
 
 :global(html.dark) .control {
   --control-surface: #19261f;
-  --control-text: #eff5ed;
+  --control-text: #b1c7cd;
   --control-border: #2e4239;
   --control-hover: #20352d;
   --control-focus: #4dddc6;
@@ -27,9 +27,9 @@
   min-width: 44px;
   min-height: 44px;
   padding: 0;
-  border: 1px solid var(--control-border);
-  border-radius: 12px;
-  background: var(--control-surface);
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
   color: var(--control-text);
   box-shadow: none;
   cursor: pointer;
@@ -94,3 +94,7 @@
 @media (prefers-reduced-motion: reduce) {
   .button { transition: none; }
 }
+
+/* The divider belongs to the inline theme control, so every shared header gets it. */
+.control:not(.floating) { margin-left: 12px; }
+.control:not(.floating)::before { content: ''; position: absolute; left: -9px; top: 14px; height: 16px; width: 1px; background: var(--control-border); pointer-events: none; }
