@@ -140,7 +140,7 @@ export default function AdminRelatoriosPage() {
         <span>Período</span><select aria-label="Período do relatório" value={dias} onChange={e=>setDias(Number(e.target.value))}><option value={7}>Últimos 7 dias</option><option value={30}>Últimos 30 dias</option><option value={90}>Últimos 90 dias</option></select>
         <span className="date-range"><CalendarDays size={17} />{dataLabel(inicio)} – {dataLabel(fim)}</span>
         <button className="update" disabled={isFetching} onClick={()=>refetch()}><RefreshCw size={16} className={isFetching?'animate-spin':''} />Atualizar</button>
-        <button className="export" onClick={exportarResumo}><Download size={16} />Exportar relatório</button>
+        <button className="export" onClick={exportarResumo}><Download size={16} /><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
       </section>
       <div className="metrics">{grupos.map(g=>{
         const atual=contar(g.datas,inicio,fim), anterior=contar(g.datas,inicioAnterior,inicio)
@@ -148,11 +148,17 @@ export default function AdminRelatoriosPage() {
       })}</div>
       <div className="charts">
         <section className="panel evolution"><h2><BarChart3 size={19} />Evolução dos cadastros</h2><p className="chart-note">Total acumulado de usuários cadastrados</p>
-          <svg className="line-chart" viewBox="0 0 760 250" role="img" aria-label={`Cadastros acumulados: ${pontos[0].valor} no início e ${pontos[6].valor} no final do período`}>
+          <svg className="line-chart desktop-chart" viewBox="0 0 760 250" role="img" aria-label={`Cadastros acumulados: ${pontos[0].valor} no início e ${pontos[6].valor} no final do período`}>
             {[0,1,2,3,4].map(i=><g key={i}><line x1="45" x2="725" y1={205-i*43.75} y2={205-i*43.75} stroke="var(--border)" strokeDasharray="4 4" /><text x="33" y={209-i*43.75} textAnchor="end" fill="var(--muted)" fontSize="11">{Math.round(max*i/4)}</text></g>)}
             <polygon points={`45,205 ${linha} 725,205`} fill="var(--accent)" opacity=".07" />
             <polyline points={linha} fill="none" stroke="var(--accent)" strokeWidth="2" />
             {pontos.map((p,i)=><g key={i}><circle cx={45+i*680/6} cy={205-p.valor/max*175} r="3" fill="var(--accent)" /><text x={45+i*680/6} y="233" textAnchor="middle" fill="var(--muted)" fontSize="10">{dataLabel(p.t).slice(0,5)}</text><title>{dataLabel(p.t)}: {p.valor} usuários</title></g>)}
+          </svg>
+          <svg className="mobile-chart" viewBox="0 0 360 210" role="img" aria-label={`Cadastros acumulados: ${pontos[0].valor} no início e ${pontos[6].valor} no final do período`}>
+            {[0,1,2,3].map(i=><g key={i}><line x1="32" x2="340" y1={170-i*48} y2={170-i*48} stroke="var(--border)" strokeDasharray="4 4"/><text x="24" y={174-i*48} textAnchor="end" fill="var(--muted)" fontSize="12">{Math.round(max*i/3)}</text></g>)}
+            <polygon points={`32,170 ${pontos.map((p,i)=>`${32+i*308/6},${170-p.valor/max*144}`).join(' ')} 340,170`} fill="var(--accent)" opacity=".07"/>
+            <polyline points={pontos.map((p,i)=>`${32+i*308/6},${170-p.valor/max*144}`).join(' ')} fill="none" stroke="var(--accent)" strokeWidth="2"/>
+            {pontos.map((p,i)=><g key={i}><circle cx={32+i*308/6} cy={170-p.valor/max*144} r="3" fill="var(--accent)"/>{i%3===0 && <text x={32+i*308/6} y="197" textAnchor="middle" fill="var(--muted)" fontSize="12">{dataLabel(p.t).slice(0,5)}</text>}</g>)}
           </svg>
         </section>
         <section className="panel profile"><h2><Users size={19} />Perfil dos usuários</h2><div className="profile-body">
@@ -161,6 +167,7 @@ export default function AdminRelatoriosPage() {
         </div></section>
       </div>
       <section className="panel summary"><h2><FileText size={19} />Resumo do período</h2><div className="table-scroll"><table><thead><tr><th>Indicador</th><th>Atual</th><th>Período anterior</th><th>Variação</th></tr></thead><tbody>{resumo.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.atual}</td><td>{r.anterior}</td><td><span className={r.atual<r.anterior?'change down':'change'}>{variacao(r.atual,r.anterior)}</span></td></tr>)}</tbody></table></div>
+        <div className="mobile-summary">{resumo.map(r=><article key={r.label}><h3>{r.label}</h3><dl><div><dt>Atual</dt><dd>{r.atual}</dd></div><div><dt>Anterior</dt><dd>{r.anterior}</dd></div><div><dt>Variação</dt><dd className={r.atual<r.anterior?'negative':''}>{variacao(r.atual,r.anterior)}</dd></div></dl></article>)}</div>
         <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
       </section>
       <style jsx>{`
@@ -190,6 +197,60 @@ export default function AdminRelatoriosPage() {
         @media(max-width:1200px) { .toolbar { flex-wrap:wrap; } .profile-body { flex-direction:column; gap:16px; margin-top:20px; } ul { width:100%; } .wireframe { right:-110px; opacity:.25; } }
         @media(max-width:800px) { .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .charts { grid-template-columns:1fr; } .profile-body { flex-direction:row; } .hero-copy { max-width:100%; } .wireframe { right:-210px; opacity:.15; } .date-range { width:100%; order:3; } }
         @media(max-width:480px) { .hero { padding:28px 22px; } .metric { padding:15px 12px; gap:10px; } .metric> :global(svg) { width:19px; } .metric-note { font-size:9px; } .toolbar { gap:10px; } .profile-body { gap:15px; } .donut { width:135px; height:135px; padding:22px; } }
+
+        .mobile-chart,.mobile-summary,.mobile-export-label { display:none; }
+        @media(max-width:767px) {
+          :global([data-admin-route="/admin/relatorios"] main),
+          :global([data-admin-route="/admin/relatorios"] main>div),
+          :global([data-admin-content="/admin/relatorios"]) { min-width:0; width:auto; max-width:100%; }
+          .reports-workspace,.reports-workspace>*,.metrics>*,.charts>* { min-width:0; max-width:100%; }
+          .reports-workspace { width:100%; gap:16px; }
+          .hero { padding:26px 20px; min-height:200px; }
+          .hero-copy { max-width:100%; }
+          h1 { font-size:32px; line-height:1.12; max-width:290px; }
+          .hero-copy>p:last-child { font-size:14px; max-width:270px; }
+          .wireframe { width:290px; right:-140px; top:2px; opacity:.15; }
+          .toolbar { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); padding:14px; gap:10px; }
+          .toolbar>span:first-child { display:none; }
+          .toolbar select { grid-column:1/-1; width:100%; min-width:0; height:48px; font-size:14px; order:0; }
+          .date-range { grid-column:1/-1; width:auto; margin:0 0 4px; order:1; font-size:12px; }
+          .update,.export { min-width:0; width:100%; min-height:46px; padding:10px 8px; font-size:12px; gap:7px; order:2; white-space:normal; }
+          .desktop-export-label { display:none; }
+          .mobile-export-label { display:inline; }
+          .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+          .metric { min-width:0; padding:16px 12px; gap:10px; align-items:flex-start; }
+          .metric>div { min-width:0; }
+          .metric> :global(svg) { width:21px; height:21px; }
+          .metric p { font-size:12px; overflow-wrap:anywhere; }
+          .metric strong { font-size:30px; }
+          .metric-note { display:block; font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
+          .charts { grid-template-columns:minmax(0,1fr); }
+          .panel { padding:16px; }
+          h2 { font-size:15px; }
+          .chart-note { font-size:11px; }
+          .desktop-chart { display:none; }
+          .mobile-chart { display:block; width:100%; height:auto; margin-top:12px; }
+          .profile-body { flex-direction:row; min-height:180px; gap:14px; margin-top:14px; }
+          .donut { width:120px; height:120px; padding:21px; }
+          .donut strong { font-size:24px; }
+          ul { flex:1; min-width:0; width:auto; gap:14px; }
+          li { font-size:11px; gap:6px; flex-wrap:wrap; }
+          li>div { min-width:0; }
+          li strong { font-size:13px; }
+          .summary .table-scroll { display:none; }
+          .mobile-summary { display:grid; gap:10px; margin-top:15px; }
+          .mobile-summary article { border:1px solid var(--border); border-radius:11px; padding:13px; }
+          .mobile-summary h3 { font-size:13px; font-weight:600; color:var(--text); margin-bottom:12px; }
+          .mobile-summary dl { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+          .mobile-summary dl>div+div { border-left:1px solid var(--border); padding-left:12px; }
+          .mobile-summary dt { font-size:11px; color:var(--muted); }
+          .mobile-summary dd { font-size:17px; font-weight:650; color:var(--text); margin-top:3px; }
+          .mobile-summary dl>div:last-child dd { color:var(--accent); }
+          .mobile-summary dl>div:last-child .negative { color:#c77632; }
+          .summary-footer { font-size:11px; line-height:1.6; }
+          .summary-footer button { min-height:44px; }
+        }
+        @media(max-width:359px) { .metric { display:block; } .metric> :global(svg) { margin:0 0 8px; } .profile-body { flex-direction:column; } ul { width:100%; } }
       `}</style>
     </div>
   )
