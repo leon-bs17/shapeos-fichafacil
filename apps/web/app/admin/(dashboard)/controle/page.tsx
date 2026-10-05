@@ -110,7 +110,7 @@ export default function ControlPage() {
  const toggleChecked = (id: string) => setCheckedIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id])
  const allVisibleChecked = visibleUsers.length > 0 && visibleUsers.every(u => checkedIds.includes(u.id))
  return <div className="control-center min-w-0 space-y-6">
-  <header className="control-heading"><div className="control-heading-copy"><p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-primary"><Shield size={15}/> Administração global</p><h1 className="control-title font-semibold tracking-tight">Central de controle</h1><p className="mt-2 text-sm text-muted-foreground">Contas, relações e treinos. Cada mudança fica registrada.</p></div><div className="control-heading-art"><ControlGlobe/></div><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><Download className="mr-2 inline" size={16}/>Exportar dados carregados</button></header>
+  <header className="control-heading"><div className="control-heading-copy"><p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-primary"><Shield size={15}/> Administração global</p><h1 className="control-title font-semibold tracking-tight">Central de <span className="control-title-accent">controle</span></h1><p className="mt-2 text-sm text-muted-foreground">Contas, relações e treinos. Cada mudança fica registrada.</p></div><div className="control-heading-art"><ControlGlobe/></div></header><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><Download className="mr-2 inline" size={16}/>Exportar dados carregados</button></div>
   {isLoading && <p role="status">Carregando a plataforma…</p>}
   {error && <p role="alert" className="rounded-xl border border-destructive p-4">{error.message}</p>}
   {data && !data.ready && <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-400/5 p-4 text-sm"><strong>Configuração do banco necessária.</strong><p className="mt-1">Os controles aguardam a migração 0013_admin_control_center.sql no Supabase. As consultas continuam disponíveis.</p><p className="mt-1 text-muted-foreground">{data.configError}</p></div>}
@@ -187,6 +187,19 @@ export default function ControlPage() {
   @media (max-width: 380px) {
    .control-center .avatar { display: none; }
   }
+
+  .control-heading { position:relative; isolation:isolate; display:flex!important; align-items:center; min-height:220px; padding:32px 40px; overflow:hidden; border:1px solid hsl(var(--border)); border-radius:18px; background:hsl(var(--card)); }
+  :global(.dark) .control-heading { background:radial-gradient(ellipse at 80% 65%,#073a30,#071b17 48%,#041512); }
+  .control-heading-copy { position:relative; z-index:2; max-width:68%; }
+  .control-title { font-size:clamp(32px,3.4vw,48px); line-height:1.12; font-weight:750; }
+  .control-title-accent { color:var(--shapeos-brand); }
+  .control-heading-copy>p:first-child { font-size:11px; letter-spacing:.16em; margin-bottom:14px; }
+  .control-heading-copy>p:last-child { font-size:15px; line-height:1.6; margin-top:13px; }
+  .control-heading-art { position:absolute!important; width:390px!important; right:28px; top:50%; transform:translateY(-50%); margin:0!important; opacity:.7; pointer-events:none; }
+  .control-export-row { display:flex; justify-content:flex-end; padding-top:14px; border-top:1px solid hsl(var(--border)); margin-top:14px!important; }
+  .control-export-row .control-export { margin:0!important; align-self:auto!important; }
+  @media(max-width:1000px) { .control-heading-copy { max-width:85%; } .control-heading-art { right:-100px; opacity:.25; } }
+  @media(max-width:639px) { .control-heading { padding:27px 22px; min-height:210px; } .control-heading-copy { max-width:100%; } .control-heading-art { width:290px!important; right:-150px; opacity:.15; } .control-title { font-size:32px; } .control-export-row .control-export { min-height:44px; font-size:12px; } }
  `}</style>
  </div>
 }
