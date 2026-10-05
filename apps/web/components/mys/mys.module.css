@@ -210,3 +210,67 @@
   .quickPrompts { grid-template-columns: 1fr; max-width: 360px; }
   .quickPrompts button { min-height: 56px; }
 }
+
+/* Approved Mys concept 1: a centered, quiet conversation workspace. */
+.workspace { max-width: 1168px; --mys-accent: hsl(var(--primary)); }
+:global(html.dark) .workspace { --background: 164 46% 5%; --card: 164 34% 9%; --foreground: 180 20% 96%; --muted-foreground: 182 20% 72%; --border: 168 26% 20%; --primary: 177 90% 58%; --primary-foreground: 164 46% 5%; --mys-soft: hsl(var(--primary) / .07); --mys-line: hsl(var(--border)); }
+:global(html.dark [data-admin-route="/admin/mys"]) { --shapeos-bg: #081411; --shapeos-surface: #0b1a16; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; --border: 168 26% 20%; background: radial-gradient(ellipse at 60% 30%, #10241e 0%, transparent 55%), #081411; }
+:global(html.dark [data-admin-route="/admin/mys"] .shapeos-navigation) { --shapeos-surface: #091713; --shapeos-brand: #48e9da; --shapeos-text: #f1f8f7; --shapeos-muted: #abcac9; }
+:global([data-admin-route="/admin/mys"] .shapeos-navigation a[aria-current="page"]) { color: var(--shapeos-brand) !important; border-color: hsl(var(--primary) / .25) !important; background: hsl(var(--primary) / .08) !important; }
+.header { margin-bottom: 0; gap: 24px; }
+.identity { gap: 15px; }
+.identity h1 { font-size: 26px; font-weight: 650; letter-spacing: -.035em; }
+.identity p { margin-top: 6px; font-size: 13px; }
+.identity h1 > span { font-size: 10px; padding: 5px 9px; border-radius: 8px; }
+.identity .smallMark { width: 48px; height: 48px; border-radius: 12px; }
+.newChat { min-height: 46px; padding: 12px 18px; font-size: 13px !important; background: hsl(var(--card) / .55); }
+.emptyThread { padding: clamp(42px, 7.5dvh, 78px) 0 30px; }
+.emptyThread .welcome { max-width: 868px; }
+.welcomeMark { --mys-welcome-mark-size: 84px; margin-bottom: 30px; }
+.wireframeClip { inset: -24px 0; overflow: visible; }
+.welcomeWireframe { width: calc(var(--mys-welcome-mark-size) * 3.6); max-width: calc(100% - 24px); opacity: .5; }
+:global(html.dark) .welcomeWireframe { opacity: .65; filter: drop-shadow(0 0 5px hsl(var(--primary) / .12)); }
+.welcomeMark .mark { border-radius: 18px; background: hsl(var(--card) / .82); }
+.emptyThread .greeting { font-size: 18px; font-weight: 550; margin-bottom: 14px; }
+.emptyThread .welcome h2 { font-size: clamp(30px, 2.8vw, 40px); font-weight: 600; line-height: 1.2; letter-spacing: -.045em; }
+.welcomeSubtitle { font-size: 16px; margin-top: 12px; line-height: 1.65; }
+.quickPrompts { max-width: 768px; gap: 18px; margin-top: 28px; }
+.quickPrompts button { min-height: 82px; padding: 18px 22px; gap: 16px; border-radius: 13px; background: hsl(var(--card) / .6); }
+.promptCopy strong { font-size: 14px; font-weight: 600; }
+.promptCopy > span { font-size: 12px; line-height: 1.6; }
+.emptyPanel .composerArea { max-width: 868px; }
+.emptyPanel .composer { max-width: 868px; border-radius: 18px; padding: 18px 22px 14px; background: hsl(var(--card) / .85); box-shadow: 0 8px 32px hsl(var(--foreground) / .025); }
+.emptyPanel .composer textarea { min-height: 60px; font-size: 16px; line-height: 1.7; }
+.emptyPanel .composerBottom { margin-top: 12px; }
+.emptyPanel .send { width: 46px; height: 46px; }
+.emptyPanel .send:disabled { opacity: .55; }
+.emptyPanel .composerBottom > span { font-size: 12px; gap: 10px; }
+.emptyPanel .count { font-size: 11px; }
+.emptyPanel .footnote { margin-top: 16px; font-size: 12px; }
+.scope { max-width: 868px; margin-top: 8px; }
+.scope summary { min-height: 30px; font-size: 11px; }
+@media (max-width: 750px) {
+ .header { gap: 12px; }
+ .identity h1 { font-size: 22px; }
+ .identity p { font-size: 11px; }
+ .identity .smallMark { width: 40px; height: 40px; }
+ .newChat { min-height: 44px; padding: 10px 12px; font-size: 12px !important; }
+ .emptyThread { padding: 30px 0 22px; }
+ .welcomeMark { --mys-welcome-mark-size: 64px; margin-bottom: 24px; }
+ .emptyThread .greeting { font-size: 15px; margin-bottom: 12px; }
+ .emptyThread .welcome h2 { font-size: clamp(28px, 5vw, 34px); }
+ .welcomeSubtitle { font-size: 13px; }
+ .quickPrompts { gap: 10px; margin-top: 24px; }
+ .quickPrompts button { min-height: 72px; padding: 12px 14px; gap: 10px; }
+ .promptCopy strong { font-size: 12px; }
+ .emptyPanel .composer { padding: 16px 16px 12px; }
+ .emptyPanel .composer textarea { min-height: 56px; }
+ .emptyPanel .send { width: 44px; height: 44px; }
+ .emptyPanel .footnote { font-size: 11px; }
+}
+@media (max-height: 760px) and (min-width: 751px) {
+ .emptyThread { padding-top: 24px; padding-bottom: 22px; }
+ .welcomeMark { --mys-welcome-mark-size: 64px; margin-bottom: 20px; }
+ .quickPrompts { margin-top: 22px; }
+}
+@media (max-width: 379px) { .quickPrompts { grid-template-columns: 1fr; } .quickPrompts button { min-height: 56px; } }
