@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { ExercisePreview } from '@/components/fitness/exercise-demonstration'
 
+type Exercicio = { id: string; nome: string; grupo_muscular: string; equipamento: string | null; criado_por: string | null; video_url: string | null }
+
 const GRUPOS_MUSCULAREIS = [
   'Peito', 'Costas', 'Ombros', 'Biceps', 'Triceps', 'Quadriceps',
   'Posterior', 'Gluteos', 'Panturrilha', 'Abdomen', 'Antebracos', 'Trapézio',
@@ -39,7 +41,7 @@ function ExerciciosConteudo() {
         .select('id, nome, grupo_muscular, equipamento, criado_por, video_url')
         .order('grupo_muscular')
         .order('nome')
-      return data ?? []
+      return (data ?? []) as Exercicio[]
     },
   })
 
@@ -85,33 +87,34 @@ function ExerciciosConteudo() {
   const grupos = [...new Set(exercicios?.map((e) => e.grupo_muscular) ?? [])].sort()
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Exercicios</h1>
-          <p className="text-muted-foreground text-sm">
-            Biblioteca global de exercicios da plataforma.
+    <div className="exercises-workspace space-y-5">
+      <header className="exercises-hero">
+        <div className="exercises-hero-copy"><p className="eyebrow">Gestão</p>
+          <h1>Biblioteca de <span>exercícios</span></h1>
+          <p className="exercises-subtitle">
+            Biblioteca global de exercícios da plataforma.
           </p>
         </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Novo exercicio
+        <Button onClick={() => setModalAberto(true)} className="exercises-create">
+          <Plus className="mr-1.5 h-4 w-4" /> Novo exercício
         </Button>
+        <ExerciseWireframe />
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+      <div className="exercises-stats grid grid-cols-3 gap-3">
+        <Card className="exercise-stat">
           <CardContent className="p-4">
             <p className="text-2xl font-bold">{exercicios?.length ?? 0}</p>
-            <p className="text-xs text-muted-foreground">Total de exercicios</p>
+            <p className="text-xs text-muted-foreground">Total de exercícios</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="exercise-stat">
           <CardContent className="p-4">
             <p className="text-2xl font-bold">{grupos.length}</p>
             <p className="text-xs text-muted-foreground">Grupos musculares</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="exercise-stat">
           <CardContent className="p-4">
             <p className="text-2xl font-bold">
               {exercicios?.filter((e) => e.equipamento).length ?? 0}
@@ -122,19 +125,21 @@ function ExerciciosConteudo() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+        <div className="exercises-search relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar exercicio..."
+            aria-label="Buscar exercício por nome ou grupo muscular"
+            placeholder="Buscar exercício..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-9 h-10"
+            className="pl-9 h-11"
           />
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="exercises-filters flex flex-wrap gap-2" aria-label="Filtrar por grupo muscular">
         <button
+          aria-pressed={!filtroGrupo}
           onClick={() => setFiltroGrupo(null)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
             !filtroGrupo ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
@@ -145,6 +150,7 @@ function ExerciciosConteudo() {
         {grupos.map((g) => (
           <button
             key={g}
+            aria-pressed={filtroGrupo === g}
             onClick={() => setFiltroGrupo(filtroGrupo === g ? null : g)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               filtroGrupo === g ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
@@ -156,24 +162,24 @@ function ExerciciosConteudo() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="exercise-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="h-24 skeleton" />)}
         </div>
       ) : filtrados?.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-12 text-center">
             <Dumbbell className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-            <p className="font-semibold">Nenhum exercicio encontrado</p>
+            <p className="font-semibold">Nenhum exercício encontrado</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="exercise-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {filtrados?.map((e) => (
-            <Card key={e.id} className="hover:shadow-md transition-all duration-200 group">
+            <Card key={e.id} className="exercise-card group">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold truncate">{e.nome}</p>
+                    <p className="exercise-name font-semibold">{e.nome}</p>
                     <p className="text-muted-foreground text-xs mt-0.5">{e.grupo_muscular}</p>
                     {e.equipamento && (
                       <p className="text-muted-foreground text-xs mt-1">Equipamento: {e.equipamento}</p>
@@ -182,7 +188,8 @@ function ExerciciosConteudo() {
                   </div>
                   <button
                     onClick={() => excluirExercicio.mutate(e.id)}
-                    className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
+                    className="exercise-delete p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
+                    aria-label={`Excluir ${e.nome}`}
                     title="Excluir"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -194,7 +201,7 @@ function ExerciciosConteudo() {
         </div>
       )}
 
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercicio">
+      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ex-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -234,11 +241,91 @@ function ExerciciosConteudo() {
               className="rounded-xl shadow-sm"
             >
               {criarExercicio.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Criar exercicio
+              Criar exercício
             </Button>
           </div>
         </div>
       </Modal>
+
+      <style jsx global>{`
+        .exercises-workspace { --exercise-surface:#fff; --exercise-border:#dbe6e4; --exercise-muted:#53717E; --exercise-ink:#112B2A; --exercise-brand:#008D85; min-width:0; font-family:'Sora',sans-serif; }
+        html.dark .exercises-workspace { --exercise-surface:#091d18; --exercise-border:#24453b; --exercise-muted:#A3BECD; --exercise-ink:#F5FAF9; --exercise-brand:#00E9DF; }
+        .exercises-workspace .exercises-hero { position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--exercise-border); border-radius:18px; min-height:224px; padding:32px 40px; display:flex; align-items:center; justify-content:space-between; gap:24px; background:radial-gradient(ellipse at 80% 50%,#d3f5ec,transparent 65%),#f9fcfa; }
+        html.dark .exercises-workspace .exercises-hero { background:radial-gradient(ellipse at 80% 60%,#073d32,#071d18 48%,#041512); }
+        .exercises-workspace .exercises-hero-copy { position:relative; z-index:1; max-width:72%; }
+        .exercises-workspace .eyebrow { display:inline-flex; border:1px solid var(--exercise-brand); border-radius:999px; padding:6px 16px; margin-bottom:17px; color:var(--exercise-brand); font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; }
+        .exercises-workspace .exercises-hero h1 { color:var(--exercise-ink); font-size:46px; font-weight:800; line-height:1.12; letter-spacing:-.045em; }
+        .exercises-workspace .exercises-hero h1 span { color:var(--exercise-brand); }
+        .exercises-workspace .exercises-subtitle { color:var(--exercise-muted)!important; -webkit-text-fill-color:currentColor; font-size:16px; font-weight:400; line-height:1.6; margin-top:13px; }
+        .exercises-workspace .exercise-wireframe { position:absolute; right:10%; top:50%; transform:translateY(-50%); width:34%; max-width:440px; height:auto; color:var(--exercise-brand); pointer-events:none; z-index:-1; opacity:.35; }
+        .exercises-workspace .exercises-create { position:relative; z-index:1; flex-shrink:0; height:42px; border-radius:10px; background:var(--exercise-brand); color:white; box-shadow:none; font-size:12px; }
+        html.dark .exercises-workspace .exercises-create { color:#04231e; }
+        .exercises-workspace .exercise-stat { border:1px solid var(--exercise-border); border-radius:14px; background:var(--exercise-surface); box-shadow:none; }
+        .exercises-workspace .exercise-stat > div { padding:19px 20px; }
+        .exercises-workspace .exercise-stat p:first-child { color:var(--exercise-ink); font-size:26px; font-weight:750; }
+        .exercises-workspace .exercise-stat p:last-child { color:var(--exercise-muted); line-height:1.5; }
+        .exercises-workspace .exercises-search input { border:1px solid var(--exercise-border); border-radius:10px; background:var(--exercise-surface); color:var(--exercise-ink); box-shadow:none; }
+        .exercises-workspace .exercises-search input::placeholder { color:var(--exercise-muted); }
+        .exercises-workspace .exercises-filters button { min-height:34px; border:1px solid var(--exercise-border); border-radius:9px; padding:6px 12px; background:var(--exercise-surface); color:var(--exercise-muted); font-size:11px; box-shadow:none; }
+        .exercises-workspace .exercises-filters button[aria-pressed="true"] { background:var(--exercise-brand); color:white; border-color:var(--exercise-brand); }
+        html.dark .exercises-workspace .exercises-filters button[aria-pressed="true"] { color:#04231e; }
+        .exercises-workspace .exercise-card { border:1px solid var(--exercise-border); border-radius:14px; background:var(--exercise-surface); box-shadow:none; transition:border-color .2s,background .2s; }
+        .exercises-workspace .exercise-card:hover { border-color:var(--exercise-brand); }
+        .exercises-workspace .exercise-card > div { padding:20px; }
+        .exercises-workspace .exercise-name { font-size:14px; color:var(--exercise-ink); line-height:1.5; overflow-wrap:anywhere; }
+        .exercises-workspace .exercise-name ~ p { color:var(--exercise-muted); font-size:11px; line-height:1.6; margin-top:4px; }
+        .exercises-workspace .exercise-card button:not(.exercise-delete) { color:var(--exercise-brand); min-height:34px; font-size:11px; }
+        .exercises-workspace .exercise-delete { opacity:.65; flex-shrink:0; }
+        .exercises-workspace .exercise-delete:hover,.exercises-workspace .exercise-delete:focus-visible { opacity:1; }
+        .exercises-workspace button:focus-visible,.exercises-workspace input:focus-visible { outline:2px solid var(--exercise-brand); outline-offset:3px; }
+        @media(max-width:767px) {
+          .exercises-workspace .exercises-hero { min-height:240px; padding:27px 22px; flex-direction:column; align-items:flex-start; gap:20px; }
+          .exercises-workspace .exercises-hero-copy { max-width:100%; }
+          .exercises-workspace .exercises-hero h1 { font-size:32px; }
+          .exercises-workspace .exercises-subtitle { font-size:14px; }
+          .exercises-workspace .exercise-wireframe { width:280px; right:-100px; top:65%; opacity:.12; }
+          .exercises-workspace .exercises-create { height:44px; }
+          .exercises-workspace .exercises-stats { gap:8px; }
+          .exercises-workspace .exercise-stat > div { padding:14px 10px; }
+          .exercises-workspace .exercise-stat p:first-child { font-size:24px; }
+          .exercises-workspace .exercise-stat p:last-child { font-size:10px; }
+          .exercises-workspace .exercises-filters { gap:6px; }
+          .exercises-workspace .exercises-filters button { min-height:38px; font-size:10px; padding:7px 10px; }
+          .exercises-workspace .exercise-card > div { padding:18px; }
+          .exercises-workspace .exercise-card button:not(.exercise-delete) { min-height:44px; font-size:12px; }
+          .exercises-workspace .exercise-delete { min-width:36px; min-height:36px; }
+        }
+        @media(prefers-reduced-motion:reduce) { .exercises-workspace .exercise-card { transition:none; } }
+      `}</style>
     </div>
+  )
+}
+
+function ExerciseWireframe() {
+  const project = (t: number, v: number) => {
+    const r = 62 + 16 * Math.cos(3 * t)
+    const x = (r + 11 * Math.cos(v)) * Math.cos(2 * t)
+    const y = (r + 11 * Math.cos(v)) * Math.sin(2 * t)
+    const z = 30 * Math.sin(3 * t) + 11 * Math.sin(v)
+    return [200 + x * 1.65, 120 + (y * .4 - z * .85) * 1.4]
+  }
+  const ring = (v: number) => Array.from({ length: 161 }, (_, i) => {
+    const [x,y] = project(i / 160 * Math.PI * 2, v)
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`
+  }).join(' ') + 'Z'
+  return (
+    <svg className="exercise-wireframe" viewBox="0 0 400 240" fill="none" aria-hidden="true" focusable="false">
+      <g stroke="currentColor" strokeWidth=".65">
+        {Array.from({ length: 18 }, (_, i) => <path key={i} d={ring(i / 18 * Math.PI * 2)} />)}
+        {Array.from({ length: 65 }, (_, i) => {
+          const t = i / 65 * Math.PI * 2
+          const d = Array.from({ length: 25 }, (_, j) => {
+            const [x,y] = project(t, j / 24 * Math.PI * 2)
+            return `${j === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`
+          }).join(' ') + 'Z'
+          return <path key={i} d={d} opacity=".65" />
+        })}
+      </g>
+    </svg>
   )
 }
