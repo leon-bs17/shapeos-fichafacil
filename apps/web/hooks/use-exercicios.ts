@@ -30,6 +30,7 @@ export function useCriarExercicio() {
       nome: string
       grupo_muscular: string
       equipamento: string
+      video_url?: string | null
     }) => {
       const supabase = createClient()
       const {
@@ -53,7 +54,7 @@ export function useEditarExercicio() {
       entrada,
     }: {
       id: string
-      entrada: { nome: string; grupo_muscular: string; equipamento: string }
+      entrada: { nome: string; grupo_muscular: string; equipamento: string; video_url?: string | null }
     }) => {
       const supabase = createClient()
       const {
@@ -87,3 +88,4 @@ export function useExcluirExercicio() {
     },
   })
 }
+

@@ -11,7 +11,7 @@ import { useCriarExercicio, useExercicios, useEditarExercicio, useExcluirExercic
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import type { ExercicioBiblioteca } from '@/services/exercicios'
-import { ExercisePreview } from '@/components/fitness/exercise-demonstration'
+import { ExercisePreview, ExerciseThumbnail } from '@/components/fitness/exercise-demonstration'
 
 const GRUPO_ICONS: Record<string, React.ReactNode> = {
   Peito: <Dumbbell className="h-4 w-4" />,
@@ -47,6 +47,7 @@ function ExerciciosConteudo() {
   const [exEditando, setExEditando] = useState<ExercicioBiblioteca | null>(null)
   
   const [nome, setNome] = useState('')
+  const [mediaUrl, setMediaUrl] = useState('')
   const [grupo, setGrupo] = useState<string>(GRUPOS_MUSCULARES[0])
   const [equipamento, setEquipamento] = useState<string>(EQUIPAMENTOS[0])
 
@@ -61,6 +62,7 @@ function ExerciciosConteudo() {
 
   function abrirCriacao() {
     setNome('')
+    setMediaUrl('')
     setGrupo(GRUPOS_MUSCULARES[0])
     setEquipamento(EQUIPAMENTOS[0])
     setModalAberto(true)
@@ -69,6 +71,7 @@ function ExerciciosConteudo() {
   function abrirEdicao(e: ExercicioBiblioteca) {
     setExEditando(e)
     setNome(e.nome)
+    setMediaUrl(e.video_url ?? '')
     setGrupo(e.grupo_muscular)
     setEquipamento(e.equipamento ?? EQUIPAMENTOS[0])
     setModalEditarAberto(true)
@@ -77,7 +80,7 @@ function ExerciciosConteudo() {
   async function salvar() {
     if (nome.trim().length < 2) return
     try {
-      await criar.mutateAsync({ nome: nome.trim(), grupo_muscular: grupo, equipamento })
+      await criar.mutateAsync({ nome: nome.trim(), grupo_muscular: grupo, equipamento, video_url: mediaUrl })
       setModalAberto(false)
     } catch { void 0 }
   }
@@ -87,7 +90,7 @@ function ExerciciosConteudo() {
     try {
       await editar.mutateAsync({
         id: exEditando.id,
-        entrada: { nome: nome.trim(), grupo_muscular: grupo, equipamento }
+        entrada: { nome: nome.trim(), grupo_muscular: grupo, equipamento, video_url: mediaUrl }
       })
       setModalEditarAberto(false)
     } catch { void 0 }
@@ -136,7 +139,7 @@ function ExerciciosConteudo() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="h-20 skeleton" />
           ))}
@@ -152,16 +155,17 @@ function ExerciciosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
           {filtrados.map((e, idx) => (
             <Card key={e.id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} hover:shadow-md transition-all duration-200 group`}>
               <CardContent className="flex items-center justify-between gap-3 p-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
+                <ExerciseThumbnail name={e.nome} exerciseId={e.id} videoUrl={e.video_url} />
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="hidden xl:flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
                     {GRUPO_ICONS[e.grupo_muscular] ?? <Dumbbell className="h-4 w-4" />}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-sm">{e.nome}</p>
+                    <p className="font-medium text-sm break-words">{e.nome}</p>
                     <p className="text-muted-foreground text-xs truncate">
                       {e.grupo_muscular}
                       {e.equipamento ? ` · ${e.equipamento}` : ''}
@@ -229,6 +233,11 @@ function ExerciciosConteudo() {
               </select>
             </div>
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="ex-media">GIF ou vídeo de demonstração (opcional)</Label>
+            <Input id="ex-media" type="url" value={mediaUrl} onChange={e => setMediaUrl(e.target.value)} placeholder="https://.../exercicio.gif" />
+            <p className="text-sm text-muted-foreground">Link direto de GIF, WebP, MP4 ou WebM. Aparece também no treino do aluno.</p>
+          </div>
           {criar.error ? (
             <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
               <p className="text-destructive text-sm">{criar.error.message}</p>
@@ -264,6 +273,11 @@ function ExerciciosConteudo() {
               </select>
             </div>
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-media">GIF ou vídeo de demonstração (opcional)</Label>
+            <Input id="edit-media" type="url" value={mediaUrl} onChange={e => setMediaUrl(e.target.value)} placeholder="https://.../exercicio.gif" />
+            <p className="text-sm text-muted-foreground">Link direto de GIF, WebP, MP4 ou WebM. Aparece também no treino do aluno.</p>
+          </div>
           {editar.error ? (
             <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
               <p className="text-destructive text-sm">{editar.error.message}</p>
@@ -285,3 +299,4 @@ function ExerciciosConteudo() {
     </div>
   )
 }
+

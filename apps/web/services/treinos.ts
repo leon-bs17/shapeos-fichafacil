@@ -6,7 +6,7 @@ export interface ItemFicha {
   series: number
   repeticoes: string
   descanso_segundos: number
-  exercicio: { id: string; nome: string; grupo_muscular: string }
+  exercicio: { id: string; nome: string; grupo_muscular: string; video_url?: string | null }
 }
 
 export interface FichaResumo {
@@ -52,7 +52,7 @@ export async function listarFichas(
        aluno:usuarios!treinos_aluno_id_fkey ( nome ),
        itens_treino (
          id, ordem, series, repeticoes, descanso_segundos,
-         exercicio:exercicios ( id, nome, grupo_muscular )
+         exercicio:exercicios ( id, nome, grupo_muscular, video_url )
        )`
     )
     .eq('personal_id', personalId)
@@ -141,3 +141,4 @@ export async function editarFicha(
 
   if (error) throw error
 }
+
