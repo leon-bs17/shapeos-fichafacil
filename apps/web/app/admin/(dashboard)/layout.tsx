@@ -258,6 +258,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         [data-admin-content] .control-heading-copy > p:first-child > svg,
         [data-admin-content] [data-approvals-hero] div:has(> h1) > div:first-child > svg,
         [data-admin-content] :is(p, div)[class*="uppercase"]:has(+ h1) > svg { display:none!important; }
+
+        [data-admin-content="/admin/aprovacoes"] [data-approvals-hero] h1,
+        [data-admin-content="/admin/atividade"] .activity-hero h1 {
+          font-family:'Sora',sans-serif!important; font-size:46px!important;
+          font-weight:800!important; line-height:1.12!important; letter-spacing:-.045em!important;
+        }
+        @media(max-width:639px) {
+          [data-admin-content="/admin/aprovacoes"] [data-approvals-hero] h1,
+          [data-admin-content="/admin/atividade"] .activity-hero h1 { font-size:32px!important; }
+        }
       `}</style>
     </div>
   )
