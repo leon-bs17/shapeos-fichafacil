@@ -726,6 +726,16 @@ export default function AdminAprovacoesPage() {
           :global(.approvals-workspace [data-approvals-row]) { grid-template-columns:1fr!important; gap:10px!important; }
           :global(.approvals-workspace [data-approvals-filters] button) { padding:0 12px!important; }
         }
+
+        :global(.approvals-workspace [data-approvals-hero]) { min-height:224px!important; padding:32px 40px!important; }
+        :global(.dark .approvals-workspace [data-approvals-hero]) { background:radial-gradient(ellipse at 80% 65%,#073a30,#071b17 48%,#041512)!important; }
+        :global(.approvals-workspace [data-approvals-hero] h1) { font-size:clamp(32px,3.4vw,48px)!important; line-height:1.12!important; font-weight:750!important; letter-spacing:-.04em!important; }
+        :global(.approvals-workspace [data-approvals-hero] h1+p) { font-size:15px!important; font-weight:400!important; line-height:1.6!important; margin-top:13px!important; max-width:550px!important; }
+        @media(max-width:639px) {
+          :global(.approvals-workspace [data-approvals-hero]) { min-height:210px!important; padding:27px 22px!important; }
+          :global(.approvals-workspace [data-approvals-hero] h1) { font-size:32px!important; }
+          :global(.approvals-workspace [data-approvals-hero] h1+p) { font-size:14px!important; line-height:1.6!important; }
+        }
 `}</style>
     </div>
   )
