@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
-import { ExercisePreview } from '@/components/fitness/exercise-demonstration'
+import { ExercisePreview, ExerciseThumbnail } from '@/components/fitness/exercise-demonstration'
 
 type Exercicio = { id: string; nome: string; grupo_muscular: string; equipamento: string | null; criado_por: string | null; video_url: string | null }
 
@@ -162,7 +162,7 @@ function ExerciciosConteudo() {
       </div>
 
       {isLoading ? (
-        <div className="exercise-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="exercise-grid grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
           {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="h-24 skeleton" />)}
         </div>
       ) : filtrados?.length === 0 ? (
@@ -177,8 +177,9 @@ function ExerciciosConteudo() {
           {filtrados?.map((e) => (
             <Card key={e.id} className="exercise-card group">
               <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
+                <div className="exercise-visual-row">
+                  <ExerciseThumbnail name={e.nome} exerciseId={e.id} />
+                  <div className="exercise-details min-w-0 flex-1">
                     <p className="exercise-name font-semibold">{e.nome}</p>
                     <p className="text-muted-foreground text-xs mt-0.5">{e.grupo_muscular}</p>
                     {e.equipamento && (
@@ -271,7 +272,12 @@ function ExerciciosConteudo() {
         html.dark .exercises-workspace .exercises-filters button[aria-pressed="true"] { color:#04231e; }
         .exercises-workspace .exercise-card { border:1px solid var(--exercise-border); border-radius:14px; background:var(--exercise-surface); box-shadow:none; transition:border-color .2s,background .2s; }
         .exercises-workspace .exercise-card:hover { border-color:var(--exercise-brand); }
-        .exercises-workspace .exercise-card > div { padding:20px; }
+        .exercises-workspace .exercise-card > div { padding:14px; }
+        .exercises-workspace .exercise-visual-row { display:flex; align-items:center; gap:14px; position:relative; padding-right:22px; min-height:120px; }
+        .exercises-workspace .exercise-details { align-self:center; }
+        .exercises-workspace .exercise-delete { position:absolute; top:0; right:0; }
+        .exercises-workspace .exercise-card .exercise-visual-row .exercise-details > button { min-height:34px; }
+        .exercises-workspace .exercise-card .exercise-visual-row > div:first-child button { min-height:28px; padding:0; }
         .exercises-workspace .exercise-name { font-size:14px; color:var(--exercise-ink); line-height:1.5; overflow-wrap:anywhere; }
         .exercises-workspace .exercise-name ~ p { color:var(--exercise-muted); font-size:11px; line-height:1.6; margin-top:4px; }
         .exercises-workspace .exercise-card button:not(.exercise-delete) { color:var(--exercise-brand); min-height:34px; font-size:11px; }
@@ -291,7 +297,12 @@ function ExerciciosConteudo() {
           .exercises-workspace .exercise-stat p:last-child { font-size:10px; }
           .exercises-workspace .exercises-filters { gap:6px; }
           .exercises-workspace .exercises-filters button { min-height:38px; font-size:10px; padding:7px 10px; }
-          .exercises-workspace .exercise-card > div { padding:18px; }
+          .exercises-workspace .exercise-card > div { padding:14px; }
+          .exercises-workspace .exercise-grid { grid-template-columns:minmax(0,1fr); }
+          .exercises-workspace .exercise-visual-row { gap:12px; }
+          .exercises-workspace .exercise-name { font-size:13px; }
+          .exercises-workspace .exercise-card .exercise-visual-row .exercise-details > button { min-height:44px; }
+          .exercises-workspace .exercise-card .exercise-visual-row > div:first-child button { min-height:32px; }
           .exercises-workspace .exercise-card button:not(.exercise-delete) { min-height:44px; font-size:12px; }
           .exercises-workspace .exercise-delete { min-width:36px; min-height:36px; }
         }
@@ -302,30 +313,17 @@ function ExerciciosConteudo() {
 }
 
 function ExerciseWireframe() {
-  const project = (t: number, v: number) => {
-    const r = 62 + 16 * Math.cos(3 * t)
-    const x = (r + 11 * Math.cos(v)) * Math.cos(2 * t)
-    const y = (r + 11 * Math.cos(v)) * Math.sin(2 * t)
-    const z = 30 * Math.sin(3 * t) + 11 * Math.sin(v)
-    return [200 + x * 1.65, 120 + (y * .4 - z * .85) * 1.4]
-  }
-  const ring = (v: number) => Array.from({ length: 161 }, (_, i) => {
-    const [x,y] = project(i / 160 * Math.PI * 2, v)
-    return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`
-  }).join(' ') + 'Z'
   return (
     <svg className="exercise-wireframe" viewBox="0 0 400 240" fill="none" aria-hidden="true" focusable="false">
-      <g stroke="currentColor" strokeWidth=".65">
-        {Array.from({ length: 18 }, (_, i) => <path key={i} d={ring(i / 18 * Math.PI * 2)} />)}
-        {Array.from({ length: 65 }, (_, i) => {
-          const t = i / 65 * Math.PI * 2
-          const d = Array.from({ length: 25 }, (_, j) => {
-            const [x,y] = project(t, j / 24 * Math.PI * 2)
-            return `${j === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`
-          }).join(' ') + 'Z'
-          return <path key={i} d={d} opacity=".65" />
-        })}
+      <g stroke="currentColor" strokeWidth=".8">
+        <ellipse cx="200" cy="120" rx="145" ry="55" transform="rotate(-45 200 120)" />
+        <ellipse cx="200" cy="120" rx="150" ry="63" transform="rotate(36 200 120)" />
+        <ellipse cx="200" cy="120" rx="133" ry="87" transform="rotate(-12 200 120)" />
+        {Array.from({length:16},(_,i) => <ellipse key={i} cx="200" cy="120" rx={60+i*3} ry="32" transform={`rotate(${i*11} 200 120)`} opacity=".35" />)}
       </g>
+      {[{x:99,y:48},{x:241,y:27},{x:332,y:111},{x:235,y:209},{x:70,y:164}].map((point,i) => (
+        <g key={i}><circle cx={point.x} cy={point.y} r="9" fill="var(--exercise-surface)" stroke="currentColor" /><circle cx={point.x-2} cy={point.y-2} r="3" fill="currentColor" opacity=".6" /></g>
+      ))}
     </svg>
   )
 }
