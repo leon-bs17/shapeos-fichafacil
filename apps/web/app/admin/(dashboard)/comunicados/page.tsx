@@ -94,7 +94,26 @@ export default function AdminComunicadosPage() {
   return (
     <div className="notices-workspace">
       <section className="hero"><div className="hero-copy"><p className="eyebrow">Comunicação</p><h1>Comunicados da <span>plataforma</span></h1><p>Publique avisos para alunos e personais e gerencie a comunicação da ShapeOS.</p></div>
-        <svg className="wireframe" viewBox="0 0 500 300" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth=".65">{Array.from({length:32},(_,i)=><ellipse key={i} cx="265" cy="160" rx={105+i*2.9} ry={65+i*2.2} transform={`rotate(${-28+i*3.2} 265 160)`} />)}{Array.from({length:14},(_,i)=><ellipse key={'o'+i} cx="265" cy="160" rx="202" ry={25+i*6} transform="rotate(-28 265 160)" />)}</g></svg>
+        <svg className="wireframe" viewBox="0 0 500 300" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeWidth=".7">
+            {Array.from({ length: 25 }, (_, row) => {
+              const points = Array.from({ length: 65 }, (_, col) => {
+                const x = col * 8
+                const y = 65 + row * 6 + Math.sin(col / 10 + row / 8) * 34 + Math.cos(col / 16 - row / 7) * 25
+                return `${x},${y}`
+              }).join(' ')
+              return <polyline key={'row'+row} points={points} />
+            })}
+            {Array.from({ length: 33 }, (_, col) => {
+              const points = Array.from({ length: 25 }, (_, row) => {
+                const x = col * 16
+                const y = 65 + row * 6 + Math.sin(col * 2 / 10 + row / 8) * 34 + Math.cos(col * 2 / 16 - row / 7) * 25
+                return `${x},${y}`
+              }).join(' ')
+              return <polyline key={'col'+col} points={points} />
+            })}
+          </g>
+        </svg>
       </section>
       <div className="columns">
         <section className="panel editor"><h2><Megaphone size={23} />Novo comunicado</h2>
@@ -128,7 +147,7 @@ export default function AdminComunicadosPage() {
         .hero { position:relative; overflow:hidden; min-height:225px; display:flex; align-items:center; padding:35px 36px; border:1px solid var(--border); border-radius:17px; background:var(--surface); }
         :global(.dark) .hero { background:radial-gradient(ellipse at 83% 60%,#07382e,#071b17 45%,#041512); }
         .hero-copy { position:relative; z-index:2; max-width:80%; } .eyebrow { font-size:11px!important; text-transform:uppercase; letter-spacing:.2em; font-weight:700; color:var(--accent)!important; margin-bottom:18px; }
-        h1 { color:var(--text); font-size:clamp(29px,3.2vw,47px); line-height:1.15; font-weight:800; letter-spacing:-.04em; } h1 span { color:var(--accent); } .hero-copy>p:last-child { font-size:15px; line-height:1.6; color:var(--muted); margin-top:14px; } .wireframe { position:absolute; width:400px; height:280px; top:-12px; right:-15px; color:var(--accent); opacity:.45; pointer-events:none; }
+        h1 { color:var(--text); font-size:clamp(29px,3.2vw,47px); line-height:1.15; font-weight:800; letter-spacing:-.04em; } h1 span { color:var(--accent); } .hero-copy>p:last-child { font-size:15px; line-height:1.6; color:var(--muted); margin-top:14px; } .wireframe { position:absolute; width:440px; height:280px; top:5px; right:-30px; transform:rotate(-18deg); color:var(--accent); opacity:.45; pointer-events:none; }
         .columns { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr); gap:20px; align-items:start; }
         .panel { border:1px solid var(--border); border-radius:15px; padding:23px; background:var(--surface); } h2 { display:flex; align-items:center; gap:12px; font-size:17px; font-weight:650; color:var(--text); } h2> :global(svg) { color:var(--accent); flex-shrink:0; }
         .editor h2 { padding-bottom:20px; border-bottom:1px solid var(--border); } form { display:grid; gap:10px; margin-top:23px; }
