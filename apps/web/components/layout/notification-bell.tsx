@@ -59,7 +59,7 @@ export function NotificationBell() {
       aria-label={unread > 0 ? `Abrir notificações, ${unread} ${unread === 1 ? 'não lida' : 'não lidas'}` : 'Abrir notificações'}
       title="Notificações" aria-haspopup="dialog" aria-expanded={open} aria-controls={id}>
       <Bell size={20} strokeWidth={1.8} aria-hidden="true" />
-      {unread > 0 ? <span className={s.badge} aria-hidden="true">{unread > 99 ? '99+' : unread}</span> : null}
+      {unread > 0 ? <span className={s.badge} aria-hidden="true" /> : null}
     </button>
     <span className={s.srOnly} role="status">{count.isSuccess ? `${unread} notificações não lidas` : ''}</span>
     <dialog ref={dialog} id={id} className={s.panel} aria-labelledby={`${id}-title`} aria-modal="true"
