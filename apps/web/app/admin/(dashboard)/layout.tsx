@@ -240,6 +240,25 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div data-admin-content={pathname}>{children}</div>
         </div>
       </main>
+
+      <style jsx global>{`
+        [data-admin-content] .eyebrow,
+        [data-admin-content] .control-heading-copy > p:first-child,
+        [data-admin-content] [data-approvals-hero] div:has(> h1) > div:first-child,
+        [data-admin-content] :is(p, div)[class*="uppercase"]:has(+ h1) {
+          display:inline-flex!important; align-items:center; width:fit-content; max-width:100%;
+          gap:7px!important; padding:6px 16px!important;
+          border:1px solid var(--shapeos-brand)!important; border-radius:999px!important;
+          background:transparent!important; color:var(--shapeos-brand)!important;
+          font-size:10px!important; line-height:1.4!important; font-weight:650!important;
+          letter-spacing:.1em!important; text-transform:uppercase;
+          margin-bottom:17px!important; box-shadow:none!important;
+        }
+        [data-admin-content] .eyebrow > svg,
+        [data-admin-content] .control-heading-copy > p:first-child > svg,
+        [data-admin-content] [data-approvals-hero] div:has(> h1) > div:first-child > svg,
+        [data-admin-content] :is(p, div)[class*="uppercase"]:has(+ h1) > svg { display:none!important; }
+      `}</style>
     </div>
   )
 }
