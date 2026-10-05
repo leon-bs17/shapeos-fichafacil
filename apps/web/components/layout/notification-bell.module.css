@@ -1,7 +1,7 @@
-.trigger { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 1px solid hsl(var(--border)); border-radius: 12px; background: hsl(var(--card)); color: hsl(var(--foreground)); cursor: pointer; transition: color .15s, background .15s, border-color .15s; }
-.trigger:hover, .trigger[aria-expanded="true"] { color: hsl(var(--primary)); border-color: hsl(var(--primary) / .4); background: hsl(var(--primary) / .07); }
+.trigger { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: hsl(var(--muted-foreground)); cursor: pointer; transition: color .15s, background .15s; touch-action: manipulation; }
+.trigger:hover, .trigger[aria-expanded="true"] { color: hsl(var(--primary)); background: hsl(var(--primary) / .05); }
 .trigger svg { width: 20px; height: 20px; flex-shrink: 0; }
-.badge { position: absolute; top: -5px; right: -5px; display: grid; place-items: center; min-width: 19px; height: 19px; padding: 0 4px; border: 2px solid hsl(var(--background)); border-radius: 999px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 10px; font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; }
+.badge { position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border: 1px solid hsl(var(--background)); border-radius: 50%; background: #00dcd0; pointer-events: none; }
 .panel { position: fixed; inset: 80px 24px auto auto; width: min(440px, calc(100vw - 32px)); max-height: min(680px, calc(100dvh - 112px)); margin: 0; padding: 0; overflow: hidden; border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 20px 65px hsl(var(--foreground) / .12); font-family: 'Sora', sans-serif; }
 .panel[open] { display: flex; flex-direction: column; }
 .panel::backdrop { background: hsl(var(--foreground) / .14); backdrop-filter: blur(3px); }
