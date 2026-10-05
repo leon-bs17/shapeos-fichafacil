@@ -268,6 +268,69 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero] h1,
           [data-admin-route="/admin/atividade"] [data-admin-content] .activity-workspace .activity-hero h1 { font-size:32px!important; }
         }
+
+        [data-admin-route] [data-admin-content] .control-center .control-heading h1,
+        [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1,
+        [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1,
+        [data-admin-route] [data-admin-content] .reports-workspace .hero h1,
+        [data-admin-route] [data-admin-content] .notices-workspace .hero h1,
+        [data-admin-route] [data-admin-content] .system-workspace .hero h1 {
+          font-family:'Sora',sans-serif!important; font-size:46px!important;
+          font-weight:800!important; line-height:1.12!important;
+          letter-spacing:-.045em!important; color:#112B2A!important;
+        }
+        [data-admin-route] [data-admin-content] .control-center .control-heading h1 span,
+        [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1 span,
+        [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1 span,
+        [data-admin-route] [data-admin-content] .reports-workspace .hero h1 span,
+        [data-admin-route] [data-admin-content] .notices-workspace .hero h1 span,
+        [data-admin-route] [data-admin-content] .system-workspace .hero h1 span { color:#008D85!important; }
+        [data-admin-route] [data-admin-content] .control-center .control-heading h1 + p,
+        [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1 + p,
+        [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1 + p,
+        [data-admin-route] [data-admin-content] .reports-workspace .hero h1 + p,
+        [data-admin-route] [data-admin-content] .notices-workspace .hero h1 + p,
+        [data-admin-route] [data-admin-content] .system-workspace .hero h1 + p {
+          font-family:'Sora',sans-serif!important; font-size:16px!important;
+          font-weight:400!important; line-height:1.6!important;
+          color:#53717E!important; margin-top:13px!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] .control-center .control-heading h1,
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1,
+        html.dark [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1,
+        html.dark [data-admin-route] [data-admin-content] .reports-workspace .hero h1,
+        html.dark [data-admin-route] [data-admin-content] .notices-workspace .hero h1,
+        html.dark [data-admin-route] [data-admin-content] .system-workspace .hero h1 { color:#F5FAF9!important; }
+        html.dark [data-admin-route] [data-admin-content] .control-center .control-heading h1 span,
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1 span,
+        html.dark [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1 span,
+        html.dark [data-admin-route] [data-admin-content] .reports-workspace .hero h1 span,
+        html.dark [data-admin-route] [data-admin-content] .notices-workspace .hero h1 span,
+        html.dark [data-admin-route] [data-admin-content] .system-workspace .hero h1 span { color:#00E9DF!important; }
+        html.dark [data-admin-route] [data-admin-content] .control-center .control-heading h1 + p,
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1 + p,
+        html.dark [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1 + p,
+        html.dark [data-admin-route] [data-admin-content] .reports-workspace .hero h1 + p,
+        html.dark [data-admin-route] [data-admin-content] .notices-workspace .hero h1 + p,
+        html.dark [data-admin-route] [data-admin-content] .system-workspace .hero h1 + p { color:#A3BECD!important; }
+        [data-admin-route="/admin/mys"] [data-admin-content] section > header h1 { color:#112B2A!important; }
+        [data-admin-route="/admin/mys"] [data-admin-content] section > header h1 + p { color:#53717E!important; }
+        html.dark [data-admin-route="/admin/mys"] [data-admin-content] section > header h1 { color:#F5FAF9!important; }
+        html.dark [data-admin-route="/admin/mys"] [data-admin-content] section > header h1 + p { color:#A3BECD!important; }
+        @media(max-width:767px) {
+          [data-admin-route] [data-admin-content] .control-center .control-heading h1,
+          [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1,
+          [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1,
+          [data-admin-route] [data-admin-content] .reports-workspace .hero h1,
+          [data-admin-route] [data-admin-content] .notices-workspace .hero h1,
+          [data-admin-route] [data-admin-content] .system-workspace .hero h1 { font-size:32px!important; }
+          [data-admin-route] [data-admin-content] .control-center .control-heading h1 + p,
+          [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-hero] h1 + p,
+          [data-admin-route] [data-admin-content] .activity-workspace .activity-hero h1 + p,
+          [data-admin-route] [data-admin-content] .reports-workspace .hero h1 + p,
+          [data-admin-route] [data-admin-content] .notices-workspace .hero h1 + p,
+          [data-admin-route] [data-admin-content] .system-workspace .hero h1 + p { font-size:14px!important; }
+        }
       `}</style>
     </div>
   )
