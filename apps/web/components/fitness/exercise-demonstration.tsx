@@ -4,6 +4,8 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { Expand, Pause, Play, X } from 'lucide-react'
 import { findExerciseMotion, type Motion, type Point, type Pose } from '@/lib/fitness/exercise-motions'
 import s from './exercise-demonstration.module.css'
+import { resolveExerciseMedia, safeExerciseUrl } from '@/lib/fitness/exercise-media'
+import { ExerciseMediaPlayer } from './exercise-media'
 
 type Props = { name: string; exerciseId?: string; videoUrl?: string | null }
 const limbPairs = [['hip','rightKnee'],['rightKnee','rightFoot'],['shoulder','rightElbow'],['rightElbow','rightHand'],['hip','leftKnee'],['leftKnee','leftFoot'],['shoulder','leftElbow'],['leftElbow','leftHand']] as const
@@ -55,6 +57,10 @@ function Mannequin({motion,svgRef}:{motion:Motion;svgRef:React.RefObject<SVGSVGE
 }
 export function ExerciseDemonstration({name,exerciseId,videoUrl}:Props) {
   const motion=findExerciseMotion(name,exerciseId)
+  const resolvedMedia=resolveExerciseMedia(name,videoUrl,exerciseId)
+  const [failedSource,setFailedSource]=useState<string|null>(null)
+  const media=resolvedMedia?.src===failedSource?null:resolvedMedia
+  const canPlay=!!media || (!!motion && !motion.hold)
   const [playing,setPlaying]=useState(true),[expanded,setExpanded]=useState(false)
   const svgRef=useRef<SVGSVGElement>(null),dialogRef=useRef<HTMLDialogElement>(null)
   useEffect(()=>{
@@ -68,11 +74,11 @@ export function ExerciseDemonstration({name,exerciseId,videoUrl}:Props) {
     playing?svg.unpauseAnimations():svg.pauseAnimations()
     const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting&&playing)svg.unpauseAnimations();else svg.pauseAnimations()})
     observer.observe(svg);return()=>observer.disconnect()
-  },[playing,motion,expanded])
+  },[playing,motion,expanded,media?.src])
   useEffect(()=>{if(expanded)dialogRef.current?.showModal();else dialogRef.current?.close()},[expanded])
-  const safeVideo=videoUrl && /^https:\/\//i.test(videoUrl) ? videoUrl : null
-  const content=<><div className={s.stage}>{motion ? <Mannequin motion={motion} svgRef={svgRef}/> : <p className={s.pending}>Este exercício precisa de uma demonstração cadastrada pelo personal.</p>}</div>{motion && <p className={s.cue}>{motion.cue}</p>}<div className={s.controls}><span>{motion?.hold?'Posição isométrica':motion?'Movimento ilustrativo':'Demonstração pendente'}</span><div>{motion && !motion.hold && <button type="button" onClick={()=>setPlaying(v=>!v)} aria-label={playing?'Pausar demonstração':'Reproduzir demonstração'}>{playing?<Pause size={15}/>:<Play size={15}/>}</button>}{motion && !expanded && <button type="button" onClick={()=>setExpanded(true)} aria-label="Ampliar demonstração"><Expand size={15}/></button>}</div></div>{safeVideo && <a className={s.videoLink} href={safeVideo} target="_blank" rel="noopener noreferrer">Ver vídeo do personal</a>}</>
-  return <section className={s.demo} aria-label={`Demonstração de ${name}`} data-exercise-motion={motion?.id ?? 'pending'}>
+  const safeVideo=safeExerciseUrl(videoUrl)
+  const content=<><div className={s.stage}>{media ? <ExerciseMediaPlayer key={media.src} media={media} name={name} playing={playing} onError={()=>setFailedSource(media.src)}/> : motion ? <Mannequin motion={motion} svgRef={svgRef}/> : <p className={s.pending}>Este exercício precisa de uma demonstração cadastrada pelo personal.</p>}</div>{motion && <p className={s.cue}>{motion.cue}</p>}<div className={s.controls}><span>{media?'Demonstração do exercício':motion?.hold?'Posição isométrica':motion?'Movimento ilustrativo':'Demonstração pendente'}</span><div>{canPlay && <button type="button" onClick={()=>setPlaying(v=>!v)} aria-label={playing?'Pausar demonstração':'Reproduzir demonstração'}>{playing?<Pause size={15}/>:<Play size={15}/>}</button>}{(media || motion) && !expanded && <button type="button" onClick={()=>setExpanded(true)} aria-label="Ampliar demonstração"><Expand size={15}/></button>}</div></div>{media?.credit && <span className={s.sourceCredit}>{media.source ? <a href={media.source} target="_blank" rel="noopener noreferrer">Fonte: {media.credit}</a> : media.credit}</span>}{safeVideo && safeVideo !== media?.src && <a className={s.videoLink} href={safeVideo} target="_blank" rel="noopener noreferrer">Ver vídeo do personal</a>}</>
+  return <section className={s.demo} aria-label={`Demonstração de ${name}`} data-exercise-motion={motion?.id ?? 'pending'} data-exercise-media={media?.kind ?? 'illustration'}>
     {!expanded && content}
     <dialog ref={dialogRef} className={s.dialog} onCancel={()=>setExpanded(false)} onClose={()=>setExpanded(false)} onClick={event=>{if(event.target===event.currentTarget)setExpanded(false)}}><header><h3>{name}</h3><button type="button" onClick={()=>setExpanded(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{expanded && content}</dialog>
   </section>
@@ -83,8 +89,11 @@ export function ExercisePreview(props:Props){
   return <><button type="button" className={s.previewButton} onClick={()=>setOpen(true)} aria-label={`Ver movimento de ${props.name}`}><Play size={13}/>Ver movimento</button><dialog className={s.dialog} ref={dialogRef} onCancel={()=>setOpen(false)} onClose={()=>setOpen(false)}><header><h3>{props.name}</h3><button type="button" onClick={()=>setOpen(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{open && <ExerciseDemonstration {...props}/>}</dialog></>
 }
 
-export function ExerciseThumbnail({name,exerciseId}:Props) {
+export function ExerciseThumbnail({name,exerciseId,videoUrl}:Props) {
   const motion = findExerciseMotion(name,exerciseId)
+  const resolvedMedia = resolveExerciseMedia(name,videoUrl,exerciseId)
+  const [failedSource,setFailedSource] = useState<string | null>(null)
+  const media = resolvedMedia?.src === failedSource ? null : resolvedMedia
   const [playing,setPlaying] = useState(false)
   const [visible,setVisible] = useState(false)
   const [ready,setReady] = useState(false)
@@ -114,11 +123,11 @@ export function ExerciseThumbnail({name,exerciseId}:Props) {
     if(!svg) return
     if(playing && visible) svg.unpauseAnimations()
     else svg.pauseAnimations()
-  },[playing,visible,ready,motion])
+  },[playing,visible,ready,motion,media?.src])
   return (
-    <div ref={containerRef} className={s.thumbnail} data-exercise-motion={motion?.id ?? 'pending'} aria-label={`Prévia de ${name}`}>
-      {motion ? (ready ? <Mannequin motion={motion} svgRef={svgRef} /> : <span className={s.thumbnailPlaceholder}>Movimento</span>) : <span className={s.thumbnailPlaceholder}>Prévia indisponível</span>}
-      {motion && !motion.hold && ready ? <button type="button" className={s.thumbnailPause} onClick={() => setPlaying(value => !value)} aria-label={playing ? `Pausar prévia de ${name}` : `Reproduzir prévia de ${name}`}>{playing ? <Pause size={12} /> : <Play size={12} />}</button> : null}
+    <div ref={containerRef} className={s.thumbnail} data-exercise-motion={motion?.id ?? 'pending'} data-exercise-media={media?.kind ?? 'illustration'} aria-label={`Prévia de ${name}`}>
+      {media && ready ? <ExerciseMediaPlayer key={media.src} media={media} name={name} playing={playing && visible} onError={() => setFailedSource(media.src)} /> : motion ? (ready ? <Mannequin motion={motion} svgRef={svgRef} /> : <span className={s.thumbnailPlaceholder}>Movimento</span>) : <span className={s.thumbnailPlaceholder}>Prévia indisponível</span>}
+      {(media || (motion && !motion.hold)) && ready ? <button type="button" className={s.thumbnailPause} onClick={() => setPlaying(value => !value)} aria-label={playing ? `Pausar prévia de ${name}` : `Reproduzir prévia de ${name}`}>{playing ? <Pause size={12} /> : <Play size={12} />}</button> : null}
     </div>
   )
 }
