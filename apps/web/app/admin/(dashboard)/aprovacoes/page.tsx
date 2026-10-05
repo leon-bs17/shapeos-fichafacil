@@ -252,7 +252,7 @@ export default function AdminAprovacoesPage() {
           <h1 className="text-[34px] font-black leading-[1.05] tracking-[-0.055em] text-slate-950 sm:text-[42px] dark:text-white">
             Novos <span className="text-teal-600 dark:text-[var(--shapeos-brand)]">Personais</span>
           </h1>
-          <p className="mt-3 max-w-[620px] text-[15px] font-medium leading-6 text-slate-600 sm:text-base dark:text-slate-300">
+          <p data-approval-hero-subtitle className="mt-3 max-w-[620px] text-sm font-normal leading-[1.6] text-[#53717E] md:text-base dark:text-[#A3BECD]">
             Gerencie e aprove novos acessos à plataforma com controle, segurança e rastreabilidade.
           </p>
         </div>
@@ -764,6 +764,13 @@ export default function AdminAprovacoesPage() {
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:100%!important; }
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1) { font-size:32px!important; }
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1+p) { font-size:14px!important; }
+        }
+
+        :global(html:not(.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) {
+          color:#53717E!important; -webkit-text-fill-color:currentColor;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) {
+          color:#A3BECD!important; -webkit-text-fill-color:currentColor;
         }
 `}</style>
     </div>
