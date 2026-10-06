@@ -430,3 +430,85 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:h
   display: none !important;
   margin: 0 !important;
 }
+
+/* Canonical light palette. Color-only rules: preserve approved geometry and status colors. */
+html.light [data-admin-route="/admin/aprovacoes"] {
+  --shapeos-bg:#f7f8f2;
+  --shapeos-surface:#fcfdf9;
+  --shapeos-surface-strong:#eef1e9;
+  --shapeos-border:#d7ded3;
+  --shapeos-text:#162623;
+  --shapeos-muted:#5f6f68;
+  --shapeos-subtle:#7b8983;
+  --shapeos-brand:#129b89;
+  --shapeos-brand-hover:#0d7e70;
+  --shapeos-brand-soft:#e4f3eb;
+  --shapeos-on-brand:#fff;
+  --foreground:168.75 26.67% 11.76%;
+  --muted-foreground:157 8% 40%;
+  --card:72 44% 98.2%;
+  --card-foreground:168.75 26.67% 11.76%;
+  --border:101 15% 85%;
+  --primary:173 80% 32%;
+  --primary-foreground:0 0% 100%;
+  --approvals-muted:#5f6f68;
+  background:#f7f8f2!important;
+  color:#162623!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] .approvals-workspace {
+  --approval-surface:#fcfdf9;
+  --approval-border:#d7ded3;
+  --approval-muted:#5f6f68;
+  --approval-accent:#129b89;
+}
+html.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
+  --shapeos-surface:#fafbf6; --shapeos-text:#162623; --shapeos-muted:#5f6f68;
+  --shapeos-brand:#129b89; --foreground:168.75 26.67% 11.76%;
+  --muted-foreground:157 8% 40%;
+  background:#fafbf6!important; border-right-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero] {
+  background:#fcfdf9!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-heading] h1 {
+  color:#112b2a!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-heading] h1 span {
+  color:#008d85!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approval-hero-subtitle] {
+  color:#53717e!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([data-approvals-filters], [data-approvals-table], [role="dialog"]) {
+  background:#fcfdf9!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-columns] {
+  background:#eef1e9!important; color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([data-approvals-row], [data-approvals-pagination]) {
+  border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-filters] label {
+  background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-filters] input::placeholder {
+  color:#7b8983!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([class~="text-slate-950"], [class~="text-slate-900"], [class~="text-slate-800"], [class~="text-foreground"]) {
+  color:#162623!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([class~="text-slate-700"], [class~="text-slate-600"], [class~="text-slate-500"], [class~="text-slate-400"], [class~="text-muted-foreground"]) {
+  color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-summary] p[class*="font-black"] {
+  color:#162623!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-summary] p:not([class*="font-black"]) {
+  color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-filters] kbd {
+  background:#eef1e9!important; border-color:#d7ded3!important; color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-pagination] button:not([aria-current]) {
+  background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
+}
