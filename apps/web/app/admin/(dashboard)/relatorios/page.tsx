@@ -171,7 +171,7 @@ export default function AdminRelatoriosPage() {
         <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
       </section>
       <style jsx>{`
-        .reports-workspace { --surface:#fff; --border:#dae5e2; --text:#142e2b; --muted:#57727e; --accent:#008e86; display:grid; gap:16px; padding-bottom:24px; }
+        .reports-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:16px; padding-bottom:24px; }
         :global(.dark) .reports-workspace { --surface:#071b17; --border:#1d4037; --text:#f4faf8; --muted:#abc5d1; --accent:#00e9df; }
         :global(.dark [data-admin-route="/admin/relatorios"]) { background:#041512!important; --shapeos-brand:#00e9df; }
         .hero { position:relative; overflow:hidden; border:1px solid var(--border); border-radius:17px; min-height:190px; display:flex; align-items:center; padding:32px 36px; background:var(--surface); }
@@ -251,7 +251,10 @@ export default function AdminRelatoriosPage() {
           .summary-footer button { min-height:44px; }
         }
         @media(max-width:359px) { .metric { display:block; } .metric> :global(svg) { margin:0 0 8px; } .profile-body { flex-direction:column; } ul { width:100%; } }
-      `}</style>
+      
+        :global(html:not(.dark)) .export { color:#fff; }
+        :global(html:not(.dark)) .wireframe { color:#008d85; }
+`}</style>
     </div>
   )
 }
