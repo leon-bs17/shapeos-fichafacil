@@ -242,6 +242,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </main>
 
       <style jsx global>{`
+        html [data-admin-route="/admin/aprovacoes"] main > div > .admin-breadcrumb[data-admin-breadcrumb] {
+          border-bottom-width:1px!important; border-bottom-style:solid!important;
+        }
+        html:not(.dark) [data-admin-route="/admin/aprovacoes"] main > div > .admin-breadcrumb[data-admin-breadcrumb] {
+          border-bottom-color:hsl(240 5.9% 90%)!important;
+        }
+        html.dark [data-admin-route="/admin/aprovacoes"] main > div > .admin-breadcrumb[data-admin-breadcrumb] {
+          border-bottom-color:hsl(168 30% 17%)!important;
+        }
+
         /* Keep the approvals top bar on the shared dashboard baseline. */
         @media(min-width:1024px) {
           html [data-admin-route="/admin/aprovacoes"] main { padding-top:28px!important; }
