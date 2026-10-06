@@ -204,7 +204,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
@@ -242,6 +242,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </main>
 
       <style jsx global>{`
+        /* Keep the approvals top bar on the shared dashboard baseline. */
+        @media(min-width:1024px) {
+          html [data-admin-route="/admin/aprovacoes"] main { padding-top:28px!important; }
+          html [data-admin-route="/admin/aprovacoes"] main > div > .admin-breadcrumb[data-admin-breadcrumb] {
+            display:flex!important; position:relative!important; align-items:center!important;
+            height:auto!important; min-height:0!important; margin:0 0 24px!important; padding:0 0 16px!important;
+            top:auto!important; transform:none!important;
+          }
+        }
+        html:not(.dark) [data-admin-route="/admin/aprovacoes"] .admin-breadcrumb[data-admin-breadcrumb] > span:nth-child(-n+2) {
+          color:hsl(240 3.8% 46.1%)!important;
+        }
+        html.dark [data-admin-route="/admin/aprovacoes"] .admin-breadcrumb[data-admin-breadcrumb] > span:nth-child(-n+2) {
+          color:hsl(196.88 24.24% 74.12%)!important;
+        }
+
         [data-admin-content] .eyebrow,
         [data-admin-content] .control-heading-copy > p:first-child,
         [data-admin-content] [data-approvals-hero] div:has(> h1) > div:first-child,
