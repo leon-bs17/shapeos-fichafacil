@@ -254,6 +254,9 @@ export default function AdminRelatoriosPage() {
       
         :global(html:not(.dark)) .export { color:#fff; }
         :global(html:not(.dark)) .wireframe { color:#008d85; }
+        :global(html:not(.dark)) th { background:#eef1e9; }
+        :global(html:not(.dark)) .change { background:#e4f3eb; }
+        :global(html:not(.dark)) .change:not(.down) { color:#0d7e70; }
 `}</style>
     </div>
   )

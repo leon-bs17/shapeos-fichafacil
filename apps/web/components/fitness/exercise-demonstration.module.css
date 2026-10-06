@@ -11,3 +11,10 @@
 @media(max-width:360px){.thumbnail{width:90px;height:110px}}
 
 .thumbnail .mediaStage,.thumbnail .media,.thumbnail .frozenMedia{width:100%;height:100%;min-height:0;max-width:none}.sourceCredit{display:block;padding:0 16px 12px;font-size:11px;color:hsl(var(--muted-foreground))}.sourceCredit a{text-decoration:underline}.thumbnail .mediaStage{position:absolute;inset:0}.thumbnailPause{z-index:1}
+
+/* Admin light surfaces; media and illustrations retain their source colors. */
+:global(html.light [data-admin-route]) .mediaStage,
+:global(html.light [data-admin-route]) .media,
+:global(html.light [data-admin-route]) .frozenMedia { background:#fcfdf9; }
+:global(html.light [data-admin-route]) .thumbnail,
+:global(html.light [data-admin-route]) .stage { background:#eef1e9; }

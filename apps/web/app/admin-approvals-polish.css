@@ -591,3 +591,26 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approval
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [role="dialog"] [data-approvals-details] {
   background:#eef1e9!important; border-color:#d7ded3!important;
 }
+
+/* Card structures use the canonical light surfaces in every approvals state. */
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div {
+  background:#fcfdf9!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section:not([data-approvals-hero]):not([data-approvals-filters]):not([data-approvals-table]) {
+  background:#fcfdf9!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([class~="bg-teal-50"],[class~="bg-teal-100/45"]) {
+  background:#e4f3eb!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([class~="border-teal-100"],[class~="border-cyan-200"]) {
+  border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace :is([class~="text-teal-600"],[class~="text-teal-500"],[class~="text-cyan-700"],[class~="text-cyan-800"]) {
+  color:#0d7e70!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace button[class~="bg-teal-600"] {
+  background:#129b89!important; color:#fff!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace button[class~="bg-teal-600"]:hover {
+  background:#0d7e70!important;
+}

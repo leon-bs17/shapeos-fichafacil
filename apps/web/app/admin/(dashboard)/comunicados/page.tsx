@@ -170,6 +170,9 @@ export default function AdminComunicadosPage() {
         :global(html:not(.dark)) .wireframe { color:#008d85; }
         :global(html:not(.dark)) input::placeholder,
         :global(html:not(.dark)) textarea::placeholder { color:#7b8983; }
+
+        :global(html:not(.dark)) .audience-tag { background:#eef1e9; color:#5f6f68; }
+        :global(html:not(.dark)) .paused i { background:#7b8983; }
       `}</style>
     </div>
   )
