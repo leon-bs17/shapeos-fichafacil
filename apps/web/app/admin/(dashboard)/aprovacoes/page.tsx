@@ -777,6 +777,16 @@ export default function AdminAprovacoesPage() {
             min-height:230px!important; padding:27px 23px!important;
           }
         }
+
+        :global(html [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero]) {
+          border-width:1px!important; border-style:solid!important;
+        }
+        :global(html:not(.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero]) {
+          border-color:hsl(101 15% 85%)!important;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero]) {
+          border-color:hsl(168 30% 17%)!important;
+        }
 `}</style>
     </div>
   )
