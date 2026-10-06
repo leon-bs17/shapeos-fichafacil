@@ -155,7 +155,7 @@ export default function AdminAtividadePage() {
         </section>
       </div>}
       <style jsx>{`
-        .activity-workspace { --surface:#fff; --border:#d9e5e3; --muted:#53717e; --accent:#008d85; --text:#112b2a; display:grid; gap:20px; padding-bottom:24px; }
+        .activity-workspace { --surface:#fcfdf9; --border:#d7ded3; --muted:#5f6f68; --accent:#129b89; --text:#162623; display:grid; gap:20px; padding-bottom:24px; }
         :global(.dark) .activity-workspace { --surface:#091c18; --border:#1c4037; --muted:#a3becd; --accent:#00e9df; --text:#f5faf9; }
         :global(.dark [data-admin-route="/admin/atividade"]) { background:#041512!important; --shapeos-brand:#00e9df; }
         .activity-hero { position:relative; isolation:isolate; overflow:hidden; min-height:224px; display:flex; align-items:center; padding:35px 40px; border:1px solid var(--border); border-radius:17px; background:var(--surface); }
@@ -213,7 +213,13 @@ export default function AdminAtividadePage() {
         dl { margin-top:24px; } dt { font-size:11px; color:var(--muted); margin-top:15px; } dd { margin-top:5px; font-size:14px; overflow-wrap:anywhere; }
         @media(max-width:1200px) { .toolbar { flex-wrap:wrap; } .search { flex-basis:100%; } .hero-copy { max-width:80%; } .wireframe { right:-140px; opacity:.25; } }
         @media(max-width:640px) { .activity-hero { min-height:230px; padding:27px 23px; } .hero-copy { max-width:100%; } .wireframe { right:-235px; opacity:.16; } .metrics { grid-template-columns:1fr; gap:10px; } .metric { min-height:86px; padding:15px; } .metric-icon { width:48px; height:48px; } .segments { flex:1; } .segments button { flex:1; padding:0 12px; font-size:12px; } .period { flex:1; } footer { padding:12px; gap:10px; } }
-      `}</style>
+      
+        :global(html:not(.dark)) .segments button[aria-pressed="true"] {
+          background:#e4f3eb; color:#0d7e70;
+        }
+        :global(html:not(.dark)) .wireframe { color:#008d85; }
+        :global(html:not(.dark)) .search input::placeholder { color:#7b8983; }
+`}</style>
     </div>
   )
 }
