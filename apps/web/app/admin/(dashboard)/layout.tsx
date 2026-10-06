@@ -266,7 +266,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           border-color:var(--admin-search-accent)!important; box-shadow:none!important;
         }
         html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > svg {
-          position:static!important; transform:none!important; width:19px!important;
+          position:static!important; inset:auto!important; transform:none!important;
+          translate:none!important; align-self:center!important; margin:0!important; width:19px!important;
           height:19px!important; flex-shrink:0!important; color:var(--admin-search-muted)!important;
         }
         html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input {
