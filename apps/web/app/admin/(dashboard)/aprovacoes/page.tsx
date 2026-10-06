@@ -765,6 +765,18 @@ export default function AdminAprovacoesPage() {
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading] h1) { font-size:32px!important; }
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) { font-size:14px!important; }
         }
+
+        :global(html [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero]) {
+          display:flex!important; align-items:center!important; min-height:224px!important; padding:35px 40px!important;
+        }
+        :global(html [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-heading]) {
+          margin:0!important; align-self:center; z-index:2;
+        }
+        @media(max-width:640px) {
+          :global(html [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero]) {
+            min-height:230px!important; padding:27px 23px!important;
+          }
+        }
 `}</style>
     </div>
   )
