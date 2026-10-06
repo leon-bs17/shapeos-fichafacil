@@ -87,7 +87,7 @@ export default function AdminSistemaPage() {
         <section className="validation"><div className="validation-intro"><div className="validation-icon"><ListChecks size={30}/></div><div><h2>O que esta tela verifica</h2><p>Disponibilidade de acesso aos serviços usados pelo painel administrativo.</p></div></div><ul>{['Sessão administrativa','Leitura das tabelas principais','Disponibilidade da auditoria','Consulta de notificações'].map(label=><li key={label}><CheckCircle2 size={18}/>{label}</li>)}</ul></section>
       </>}
       <style jsx>{`
-        .system-workspace { --surface:#fff; --border:#d5e5df; --text:#15322b; --muted:#567580; --accent:#008d85; display:grid; gap:18px; padding-bottom:24px; min-width:0; }
+        .system-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:18px; padding-bottom:24px; min-width:0; }
         :global(.dark) .system-workspace { --surface:#071b17; --border:#1a4439; --text:#f5f9f7; --muted:#a6c2cc; --accent:#00e9df; }
         :global(.dark [data-admin-route="/admin/sistema"]) { background:#041512!important; --shapeos-brand:#00e9df; }
         .hero { position:relative; overflow:hidden; min-height:225px; display:flex; align-items:center; padding:34px 36px; border:1px solid var(--border); border-radius:17px; background:var(--surface); }
@@ -102,6 +102,11 @@ export default function AdminSistemaPage() {
         .scope> :global(svg) { color:var(--muted); margin-bottom:13px; } .validation { display:flex; gap:27px; align-items:center; padding:21px; border:1px solid var(--border); border-radius:13px; background:var(--surface); } .validation-intro { display:flex; gap:20px; align-items:center; flex:1; } .validation-icon { display:grid; place-items:center; width:55px; height:65px; flex-shrink:0; border-radius:10px; border:1px solid var(--border); color:var(--accent); } .validation p { font-size:11px; color:var(--muted); line-height:1.7; margin-top:5px; max-width:360px; } ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px 22px; flex:1; border-left:1px solid var(--border); padding-left:27px; } li { display:flex; gap:9px; align-items:center; font-size:11px; color:var(--muted); } li> :global(svg) { color:var(--accent); flex-shrink:0; } .error { padding:25px; border:1px solid #b75543; border-radius:13px; color:var(--text); } .error button { color:var(--accent); text-decoration:underline; }
         @media(max-width:1000px) { .services { grid-template-columns:repeat(2,minmax(0,1fr)); } .status-bar { flex-wrap:wrap; } .status-copy { flex-basis:100%; } .latency { margin-right:auto; } .validation { flex-direction:column; align-items:stretch; } ul { border-left:0; border-top:1px solid var(--border); padding:18px 0 0; } .hero-copy { max-width:85%; } .wireframe { right:-150px; opacity:.25; } }
         @media(max-width:600px) { .hero { padding:27px 22px; min-height:220px; } .hero-copy { max-width:100%; } .wireframe { right:-260px; opacity:.15; } .services { grid-template-columns:minmax(0,1fr); } .status-bar { padding:16px; gap:13px; } .status-copy { gap:12px; } .status-copy> :global(svg) { width:34px; } .verify { flex:1; font-size:11px; padding:11px; } .latency { font-size:10px; padding:9px; } ul { grid-template-columns:1fr; } .service { padding:19px; } }
+
+        :global(html:not(.dark)) .verify { color:#fff; }
+        :global(html:not(.dark)) .verify:hover { background:#0d7e70; }
+        :global(html:not(.dark)) .wireframe { color:#008d85; }
+        :global(html:not(.dark)) .badge:not(.unavailable) { color:#0d7e70; background:#e4f3eb; border-color:#129b89; }
       `}</style>
     </div>
   )

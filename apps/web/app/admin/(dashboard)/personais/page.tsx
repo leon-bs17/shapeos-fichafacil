@@ -232,9 +232,9 @@ function PersonaisConteudo() {
       )}
 
       <style jsx global>{`
-        .personals-workspace { --personal-surface:#fff; --personal-border:#dbe6e4; --personal-muted:#53717E; --personal-ink:#112B2A; --personal-brand:#008D85; font-family:'Sora',sans-serif; min-width:0; }
+        .personals-workspace { --personal-surface:#fcfdf9; --personal-border:#d7ded3; --personal-muted:#5f6f68; --personal-ink:#162623; --personal-brand:#129b89; font-family:'Sora',sans-serif; min-width:0; }
         html.dark .personals-workspace { --personal-surface:#091d18; --personal-border:#24453b; --personal-muted:#A3BECD; --personal-ink:#F5FAF9; --personal-brand:#00E9DF; }
-        .personals-workspace .personals-hero { position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--personal-border); border-radius:18px; min-height:224px; padding:32px 40px; background:radial-gradient(ellipse at 90% 50%,#d3f5ec,transparent 65%),#f9fcfa; }
+        .personals-workspace .personals-hero { position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--personal-border); border-radius:18px; min-height:224px; padding:32px 40px; background:radial-gradient(ellipse at 90% 50%,#e4f3eb,transparent 65%),#fcfdf9; }
         html.dark .personals-workspace .personals-hero { background:radial-gradient(ellipse at 84% 60%,#073d32,#071d18 48%,#041512); }
         .personals-workspace .personals-hero-copy { position:relative; z-index:1; max-width:70%; }
         .personals-workspace .eyebrow { display:inline-flex; border:1px solid var(--personal-brand); border-radius:999px; padding:6px 16px; margin-bottom:17px; color:var(--personal-brand); font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; }
@@ -288,6 +288,15 @@ function PersonaisConteudo() {
           .personals-workspace .personal-student { flex-direction:column; align-items:stretch; }
           .personals-workspace .personal-student > div:last-child { flex-wrap:wrap; padding-left:44px; }
         }
+
+        html:not(.dark) .personals-workspace .personals-hero h1 { color:#112b2a; }
+        html:not(.dark) .personals-workspace .personals-hero h1 span,
+        html:not(.dark) .personals-workspace .personal-wireframe { color:#008d85; }
+        html:not(.dark) .personals-workspace .personals-subtitle { color:#53717e!important; }
+        html:not(.dark) .personals-workspace .personals-search input::placeholder { color:#7b8983; }
+        html:not(.dark) .personals-workspace .personals-stat-icon,
+        html:not(.dark) .personals-workspace .personal-avatar { background:#e4f3eb; color:#0d7e70; }
+        html:not(.dark) .personals-workspace .personal-toggle:hover { background:#eef1e9; }
       `}</style>
     </div>
   )

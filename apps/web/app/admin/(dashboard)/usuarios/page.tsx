@@ -310,9 +310,9 @@ function UsuariosConteudo() {
       )}
 
       <style jsx global>{`
-        .users-workspace { --users-surface:#fff; --users-border:#dbe6e4; --users-muted:#53717E; --users-title:#112B2A; --users-accent:#008D85; min-width:0; font-family:'Sora',sans-serif; }
+        .users-workspace { --users-surface:#fcfdf9; --users-border:#d7ded3; --users-muted:#5f6f68; --users-title:#162623; --users-accent:#129b89; min-width:0; font-family:'Sora',sans-serif; }
         html.dark .users-workspace { --users-surface:#091d18; --users-border:#24453b; --users-muted:#A3BECD; --users-title:#F5FAF9; --users-accent:#00E9DF; }
-        .users-workspace .users-hero { position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--users-border); border-radius:18px; min-height:224px; padding:32px 40px; background:radial-gradient(ellipse at 90% 50%,#d3f5ec,transparent 65%),#f9fcfa; }
+        .users-workspace .users-hero { position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--users-border); border-radius:18px; min-height:224px; padding:32px 40px; background:radial-gradient(ellipse at 90% 50%,#e4f3eb,transparent 65%),#fcfdf9; }
         html.dark .users-workspace .users-hero { background:radial-gradient(ellipse at 84% 60%,#073d32, #071d18 48%, #041512); }
         .users-workspace .users-hero-copy { position:relative; z-index:1; max-width:68%; }
         .users-workspace .users-hero .eyebrow { display:inline-flex; padding:6px 16px; border:1px solid var(--users-accent); border-radius:999px; color:var(--users-accent); font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; margin-bottom:17px; }
@@ -381,6 +381,14 @@ function UsuariosConteudo() {
           .users-workspace .users-table td[data-label="Ações"] button { min-height:40px; padding:0 12px; font-size:12px; }
           .users-workspace .users-email { font-size:12px; }
         }
+
+        html:not(.dark) .users-workspace .users-hero h1 { color:#112b2a; }
+        html:not(.dark) .users-workspace .users-hero h1 span,
+        html:not(.dark) .users-workspace .users-wireframe { color:#008d85; }
+        html:not(.dark) .users-workspace .users-subtitle { color:#53717e!important; }
+        html:not(.dark) .users-workspace .users-search::placeholder { color:#7b8983; }
+        html:not(.dark) .users-workspace .users-table thead { background:#eef1e9; }
+        html:not(.dark) .users-workspace .users-filter-group button[aria-pressed="true"] { background:#e4f3eb; color:#0d7e70; border-color:#129b89; }
       `}</style>
     </div>
   )
