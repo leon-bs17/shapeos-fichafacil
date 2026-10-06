@@ -200,6 +200,44 @@ export default function ControlPage() {
   .control-export-row .control-export { margin:0!important; align-self:auto!important; }
   @media(max-width:1000px) { .control-heading-copy { max-width:85%; } .control-heading-art { right:-100px; opacity:.25; } }
   @media(max-width:639px) { .control-heading { padding:27px 22px; min-height:210px; } .control-heading-copy { max-width:100%; } .control-heading-art { width:290px!important; right:-150px; opacity:.15; } .control-title { font-size:32px; } .control-export-row .control-export { min-height:44px; font-size:12px; } }
+
+  /* Match the Users table's light layout while preserving account controls. */
+  :global(html:not(.dark)) .account-table {
+    border:1px solid #d7ded3; border-radius:14px; background:#fcfdf9;
+    box-shadow:none;
+  }
+  :global(html:not(.dark)) .account-table table { font-size:12px; background:#fcfdf9; }
+  :global(html:not(.dark)) .account-table thead { height:auto; background:#fcfdf9; color:#5f6f68; }
+  :global(html:not(.dark)) .account-table tr { height:auto; border-color:#d7ded3; }
+  :global(html:not(.dark)) .account-table th { padding:15px 14px; font-size:11px; font-weight:500; color:#5f6f68; }
+  :global(html:not(.dark)) .account-table th:first-child { border-top-left-radius:14px; }
+  :global(html:not(.dark)) .account-table th:last-child { border-top-right-radius:14px; }
+  :global(html:not(.dark)) .account-table td { padding:15px 14px; border-color:#d7ded3; }
+  :global(html:not(.dark)) .account-table .avatar { width:36px; height:36px; font-weight:700; }
+  :global(html:not(.dark)) .account-table .user-cell p:first-child { font-size:12px; font-weight:600; color:#162623; }
+  :global(html:not(.dark)) .account-table .user-cell p:last-child { margin-top:4px; font-size:11px; color:#5f6f68!important; }
+  :global(html:not(.dark)) .account-table .action-cell > div { justify-content:flex-end; gap:8px; }
+  :global(html:not(.dark)) .account-table .action-cell > div > button {
+    min-height:32px; padding:6px 9px; font-size:11px; border-radius:8px;
+    border-color:#d7ded3; background:#fcfdf9; box-shadow:none;
+  }
+  :global(html:not(.dark)) .account-table .account-menu summary {
+    width:32px; height:32px; border:1px solid #d7ded3; border-radius:8px;
+    color:#5f6f68; background:#fcfdf9;
+  }
+  :global(html:not(.dark)) .account-table .account-menu > div { background:#fcfdf9; border-color:#d7ded3; }
+  @media(max-width:767px) {
+    :global(html:not(.dark)) .account-table { border:0; background:transparent; }
+    :global(html:not(.dark)) .account-table table { background:transparent; }
+    :global(html:not(.dark)) .account-table tbody tr {
+      padding:18px; margin-bottom:12px; border:1px solid #d7ded3;
+      border-radius:14px; background:#fcfdf9; gap:12px;
+    }
+    :global(html:not(.dark)) .account-table td { padding:0; }
+    :global(html:not(.dark)) .account-table .action-cell > div { justify-content:flex-start; }
+    :global(html:not(.dark)) .account-table .action-cell > div > button { min-height:40px; font-size:12px; }
+    :global(html:not(.dark)) .account-table .account-menu summary { width:40px; height:40px; }
+  }
  `}</style>
  </div>
 }
