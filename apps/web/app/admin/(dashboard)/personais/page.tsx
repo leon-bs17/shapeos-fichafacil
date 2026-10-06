@@ -126,7 +126,7 @@ function PersonaisConteudo() {
         </Card>
       </div>
 
-      <div className="personals-search relative">
+      <div data-admin-search className="personals-search relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           aria-label="Buscar personal por nome ou e-mail"

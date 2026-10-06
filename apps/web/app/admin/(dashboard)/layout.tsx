@@ -242,6 +242,55 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </main>
 
       <style jsx global>{`
+
+        /* Shared search geometry and focus state for every admin search. */
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) {
+          display:flex!important; align-items:center!important; gap:13px!important;
+          position:relative!important; min-width:0!important; height:48px!important;
+          padding:0 16px!important; border:1px solid var(--admin-search-border)!important;
+          border-radius:11px!important; background:var(--admin-search-surface)!important;
+          color:var(--admin-search-muted)!important; box-shadow:none!important;
+          transition:border-color .15s!important;
+        }
+        html.light [data-admin-route] {
+          --admin-search-surface:#fcfdf9; --admin-search-border:#d7ded3;
+          --admin-search-text:#162623; --admin-search-muted:#5f6f68;
+          --admin-search-placeholder:#7b8983; --admin-search-accent:#129b89;
+        }
+        html.dark [data-admin-route] {
+          --admin-search-surface:#091c18; --admin-search-border:#1c4037;
+          --admin-search-text:#f5faf9; --admin-search-muted:#a3becd;
+          --admin-search-placeholder:#a3becd; --admin-search-accent:#00e9df;
+        }
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]):focus-within {
+          border-color:var(--admin-search-accent)!important; box-shadow:none!important;
+        }
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > svg {
+          position:static!important; transform:none!important; width:19px!important;
+          height:19px!important; flex-shrink:0!important; color:var(--admin-search-muted)!important;
+        }
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input {
+          width:100%!important; min-width:0!important; flex:1!important;
+          height:100%!important; min-height:0!important; padding:0!important;
+          border:0!important; border-radius:0!important; background:transparent!important;
+          color:var(--admin-search-text)!important; font-family:'Sora',sans-serif!important;
+          font-size:13px!important; font-weight:400!important; line-height:1.5!important;
+          outline:none!important; box-shadow:none!important;
+        }
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input::placeholder {
+          color:var(--admin-search-placeholder)!important; font-weight:400!important;
+        }
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input:focus,
+        html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input:focus-visible {
+          outline:none!important; box-shadow:none!important;
+        }
+        @media(max-width:767px) {
+          html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) > input { font-size:16px!important; }
+        }
+        @media(prefers-reduced-motion:reduce) {
+          html:is(.light,.dark) [data-admin-route] [data-admin-content] :is([data-admin-search], .approvals-workspace section[data-approvals-filters] [data-admin-search]) { transition:none!important; }
+        }
+
         html [data-admin-route="/admin/aprovacoes"] main > div > .admin-breadcrumb[data-admin-breadcrumb] {
           border-bottom-width:1px!important; border-bottom-style:solid!important;
         }

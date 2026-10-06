@@ -109,7 +109,7 @@ export default function AdminAtividadePage() {
       </div>
 
       <section className="toolbar" aria-label="Busca e filtros de atividade">
-        <label className="search"><Search size={19} />
+        <label data-admin-search className="search"><Search size={19} />
           <input aria-label="Buscar usuário ou ação" placeholder="Buscar usuário ou ação..." value={busca} onChange={e => setBusca(e.target.value)} />
           {busca && <button aria-label="Limpar busca" onClick={() => setBusca('')}><X size={16} /></button>}
         </label>

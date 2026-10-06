@@ -277,7 +277,7 @@ export default function AdminAprovacoesPage() {
 
       <section data-approvals-filters className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
-          <label className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition focus-within:border-cyan-300 focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.07)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30">
+          <label data-admin-search className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition focus-within:border-cyan-300 focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.07)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30">
             <Search className="h-5 w-5 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
             <input
               ref={buscaRef}
