@@ -512,3 +512,10 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approval
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-pagination] button:not([aria-current]) {
   background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
 }
+
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approval-hero-label] {
+  color:#129b89!important; border-color:#129b89!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-filters] button[aria-pressed="true"] {
+  background:#e4f3eb!important; border-color:#129b89!important; color:#0d7e70!important;
+}
