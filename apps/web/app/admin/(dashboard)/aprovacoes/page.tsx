@@ -234,15 +234,7 @@ export default function AdminAprovacoesPage() {
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(112deg,#ffffff_0%,#fbfdfe_50%,#f0fbfc_100%)] dark:hidden" />
         <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_76%_24%,rgba(0,255,204,0.18),transparent_25%),radial-gradient(circle_at_58%_105%,rgba(116,55,255,0.16),transparent_38%),linear-gradient(120deg,#07101a,#0a1520_55%,#092b30)] dark:block" />
 
-        <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
-          <g fill="none" stroke="currentColor" strokeWidth="0.65">
-            {Array.from({ length: 34 }, (_, i) => (
-              <ellipse key={i} cx={250 + Math.sin(i * Math.PI / 17) * 35} cy="150"
-                rx={98 + i * 3.2} ry={118 + i * 2.5}
-                transform={`rotate(${i * 5.3} 250 150)`} />
-            ))}
-          </g>
-        </svg>
+
 
         <div className="relative z-10 max-w-[650px]">
           <div className="mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-teal-700 dark:text-[var(--shapeos-brand)]">
@@ -257,6 +249,15 @@ export default function AdminAprovacoesPage() {
           </p>
         </div>
 
+        <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeWidth="0.65">
+            {Array.from({ length: 34 }, (_, i) => (
+              <ellipse key={i} cx={250 + Math.sin(i * Math.PI / 17) * 35} cy="150"
+                rx={98 + i * 3.2} ry={118 + i * 2.5}
+                transform={`rotate(${i * 5.3} 250 150)`} />
+            ))}
+          </g>
+        </svg>
       </section>
 
       <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
@@ -725,7 +726,7 @@ export default function AdminAprovacoesPage() {
           --shapeos-brand:#00e9df;
           background:radial-gradient(ellipse at 84% 60%,#073d32 0%,#071d18 43%,#041512 100%)!important;
         }
-        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:68%!important; }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:740px!important; }
         :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1) {
           font-size:clamp(28px,3.1vw,46px)!important; line-height:1.12!important;
           font-weight:800!important; letter-spacing:-.045em!important;
@@ -737,7 +738,7 @@ export default function AdminAprovacoesPage() {
         }
         :global(.dark [data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] h1+p) { color:#a3becd!important; }
         @media(max-width:1100px) {
-          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:72%!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] > div:has(> h1)) { max-width:80%!important; }
         }
         @media(max-width:639px) {
           :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero]) { padding:27px 23px!important; min-height:230px!important; }
