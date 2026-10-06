@@ -231,11 +231,11 @@ export default function AdminAprovacoesPage() {
   return (
     <div className="approvals-workspace space-y-5 pb-8">
       <section data-approvals-hero className="relative isolate overflow-hidden">
-        <div data-approvals-heading>
+        <header data-approvals-heading>
           <p data-approval-hero-label className="eyebrow">Aprovações</p>
           <h1>Novos <span>Personais</span></h1>
           <p data-approval-hero-subtitle>Gerencie e aprove novos acessos à plataforma com controle, segurança e rastreabilidade.</p>
-        </div>
+        </header>
         <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeWidth="0.65">
             {Array.from({ length: 34 }, (_, i) => (
