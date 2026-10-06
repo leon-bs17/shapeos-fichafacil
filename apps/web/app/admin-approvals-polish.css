@@ -614,3 +614,32 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approval
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace button[class~="bg-teal-600"]:hover {
   background:#0d7e70!important;
 }
+
+/* Exact requested light palette for the approvals table, including nested rows. */
+html.light [data-admin-route="/admin/aprovacoes"] { background:#f7f8f2!important; }
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] {
+  background:#fcfdf9!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] > div[data-approvals-columns] {
+  background:#fcfdf9!important; color:#5f6f68!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] > div[data-approvals-columns] > span {
+  color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] > div > div[data-approvals-row] {
+  background:#fcfdf9!important; border-color:#d7ded3!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] > div > div[data-approvals-row] > p,
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] > div > div[data-approvals-row] > div:first-child p:not(:first-child) {
+  color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] [data-approvals-pagination] {
+  background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] [data-approvals-pagination] :is(p,span) {
+  color:#5f6f68!important;
+}
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] [data-approvals-pagination] button:not([aria-current="page"]),
+html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] button[aria-label^="Mais ações"] {
+  background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
+}
