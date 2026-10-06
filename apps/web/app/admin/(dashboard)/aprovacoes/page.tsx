@@ -230,25 +230,12 @@ export default function AdminAprovacoesPage() {
 
   return (
     <div className="approvals-workspace space-y-5 pb-8">
-      <section data-approvals-hero className="relative isolate min-h-[232px] overflow-hidden rounded-[28px] border border-slate-200 bg-white px-7 py-9 shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:px-10 sm:py-10 dark:border-white/10 dark:bg-[#08131c] dark:shadow-2xl dark:shadow-black/20">
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(112deg,#ffffff_0%,#fbfdfe_50%,#f0fbfc_100%)] dark:hidden" />
-        <div className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle_at_76%_24%,rgba(0,255,204,0.18),transparent_25%),radial-gradient(circle_at_58%_105%,rgba(116,55,255,0.16),transparent_38%),linear-gradient(120deg,#07101a,#0a1520_55%,#092b30)] dark:block" />
-
-
-
-        <div className="relative z-10 max-w-[650px]">
-          <div className="mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-teal-700 dark:text-[var(--shapeos-brand)]">
-            <Sparkles className="h-3.5 w-3.5" strokeWidth={1.7} />
-            Aprovações
-          </div>
-          <h1 className="text-[34px] font-black leading-[1.05] tracking-[-0.055em] text-slate-950 sm:text-[42px] dark:text-white">
-            Novos <span className="text-teal-600 dark:text-[var(--shapeos-brand)]">Personais</span>
-          </h1>
-          <p data-approval-hero-subtitle className="mt-3 max-w-[620px] text-sm font-normal leading-[1.6] text-[#53717E] md:text-base dark:text-[#A3BECD]">
-            Gerencie e aprove novos acessos à plataforma com controle, segurança e rastreabilidade.
-          </p>
+      <section data-approvals-hero className="relative isolate overflow-hidden">
+        <div data-approvals-heading>
+          <p data-approval-hero-label className="eyebrow">Aprovações</p>
+          <h1>Novos <span>Personais</span></h1>
+          <p data-approval-hero-subtitle>Gerencie e aprove novos acessos à plataforma com controle, segurança e rastreabilidade.</p>
         </div>
-
         <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeWidth="0.65">
             {Array.from({ length: 34 }, (_, i) => (
@@ -258,9 +245,7 @@ export default function AdminAprovacoesPage() {
             ))}
           </g>
         </svg>
-      </section>
-
-      <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
+      </section>    <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
         <Card className="overflow-hidden rounded-2xl border-amber-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-gradient-to-br dark:from-amber-950/50 dark:via-slate-950/90 dark:to-slate-900/90 dark:shadow-xl dark:shadow-black/10">
           <CardContent className="flex items-center gap-5 p-5 sm:p-6">
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-warning/10 dark:text-warning dark:ring-0">
@@ -657,8 +642,6 @@ export default function AdminAprovacoesPage() {
         :global(.dark [data-admin-route="/admin/aprovacoes"]) { background:#061411!important; --shapeos-brand:#00efdf; --primary:176 100% 47%; }
         :global(.approvals-workspace [data-approvals-hero]) { min-height:210px!important; border-radius:18px!important; border-color:var(--approval-accent)!important; padding:28px 40px!important; background:var(--approval-surface)!important; box-shadow:none!important; }
         :global(.dark .approvals-workspace [data-approvals-hero]) { background:radial-gradient(ellipse at 80% 65%,#07312a 0%,#081a16 45%,#061411 100%)!important; }
-        :global(.approvals-workspace [data-approvals-hero]>div:first-child),
-        :global(.approvals-workspace [data-approvals-hero]>div:nth-child(2)) { display:none!important; }
         :global(.approvals-workspace [data-approvals-hero] h1) { font-size:clamp(34px,3.7vw,56px)!important; letter-spacing:-.045em!important; }
         :global(.approvals-workspace [data-approvals-hero] h1 span) { color:var(--approval-accent)!important; }
         :global(.approvals-workspace [data-approvals-hero] p) { max-width:550px; font-size:16px!important; line-height:1.5!important; }
@@ -757,6 +740,30 @@ export default function AdminAprovacoesPage() {
         }
         :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) {
           color:#A3BECD!important; -webkit-text-fill-color:currentColor;
+        }
+
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading]) {
+          display:block!important; position:relative; z-index:1; width:auto!important; max-width:740px!important; background:transparent!important;
+        }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approval-hero-label]) {
+          display:inline-flex!important; width:fit-content!important; max-width:100%!important; padding:6px 16px!important;
+          border:1px solid var(--shapeos-brand)!important; border-radius:999px!important; background:transparent!important;
+          color:var(--shapeos-brand)!important; font-size:10px!important; font-weight:650!important; line-height:1.4!important;
+          letter-spacing:.1em!important; text-transform:uppercase; margin:0 0 17px!important; box-shadow:none!important;
+        }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading] h1) {
+          display:block!important; margin:0!important; background:transparent!important; font-family:'Sora',sans-serif!important; font-size:46px!important; font-weight:800!important; letter-spacing:-.045em!important; line-height:1.12!important;
+        }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading] h1 span) {
+          display:inline!important; background:transparent!important; padding:0!important; box-shadow:none!important;
+        }
+        :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) {
+          display:block!important; max-width:550px!important; margin:13px 0 0!important; font-size:16px!important; font-weight:400!important; line-height:1.6!important; background:transparent!important;
+        }
+        @media(max-width:767px) {
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading]) { max-width:100%!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approvals-heading] h1) { font-size:32px!important; }
+          :global([data-admin-route="/admin/aprovacoes"] .approvals-workspace [data-approvals-hero] [data-approval-hero-subtitle]) { font-size:14px!important; }
         }
 `}</style>
     </div>
