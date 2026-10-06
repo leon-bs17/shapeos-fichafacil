@@ -310,6 +310,7 @@ export default function AdminAprovacoesPage() {
           </label>
 
           <div className="flex flex-wrap items-center gap-2.5" aria-label="Filtros de cadastro">
+            <div data-approval-status-group>
             {([
               ['TODOS', 'Todos'],
               ['PENDENTE', 'Pendentes'],
@@ -330,6 +331,7 @@ export default function AdminAprovacoesPage() {
               </button>
             ))}
 
+            </div>
             <label className="flex h-12 items-center gap-2 rounded-[18px] border border-slate-100 bg-white px-4 text-xs font-bold text-slate-400 shadow-[0_4px_14px_rgba(15,23,42,0.02)] transition hover:border-cyan-200 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:border-primary/20">
               <CalendarDays className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
               <select
@@ -786,6 +788,52 @@ export default function AdminAprovacoesPage() {
         }
         :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero]) {
           border-color:hsl(168 30% 17%)!important;
+        }
+
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters]) {
+          border:0!important; border-radius:0!important; padding:0!important;
+          background:transparent!important; box-shadow:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child) { gap:15px!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > label) {
+          height:48px!important; border-radius:11px!important; padding:0 16px!important;
+          box-shadow:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] input) { font-size:13px!important; font-weight:400!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] input::placeholder) { font-weight:400!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] kbd) { display:none!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > div) { gap:15px!important; flex-wrap:nowrap!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group]) {
+          display:flex; flex-shrink:0; overflow:hidden; border:1px solid var(--approval-border);
+          border-radius:11px; height:48px;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button) {
+          height:46px!important; margin:0!important; border:0!important; border-radius:0!important;
+          padding:0 20px!important; background:transparent!important; box-shadow:none!important;
+          color:var(--approval-muted)!important; font-size:13px!important; font-weight:400!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button+button) { border-left:1px solid var(--approval-border)!important; }
+        :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button[aria-pressed="true"]) {
+          background:#e4f3eb!important; color:#0d7e70!important;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button[aria-pressed="true"]) {
+          background:rgba(0,233,223,.1)!important; color:#00e9df!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > div > label) {
+          height:48px!important; border-radius:11px!important; padding:0 16px!important;
+          box-shadow:none!important; font-size:13px!important; font-weight:400!important;
+        }
+        @media(min-width:1100px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child) { flex-direction:row!important; align-items:center!important; }
+        }
+        @media(max-width:1099px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child) { flex-direction:column!important; align-items:stretch!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > div) { flex-wrap:wrap!important; }
+        }
+        @media(max-width:480px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group]) { flex:1; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button) { flex:1; padding:0 12px!important; font-size:12px!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > div > label) { width:100%; }
         }
 `}</style>
     </div>
