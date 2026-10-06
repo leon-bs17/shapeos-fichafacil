@@ -389,6 +389,28 @@ function UsuariosConteudo() {
         html:not(.dark) .users-workspace .users-search::placeholder { color:#7b8983; }
         html:not(.dark) .users-workspace .users-table thead { background:#eef1e9; }
         html:not(.dark) .users-workspace .users-filter-group button[aria-pressed="true"] { background:#e4f3eb; color:#0d7e70; border-color:#129b89; }
+
+        /* Exact requested light palette for desktop rows and mobile cards. */
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table-card,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table thead,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table tbody tr,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table :is(th,td) {
+          background:#fcfdf9; border-color:#d7ded3;
+        }
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table th,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table .users-email,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table td[data-label="Criado em"] span,
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table td[data-label="Criado em"]::before {
+          color:#5f6f68;
+        }
+        html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table td[data-label="Ações"] button {
+          border-color:#d7ded3;
+        }
+        @media(max-width:767px) {
+          html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table-card,
+          html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table { background:transparent; }
+        }
       `}</style>
     </div>
   )
