@@ -224,7 +224,7 @@ html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/apr
   }
 
   html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:first-child {
-    margin-bottom: 38px !important;
+    margin-bottom: 24px !important;
   }
 
   html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:nth-child(2) {
@@ -421,4 +421,12 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-conten
   html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid {
     --approvals-summary-icon-box: 56px;
   }
+}
+
+/* Match the control center's 24px gap below the top divider.
+   The legacy global search form is hidden on approvals; its empty wrapper
+   must not add a second margin before the page heading. */
+html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] main > div > div:has(> form) {
+  display: none !important;
+  margin: 0 !important;
 }
