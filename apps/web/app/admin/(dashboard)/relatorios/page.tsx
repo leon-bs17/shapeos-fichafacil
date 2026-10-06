@@ -257,6 +257,20 @@ export default function AdminRelatoriosPage() {
         :global(html:not(.dark)) th { background:#eef1e9; }
         :global(html:not(.dark)) .change { background:#e4f3eb; }
         :global(html:not(.dark)) .change:not(.down) { color:#0d7e70; }
+
+        /* Exact light palette for the period summary on desktop and mobile. */
+        :global(html:not(.dark)) .summary,
+        :global(html:not(.dark)) .summary .table-scroll,
+        :global(html:not(.dark)) .summary table,
+        :global(html:not(.dark)) .summary th,
+        :global(html:not(.dark)) .summary td,
+        :global(html:not(.dark)) .summary .mobile-summary article {
+          background:#fcfdf9; border-color:#d7ded3;
+        }
+        :global(html:not(.dark)) .summary th,
+        :global(html:not(.dark)) .summary .summary-footer p,
+        :global(html:not(.dark)) .summary .mobile-summary dt { color:#5f6f68; }
+        :global(html:not(.dark)) .summary .mobile-summary dl>div+div { border-color:#d7ded3; }
 `}</style>
     </div>
   )
