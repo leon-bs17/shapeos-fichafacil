@@ -239,6 +239,25 @@ export default function ControlPage() {
     :global(html:not(.dark)) .account-table .action-cell > div > button { min-height:40px; font-size:12px; }
     :global(html:not(.dark)) .account-table .account-menu summary { width:40px; height:40px; }
   }
- `}</style>
+ 
+  /* Light desktop table: rounded cell surfaces keep action menus unclipped. */
+  @media(min-width:768px) {
+    :global(html:not(.dark)) .account-table table {
+      border-collapse:separate; border-spacing:0; background:transparent; border-radius:14px;
+    }
+    :global(html:not(.dark)) .account-table thead { background:transparent; }
+    :global(html:not(.dark)) .account-table tr { background:transparent; border:0; }
+    :global(html:not(.dark)) .account-table th,
+    :global(html:not(.dark)) .account-table td { background:#fcfdf9; }
+    :global(html:not(.dark)) .account-table tbody td { border-top:1px solid #d7ded3; }
+    :global(html:not(.dark)) .account-table tbody tr:hover td { background:#f0f7f2; }
+    :global(html:not(.dark)) .account-table tbody tr:last-child td:first-child { border-bottom-left-radius:13px; }
+    :global(html:not(.dark)) .account-table tbody tr:last-child td:last-child { border-bottom-right-radius:13px; }
+    :global(html:not(.dark)) .account-table th:last-child,
+    :global(html:not(.dark)) .account-table .action-cell { width:180px; }
+    :global(html:not(.dark)) .account-table th:last-child { text-align:center; }
+    :global(html:not(.dark)) .account-table .action-cell > div { justify-content:center; }
+  }
+`}</style>
  </div>
 }
