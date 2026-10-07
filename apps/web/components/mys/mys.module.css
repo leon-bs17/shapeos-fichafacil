@@ -294,3 +294,21 @@
   box-shadow:none;
   outline:none;
 }
+
+
+/* Approved message-field hover in both themes, without changing content colors. */
+.workspace .composer,
+.workspace .emptyPanel .composer {
+  border-width:1px;
+  border-radius:13px;
+  transition:background-color 150ms ease,border-color 150ms ease;
+  transform:none;
+}
+@media (hover:hover) and (pointer:fine) {
+  .workspace .composer:not(:has(textarea:disabled)):hover,
+  .workspace .emptyPanel .composer:not(:has(textarea:disabled)):hover {
+    background:hsl(var(--primary) / .07);
+    border-color:hsl(var(--primary) / .4);
+    border-width:1px;
+  }
+}
