@@ -214,7 +214,7 @@ export default function ControlPage() {
    </div>}
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
-   {checkedIds.length > 0 && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/25 bg-primary/5 px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={button} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={button} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
+   {checkedIds.length > 0 && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/25 bg-primary/5 px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
    <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border">
     <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium">{u.nome}</p></div></div></td>
     <td className="email-cell px-5 py-4">{u.email}</td>
@@ -676,6 +676,26 @@ export default function ControlPage() {
     :global(html.dark [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name,.control-manage-footer button:not(.control-manage-save)):hover:enabled) {
       background:rgba(0,233,223,.07)!important;
       border-color:rgba(0,233,223,.4)!important;
+    }
+  }
+
+
+  /* Selection actions use only the approved theme-aware color hover. */
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-selection-action) {
+    border-width:1px!important; border-radius:13px!important;
+    transition:background-color 150ms ease,border-color 150ms ease!important;
+    box-shadow:none!important; outline:none!important; transform:none!important;
+    translate:none!important; scale:none!important; filter:none!important; animation:none!important;
+  }
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-selection-action) {
+    background:#fcfdf9!important; border-color:#d7ded3!important; color:#162623!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-selection-action) {
+    background:#091c18!important; border-color:#1c4037!important; color:#f5faf9!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-selection-action:hover:enabled) {
+      background:hsl(var(--primary) / .07)!important; border-color:hsl(var(--primary) / .4)!important;
     }
   }
 
