@@ -462,6 +462,53 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           background:#091c18!important; border-color:#1c4037!important; color:#a3becd!important;
         }
         html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-filters] label:focus-within { border-color:#00e9df!important; }
+
+        /* Quiet, shared focus states. Outline never changes element geometry. */
+        html.light [data-admin-route] { --admin-focus-color:#129b89; }
+        html.dark [data-admin-route] { --admin-focus-color:#00e9df; }
+        html:is(.light,.dark) [data-admin-route] :is(
+          input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+          textarea,select
+        ):not(:disabled):not([aria-disabled="true"]):focus {
+          border-color:var(--admin-focus-color)!important;
+          outline:1px solid var(--admin-focus-color)!important;
+          outline-offset:0!important;
+          box-shadow:none!important;
+        }
+        /* Compound fields highlight their existing frame rather than the inner input. */
+        html:is(.light,.dark) [data-admin-route] :is(
+          [data-admin-search],
+          label:has(> input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])),
+          label:has(> select)
+        ):has(> :is(input,select):not(:disabled):not([aria-disabled="true"]):focus) {
+          border-color:var(--admin-focus-color)!important;
+          outline:none!important;
+          box-shadow:none!important;
+        }
+        html:is(.light,.dark) [data-admin-route] :is(
+          [data-admin-search],
+          label:has(> input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])),
+          label:has(> select)
+        ) > :is(input,select):focus {
+          outline:none!important; box-shadow:none!important;
+        }
+        html:is(.light,.dark) [data-admin-route] :is(
+          button,a[href],summary,[role="button"],[role="tab"],[role="switch"],[role="checkbox"],[role="radio"],
+          input[type="checkbox"],input[type="radio"],input[type="range"],input[type="color"],input[type="file"],
+          input[type="button"],input[type="submit"],input[type="reset"],[tabindex]:not([tabindex="-1"])
+        ):not(:disabled):not([aria-disabled="true"]):focus-visible {
+          outline:2px solid var(--admin-focus-color)!important;
+          outline-offset:2px!important;
+          box-shadow:none!important;
+        }
+        /* Inset outlines stay visible inside clipped segmented controls and tables. */
+        html:is(.light,.dark) [data-admin-route] :is(
+          .segments button,[data-approval-status-group] button,.audiences button,
+          [role="tab"],tr[tabindex],[role="row"][tabindex]
+        ):not(:disabled):not([aria-disabled="true"]):focus-visible { outline-offset:-3px!important; }
+        @media (forced-colors:active) {
+          html:is(.light,.dark) [data-admin-route] { --admin-focus-color:Highlight; }
+        }
       `}</style>
     </div>
   )
