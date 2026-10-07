@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, Download, Search, Users, UserRound, Link2, Dumbbell, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, type LucideIcon } from 'lucide-react'
+import { Shield, Download, Search, Users, UserRound, Link2, Dumbbell, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
@@ -132,6 +132,7 @@ export default function ControlPage() {
  const [sortKey, setSortKey] = useState<'nome' | 'tipo'>('nome')
  const [sortAsc, setSortAsc] = useState(true)
  const [selected, setSelected] = useState<User | null>(null)
+ const manageDialog = useRef<HTMLDialogElement>(null)
  const [busy, setBusy] = useState(false)
  const [feedback, setFeedback] = useState('')
  const [aluno, setAluno] = useState('')
@@ -150,6 +151,19 @@ export default function ControlPage() {
    if (users.error || bonds.error || workouts.error) throw new Error(users.error?.message || bonds.error?.message || workouts.error?.message)
    return { users: users.data as User[], bonds: bonds.data as Bond[], workouts: workouts.data as Workout[], config: config.data, ready: !config.error, configError: config.error?.message }
  } })
+ useEffect(() => {
+  if (!selected) return
+  const dialog = manageDialog.current
+  const previousFocus = document.activeElement as HTMLElement | null
+  const previousOverflow = document.body.style.overflow
+  document.body.style.overflow = 'hidden'
+  if (dialog && !dialog.open) dialog.showModal()
+  return () => {
+   dialog?.close()
+   document.body.style.overflow = previousOverflow
+   if (previousFocus?.isConnected) previousFocus.focus()
+  }
+ }, [selected?.id])
  const name = (id: string) => data?.users.find(u => u.id === id)?.nome ?? id
  async function act(acao: string, id: string | null, dados: object) {
   setBusy(true); setFeedback('')
@@ -205,13 +219,41 @@ export default function ControlPage() {
     <td className="email-cell px-5 py-4">{u.email}</td>
     <td className="profile-cell px-5 py-4"><span className={`inline-flex rounded-md border px-2.5 py-1 text-[11px] font-semibold ${u.tipo === 'ADMIN' ? 'border-primary/25 bg-primary/10 text-primary' : u.tipo === 'ALUNO' ? 'border-info/25 bg-info/10 text-info' : 'personal-badge'}`}>{u.tipo}</span></td>
     <td className="status-cell px-5 py-4"><span data-account-status={u.status_conta} className="account-status">{u.status_conta === 'ATIVO' ? <CircleCheck size={15} aria-hidden="true"/> : u.status_conta === 'PENDENTE' ? <Clock3 size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{u.status_conta === 'ATIVO' ? 'Ativo' : u.status_conta === 'PENDENTE' ? 'Pendente' : u.status_conta === 'BLOQUEADO' ? 'Bloqueado' : u.status_conta}</span></td>
-    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={button} aria-label={`Gerenciar ${u.nome}`} disabled={!data?.ready || busy} onClick={() => setSelected({...u})}><Settings2 size={17}/>Gerenciar</button></div></td>
+    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={button} aria-label={`Gerenciar ${u.nome}`} disabled={!data?.ready || busy} onClick={() => { setFeedback(''); setSelected({...u}) }}><Settings2 size={17}/>Gerenciar</button></div></td>
    </tr>)}</tbody></table>
    {!isLoading && !error && filteredUsers.length === 0 && <div className="p-10 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground"/><p className="font-medium">Nenhuma conta encontrada</p><p className="mt-1 text-sm text-muted-foreground">Tente outro nome ou ajuste os filtros.</p>{(search || profileFilter || statusFilter) && <button className={`${button} mt-4`} onClick={() => { setSearch(''); setProfileFilter(''); setStatusFilter(''); setPage(1) }}>Limpar filtros</button>}</div>}
    <footer className="account-pagination flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground"><p aria-live="polite">{filteredUsers.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, filteredUsers.length)} de ${filteredUsers.length} contas` : '0 contas'}</p><nav aria-label="Paginação de contas" className="flex items-center gap-2"><button className={`${button} !px-3`} aria-label="Página anterior" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16}/></button>{Array.from({length: pageCount}, (_, i) => i + 1).filter(n => n === 1 || n === pageCount || Math.abs(n - currentPage) <= 1).map((n, i, pages) => <span key={n} className="flex items-center gap-2">{i > 0 && n - pages[i - 1] > 1 && <span>…</span>}<button aria-label={`Página ${n}`} aria-current={currentPage === n ? 'page' : undefined} className={`${button} !px-3 ${currentPage === n ? '!border-primary bg-primary/10 text-primary' : ''}`} onClick={() => setPage(n)}>{n}</button></span>)}<button className={`${button} !px-3`} aria-label="Próxima página" disabled={currentPage >= pageCount} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16}/></button></nav></footer>
    </div>
   </section>}
-  {selected && tab === 'Contas' && <form className="space-y-4 rounded-xl border border-primary/40 bg-card p-5" onSubmit={e => { e.preventDefault(); void act('EDITAR_USUARIO', selected.id, selected) }}><h2 className="font-semibold">Editar {selected.email}</h2><label className="block text-sm">Nome<input required minLength={2} maxLength={120} className={input} value={selected.nome} onChange={e => setSelected({...selected, nome:e.target.value})}/></label><label className="block text-sm">Perfil<select className={input} value={selected.tipo} onChange={e => setSelected({...selected,tipo:e.target.value})}>{['ALUNO','PERSONAL','ADMIN'].map(v => <option key={v}>{v}</option>)}</select></label><label className="block text-sm">Status<select className={input} value={selected.status_conta} onChange={e => setSelected({...selected,status_conta:e.target.value})}>{['ATIVO','PENDENTE','BLOQUEADO'].map(v => <option key={v}>{v}</option>)}</select></label><p className="text-xs text-muted-foreground">Promover a ADMIN concede acesso global. O servidor impede remover seu próprio acesso e alterar perfis com relações existentes.</p><button disabled={busy} className={button}>Confirmar alteração</button> <button type="button" className={button} onClick={() => exportData([selected.id])}><Download size={16} aria-hidden="true"/>Exportar conta</button> <button type="button" className={button} onClick={() => setSelected(null)}>Cancelar</button></form>}
+  {selected && tab === 'Contas' && <dialog ref={manageDialog} className="control-manage-dialog" aria-labelledby="control-manage-title"
+   onCancel={event => { event.preventDefault(); if (!busy) setSelected(null) }}
+   onClick={event => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    if (event.target === event.currentTarget && !busy && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) setSelected(null)
+   }}>
+   <div className="control-manage-header">
+    <span className="control-manage-avatar" aria-hidden="true">{initials(selected.nome)}</span>
+    <div className="control-manage-identity"><h2 id="control-manage-title">Gerenciar conta</h2><p>{selected.email}</p></div>
+    <button type="button" className="control-manage-close" aria-label="Fechar gerenciamento" disabled={busy} onClick={() => setSelected(null)}><X size={18} aria-hidden="true"/></button>
+   </div>
+   <form onSubmit={e => { e.preventDefault(); void act('EDITAR_USUARIO', selected.id, selected) }}>
+    <fieldset className="control-manage-fields" disabled={busy}>
+     <legend className="sr-only">Dados da conta</legend>
+     <label htmlFor="control-manage-name">Nome<input autoFocus id="control-manage-name" required minLength={2} maxLength={120} className={input} value={selected.nome} onChange={e => setSelected({...selected, nome:e.target.value})}/></label>
+     <div className="control-manage-grid">
+      <label htmlFor="control-manage-profile">Perfil<select id="control-manage-profile" className={input} value={selected.tipo} onChange={e => setSelected({...selected,tipo:e.target.value})}>{['ALUNO','PERSONAL','ADMIN'].map(v => <option key={v}>{v}</option>)}</select></label>
+      <label htmlFor="control-manage-status">Status<select id="control-manage-status" className={input} value={selected.status_conta} onChange={e => setSelected({...selected,status_conta:e.target.value})}>{['ATIVO','PENDENTE','BLOQUEADO'].map(v => <option key={v}>{v}</option>)}</select></label>
+     </div>
+    </fieldset>
+    <p className="control-manage-note"><Shield size={16} aria-hidden="true"/><span>Promover a ADMIN concede acesso global. O servidor impede remover seu próprio acesso e alterar perfis com relações existentes.</span></p>
+    {feedback && <p role="status" className="control-manage-feedback">{feedback}</p>}
+    <footer className="control-manage-footer">
+     <button type="button" className={button} disabled={busy} onClick={() => exportData([selected.id])}><Download size={16} aria-hidden="true"/>Exportar conta</button>
+     <div><button type="button" className={button} disabled={busy} onClick={() => setSelected(null)}>Cancelar</button><button type="submit" disabled={busy} className={`${button} control-manage-save`}>{busy ? 'Salvando…' : 'Salvar alterações'}</button></div>
+    </footer>
+   </form>
+  </dialog>}
+
   {tab === 'Vínculos' && <div className="space-y-4"><form className="grid gap-3 rounded-xl border border-border bg-card p-4 md:grid-cols-3" onSubmit={e => { e.preventDefault(); void act('VINCULAR', aluno, {personal_id:personal}) }}><select required aria-label="Aluno" className={input} value={aluno} onChange={e => setAluno(e.target.value)}><option value="">Escolha o aluno</option>{data?.users.filter(u => u.tipo === 'ALUNO' && u.status_conta === 'ATIVO').map(u => <option key={u.id} value={u.id}>{u.nome}</option>)}</select><select required aria-label="Personal" className={input} value={personal} onChange={e => setPersonal(e.target.value)}><option value="">Escolha o personal</option>{personals.map(u => <option key={u.id} value={u.id}>{u.nome}</option>)}</select><button className={button} disabled={!data?.ready || busy}>Criar / reativar vínculo</button></form>{data?.bonds.filter(v => `${name(v.aluno_id)} ${name(v.personal_id)}`.toLowerCase().includes(search.toLowerCase())).map(v => <div key={v.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border p-4"><div>{name(v.aluno_id)} → {name(v.personal_id)}<p className="text-xs text-muted-foreground">{v.status}</p></div><button className={button} disabled={!data.ready || busy || v.status !== 'ATIVO'} onClick={() => void act('DESATIVAR_VINCULO',v.id,{})}>Desativar vínculo</button></div>)}</div>}
   {tab === 'Treinos' && <div className="space-y-3">{data?.workouts.filter(t => `${t.titulo} ${name(t.aluno_id)}`.toLowerCase().includes(search.toLowerCase())).map(t => <div key={t.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border p-4"><div>{t.titulo}<p className="text-xs text-muted-foreground">{name(t.aluno_id)} · {name(t.personal_id)} · {t.ativo ? 'Ativo' : 'Arquivado'}</p></div><button className={button} disabled={!data.ready || busy} onClick={() => setWorkout({...t})}>Editar / transferir</button></div>)}{workout && <form className="space-y-3 rounded-xl border border-primary/40 bg-card p-4" onSubmit={e => { e.preventDefault(); void act('EDITAR_TREINO',workout.id,workout) }}><label className="block text-sm">Título<input required minLength={2} maxLength={150} className={input} value={workout.titulo} onChange={e => setWorkout({...workout,titulo:e.target.value})}/></label><label className="block text-sm">Responsável<select className={input} value={workout.personal_id} onChange={e => setWorkout({...workout,personal_id:e.target.value})}>{personals.map(u => <option key={u.id} value={u.id}>{u.nome}</option>)}</select></label><label className="flex gap-2"><input type="checkbox" checked={workout.ativo} onChange={e => setWorkout({...workout,ativo:e.target.checked})}/>Treino ativo</label><p className="text-xs text-muted-foreground">Transferências exigem vínculo ativo com o aluno. Séries e histórico são preservados.</p><button disabled={busy} className={button}>Salvar treino</button> <button className={button} type="button" onClick={() => setWorkout(null)}>Cancelar</button></form>}</div>}
   {tab === 'Configurações' && <form className="max-w-2xl space-y-5 rounded-xl border border-border bg-card p-5" onSubmit={e => { e.preventDefault(); void act('CONFIGURAR',null,{cadastro_aberto:open,mensagem_publica:message}) }}><h2 className="font-semibold">Controle de cadastros</h2><label className="flex gap-3"><input type="checkbox" checked={open} onChange={e => setOpen(e.target.checked)}/>Permitir novas contas</label><p className="text-sm text-muted-foreground">O bloqueio é aplicado no banco, inclusive para cadastros feitos diretamente pela API de autenticação.</p><label className="block text-sm">Nota administrativa<textarea maxLength={500} className={input} value={message} onChange={e => setMessage(e.target.value)}/></label><button className={button} disabled={!data?.ready || busy}>Salvar configuração</button></form>}
@@ -494,6 +536,44 @@ export default function ControlPage() {
   :global(.control-center .control-filter-option[data-active="true"]) { outline:1px solid hsl(var(--primary) / .4); outline-offset:-1px; }
   @media(min-width:1024px) { :global(.control-center .control-filter-field) { width:176px; } }
   @media(max-width:639px) { :global(.control-center .control-filter-label) { display:none; } :global(.control-center .control-filter-option) { padding:8px; gap:7px; } }
+
+
+  /* Account management uses a modal in the browser top layer. */
+  :global(.control-center .control-manage-dialog) {
+   width:min(560px,calc(100vw - 32px)); max-width:560px; max-height:calc(100dvh - 32px);
+   margin:auto; padding:24px; overflow-y:auto; overscroll-behavior:contain;
+   border:1px solid #d7ded3!important; border-radius:24px; background:#fcfdf9!important;
+   color:#162623!important; box-shadow:0 20px 60px rgba(0,0,0,.2);
+  }
+  :global(.control-center .control-manage-dialog::backdrop) { background:rgba(2,12,10,.45); backdrop-filter:blur(2px); }
+  :global(html.dark .control-center .control-manage-dialog) { border-color:#1c4037!important; background:#091c18!important; color:#f5faf9!important; }
+  :global(.control-manage-header) { display:flex; align-items:center; gap:14px; margin-bottom:24px; }
+  :global(.control-manage-avatar) { display:grid; place-items:center; width:48px; height:48px; flex-shrink:0; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:14px; font-weight:600; }
+  :global(.control-manage-identity) { min-width:0; flex:1; }
+  :global(.control-manage-identity h2) { margin:0; color:inherit; font-size:18px; font-weight:700; }
+  :global(.control-manage-identity p) { margin:4px 0 0; font-size:13px; color:#5f6f68; overflow-wrap:anywhere; }
+  :global(html.dark .control-manage-identity p) { color:#a3becd; }
+  :global(.control-manage-close) { display:grid; place-items:center; width:36px; height:36px; flex-shrink:0; border:1px solid hsl(var(--border)); border-radius:11px; background:transparent; color:inherit; }
+  :global(.control-manage-fields) { display:grid; gap:18px; padding:18px; border:1px solid hsl(var(--border)); border-radius:16px; }
+  :global(.control-manage-fields label) { display:grid; gap:8px; min-width:0; font-size:13px; font-weight:500; }
+  :global(.control-manage-fields :is(input,select)) { min-height:44px; border-radius:13px; color:inherit; background:#fcfdf9!important; border:1px solid #d7ded3!important; font:inherit; padding:10px 12px; }
+  :global(html.dark .control-manage-fields :is(input,select)) { background:#091c18!important; border-color:#1c4037!important; }
+  :global(.control-manage-grid) { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  :global(.control-manage-note) { display:flex; align-items:flex-start; gap:9px; margin:16px 0 0; font-size:12px; line-height:1.65; color:#5f6f68; }
+  :global(.control-manage-note svg) { flex-shrink:0; margin-top:2px; }
+  :global(html.dark .control-manage-note) { color:#a3becd; }
+  :global(.control-manage-feedback) { margin-top:16px; padding:12px; border:1px solid hsl(var(--border)); border-radius:13px; font-size:13px; }
+  :global(.control-manage-footer) { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:24px; padding-top:18px; border-top:1px solid hsl(var(--border)); }
+  :global(.control-manage-footer > div) { display:flex; gap:10px; flex-wrap:wrap; }
+  :global(.control-manage-footer button) { min-height:44px; border-radius:13px; font-size:12px; }
+  :global(.control-manage-footer .control-manage-save) { background:hsl(var(--primary))!important; color:hsl(var(--primary-foreground))!important; border-color:hsl(var(--primary))!important; }
+  @media(max-width:520px) {
+   :global(.control-center .control-manage-dialog) { padding:20px 16px; border-radius:20px; }
+   :global(.control-manage-fields) { padding:14px; }
+   :global(.control-manage-grid) { grid-template-columns:1fr; }
+   :global(.control-manage-footer > button),:global(.control-manage-footer > div) { width:100%; }
+   :global(.control-manage-footer > div > button) { flex:1; }
+  }
 
 `}</style>
  </div>
