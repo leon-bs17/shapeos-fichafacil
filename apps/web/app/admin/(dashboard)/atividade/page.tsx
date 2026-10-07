@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Activity, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
+import { Activity, CircleCheck, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
 
 type Usuario = { id: string; nome: string; email: string; tipo: string; criado_em: string }
 type Auditoria = { id: string; acao: string; detalhes: Record<string, unknown>; criado_em: string }
@@ -130,8 +130,8 @@ export default function AdminAtividadePage() {
                   <td><div className="identity"><span className="avatar">{iniciais(e.descricao)}</span><span title={e.descricao}>{e.descricao.split(' · ')[0]}</span></div></td>
                   <td><div className="action">{e.tipo === 'cadastro' ? <UserPlus size={19} /> : <ShieldCheck size={19} />}<span>{e.titulo.toLowerCase()}</span></div></td>
                   <td className="date">{formatarData(e.data)}</td>
-                  <td><span className="status"><span />Registrado</span></td>
-                  <td><button className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={19} /></button></td>
+                  <td><span className="status"><CircleCheck size={15} aria-hidden="true" />Registrado</span></td>
+                  <td><button className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={16} aria-hidden="true" /><span>Ver</span></button></td>
                 </tr>
               ))}</tbody>
             </table>
@@ -141,7 +141,7 @@ export default function AdminAtividadePage() {
             <span aria-live="polite">{eventos.length ? inicio+1 : 0}–{Math.min(inicio+POR_PAGINA,eventos.length)} de {eventos.length} eventos</span>
             <nav aria-label="Paginação da atividade">
               <button aria-label="Página anterior" disabled={atual===1} onClick={() => setPagina(atual-1)}><ChevronLeft size={17} /></button>
-              <span aria-current="page">{atual}</span>
+              {Array.from({length:paginas}, (_,i)=>i+1).map(n=><button key={n} aria-label={`Página ${n}`} aria-current={atual===n ? 'page' : undefined} onClick={()=>setPagina(n)}>{n}</button>)}
               <button aria-label="Próxima página" disabled={atual===paginas} onClick={() => setPagina(atual+1)}><ChevronRight size={17} /></button>
             </nav>
           </footer>
@@ -219,6 +219,31 @@ export default function AdminAtividadePage() {
         }
         :global(html:not(.dark)) .wireframe { color:#008d85; }
         :global(html:not(.dark)) .search input::placeholder { color:#7b8983; }
+
+        /* Reference activity table, with theme-aware surfaces and compact rows. */
+        .events { border-radius:18px; }
+        th { padding:14px 20px; font-size:10px; letter-spacing:.09em; }
+        th:nth-child(1) { width:27%; } th:nth-child(2) { width:27%; }
+        th:nth-child(3) { width:19%; } th:nth-child(4) { width:15%; }
+        th:nth-child(5) { width:12%; }
+        td { height:50px; padding:7px 20px; }
+        .identity { gap:13px; }
+        .identity>span:last-child { font-weight:600; }
+        .avatar { width:36px; height:36px; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; }
+        .action { gap:12px; }
+        .status { gap:7px; padding:7px 12px; border:0; border-radius:999px; font-size:11px; font-weight:500; background:#e4f3eb; color:#0d7e70; }
+        :global(html.dark) .status { background:#123b31; color:#00e9df; }
+        .detail { display:flex; align-items:center; justify-content:center; gap:8px; width:88px; height:34px; border-radius:10px; color:var(--text); font-size:12px; background:var(--surface); }
+        .detail> :global(svg) { color:var(--accent); flex-shrink:0; }
+        footer { padding:16px 20px; }
+        nav { gap:7px; }
+        nav button { width:32px; height:32px; border-radius:9px; background:var(--surface); color:var(--muted); }
+        nav button[aria-current="page"] { border-color:var(--accent); background:var(--accent); color:#fff; }
+        :global(html.dark) nav button[aria-current="page"] { color:#002a26; }
+        @media(max-width:640px) {
+          footer { padding:14px 12px; flex-wrap:wrap; }
+          nav { flex-wrap:wrap; }
+        }
 `}</style>
     </div>
   )
