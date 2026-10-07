@@ -23,8 +23,8 @@ const statusOptions: FilterOption[] = [
  { value: 'PENDENTE', label: 'Pendente', icon: Clock3 },
  { value: 'BLOQUEADO', label: 'Bloqueado', icon: ShieldX },
 ]
-function ControlFilter({ label, value, options, onChange }: {
- label: string; value: string; options: FilterOption[]; onChange: (value: string) => void
+function ControlFilter({ label, value, options, onChange, editing = false, disabled = false }: {
+ label: string; value: string; options: FilterOption[]; onChange: (value: string) => void; editing?: boolean; disabled?: boolean
 }) {
  const id = useId()
  const root = useRef<HTMLDivElement>(null)
@@ -36,19 +36,20 @@ function ControlFilter({ label, value, options, onChange }: {
  const SelectedIcon = options[selected].icon
  useEffect(() => {
   if (!expanded) return
+  if (disabled) { setExpanded(false); return }
   list.current?.focus()
   const closeOutside = (event: PointerEvent) => {
    if (!root.current?.contains(event.target as Node)) setExpanded(false)
   }
   document.addEventListener('pointerdown', closeOutside)
   return () => document.removeEventListener('pointerdown', closeOutside)
- }, [expanded])
+ }, [expanded, disabled])
  const show = (index = selected) => { setActive(index); setExpanded(true) }
  const choose = (index: number) => { onChange(options[index].value); setExpanded(false); trigger.current?.focus() }
- return <div ref={root} className="control-filter">
+ return <div ref={root} className={`control-filter${editing ? ' control-filter-edit' : ''}`}>
   <span className="control-filter-label">{label}</span>
   <div className="control-filter-field">
-   <button ref={trigger} type="button" className="control-filter-trigger" aria-label={`Filtrar por ${label.toLowerCase()}`}
+   <button ref={trigger} type="button" className="control-filter-trigger" disabled={disabled} aria-label={`${editing ? 'Alterar' : 'Filtrar por'} ${label.toLowerCase()}`}
     aria-haspopup="listbox" aria-expanded={expanded} aria-controls={expanded ? id : undefined}
     onClick={() => expanded ? setExpanded(false) : show()}
     onKeyDown={event => {
@@ -66,7 +67,7 @@ function ControlFilter({ label, value, options, onChange }: {
      if (event.key === 'Home') setActive(0)
      if (event.key === 'End') setActive(options.length - 1)
      if (event.key === 'Enter' || event.key === ' ') choose(active)
-     if (event.key === 'Escape') { setExpanded(false); trigger.current?.focus() }
+     if (event.key === 'Escape') { event.stopPropagation(); setExpanded(false); trigger.current?.focus() }
      if (event.key.length === 1 && event.key !== ' ') {
       const next = options.findIndex(option => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
       if (next >= 0) setActive(next)
@@ -241,8 +242,8 @@ export default function ControlPage() {
      <legend className="sr-only">Dados da conta</legend>
      <label htmlFor="control-manage-name">Nome<input autoFocus id="control-manage-name" required minLength={2} maxLength={120} className={input} value={selected.nome} onChange={e => setSelected({...selected, nome:e.target.value})}/></label>
      <div className="control-manage-grid">
-      <label htmlFor="control-manage-profile">Perfil<select id="control-manage-profile" className={input} value={selected.tipo} onChange={e => setSelected({...selected,tipo:e.target.value})}>{['ALUNO','PERSONAL','ADMIN'].map(v => <option key={v}>{v}</option>)}</select></label>
-      <label htmlFor="control-manage-status">Status<select id="control-manage-status" className={input} value={selected.status_conta} onChange={e => setSelected({...selected,status_conta:e.target.value})}>{['ATIVO','PENDENTE','BLOQUEADO'].map(v => <option key={v}>{v}</option>)}</select></label>
+      <ControlFilter editing disabled={busy} label="Perfil" value={selected.tipo} options={profileOptions.filter(option => option.value !== '')} onChange={value => setSelected({...selected, tipo:value})}/>
+      <ControlFilter editing disabled={busy} label="Status" value={selected.status_conta} options={statusOptions.filter(option => option.value !== '')} onChange={value => setSelected({...selected, status_conta:value})}/>
      </div>
     </fieldset>
     <p className="control-manage-note"><Shield size={16} aria-hidden="true"/><span>Promover a ADMIN concede acesso global. O servidor impede remover seu próprio acesso e alterar perfis com relações existentes.</span></p>
@@ -620,6 +621,36 @@ export default function ControlPage() {
   }
   :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-fields select:disabled:hover) {
     background:#091c18!important; border-color:#1c4037!important;
+  }
+
+
+  /* Edit selectors reuse the icon menu without offering the all-values filter. */
+  :global(.control-center .control-manage-fields .control-filter-edit) { display:grid; gap:8px; align-items:stretch; }
+  :global(.control-center .control-manage-fields .control-filter-label) { display:block; color:inherit; font-size:13px; font-weight:500; }
+  :global(.control-center .control-manage-fields .control-filter-field) { width:100%; min-width:0; }
+  :global(.control-center .control-manage-fields .control-filter-trigger) { min-height:44px; }
+  :global(.control-center .control-manage-fields .control-filter-menu) { font-weight:400; }
+  /* All requested fields keep only the approved color treatment. */
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name,.control-manage-footer button)) {
+    border-width:1px!important; border-radius:13px!important;
+    transition:background-color 150ms ease,border-color 150ms ease!important;
+    box-shadow:none!important; outline:none!important; transform:none!important;
+    translate:none!important; scale:none!important; filter:none!important; animation:none!important;
+  }
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer button),
+  :global(html.light [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name)) {
+    background:#fcfdf9!important; border-color:#d7ded3!important; color:#162623!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer button),
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name)) {
+    background:#091c18!important; border-color:#1c4037!important; color:#f5faf9!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name,.control-manage-footer button):hover:enabled),
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer button:hover:enabled) {
+      background:hsl(var(--primary) / .07)!important;
+      border-color:hsl(var(--primary) / .4)!important;
+    }
   }
 
 `}</style>
