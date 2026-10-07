@@ -711,7 +711,7 @@ export default function ControlPage() {
 
   /* Light module tabs remain readable when hovered. */
   @media(hover:hover) and (pointer:fine) {
-    :global(html.light [data-admin-route] [data-admin-content] .control-center .control-tabs button[aria-pressed="false"]:nth-child(n+2):hover) {
+    :global(html.light [data-admin-route] [data-admin-content] .control-center .control-tabs button[aria-pressed="false"]:hover) {
       color:#162623!important;
     }
   }
