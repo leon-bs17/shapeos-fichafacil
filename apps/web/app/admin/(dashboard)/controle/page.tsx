@@ -214,7 +214,7 @@ export default function ControlPage() {
    </div>}
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
-   {checkedIds.length > 0 && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/25 bg-primary/5 px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
+   {checkedIds.length > 0 && <div className="control-selection-bar flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
    <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border">
     <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium">{u.nome}</p></div></div></td>
     <td className="email-cell px-5 py-4">{u.email}</td>
@@ -697,6 +697,15 @@ export default function ControlPage() {
     :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-selection-action:hover:enabled) {
       background:hsl(var(--primary) / .07)!important; border-color:hsl(var(--primary) / .4)!important;
     }
+  }
+
+
+  /* The selection summary is a neutral surface in each theme. */
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-selection-bar) {
+    background:#fcfdf9!important; border-color:#d7ded3!important; color:#162623!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-selection-bar) {
+    background:#091c18!important; border-color:#1c4037!important; color:#f5faf9!important;
   }
 
 `}</style>
