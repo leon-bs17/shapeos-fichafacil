@@ -413,13 +413,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         html.dark [data-admin-route] .shapeos-navigation,
         html.dark [data-admin-route] [data-admin-content],
         html.dark [data-admin-route] [data-admin-content] :is(.control-center,.approvals-workspace,.activity-workspace,.reports-workspace,.notices-workspace,.system-workspace,.users-workspace,.personals-workspace,.exercises-workspace) {
-          --background:168 68% 4.9%!important;
-          --foreground:156 33.33% 97.06%!important;
-          --card:167.37 51.35% 7.25%!important; --card-foreground:156 33.33% 97.06%!important;
-          --popover:167.37 51.35% 7.25%!important; --popover-foreground:156 33.33% 97.06%!important;
+          --background:169.411765 68% 4.901961%!important;
+          --foreground:168 33.333333% 97.058824%!important;
+          --card:167.37 51.35% 7.25%!important; --card-foreground:168 33.333333% 97.058824%!important;
+          --popover:167.37 51.35% 7.25%!important; --popover-foreground:168 33.333333% 97.058824%!important;
           --primary:177.42 100% 45.69%!important; --primary-foreground:174 100% 8.24%!important;
-          --secondary:167.37 51.35% 7.25%!important; --secondary-foreground:156 33.33% 97.06%!important;
-          --muted:167.37 51.35% 7.25%!important; --muted-foreground:200 29.58% 72.16%!important;
+          --secondary:167.37 51.35% 7.25%!important; --secondary-foreground:168 33.333333% 97.058824%!important;
+          --muted:167.37 51.35% 7.25%!important; --muted-foreground:201.428571 29.577465% 72.156863%!important;
           --accent:177.42 100% 45.69%!important; --accent-foreground:174 100% 8.24%!important;
           --border:165 39.13% 18.04%!important; --input:165 39.13% 18.04%!important; --ring:177.42 100% 45.69%!important;
           --shapeos-bg:#041512!important; --shapeos-surface:#091c18!important; --shapeos-surface-strong:#091c18!important;
