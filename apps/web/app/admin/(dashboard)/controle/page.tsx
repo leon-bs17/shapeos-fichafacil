@@ -646,8 +646,8 @@ export default function ControlPage() {
     background:#091c18!important; border-color:#1c4037!important; color:#f5faf9!important;
   }
   @media(hover:hover) and (pointer:fine) {
-    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name,.control-manage-footer button):hover:enabled),
-    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer button:hover:enabled) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is(.control-export,.control-filter-trigger,#control-manage-name,.control-manage-footer button:not(.control-manage-save)):hover:enabled),
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer button:not(.control-manage-save):hover:enabled) {
       background:hsl(var(--primary) / .07)!important;
       border-color:hsl(var(--primary) / .4)!important;
     }
