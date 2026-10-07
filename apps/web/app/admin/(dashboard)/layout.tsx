@@ -407,6 +407,61 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           [data-admin-route] [data-admin-content] .notices-workspace .hero h1 + p,
           [data-admin-route] [data-admin-content] .system-workspace .hero h1 + p { font-size:14px!important; }
         }
+
+        /* Canonical admin dark palette: Activity is the reference. */
+        html.dark [data-admin-route],
+        html.dark [data-admin-route] .shapeos-navigation,
+        html.dark [data-admin-route] [data-admin-content],
+        html.dark [data-admin-route] [data-admin-content] :is(.control-center,.approvals-workspace,.activity-workspace,.reports-workspace,.notices-workspace,.system-workspace,.users-workspace,.personals-workspace,.exercises-workspace) {
+          --background:168 68% 4.9%!important;
+          --foreground:156 33.33% 97.06%!important;
+          --card:167.37 51.35% 7.25%!important; --card-foreground:156 33.33% 97.06%!important;
+          --popover:167.37 51.35% 7.25%!important; --popover-foreground:156 33.33% 97.06%!important;
+          --primary:177.42 100% 45.69%!important; --primary-foreground:174 100% 8.24%!important;
+          --secondary:167.37 51.35% 7.25%!important; --secondary-foreground:156 33.33% 97.06%!important;
+          --muted:167.37 51.35% 7.25%!important; --muted-foreground:200 29.58% 72.16%!important;
+          --accent:177.42 100% 45.69%!important; --accent-foreground:174 100% 8.24%!important;
+          --border:165 39.13% 18.04%!important; --input:165 39.13% 18.04%!important; --ring:177.42 100% 45.69%!important;
+          --shapeos-bg:#041512!important; --shapeos-surface:#091c18!important; --shapeos-surface-strong:#091c18!important;
+          --shapeos-text:#f5faf9!important; --shapeos-muted:#a3becd!important; --shapeos-subtle:#a3becd!important;
+          --shapeos-border:#1c4037!important; --shapeos-brand:#00e9df!important; --shapeos-brand-hover:#00e9df!important;
+          --shapeos-brand-soft:rgba(0,233,223,.09)!important; --shapeos-on-brand:#002a26!important;
+          --surface:#091c18!important; --border-color:#1c4037!important; --text:#f5faf9!important;
+          --muted-color:#a3becd!important;
+          --approval-surface:#091c18!important; --approval-border:#1c4037!important; --approval-muted:#a3becd!important; --approval-accent:#00e9df!important;
+          --users-surface:#091c18!important; --users-border:#1c4037!important; --users-muted:#a3becd!important; --users-title:#f5faf9!important; --users-accent:#00e9df!important;
+          --personal-surface:#091c18!important; --personal-border:#1c4037!important; --personal-muted:#a3becd!important; --personal-ink:#f5faf9!important; --personal-brand:#00e9df!important;
+          --exercise-surface:#091c18!important; --exercise-border:#1c4037!important; --exercise-muted:#a3becd!important; --exercise-ink:#f5faf9!important; --exercise-brand:#00e9df!important;
+        }
+        /* These custom workspaces use hex tokens rather than the HSL utility tokens. */
+        html.dark [data-admin-route] [data-admin-content] :is(.activity-workspace,.reports-workspace,.notices-workspace,.system-workspace) {
+          --border:#1c4037!important; --muted:#a3becd!important; --accent:#00e9df!important;
+        }
+        html.dark [data-admin-route] { background:#041512!important; color:#f5faf9!important; }
+        html.dark [data-admin-route] .shapeos-navigation {
+          --shapeos-bg:#101917!important; --shapeos-surface:#101917!important; --shapeos-surface-strong:#19261f!important;
+          --shapeos-border:#2e4239!important; --shapeos-text:#eff5ed!important; --shapeos-muted:#a5b8ae!important;
+          --shapeos-brand:#4dddc6!important; --shapeos-brand-hover:#6df0dc!important; --shapeos-on-brand:#101917!important;
+          background:#101917!important; border-color:#2e4239!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] :is(.control-heading,[data-approvals-hero],.activity-hero,.reports-workspace .hero,.notices-workspace .hero,.system-workspace .hero,.users-hero,.personals-hero,.exercises-hero) {
+          background:radial-gradient(ellipse at 84% 60%,#073d32 0%,#071d18 43%,#041512 100%)!important;
+          border-color:#1c4037!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] .control-metric,
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace :is([data-approvals-summary]>div,[data-approvals-table],[data-approvals-columns],[role="dialog"],[data-approvals-details],[data-approvals-pagination]),
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace section:not([data-approvals-hero]):not([data-approvals-filters]),
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace div[class*="dark:bg-[#"] {
+          background:#091c18!important; border-color:#1c4037!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace :is([data-approvals-row],[data-approvals-pagination] button:not([aria-current])) {
+          border-color:#1c4037!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] :is(input,textarea)::placeholder { color:#a3becd!important; }
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-filters] label {
+          background:#091c18!important; border-color:#1c4037!important; color:#a3becd!important;
+        }
+        html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-filters] label:focus-within { border-color:#00e9df!important; }
       `}</style>
     </div>
   )
