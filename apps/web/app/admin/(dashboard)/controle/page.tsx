@@ -708,6 +708,14 @@ export default function ControlPage() {
     background:#091c18!important; border-color:#1c4037!important; color:#f5faf9!important;
   }
 
+
+  /* Light module tabs remain readable when hovered. */
+  @media(hover:hover) and (pointer:fine) {
+    :global(html.light [data-admin-route] [data-admin-content] .control-center .control-tabs button[aria-pressed="false"]:nth-child(n+2):hover) {
+      color:#162623!important;
+    }
+  }
+
 `}</style>
  </div>
 }
