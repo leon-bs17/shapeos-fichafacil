@@ -557,7 +557,7 @@ export default function AdminAprovacoesPage() {
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-slate-500 dark:text-slate-400">Status</span>
-                <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${statusVisual(personalSelecionado.status_conta).className}`}>
+                <span data-approvals-detail-status={personalSelecionado.status_conta} className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${statusVisual(personalSelecionado.status_conta).className}`}>
                   {statusVisual(personalSelecionado.status_conta).label}
                 </span>
               </div>
@@ -783,6 +783,10 @@ export default function AdminAprovacoesPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group]) { flex:1; }
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button) { flex:1; padding:0 12px!important; font-size:12px!important; }
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] > div:first-child > div > label) { width:100%; }
+        }
+
+        :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [role="dialog"] [data-approvals-details] [data-approvals-detail-status="ATIVO"]) {
+          border:1px solid #bddfd0!important;
         }
 `}</style>
     </div>
