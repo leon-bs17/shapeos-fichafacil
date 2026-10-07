@@ -363,6 +363,18 @@ export default function ControlPage() {
     .control-center .account-table .action-cell { grid-row:4; }
     .control-center .account-pagination { padding:14px 12px; border:1px solid hsl(var(--border)); border-radius:14px; gap:12px; }
   }
+
+  /* Shared quiet hover for the requested command-center controls only. */
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"])) {
+    border-width:1px!important; border-radius:13px!important;
+    transition:background-color 150ms ease,border-color 150ms ease!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)):hover) {
+      background:hsl(var(--primary) / .07)!important;
+      border-color:hsl(var(--primary) / .4)!important;
+    }
+  }
 `}</style>
  </div>
 }
