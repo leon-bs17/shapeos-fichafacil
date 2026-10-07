@@ -662,10 +662,11 @@ export default function ControlPage() {
     background:#00e9df!important; border-color:#00e9df!important; color:#002a26!important;
   }
   @media(hover:hover) and (pointer:fine) {
-    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save:hover:enabled) {
-      background:hsl(var(--primary) / .07)!important;
-      border-color:hsl(var(--primary) / .4)!important;
-      color:hsl(var(--foreground))!important;
+    :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save:hover:enabled) {
+      background:#0d7e70!important; border-color:#0d7e70!important; color:#fff!important;
+    }
+    :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save:hover:enabled) {
+      background:#00e9df!important; border-color:#00e9df!important; color:#002a26!important;
     }
   }
 
