@@ -196,7 +196,7 @@ export default function ControlPage() {
   .control-heading-copy>p:first-child { font-size:11px; letter-spacing:.16em; margin-bottom:14px; }
   .control-heading-copy>p:last-child { font-size:15px; line-height:1.6; margin-top:13px; }
   .control-heading-art { position:absolute!important; width:390px!important; right:28px; top:50%; transform:translateY(-50%); margin:0!important; opacity:.7; pointer-events:none; }
-  .control-export-row { display:flex; justify-content:flex-end; padding-top:14px; border-top:1px solid hsl(var(--border)); margin-top:14px!important; }
+  .control-export-row { display:flex; justify-content:flex-end; padding-top:14px; border-top:0; margin-top:14px!important; }
   .control-export-row .control-export { margin:0!important; align-self:auto!important; }
   @media(max-width:1000px) { .control-heading-copy { max-width:85%; } .control-heading-art { right:-100px; opacity:.25; } }
   @media(max-width:639px) { .control-heading { padding:27px 22px; min-height:210px; } .control-heading-copy { max-width:100%; } .control-heading-art { width:290px!important; right:-150px; opacity:.15; } .control-title { font-size:32px; } .control-export-row .control-export { min-height:44px; font-size:12px; } }
