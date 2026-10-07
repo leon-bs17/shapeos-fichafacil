@@ -375,6 +375,21 @@ export default function ControlPage() {
       border-color:hsl(var(--primary) / .4)!important;
     }
   }
+
+  /* These controls keep only the approved color hover treatment. */
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"])) {
+    box-shadow:none!important; outline:none!important; transform:none!important;
+    translate:none!important; scale:none!important; filter:none!important;
+    animation:none!important;
+  }
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]):is(:focus,:focus-visible,:focus-within,:active):not(:hover)) {
+    border-color:hsl(var(--border))!important;
+    background:hsl(var(--card))!important;
+    box-shadow:none!important; outline:none!important;
+  }
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]) > input:is(:focus,:focus-visible,:active)) {
+    box-shadow:none!important; outline:none!important;
+  }
 `}</style>
  </div>
 }
