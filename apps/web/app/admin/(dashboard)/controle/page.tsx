@@ -590,6 +590,38 @@ export default function ControlPage() {
     background:hsl(var(--card))!important; border-color:hsl(var(--border))!important;
   }
 
+
+  /* Keep modal colors above the shared admin surface rules. */
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-save) {
+    background:#129b89!important; border-color:#129b89!important; color:#fff!important;
+  }
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-save:hover:enabled) {
+    background:#0d7e70!important; border-color:#0d7e70!important; color:#fff!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-save) {
+    background:#00e9df!important; border-color:#00e9df!important; color:#002a26!important;
+  }
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-fields select) {
+    border-width:1px!important; border-radius:13px!important;
+    transition:background-color 150ms ease,border-color 150ms ease!important;
+    transform:none!important; translate:none!important; scale:none!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-fields select:hover:enabled) {
+      background:hsl(var(--primary) / .07)!important;
+      border-color:hsl(var(--primary) / .4)!important;
+    }
+  }
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog :is(.control-manage-fields,.control-manage-footer,.control-manage-close,.control-manage-feedback)) {
+    border-color:#d7ded3!important;
+  }
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-fields select:disabled:hover) {
+    background:#fcfdf9!important; border-color:#d7ded3!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-fields select:disabled:hover) {
+    background:#091c18!important; border-color:#1c4037!important;
+  }
+
 `}</style>
  </div>
 }
