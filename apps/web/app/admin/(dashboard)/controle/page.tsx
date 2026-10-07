@@ -258,6 +258,63 @@ export default function ControlPage() {
     :global(html:not(.dark)) .account-table th:last-child { text-align:center; }
     :global(html:not(.dark)) .account-table .action-cell > div { justify-content:center; }
   }
+
+  /* Mirror the light table geometry using the canonical dark palette. */
+  :global(html.dark) .account-table {
+    border:1px solid #1c4037; border-radius:14px; background:#091c18;
+    box-shadow:none;
+  }
+  :global(html.dark) .account-table table { font-size:12px; background:#091c18; }
+  :global(html.dark) .account-table thead { height:auto; background:#091c18; color:#a3becd; }
+  :global(html.dark) .account-table tr { height:auto; border-color:#1c4037; }
+  :global(html.dark) .account-table th { padding:15px 14px; font-size:11px; font-weight:500; color:#a3becd; }
+  :global(html.dark) .account-table th:first-child { border-top-left-radius:14px; }
+  :global(html.dark) .account-table th:last-child { border-top-right-radius:14px; }
+  :global(html.dark) .account-table td { padding:15px 14px; border-color:#1c4037; }
+  :global(html.dark) .account-table .avatar { width:36px; height:36px; font-weight:700; }
+  :global(html.dark) .account-table .user-cell p:first-child { font-size:12px; font-weight:600; color:#f5faf9; }
+  :global(html.dark) .account-table .user-cell p:last-child { margin-top:4px; font-size:11px; color:#a3becd!important; }
+  :global(html.dark) .account-table .action-cell > div { justify-content:flex-end; gap:8px; }
+  :global(html.dark) .account-table .action-cell > div > button {
+    min-height:32px; padding:6px 9px; font-size:11px; border-radius:8px;
+    border-color:#1c4037; background:#091c18; box-shadow:none;
+  }
+  :global(html.dark) .account-table .account-menu summary {
+    width:32px; height:32px; border:1px solid #1c4037; border-radius:8px;
+    color:#a3becd; background:#091c18;
+  }
+  :global(html.dark) .account-table .account-menu > div { background:#091c18; border-color:#1c4037; }
+  @media(max-width:767px) {
+    :global(html.dark) .account-table { border:0; background:transparent; }
+    :global(html.dark) .account-table table { background:transparent; }
+    :global(html.dark) .account-table tbody tr {
+      padding:18px; margin-bottom:12px; border:1px solid #1c4037;
+      border-radius:14px; background:#091c18; gap:12px;
+    }
+    :global(html.dark) .account-table td { padding:0; }
+    :global(html.dark) .account-table .action-cell > div { justify-content:flex-start; }
+    :global(html.dark) .account-table .action-cell > div > button { min-height:40px; font-size:12px; }
+    :global(html.dark) .account-table .account-menu summary { width:40px; height:40px; }
+  }
+ 
+  /* Dark desktop table: rounded cell surfaces keep action menus unclipped. */
+  @media(min-width:768px) {
+    :global(html.dark) .account-table table {
+      border-collapse:separate; border-spacing:0; background:transparent; border-radius:14px;
+    }
+    :global(html.dark) .account-table thead { background:transparent; }
+    :global(html.dark) .account-table tr { background:transparent; border:0; }
+    :global(html.dark) .account-table th,
+    :global(html.dark) .account-table td { background:#091c18; }
+    :global(html.dark) .account-table tbody td { border-top:1px solid #1c4037; }
+    :global(html.dark) .account-table tbody tr:hover td { background:#092e28; }
+    :global(html.dark) .account-table tbody tr:last-child td:first-child { border-bottom-left-radius:13px; }
+    :global(html.dark) .account-table tbody tr:last-child td:last-child { border-bottom-right-radius:13px; }
+    :global(html.dark) .account-table th:last-child,
+    :global(html.dark) .account-table .action-cell { width:180px; }
+    :global(html.dark) .account-table th:last-child { text-align:center; }
+    :global(html.dark) .account-table .action-cell > div { justify-content:center; }
+  }
 `}</style>
  </div>
 }
