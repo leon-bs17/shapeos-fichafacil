@@ -214,12 +214,12 @@ export default function ControlPage() {
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
    {checkedIds.length > 0 && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/25 bg-primary/5 px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={button} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={button} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
-   <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border transition-colors hover:bg-primary/5">
+   <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border">
     <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium">{u.nome}</p></div></div></td>
     <td className="email-cell px-5 py-4">{u.email}</td>
     <td className="profile-cell px-5 py-4"><span className={`inline-flex rounded-md border px-2.5 py-1 text-[11px] font-semibold ${u.tipo === 'ADMIN' ? 'border-primary/25 bg-primary/10 text-primary' : u.tipo === 'ALUNO' ? 'border-info/25 bg-info/10 text-info' : 'personal-badge'}`}>{u.tipo}</span></td>
     <td className="status-cell px-5 py-4"><span data-account-status={u.status_conta} className="account-status">{u.status_conta === 'ATIVO' ? <CircleCheck size={15} aria-hidden="true"/> : u.status_conta === 'PENDENTE' ? <Clock3 size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{u.status_conta === 'ATIVO' ? 'Ativo' : u.status_conta === 'PENDENTE' ? 'Pendente' : u.status_conta === 'BLOQUEADO' ? 'Bloqueado' : u.status_conta}</span></td>
-    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={button} aria-label={`Gerenciar ${u.nome}`} disabled={!data?.ready || busy} onClick={() => { setFeedback(''); setSelected({...u}) }}><Settings2 size={17}/>Gerenciar</button></div></td>
+    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={`${button} control-manage-trigger`} aria-label={`Gerenciar ${u.nome}`} disabled={!data?.ready || busy} onClick={() => { setFeedback(''); setSelected({...u}) }}><Settings2 size={17}/>Gerenciar</button></div></td>
    </tr>)}</tbody></table>
    {!isLoading && !error && filteredUsers.length === 0 && <div className="p-10 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground"/><p className="font-medium">Nenhuma conta encontrada</p><p className="mt-1 text-sm text-muted-foreground">Tente outro nome ou ajuste os filtros.</p>{(search || profileFilter || statusFilter) && <button className={`${button} mt-4`} onClick={() => { setSearch(''); setProfileFilter(''); setStatusFilter(''); setPage(1) }}>Limpar filtros</button>}</div>}
    <footer className="account-pagination flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground"><p aria-live="polite">{filteredUsers.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, filteredUsers.length)} de ${filteredUsers.length} contas` : '0 contas'}</p><nav aria-label="Paginação de contas" className="flex items-center gap-2"><button className={`${button} !px-3`} aria-label="Página anterior" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16}/></button>{Array.from({length: pageCount}, (_, i) => i + 1).filter(n => n === 1 || n === pageCount || Math.abs(n - currentPage) <= 1).map((n, i, pages) => <span key={n} className="flex items-center gap-2">{i > 0 && n - pages[i - 1] > 1 && <span>…</span>}<button aria-label={`Página ${n}`} aria-current={currentPage === n ? 'page' : undefined} className={`${button} !px-3 ${currentPage === n ? '!border-primary bg-primary/10 text-primary' : ''}`} onClick={() => setPage(n)}>{n}</button></span>)}<button className={`${button} !px-3`} aria-label="Próxima página" disabled={currentPage >= pageCount} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16}/></button></nav></footer>
@@ -367,7 +367,6 @@ export default function ControlPage() {
     :global(html:not(.dark)) .account-table th,
     :global(html:not(.dark)) .account-table td { background:#fcfdf9; }
     :global(html:not(.dark)) .account-table tbody td { border-top:1px solid #d7ded3; }
-    :global(html:not(.dark)) .account-table tbody tr:hover td { background:#f0f7f2; }
     :global(html:not(.dark)) .account-table tbody tr:last-child td:first-child { border-bottom-left-radius:13px; }
     :global(html:not(.dark)) .account-table tbody tr:last-child td:last-child { border-bottom-right-radius:13px; }
     :global(html:not(.dark)) .account-table th:last-child,
@@ -424,7 +423,6 @@ export default function ControlPage() {
     :global(html.dark) .account-table th,
     :global(html.dark) .account-table td { background:#091c18; }
     :global(html.dark) .account-table tbody td { border-top:1px solid #1c4037; }
-    :global(html.dark) .account-table tbody tr:hover td { background:#092e28; }
     :global(html.dark) .account-table tbody tr:last-child td:first-child { border-bottom-left-radius:13px; }
     :global(html.dark) .account-table tbody tr:last-child td:last-child { border-bottom-right-radius:13px; }
     :global(html.dark) .account-table th:last-child,
@@ -573,6 +571,23 @@ export default function ControlPage() {
    :global(.control-manage-grid) { grid-template-columns:1fr; }
    :global(.control-manage-footer > button),:global(.control-manage-footer > div) { width:100%; }
    :global(.control-manage-footer > div > button) { flex:1; }
+  }
+
+
+  /* Table rows remain still; account management has the approved quiet hover. */
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .account-table .control-manage-trigger) {
+    border-width:1px!important; border-radius:13px!important;
+    transition:background-color 150ms ease,border-color 150ms ease!important;
+    transform:none!important; translate:none!important; scale:none!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .account-table .control-manage-trigger:hover:enabled) {
+      background:hsl(var(--primary) / .07)!important;
+      border-color:hsl(var(--primary) / .4)!important;
+    }
+  }
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .account-table .control-manage-trigger:disabled:hover) {
+    background:hsl(var(--card))!important; border-color:hsl(var(--border))!important;
   }
 
 `}</style>
