@@ -285,3 +285,12 @@
   background:var(--mys-soft);
   border-color:hsl(var(--primary) / .4);
 }
+
+/* Message frame: a single 1px focus border, without an outer halo. */
+.workspace .composer:focus-within,
+.workspace .emptyPanel .composer:focus-within {
+  border-width:1px;
+  border-color:hsl(var(--primary) / .6);
+  box-shadow:none;
+  outline:none;
+}
