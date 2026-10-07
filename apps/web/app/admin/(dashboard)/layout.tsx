@@ -506,8 +506,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           .segments button,[data-approval-status-group] button,.audiences button,
           [role="tab"],tr[tabindex],[role="row"][tabindex]
         ):not(:disabled):not([aria-disabled="true"]):focus-visible { outline-offset:-3px!important; }
+
+        html:is(.light,.dark) [data-admin-route] :is(
+          .segments button,[data-approval-status-group] button,.audiences button
+        )[aria-pressed="true"]:focus-visible { outline-color:#002a26!important; }
         @media (forced-colors:active) {
           html:is(.light,.dark) [data-admin-route] { --admin-focus-color:Highlight; }
+          html:is(.light,.dark) [data-admin-route] [aria-pressed="true"]:focus-visible { outline-color:Highlight!important; }
         }
       `}</style>
     </div>
