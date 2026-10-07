@@ -1,13 +1,87 @@
  'use client'
-import { useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, Download, Search, Users, UserRound, Link2, Dumbbell, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX } from 'lucide-react'
+import { Shield, Download, Search, Users, UserRound, Link2, Dumbbell, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
 const input = 'w-full rounded-lg border border-border bg-background px-3 py-2 text-sm'
 const button = 'inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40'
+
+
+type FilterOption = { value: string; label: string; icon: LucideIcon }
+const profileOptions: FilterOption[] = [
+ { value: '', label: 'Todos os perfis', icon: Users },
+ { value: 'ADMIN', label: 'Admin', icon: Shield },
+ { value: 'ALUNO', label: 'Aluno', icon: GraduationCap },
+ { value: 'PERSONAL', label: 'Personal', icon: UserRound },
+]
+const statusOptions: FilterOption[] = [
+ { value: '', label: 'Todos os status', icon: Users },
+ { value: 'ATIVO', label: 'Ativo', icon: CircleCheck },
+ { value: 'PENDENTE', label: 'Pendente', icon: Clock3 },
+ { value: 'BLOQUEADO', label: 'Bloqueado', icon: ShieldX },
+]
+function ControlFilter({ label, value, options, onChange }: {
+ label: string; value: string; options: FilterOption[]; onChange: (value: string) => void
+}) {
+ const id = useId()
+ const root = useRef<HTMLDivElement>(null)
+ const trigger = useRef<HTMLButtonElement>(null)
+ const list = useRef<HTMLDivElement>(null)
+ const [expanded, setExpanded] = useState(false)
+ const [active, setActive] = useState(0)
+ const selected = Math.max(0, options.findIndex(option => option.value === value))
+ const SelectedIcon = options[selected].icon
+ useEffect(() => {
+  if (!expanded) return
+  list.current?.focus()
+  const closeOutside = (event: PointerEvent) => {
+   if (!root.current?.contains(event.target as Node)) setExpanded(false)
+  }
+  document.addEventListener('pointerdown', closeOutside)
+  return () => document.removeEventListener('pointerdown', closeOutside)
+ }, [expanded])
+ const show = (index = selected) => { setActive(index); setExpanded(true) }
+ const choose = (index: number) => { onChange(options[index].value); setExpanded(false); trigger.current?.focus() }
+ return <div ref={root} className="control-filter">
+  <span className="control-filter-label">{label}</span>
+  <div className="control-filter-field">
+   <button ref={trigger} type="button" className="control-filter-trigger" aria-label={`Filtrar por ${label.toLowerCase()}`}
+    aria-haspopup="listbox" aria-expanded={expanded} aria-controls={expanded ? id : undefined}
+    onClick={() => expanded ? setExpanded(false) : show()}
+    onKeyDown={event => {
+     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); show() }
+    }}>
+    <SelectedIcon size={17} aria-hidden="true"/><span>{options[selected].label}</span><ChevronDown size={16} aria-hidden="true"/>
+   </button>
+   {expanded && <div ref={list} id={id} className="control-filter-menu" role="listbox" tabIndex={-1}
+    aria-label={label} aria-activedescendant={`${id}-${active}`}
+    onBlur={event => { if (!root.current?.contains(event.relatedTarget as Node)) setExpanded(false) }}
+    onKeyDown={event => {
+     if (['ArrowDown','ArrowUp','Home','End','Enter',' ','Escape'].includes(event.key)) event.preventDefault()
+     if (event.key === 'ArrowDown') setActive(index => (index + 1) % options.length)
+     if (event.key === 'ArrowUp') setActive(index => (index - 1 + options.length) % options.length)
+     if (event.key === 'Home') setActive(0)
+     if (event.key === 'End') setActive(options.length - 1)
+     if (event.key === 'Enter' || event.key === ' ') choose(active)
+     if (event.key === 'Escape') { setExpanded(false); trigger.current?.focus() }
+     if (event.key.length === 1 && event.key !== ' ') {
+      const next = options.findIndex(option => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+      if (next >= 0) setActive(next)
+     }
+    }}>
+    {options.map(({value: optionValue, label: optionLabel, icon: Icon}, index) =>
+     <div key={optionValue} id={`${id}-${index}`} role="option" aria-selected={optionValue === value}
+      data-active={active === index} className="control-filter-option"
+      onPointerMove={() => setActive(index)} onPointerDown={event => event.preventDefault()} onClick={() => choose(index)}>
+      <Icon size={17} aria-hidden="true"/><span>{optionLabel}</span>{optionValue === value && <Check size={17} aria-hidden="true"/>}
+     </div>)}
+   </div>}
+  </div>
+ </div>
+}
 
 const globePoint = (latitude: number, longitude: number) => {
  const radius = 77
@@ -120,8 +194,8 @@ export default function ControlPage() {
   {tab !== 'Configurações' && <div className="control-toolbar flex flex-col gap-3 lg:flex-row lg:items-center">
    <label data-admin-search className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input className={`${input} min-h-11 pl-10`} aria-label="Buscar registros" placeholder="Buscar por nome, e-mail ou título" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}/></label>
    {tab === 'Contas' && <div className="grid grid-cols-2 gap-3 lg:w-auto">
-    <label className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"><span className="hidden sm:inline">Perfil</span><select aria-label="Filtrar por perfil" className={`${input} min-h-11 lg:w-44`} value={profileFilter} onChange={e => { setProfileFilter(e.target.value); setPage(1) }}><option value="">Todos os perfis</option>{['ADMIN','ALUNO','PERSONAL'].map(v => <option key={v}>{v}</option>)}</select></label>
-    <label className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"><span className="hidden sm:inline">Status</span><select aria-label="Filtrar por status" className={`${input} min-h-11 lg:w-44`} value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1) }}><option value="">Todos os status</option>{['ATIVO','PENDENTE','BLOQUEADO'].map(v => <option key={v}>{v}</option>)}</select></label>
+    <ControlFilter label="Perfil" value={profileFilter} options={profileOptions} onChange={value => { setProfileFilter(value); setPage(1) }}/>
+    <ControlFilter label="Status" value={statusFilter} options={statusOptions} onChange={value => { setStatusFilter(value); setPage(1) }}/>
    </div>}
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
@@ -365,31 +439,62 @@ export default function ControlPage() {
   }
 
   /* Shared quiet hover for the requested command-center controls only. */
-  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"])) {
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,.control-filter-trigger)) {
     border-width:1px!important; border-radius:13px!important;
     transition:background-color 150ms ease,border-color 150ms ease!important;
   }
   @media(hover:hover) and (pointer:fine) {
-    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)):hover) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,.control-filter-trigger):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)):hover) {
       background:hsl(var(--primary) / .07)!important;
       border-color:hsl(var(--primary) / .4)!important;
     }
   }
 
   /* These controls keep only the approved color hover treatment. */
-  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"])) {
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,.control-filter-trigger)) {
     box-shadow:none!important; outline:none!important; transform:none!important;
     translate:none!important; scale:none!important; filter:none!important;
     animation:none!important;
   }
-  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]):is(:focus,:focus-visible,:focus-within,:active):not(:hover)) {
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,.control-filter-trigger):is(:focus,:focus-visible,:focus-within,:active):not(:hover)) {
     border-color:hsl(var(--border))!important;
     background:hsl(var(--card))!important;
     box-shadow:none!important; outline:none!important;
   }
-  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,select[aria-label="Filtrar por perfil"],select[aria-label="Filtrar por status"]) > input:is(:focus,:focus-visible,:active)) {
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center :is([data-admin-search],.control-export,.control-filter-trigger) > input:is(:focus,:focus-visible,:active)) {
     box-shadow:none!important; outline:none!important;
   }
+
+  /* Custom icon selectors inherit the route palette, including the floating list. */
+  :global(.control-center .control-filter) { display:flex; align-items:center; min-width:0; gap:8px; }
+  :global(.control-center .control-filter-label) { font-size:12px; color:hsl(var(--muted-foreground)); }
+  :global(.control-center .control-filter-field) { position:relative; min-width:0; flex:1; }
+  :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-filter-trigger) {
+   display:flex; align-items:center; gap:9px; width:100%; min-height:48px; padding:0 12px;
+   border:1px solid hsl(var(--border)); border-radius:13px; background:hsl(var(--card)); color:hsl(var(--foreground));
+   font-family:inherit; font-size:13px; cursor:pointer; text-align:left;
+  }
+  :global(.control-center .control-filter-trigger span) { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  :global(.control-center .control-filter-trigger svg) { flex-shrink:0; }
+  :global(.control-center .control-filter-menu) {
+   position:absolute; z-index:50; top:calc(100% + 8px); left:0; width:100%; min-width:0;
+   padding:4px; border:1px solid hsl(var(--border)); border-radius:13px; outline:none;
+   background:#fcfdf9; color:#162623; box-shadow:0 8px 20px rgba(22,38,35,.12);
+  }
+  :global(html.dark .control-center .control-filter-menu) { background:#091c18; color:#f5faf9; box-shadow:0 8px 20px rgba(0,0,0,.25); }
+  :global(.control-center .control-filter-option) {
+   display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 10px; border-radius:9px;
+   font-size:13px; cursor:pointer; transition:background-color 150ms ease;
+  }
+  :global(.control-center .control-filter-option span) { flex:1; min-width:0; }
+  :global(.control-center .control-filter-option svg) { flex-shrink:0; }
+  :global(.control-center .control-filter-option[aria-selected="true"]) { background:#e4f3eb; color:#0d7e70; font-weight:600; }
+  :global(html.dark .control-center .control-filter-option[aria-selected="true"]) { background:#0a302b; color:#00e9df; }
+  :global(.control-center .control-filter-option[data-active="true"]:not([aria-selected="true"])) { background:hsl(var(--primary) / .07); }
+  :global(.control-center .control-filter-option[data-active="true"]) { outline:1px solid hsl(var(--primary) / .4); outline-offset:-1px; }
+  @media(min-width:1024px) { :global(.control-center .control-filter-field) { width:176px; } }
+  @media(max-width:639px) { :global(.control-center .control-filter-label) { display:none; } :global(.control-center .control-filter-option) { padding:8px; gap:7px; } }
+
 `}</style>
  </div>
 }
