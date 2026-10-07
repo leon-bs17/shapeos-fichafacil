@@ -653,6 +653,22 @@ export default function ControlPage() {
     }
   }
 
+
+  /* Restore the filled save action while retaining its approved hover state. */
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save) {
+    background:#129b89!important; border-color:#129b89!important; color:#fff!important;
+  }
+  :global(html.dark [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save) {
+    background:#00e9df!important; border-color:#00e9df!important; color:#002a26!important;
+  }
+  @media(hover:hover) and (pointer:fine) {
+    :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-manage-dialog .control-manage-footer .control-manage-save:hover:enabled) {
+      background:hsl(var(--primary) / .07)!important;
+      border-color:hsl(var(--primary) / .4)!important;
+      color:hsl(var(--foreground))!important;
+    }
+  }
+
 `}</style>
  </div>
 }
