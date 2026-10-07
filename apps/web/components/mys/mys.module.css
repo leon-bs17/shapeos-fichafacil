@@ -274,3 +274,14 @@
  .quickPrompts { margin-top: 22px; }
 }
 @media (max-width: 379px) { .quickPrompts { grid-template-columns: 1fr; } .quickPrompts button { min-height: 56px; } }
+
+/* New conversation keeps the light palette in the dark theme as requested. */
+:global(html.dark) .workspace .newChat {
+  background:#fcfdf9;
+  color:#162623;
+  border-color:#d7ded3;
+}
+:global(html.dark) .workspace .newChat:hover:enabled {
+  background:color-mix(in srgb,#129b89 7%,#fcfdf9);
+  border-color:color-mix(in srgb,#129b89 40%,#fcfdf9);
+}
