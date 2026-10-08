@@ -519,8 +519,8 @@ function UsuariosConteudo() {
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data > div > div { min-width:0; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data dt { color:var(--users-muted); font-size:12px; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data dd { color:var(--users-title); font-size:14px; line-height:1.6; overflow-wrap:anywhere; margin-top:2px; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:16px; border:1px solid var(--users-border); border-radius:13px; background:#e4f3eb; margin-top:2px; }
-        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { background:rgba(0,233,223,.035); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:16px; border:1px solid var(--users-border); border-radius:13px; background:#fcfdf9; border-color:#d7ded3; margin-top:2px; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { background:rgba(0,233,223,.035); border-color:var(--users-border); }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy { flex:1 1 200px; min-width:0; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy h3 { font-size:15px; font-weight:700; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy p { color:var(--users-muted); font-size:11px; line-height:1.6; margin-top:4px; }
