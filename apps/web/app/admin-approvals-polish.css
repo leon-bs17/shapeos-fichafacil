@@ -643,3 +643,11 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/ap
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-table] button[aria-label^="Mais ações"] {
   background:#fcfdf9!important; border-color:#d7ded3!important; color:#5f6f68!important;
 }
+
+/* Consistent dark summary surfaces; icon accents stay separate. */
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div {
+  background:#091c18 !important;
+  background-image:none !important;
+  border:1px solid #1c4037 !important;
+  box-shadow:none !important;
+}
