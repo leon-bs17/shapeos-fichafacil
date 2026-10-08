@@ -271,6 +271,16 @@ export default function AdminRelatoriosPage() {
         :global(html:not(.dark)) .summary .summary-footer p,
         :global(html:not(.dark)) .summary .mobile-summary dt { color:#5f6f68; }
         :global(html:not(.dark)) .summary .mobile-summary dl>div+div { border-color:#d7ded3; }
+
+        /* Same summary typography in both themes, with a neutral dark header. */
+        :global(html.dark [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary thead),
+        :global(html.dark [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary th) {
+          background:#091c18!important; background-image:none!important; border-color:#1c4037!important;
+        }
+        :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary th),
+        :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary td),
+        :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary .change),
+        :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary .summary-footer button) { font-weight:500!important; }
 `}</style>
     </div>
   )
