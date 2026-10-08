@@ -312,3 +312,45 @@
     border-width:1px;
   }
 }
+
+
+/* Mobile browsers: keep the approved controls readable and comfortable to tap. */
+@media(max-width:750px) {
+ .workspace { width:100%; min-width:0; }
+ .header { flex-wrap:wrap; gap:12px; }
+ .identity { flex:1 1 180px; min-width:0; }
+ .identity h1 { flex-wrap:wrap; row-gap:6px; }
+ .newChat { min-height:44px; white-space:nowrap; }
+ .emptyThread .greeting { overflow-wrap:anywhere; }
+ .emptyPanel .composerArea { min-width:0; }
+ .workspace .composer { box-sizing:border-box; width:100%; min-width:0; }
+ .workspace .composer textarea { box-sizing:border-box; font-size:16px; max-width:100%; }
+ .composerBottom { flex-wrap:wrap; }
+ .composerBottom > span { min-width:0; flex:1 1 160px; flex-wrap:wrap; }
+ .composerBottom > div { margin-left:auto; flex-shrink:0; }
+ .send { flex-shrink:0; min-width:44px; min-height:44px; }
+ .contextBar { flex-wrap:wrap; }
+ .contextBar > span { min-width:0; }
+ .connectionState { overflow-wrap:anywhere; }
+ .answer pre { width:100%; }
+ .answer table { display:block; max-width:100%; overflow-x:auto; }
+ .thread,.messages,.bubble,.answer { min-width:0; }
+ .scope summary { max-width:100%; }
+}
+@media(max-width:520px) {
+ .quickPrompts { grid-template-columns:minmax(0,1fr); }
+ .quickPrompts button { min-height:64px; }
+ .promptCopy strong { font-size:13px; overflow-wrap:anywhere; }
+ .emptyThread { padding:24px 0 20px; }
+ .welcomeMark { margin-bottom:20px; }
+ .footnote,.emptyPanel .footnote { font-size:12px; overflow-wrap:anywhere; }
+}
+@media(max-width:359px) {
+ .header .newChat { width:100%; justify-content:center; }
+ .composerBottom > span { flex-basis:140px; }
+}
+@media(hover:none) {
+ :global(html.dark) .workspace .newChat:hover:enabled,
+ .workspace .newChat:hover:enabled { background:hsl(var(--card) / .55); border-color:var(--mys-line); }
+ .workspace .quickPrompts button:hover:enabled { background:hsl(var(--card) / .6); border-color:var(--mys-line); }
+}
