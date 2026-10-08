@@ -32,18 +32,42 @@ function ControlFilter({ label, value, options, onChange, editing = false, disab
  const list = useRef<HTMLDivElement>(null)
  const [expanded, setExpanded] = useState(false)
  const [active, setActive] = useState(0)
+ const [menuLayout, setMenuLayout] = useState({ above: false, maxHeight: 240 })
  const selected = Math.max(0, options.findIndex(option => option.value === value))
  const SelectedIcon = options[selected].icon
  useEffect(() => {
   if (!expanded) return
   if (disabled) { setExpanded(false); return }
-  list.current?.focus()
+  const positionMenu = () => {
+   const bounds = trigger.current?.getBoundingClientRect()
+   if (!bounds) return
+   const viewport = window.visualViewport
+   const top = viewport?.offsetTop ?? 0
+   const bottom = top + (viewport?.height ?? window.innerHeight)
+   const dialog = root.current?.closest('dialog')?.getBoundingClientRect()
+   const availableAbove = bounds.top - Math.max(top, dialog?.top ?? top) - 12
+   const availableBelow = Math.min(bottom, dialog?.bottom ?? bottom) - bounds.bottom - 12
+   const needed = Math.min(240, options.length * 44 + 10)
+   const above = availableBelow < needed && availableAbove > availableBelow
+   setMenuLayout({ above, maxHeight: Math.max(44, Math.min(240, above ? availableAbove : availableBelow)) })
+  }
+  positionMenu()
+  list.current?.focus({ preventScroll: true })
+  window.addEventListener('resize', positionMenu)
+  window.visualViewport?.addEventListener('resize', positionMenu)
   const closeOutside = (event: PointerEvent) => {
    if (!root.current?.contains(event.target as Node)) setExpanded(false)
   }
   document.addEventListener('pointerdown', closeOutside)
-  return () => document.removeEventListener('pointerdown', closeOutside)
- }, [expanded, disabled])
+  return () => {
+   document.removeEventListener('pointerdown', closeOutside)
+   window.removeEventListener('resize', positionMenu)
+   window.visualViewport?.removeEventListener('resize', positionMenu)
+  }
+ }, [expanded, disabled, options.length])
+ useEffect(() => {
+  if (expanded) document.getElementById(`${id}-${active}`)?.scrollIntoView({ block: 'nearest' })
+ }, [active, expanded, id])
  const show = (index = selected) => { setActive(index); setExpanded(true) }
  const choose = (index: number) => { onChange(options[index].value); setExpanded(false); trigger.current?.focus() }
  return <div ref={root} className={`control-filter${editing ? ' control-filter-edit' : ''}`}>
@@ -57,7 +81,7 @@ function ControlFilter({ label, value, options, onChange, editing = false, disab
     }}>
     <SelectedIcon size={17} aria-hidden="true"/><span>{options[selected].label}</span><ChevronDown size={16} aria-hidden="true"/>
    </button>
-   {expanded && <div ref={list} id={id} className="control-filter-menu" role="listbox" tabIndex={-1}
+   {expanded && <div ref={list} id={id} className="control-filter-menu" data-above={menuLayout.above} style={{ maxHeight: menuLayout.maxHeight }} role="listbox" tabIndex={-1}
     aria-label={label} aria-activedescendant={`${id}-${active}`}
     onBlur={event => { if (!root.current?.contains(event.relatedTarget as Node)) setExpanded(false) }}
     onKeyDown={event => {
@@ -208,13 +232,13 @@ export default function ControlPage() {
   <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos', 'Configurações'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setPage(1); if (t === 'Configurações' && data?.config) { setOpen(data.config.cadastro_aberto); setMessage(data.config.mensagem_publica) } }}>{t}</button>)}</nav>
   {tab !== 'Configurações' && <div className="control-toolbar flex flex-col gap-3 lg:flex-row lg:items-center">
    <label data-admin-search className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input className={`${input} min-h-11 pl-10`} aria-label="Buscar registros" placeholder="Buscar por nome, e-mail ou título" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}/></label>
-   {tab === 'Contas' && <div className="grid grid-cols-2 gap-3 lg:w-auto">
+   {tab === 'Contas' && <div className="control-filter-group grid grid-cols-2 gap-3 lg:w-auto">
     <ControlFilter label="Perfil" value={profileFilter} options={profileOptions} onChange={value => { setProfileFilter(value); setPage(1) }}/>
     <ControlFilter label="Status" value={statusFilter} options={statusOptions} onChange={value => { setStatusFilter(value); setPage(1) }}/>
    </div>}
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
-   {checkedIds.length > 0 && <div className="control-selection-bar flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
+   {checkedIds.length > 0 && <div className="control-selection-bar flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="control-selection-buttons flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
    <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border">
     <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium">{u.nome}</p></div></div></td>
     <td className="email-cell px-5 py-4">{u.email}</td>
@@ -721,6 +745,44 @@ export default function ControlPage() {
   :global(html.light [data-admin-route] [data-admin-content] .control-center .control-heading) {
     background:radial-gradient(ellipse at 84% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
     border-color:#d7ded3!important;
+  }
+
+
+  /* Mobile layouts keep readable controls and menus inside the available space. */
+  :global(.control-center .control-filter-menu) { overflow-y:auto; overscroll-behavior:contain; }
+  :global(.control-center .control-filter-menu[data-above="true"]) { top:auto; bottom:calc(100% + 8px); }
+  @media(max-width:767px) {
+   .control-center { width:100%; min-width:0; }
+   .control-heading { padding:24px 20px; min-height:200px; }
+   .control-heading-copy { min-width:0; }
+   .control-heading-copy > p:last-child { overflow-wrap:anywhere; }
+   .control-export-row .control-export { width:100%; min-height:44px; white-space:normal; }
+   :global(.control-center .control-selection-bar) { gap:12px; padding:14px; }
+   :global(.control-center .control-selection-buttons) { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+   :global(.control-center .control-selection-action) { min-height:44px; min-width:0; padding:10px 8px; white-space:normal; font-size:12px; }
+   :global(html:is(.light,.dark) [data-admin-route] [data-admin-content] .control-center .control-filter-trigger) { font-size:16px; min-height:48px; }
+   :global(.control-center .control-filter-option) { font-size:16px; min-height:44px; }
+   :global(.control-center .control-manage-fields #control-manage-name) { font-size:16px!important; width:100%; min-width:0; }
+   :global(.control-center .control-manage-dialog) { width:calc(100% - 24px); max-height:calc(100dvh - 24px); }
+   :global(.control-center .control-manage-close) { width:44px; height:44px; }
+   :global(.control-center .control-manage-footer button) { min-height:44px; }
+   :global(.control-center .control-manage-footer > div) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+   :global(.control-center .control-manage-footer > div button) { min-width:0; padding:10px 8px; white-space:normal; }
+   .control-center .account-pagination nav { flex-wrap:wrap; gap:6px; }
+   .control-center .account-pagination button { min-height:44px; height:44px; min-width:44px; }
+   .control-center .account-table .user-cell p { overflow-wrap:anywhere; }
+  }
+  @media(max-width:520px) {
+   :global(.control-center .control-toolbar .control-filter-group) { grid-template-columns:minmax(0,1fr); width:100%; }
+   :global(.control-center .control-toolbar .control-filter) { display:grid; gap:6px; }
+   :global(.control-center .control-toolbar .control-filter-label) { display:block; }
+   :global(.control-center .control-filter-field) { width:100%; }
+  }
+  @media(max-width:359px) {
+   :global(.control-center .control-selection-buttons) { grid-template-columns:minmax(0,1fr); }
+   :global(.control-center .control-manage-footer > div) { grid-template-columns:minmax(0,1fr); }
+   :global(.control-center .control-manage-avatar) { width:40px; height:40px; }
+   :global(.control-center .control-manage-header) { gap:10px; }
   }
 
 `}</style>
