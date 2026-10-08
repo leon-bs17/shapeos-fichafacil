@@ -121,7 +121,7 @@ html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/ap
 }
 
 html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:first-child {
-  background: linear-gradient(110deg, var(--approvals-pending-start), var(--approvals-pending-mid) 55%, var(--approvals-pending-end)) !important;
+  background: var(--shapeos-surface) !important;
 }
 
 html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:last-child {
@@ -129,7 +129,7 @@ html:is(.light, .dark) [data-admin-route="/admin/aprovacoes"] [data-admin-conten
 }
 
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:first-child div[class*="place-items-center"] {
-  background: #fff5df !important;
+  background: var(--shapeos-brand-soft) !important;
 }
 
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] div[data-approvals-summary].grid:nth-of-type(1) > div:last-child div[class*="place-items-center"] {
