@@ -433,7 +433,7 @@ function UsuariosConteudo() {
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:124px; text-align:right; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { padding:6px 20px; height:50px; font-size:12px; border-bottom:1px solid var(--users-border); }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td:first-child p { font-weight:650; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-avatar { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:50%; background:linear-gradient(145deg,#8a9de5,#546cac); color:#fff; font-size:11px; font-weight:700; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-avatar { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:11px; font-weight:700; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-email, html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-date { color:var(--users-muted); font-size:12px; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { text-align:right; overflow-wrap:normal; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] .users-view { min-width:84px; padding:0 14px; white-space:nowrap; word-break:normal; overflow-wrap:normal; flex-shrink:0; }
