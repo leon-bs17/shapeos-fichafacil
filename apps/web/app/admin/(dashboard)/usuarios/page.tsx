@@ -1,22 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import {
   Ban,
-  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  X,
   CheckCircle2,
   Clock3,
   GraduationCap,
   Loader2,
-  Mail,
   Search,
   Shield,
   UserCheck,
   Users,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatarData } from '@/lib/utils'
@@ -39,6 +40,10 @@ export default function AdminUsuariosPage() {
 
 function UsuariosConteudo() {
   const queryClient = useQueryClient()
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [confirmBlock, setConfirmBlock] = useState(false)
+  const [pagina, setPagina] = useState(1)
   const [busca, setBusca] = useState('')
   const [filtroTipo, setFiltroTipo] = useState<string>('TODOS')
   const [filtroStatus, setFiltroStatus] = useState<string>('TODOS')
@@ -102,6 +107,7 @@ function UsuariosConteudo() {
       if (erroAuditoria) throw erroAuditoria
     },
     onSuccess: async () => {
+      setConfirmBlock(false)
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['admin-usuarios'] }),
         queryClient.invalidateQueries({ queryKey: ['admin-auditoria'] }),
@@ -119,6 +125,35 @@ function UsuariosConteudo() {
     const matchesStatus = filtroStatus === 'TODOS' || u.status_conta === filtroStatus
     return matchesBusca && matchesTipo && matchesStatus
   })
+
+  const total = filtrados?.length ?? 0
+  const totalPaginas = Math.max(1, Math.ceil(total / 5))
+  const paginaAtual = Math.min(pagina, totalPaginas)
+  const inicio = (paginaAtual - 1) * 5
+  const linhas = filtrados?.slice(inicio, inicio + 5)
+  const selected = usuarios?.find((u) => u.id === selectedId)
+
+  useEffect(() => { setPagina(1) }, [busca, filtroTipo, filtroStatus])
+  useEffect(() => {
+    if (!selectedId) return
+    const dialog = dialogRef.current
+    const focused = document.activeElement as HTMLElement | null
+    const previousOverflow = document.body.style.overflow
+    if (dialog && !dialog.open) dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      dialog?.close()
+      document.body.style.overflow = previousOverflow
+      focused?.focus()
+    }
+  }, [selectedId])
+
+  function closeDetails() {
+    if (acaoMutation.isPending) return
+    setSelectedId(null)
+    setConfirmBlock(false)
+    acaoMutation.reset()
+  }
 
   const contadores = {
     total: usuarios?.length ?? 0,
@@ -207,107 +242,78 @@ function UsuariosConteudo() {
             <div className="users-table-wrap">
               <table className="users-table w-full text-sm">
                 <caption className="sr-only">Usuários da plataforma e ações de acesso</caption>
-                <thead className="border-b border-border bg-muted/50">
-                  <tr>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Usuário</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Tipo</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Status</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">E-mail</th>
-                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Criado em</th>
-                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Ações</th>
-                  </tr>
-                </thead>
+                <thead><tr>
+                  {['Nome', 'E-mail', 'Tipo', 'Data do cadastro', 'Status', 'Ações'].map((label) => <th key={label} scope="col">{label}</th>)}
+                </tr></thead>
                 <tbody>
-                  {filtrados?.map((u) => {
-                    const processando = acaoMutation.isPending && acaoMutation.variables?.usuario.id === u.id
-                    return (
-                      <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                        <td data-label="Usuário" className="px-5 py-3.5">
-                          <div className="flex items-center gap-3">
-                            <div className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold ${
-                              u.tipo === 'ADMIN' ? 'bg-warning/10 text-warning' :
-                              u.tipo === 'PERSONAL' ? 'bg-success/10 text-success' :
-                              'bg-info/10 text-info'
-                            }`}>
-                              {u.nome?.charAt(0)?.toUpperCase() ?? '?'}
-                            </div>
-                            <p className="font-medium">{u.nome}</p>
-                          </div>
-                        </td>
-                        <td data-label="Tipo" className="px-5 py-3.5">
-                          <TipoBadge tipo={u.tipo} />
-                        </td>
-                        <td data-label="Status" className="px-5 py-3.5">
-                          <StatusBadge status={u.status_conta} />
-                        </td>
-                        <td data-label="E-mail" className="px-5 py-3.5">
-                          <span className="users-email text-muted-foreground flex items-center gap-1.5">
-                            <Mail className="h-3.5 w-3.5" />
-                            {u.email}
-                          </span>
-                        </td>
-                        <td data-label="Criado em" className="px-5 py-3.5">
-                          <span className="text-muted-foreground text-xs flex items-center gap-1.5">
-                            <Calendar className="h-3.5 w-3.5" />
-                            {formatarData(u.criado_em)}
-                          </span>
-                        </td>
-                        <td data-label="Ações" className="px-5 py-3.5">
-                          <div className="flex justify-end gap-2">
-                            {u.tipo === 'ADMIN' ? (
-                              <span className="text-xs text-muted-foreground">Protegido</span>
-                            ) : u.status_conta === 'PENDENTE' ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  onClick={() => acaoMutation.mutate({ usuario: u, status: 'ATIVO' })}
-                                  disabled={processando}
-                                >
-                                  {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
-                                  Aprovar
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => acaoMutation.mutate({ usuario: u, status: 'BLOQUEADO' })}
-                                  disabled={processando}
-                                >
-                                  <Ban className="h-3.5 w-3.5" /> Bloquear
-                                </Button>
-                              </>
-                            ) : u.status_conta === 'BLOQUEADO' ? (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => acaoMutation.mutate({ usuario: u, status: 'ATIVO' })}
-                                disabled={processando}
-                              >
-                                {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
-                                Reativar
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => acaoMutation.mutate({ usuario: u, status: 'BLOQUEADO' })}
-                                disabled={processando}
-                                className="users-block text-destructive"
-                              >
-                                {processando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Ban className="h-3.5 w-3.5" />}
-                                Bloquear
-                              </Button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })}
+                  {linhas?.map((u) => (
+                    <tr key={u.id}>
+                      <td data-label="Nome"><div className="flex items-center gap-3">
+                        <div className="users-avatar">{iniciaisUsuario(u.nome)}</div>
+                        <p className="font-semibold">{u.nome}</p>
+                      </div></td>
+                      <td data-label="E-mail"><span className="users-email">{u.email}</span></td>
+                      <td data-label="Tipo"><TipoBadge tipo={u.tipo} /></td>
+                      <td data-label="Data do cadastro"><span className="users-date">{formatarData(u.criado_em)}</span></td>
+                      <td data-label="Status"><StatusBadge status={u.status_conta} /></td>
+                      <td data-label="Ações"><button type="button" className="users-view" aria-label={`Ver detalhes de ${u.nome}`} onClick={() => {
+                        acaoMutation.reset()
+                        setConfirmBlock(false)
+                        setSelectedId(u.id)
+                      }}><Eye size={15} />Ver</button></td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
+            </div>
+            <div className="users-pagination">
+              <span>{inicio + 1}–{Math.min(inicio + 5, total)} de {total} usuários</span>
+              <nav aria-label="Paginação de usuários">
+                <button type="button" aria-label="Página anterior" disabled={paginaAtual === 1} onClick={() => setPagina(paginaAtual - 1)}><ChevronLeft size={16} /></button>
+                <button type="button" aria-current="page" aria-label={`Página ${paginaAtual} de ${totalPaginas}`}>{paginaAtual}</button>
+                <button type="button" aria-label="Próxima página" disabled={paginaAtual === totalPaginas} onClick={() => setPagina(paginaAtual + 1)}><ChevronRight size={16} /></button>
+              </nav>
             </div>
           </CardContent>
         </Card>
       )}
+
+      <dialog ref={dialogRef} className="users-details" aria-labelledby="users-details-title"
+        onCancel={(event) => { event.preventDefault(); closeDetails() }}
+        onClick={(event) => { if (event.target === event.currentTarget) {
+          const rect = event.currentTarget.getBoundingClientRect()
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeDetails()
+        } }}>
+        {selected && <div>
+          <header className="users-details-heading">
+            <div><p className="users-detail-label">Gestão de usuários</p><h2 id="users-details-title">Detalhes do usuário</h2></div>
+            <button type="button" className="users-view" aria-label="Fechar detalhes" disabled={acaoMutation.isPending} onClick={closeDetails}><X size={18} /></button>
+          </header>
+          <div className="users-detail-person"><div className="users-avatar">{iniciaisUsuario(selected.nome)}</div><strong>{selected.nome}</strong></div>
+          <dl className="users-detail-fields">
+            <div><dt>E-mail</dt><dd>{selected.email}</dd></div>
+            <div><dt>Tipo</dt><dd><TipoBadge tipo={selected.tipo} /></dd></div>
+            <div><dt>Status</dt><dd><StatusBadge status={selected.status_conta} /></dd></div>
+            <div><dt>Data do cadastro</dt><dd>{formatarData(selected.criado_em)}</dd></div>
+          </dl>
+          {acaoMutation.error && <p role="alert" className="users-detail-error">{acaoMutation.error instanceof Error ? acaoMutation.error.message : 'Não foi possível concluir a ação.'}</p>}
+          {acaoMutation.isSuccess && <p role="status" className="users-detail-success">Status atualizado com sucesso.</p>}
+          {selected.tipo === 'ADMIN' ? <p className="users-detail-label">Conta administrativa protegida. O status não pode ser alterado nesta tela.</p> :
+            confirmBlock ? <div className="users-confirm" role="group" aria-labelledby="users-block-question">
+              <h3 id="users-block-question">Bloquear {selected.nome}?</h3>
+              <p>O acesso à plataforma será bloqueado. Você poderá desbloquear a conta nesta tela.</p>
+              <div className="users-detail-actions">
+                <button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={() => setConfirmBlock(false)}>Cancelar</button>
+                <button type="button" className="users-view users-danger" disabled={acaoMutation.isPending} onClick={() => acaoMutation.mutate({ usuario: selected, status: 'BLOQUEADO' })}>{acaoMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}Confirmar bloqueio</button>
+              </div>
+            </div> : <div className="users-detail-actions">
+              {selected.status_conta === 'PENDENTE' && <button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={() => acaoMutation.mutate({ usuario: selected, status: 'ATIVO' })}><CheckCircle2 size={16} />Aprovar usuário</button>}
+              {selected.status_conta === 'BLOQUEADO' ? <button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={() => acaoMutation.mutate({ usuario: selected, status: 'ATIVO' })}>{acaoMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}Desbloquear usuário</button> :
+                <button type="button" className="users-view users-danger" disabled={acaoMutation.isPending} onClick={() => { acaoMutation.reset(); setConfirmBlock(true) }}><Ban size={16} />Bloquear usuário</button>}
+            </div>}
+          <footer className="users-detail-actions"><button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={closeDetails}>Fechar</button></footer>
+        </div>}
+      </dialog>
 
       <style jsx global>{`
         .users-workspace { --users-surface:#fcfdf9; --users-border:#d7ded3; --users-muted:#5f6f68; --users-title:#162623; --users-accent:#129b89; min-width:0; font-family:'Sora',sans-serif; }
@@ -411,9 +417,90 @@ function UsuariosConteudo() {
           html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table-card,
           html.light [data-admin-route="/admin/usuarios"] .users-workspace .users-table { background:transparent; }
         }
+
+        /* Compact users table and accessible details dialog. */
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace { --users-surface:#fcfdf9; --users-border:#d7ded3; --users-muted:#5f6f68; --users-title:#162623; --users-accent:#129b89; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace { --users-surface:#091c18; --users-border:#1c4037; --users-muted:#a3becd; --users-title:#f5faf9; --users-accent:#00e9df; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table-card { border-radius:17px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table thead { background:transparent; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th { padding:14px 20px; font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; text-align:left; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(1) { width:25%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(2) { width:29%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(3) { width:12%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(4) { width:15%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(5) { width:10%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:9%; text-align:right; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { padding:6px 20px; height:50px; font-size:12px; border-bottom:1px solid var(--users-border); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td:first-child p { font-weight:650; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-avatar { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:50%; background:linear-gradient(145deg,#8a9de5,#546cac); color:#fff; font-size:11px; font-weight:700; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-email, html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-date { color:var(--users-muted); font-size:12px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { text-align:right; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-status { border:1px solid currentColor; min-height:30px; white-space:nowrap; padding:4px 12px; font-size:11px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace [data-user-status="ATIVO"] { background:rgba(18,155,137,.07); color:#0d7e70; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace [data-user-status="ATIVO"] { background:rgba(0,233,223,.07); color:#00e9df; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:36px; padding:0 18px; border:1px solid var(--users-border); border-radius:13px; background:transparent; color:var(--users-title); font-size:12px; font-weight:600; transition:background-color 150ms ease,border-color 150ms ease; box-shadow:none; transform:none; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view svg { color:var(--users-accent); flex-shrink:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view:disabled { opacity:.45; cursor:not-allowed; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; color:var(--users-muted); font-size:12px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination nav { display:flex; gap:6px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination button { display:grid; place-items:center; min-width:34px; height:36px; border:1px solid var(--users-border); border-radius:10px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination button[aria-current] { background:var(--users-accent); border-color:var(--users-accent); color:#fff; font-weight:700; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination button[aria-current] { color:#002a26; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination button:disabled { opacity:.35; cursor:not-allowed; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details { width:min(560px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); margin:auto; padding:24px; border:1px solid var(--users-border); border-radius:18px; background:var(--users-surface); color:var(--users-title); overflow-y:auto; overscroll-behavior:contain; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details::backdrop { background:rgba(0,12,9,.65); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--users-border); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading h2 { font-size:20px; font-weight:700; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading button { padding:0; width:40px; height:40px; flex-shrink:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-label { font-size:12px; color:var(--users-muted); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-person { display:flex; align-items:center; gap:12px; margin:20px 0; overflow-wrap:anywhere; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields > div:first-child { grid-column:1/-1; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields dt { font-size:12px; color:var(--users-muted); margin-bottom:6px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields dd { font-size:14px; overflow-wrap:anywhere; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; margin-top:18px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-actions button { min-height:44px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details footer { padding-top:18px; border-top:1px solid var(--users-border); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-danger { color:#b42336; border-color:#e7bcc2; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-danger svg { color:inherit; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-danger { color:#ff8f9b; border-color:#75434b; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-confirm { padding:16px; border:1px solid var(--users-border); border-radius:13px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-confirm h3 { font-size:14px; font-weight:700; overflow-wrap:anywhere; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-confirm p { color:var(--users-muted); font-size:13px; line-height:1.6; margin-top:8px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-error { color:#b42336; font-size:13px; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-error { color:#ff8f9b; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-success { color:var(--users-accent); font-size:13px; }
+        @media(hover:hover) and (pointer:fine) {
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view:hover:enabled { background:color-mix(in srgb,var(--users-accent) 7%,transparent); border-color:color-mix(in srgb,var(--users-accent) 40%,transparent); }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-danger:hover:enabled { background:rgba(180,35,54,.07); border-color:currentColor; }
+        }
+        @media(min-width:768px) and (max-width:1199px) {
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th, html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { padding-left:10px; padding-right:10px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view { padding:0 10px; }
+        }
+        @media(max-width:767px) {
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { height:auto; padding:0; border:0; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Nome"], html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="E-mail"], html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { grid-column:1/-1; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Data do cadastro"]::before { content:"Data do cadastro"; display:block; color:var(--users-muted); font-size:10px; margin-bottom:4px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { text-align:left; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-view { min-height:44px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination { padding:10px 0; flex-wrap:wrap; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-pagination button { width:44px; height:44px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:20px; }
+        }
+        @media(max-width:380px) {
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields { grid-template-columns:1fr; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-actions button { width:100%; }
+        }
+
       `}</style>
     </div>
   )
+}
+
+function iniciaisUsuario(nome: string) {
+  const partes = (nome || '').trim().split(/\s+/).filter(Boolean)
+  return partes.length > 1 ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase() : (partes[0]?.slice(0, 2).toUpperCase() || '?')
 }
 
 function FiltroBotao({ ativo, onClick, label }: { ativo: boolean; onClick: () => void; label: string }) {
@@ -456,7 +543,7 @@ function StatusBadge({ status }: { status: StatusConta }) {
   const Icone = config.icone
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.classe}`}>
+    <span data-user-status={status} className={`users-status inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.classe}`}>
       <Icone className="h-3 w-3" /> {config.label}
     </span>
   )
