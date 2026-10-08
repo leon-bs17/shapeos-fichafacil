@@ -716,6 +716,13 @@ export default function ControlPage() {
     }
   }
 
+
+  /* Light hero mirrors the dark gradient placement with softer green tones. */
+  :global(html.light [data-admin-route] [data-admin-content] .control-center .control-heading) {
+    background:radial-gradient(ellipse at 84% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+    border-color:#d7ded3!important;
+  }
+
 `}</style>
  </div>
 }
