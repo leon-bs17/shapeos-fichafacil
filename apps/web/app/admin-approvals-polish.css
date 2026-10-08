@@ -468,7 +468,7 @@ html.light [data-admin-route="/admin/aprovacoes"] .shapeos-navigation {
   background:#fafbf6!important; border-right-color:#d7ded3!important;
 }
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero] {
-  background:#fcfdf9!important;
+  background:radial-gradient(ellipse at 84% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
 }
 html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-heading] h1 {
   color:#112b2a!important;
