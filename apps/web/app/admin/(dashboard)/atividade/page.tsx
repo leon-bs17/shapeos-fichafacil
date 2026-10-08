@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Activity, CircleCheck, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
+import { Activity, CircleCheck, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, Network, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
 
 type Usuario = { id: string; nome: string; email: string; tipo: string; criado_em: string }
 type Auditoria = { id: string; acao: string; detalhes: Record<string, unknown>; criado_em: string }
@@ -15,6 +15,7 @@ const formatarData = (v: string) => new Date(v).toLocaleString('pt-BR', { timeZo
 function iniciais(v: string) { return v.split(' · ')[0].trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase() || 'AD' }
 
 export default function AdminAtividadePage() {
+  const detailsRef = useRef<HTMLDialogElement>(null)
   const [busca, setBusca] = useState('')
   const [filtro, setFiltro] = useState<Filtro>('todos')
   const [periodo, setPeriodo] = useState('todos')
@@ -65,10 +66,18 @@ export default function AdminAtividadePage() {
 
   useEffect(() => { setPagina(1) }, [busca, filtro, periodo])
   useEffect(() => {
-    const fechar = (event: KeyboardEvent) => { if(event.key === 'Escape') setSelecionado(null) }
-    window.addEventListener('keydown', fechar)
-    return () => window.removeEventListener('keydown', fechar)
-  }, [])
+    if (!selecionado) return
+    const dialog = detailsRef.current
+    const focused = document.activeElement as HTMLElement | null
+    const previousOverflow = document.body.style.overflow
+    if (dialog && !dialog.open) dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      dialog?.close()
+      document.body.style.overflow = previousOverflow
+      focused?.focus()
+    }
+  }, [selecionado])
   const eventos = useMemo(() => (data?.eventos ?? []).filter(e => {
     if (filtro !== 'todos' && e.tipo !== filtro) return false
     if (periodo === 'hoje' && new Date(e.data).toLocaleDateString('pt-BR', { timeZone:'America/Fortaleza' }) !== new Date().toLocaleDateString('pt-BR', { timeZone:'America/Fortaleza' })) return false
@@ -148,12 +157,31 @@ export default function AdminAtividadePage() {
         </section>
       )}
       <p className="scope-note">Resumo dos últimos cadastros e registros administrativos disponíveis.</p>
-      {selecionado && <div className="overlay" onMouseDown={() => setSelecionado(null)}>
-        <section className="dialog" role="dialog" aria-modal="true" aria-label="Detalhes da atividade" onMouseDown={e => e.stopPropagation()}>
-          <div className="dialog-heading"><h2>Detalhes da atividade</h2><button autoFocus aria-label="Fechar detalhes" onClick={() => setSelecionado(null)}><X size={20} /></button></div>
-          <dl><dt>Referência</dt><dd>{selecionado.descricao}</dd><dt>Ação</dt><dd className="capitalize">{selecionado.titulo.toLowerCase()}</dd><dt>Data e hora</dt><dd>{formatarData(selecionado.data)}</dd><dt>Origem</dt><dd>{selecionado.tipo === 'cadastro' ? 'Cadastro de usuário' : 'Auditoria administrativa'}</dd></dl>
-        </section>
-      </div>}
+      <dialog ref={detailsRef} className="activity-details" aria-labelledby="activity-details-title"
+        onCancel={(event) => { event.preventDefault(); setSelecionado(null) }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return
+          const rect = event.currentTarget.getBoundingClientRect()
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setSelecionado(null)
+        }}>
+        {selecionado && <>
+          <header className="details-heading">
+            <div><h2 id="activity-details-title">Detalhes da atividade</h2><p>ATIVIDADE</p></div>
+            <button type="button" className="details-close" autoFocus aria-label="Fechar detalhes" onClick={() => setSelecionado(null)}><X size={22} /></button>
+          </header>
+          <section className="details-summary" aria-label="Ação registrada">
+            <div className="details-icon">{selecionado.tipo === 'cadastro' ? <UserPlus size={29} strokeWidth={1.7} /> : <ShieldCheck size={29} strokeWidth={1.7} />}</div>
+            <h3>{selecionado.titulo.toLowerCase()}</h3>
+            <span className="details-badge">Registrado</span>
+          </section>
+          <dl className="details-reference"><dt>Referência</dt><dd>{selecionado.descricao}</dd></dl>
+          <dl className="details-metadata">
+            <div><CalendarDays size={25} strokeWidth={1.7} /><div><dt>Data e hora</dt><dd>{formatarData(selecionado.data)}</dd></div></div>
+            <div><Network size={25} strokeWidth={1.7} /><div><dt>Origem</dt><dd>{selecionado.tipo === 'cadastro' ? 'Cadastro de usuário' : 'Auditoria administrativa'}</dd></div></div>
+          </dl>
+          <footer className="details-footer"><button type="button" onClick={() => setSelecionado(null)}>Fechar</button></footer>
+        </>}
+      </dialog>
       <style jsx>{`
         .activity-workspace { --surface:#fcfdf9; --border:#d7ded3; --muted:#5f6f68; --accent:#129b89; --text:#162623; display:grid; gap:20px; padding-bottom:24px; }
         :global(.dark) .activity-workspace { --surface:#091c18; --border:#1c4037; --muted:#a3becd; --accent:#00e9df; --text:#f5faf9; }
@@ -243,6 +271,40 @@ export default function AdminAtividadePage() {
         @media(max-width:640px) {
           footer { padding:14px 12px; flex-wrap:wrap; }
           nav { flex-wrap:wrap; }
+        }
+
+        .activity-details { width:min(600px,calc(100vw - 40px)); max-height:calc(100dvh - 40px); margin:auto; padding:26px; border:1px solid var(--border); border-radius:18px; background:var(--surface); color:var(--text); overflow-y:auto; overscroll-behavior:contain; }
+        .activity-details::backdrop { background:rgba(0,12,9,.68); backdrop-filter:blur(3px); }
+        .details-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+        .details-heading h2 { font-size:22px; line-height:1.3; font-weight:750; letter-spacing:-.025em; }
+        .details-heading p { font-size:11px; color:var(--muted); margin-top:7px; letter-spacing:.06em; }
+        .details-close { display:grid; place-items:center; width:40px; height:40px; flex-shrink:0; border-radius:13px; color:var(--text); }
+        .details-summary { display:flex; align-items:center; gap:16px; padding:20px; margin-top:24px; border:1px solid var(--border); border-radius:13px; background:#e4f3eb; }
+        :global(html.dark) .details-summary { background:rgba(0,233,223,.055); }
+        .details-icon { display:grid; place-items:center; width:56px; height:56px; flex:0 0 56px; border-radius:13px; background:color-mix(in srgb,var(--accent) 14%,var(--surface)); color:var(--accent); }
+        .details-summary h3 { font-size:22px; font-weight:700; line-height:1.35; letter-spacing:-.025em; text-transform:capitalize; overflow-wrap:anywhere; min-width:0; }
+        .details-badge { margin-left:auto; flex-shrink:0; padding:6px 12px; border:1px solid var(--accent); border-radius:999px; color:var(--accent); font-size:11px; font-weight:600; }
+        .details-reference { margin:20px 0 0; padding:18px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+        .activity-details dt { color:var(--muted); font-size:12px; margin:0; }
+        .activity-details dd { font-size:14px; line-height:1.6; margin-top:5px; overflow-wrap:anywhere; }
+        .details-reference dd { font-size:16px; font-weight:500; }
+        .details-metadata { display:grid; grid-template-columns:1fr 1fr; margin:20px 0 0; }
+        .details-metadata > div { display:flex; align-items:flex-start; gap:13px; min-width:0; padding-right:16px; }
+        .details-metadata > div + div { border-left:1px solid var(--border); padding-left:20px; padding-right:0; }
+        .details-metadata > div > :global(svg) { color:var(--accent); flex-shrink:0; margin-top:3px; }
+        .details-footer { display:flex; justify-content:flex-end; padding:0; margin-top:26px; border:0; }
+        .details-footer button { min-height:40px; padding:0 22px; border:1px solid var(--accent); border-radius:13px; color:var(--accent); font-size:13px; font-weight:650; background:transparent; transition:background-color 150ms ease,border-color 150ms ease; }
+        @media(hover:hover) and (pointer:fine) { .details-footer button:hover,.details-close:hover { background:color-mix(in srgb,var(--accent) 7%,transparent); } }
+        @media(max-width:600px) {
+          .activity-details { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:20px; }
+          .details-heading h2 { font-size:20px; }
+          .details-summary { flex-wrap:wrap; padding:16px; gap:12px; margin-top:20px; }
+          .details-summary h3 { flex:1; font-size:20px; }
+          .details-badge { margin-left:68px; }
+          .details-metadata { grid-template-columns:1fr; gap:18px; }
+          .details-metadata > div { padding:0; }
+          .details-metadata > div + div { border-left:0; padding:0; }
+          .details-footer button,.details-close { min-height:44px; }
         }
 `}</style>
     </div>
