@@ -798,8 +798,12 @@ export default function AdminAprovacoesPage() {
         }
 
 
-        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon]) {
-          background:var(--shapeos-brand-soft)!important; color:var(--shapeos-brand)!important;
+        :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon]) {
+          background:#fff5df!important; color:#d97706!important;
+          box-shadow:none!important; border:0!important;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon]) {
+          background:rgba(251,191,36,.1)!important; color:#facc15!important;
           box-shadow:none!important; border:0!important;
         }
 
