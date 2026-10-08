@@ -58,6 +58,7 @@ function iniciais(nome: string, email: string) {
 export default function AdminAprovacoesPage() {
   const queryClient = useQueryClient()
   const buscaRef = useRef<HTMLInputElement>(null)
+  const detailsRef = useRef<HTMLDialogElement>(null)
   const [buscaLocal, setBuscaLocal] = useState('')
   const [atalhoBusca, setAtalhoBusca] = useState('Ctrl + K')
   const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
@@ -90,9 +91,7 @@ export default function AdminAprovacoesPage() {
         buscaRef.current?.select()
       }
 
-      if (event.key === 'Escape') {
-        setPersonalSelecionado(null)
-      }
+
     }
 
     window.addEventListener('keydown', atalhos)
@@ -196,6 +195,24 @@ export default function AdminAprovacoesPage() {
       ])
     },
   })
+
+  useEffect(() => {
+    if (!personalSelecionado) return
+    const dialog = detailsRef.current
+    const focused = document.activeElement as HTMLElement | null
+    const overflow = document.body.style.overflow
+    if (dialog && !dialog.open) dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      dialog?.close()
+      document.body.style.overflow = overflow
+      focused?.focus()
+    }
+  }, [personalSelecionado])
+
+  function fecharDetalhes() {
+    if (!acao.isPending) setPersonalSelecionado(null)
+  }
 
   const totalAprovados = (cadastros ?? []).filter((personal) => personal.status_conta === 'ATIVO').length
   const totalPendentes = pendentes.length
@@ -513,72 +530,37 @@ export default function AdminAprovacoesPage() {
         </section>
       )}
 
-      {personalSelecionado ? (
-        <div data-approvals-overlay className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-[2px]" onMouseDown={() => setPersonalSelecionado(null)}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Detalhes do personal"
-            onMouseDown={(event) => event.stopPropagation()}
-            className="w-full max-w-lg rounded-[24px] border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/20 dark:border-white/10 dark:bg-[#0b1721]"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex min-w-0 items-center gap-3.5">
-                <div data-approvals-avatar className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-sm font-semibold text-white">
-                  {iniciais(personalSelecionado.nome, personalSelecionado.email)}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="truncate text-lg font-black text-slate-950 dark:text-white">{personalSelecionado.nome?.trim() || 'Personal sem nome'}</h3>
-                  <p className="truncate text-sm text-slate-500 dark:text-slate-400">{personalSelecionado.email}</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setPersonalSelecionado(null)}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-500 transition  dark:border-white/10 dark:text-slate-300 "
-                aria-label="Fechar detalhes"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      <dialog ref={detailsRef} role="dialog" className="approval-profile-dialog"
+        aria-labelledby="approval-profile-title"
+        onCancel={(event) => { event.preventDefault(); fecharDetalhes() }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return
+          const rect = event.currentTarget.getBoundingClientRect()
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) fecharDetalhes()
+        }}>
+        {personalSelecionado && <>
+          <header className="approval-profile-heading">
+            <div><p>APROVAÇÕES</p><h2 id="approval-profile-title">Detalhes do cadastro</h2></div>
+            <button type="button" className="approval-profile-close" autoFocus disabled={acao.isPending} aria-label="Fechar detalhes" onClick={fecharDetalhes}><X size={20} /></button>
+          </header>
+          <section className="approval-profile-person" aria-label="Cadastro do personal">
+            <div className="approval-profile-avatar">{iniciais(personalSelecionado.nome, personalSelecionado.email)}</div>
+            <div><h3>{personalSelecionado.nome?.trim() || 'Personal sem nome'}</h3>
+              <span className={`approval-profile-status ${statusVisual(personalSelecionado.status_conta).className}`} data-profile-status={personalSelecionado.status_conta}>{statusVisual(personalSelecionado.status_conta).label}</span>
             </div>
-
-            <div data-approvals-details className="mt-6 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-sm dark:border-white/10 dark:bg-white/[0.025]">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-slate-500 dark:text-slate-400">Data do cadastro</span>
-                <span data-approvals-registration-date className="font-semibold text-slate-800 dark:text-slate-200">{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</span>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-slate-500 dark:text-slate-400">Status</span>
-                <span data-approvals-detail-status={personalSelecionado.status_conta} className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${statusVisual(personalSelecionado.status_conta).className}`}>
-                  {statusVisual(personalSelecionado.status_conta).label}
-                </span>
-              </div>
-            </div>
-
-            {personalSelecionado.status_conta === 'PENDENTE' ? (
-              <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                <Button
-                  variant="outline"
-                  onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'BLOQUEADO' })}
-                  disabled={acao.isPending}
-                  className="gap-2 rounded-xl border-red-200 text-red-700  dark:border-red-400/20 dark:bg-transparent dark:text-red-300 "
-                >
-                  <Ban className="h-4 w-4" />
-                  Bloquear
-                </Button>
-                <Button
-                  onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'ATIVO' })}
-                  disabled={acao.isPending}
-                  className="gap-2 rounded-xl bg-teal-600 text-white  dark:bg-primary dark:text-primary-foreground"
-                >
-                  {acao.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                  Aprovar
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
+          </section>
+          <dl className="approval-profile-data">
+            <div><Mail size={22} strokeWidth={1.7} /><div><dt>E-mail</dt><dd>{personalSelecionado.email}</dd></div></div>
+            <div><CalendarDays size={22} strokeWidth={1.7} /><div><dt>Data do cadastro</dt><dd>{new Date(personalSelecionado.criado_em).toLocaleDateString('pt-BR')}</dd></div></div>
+          </dl>
+          {acao.error && <p role="alert" className="approval-profile-error">{acao.error instanceof Error ? acao.error.message : 'Não foi possível concluir a ação.'}</p>}
+          {personalSelecionado.status_conta === 'PENDENTE' && <div className="approval-profile-actions">
+            <button type="button" className="approval-profile-block" disabled={acao.isPending} onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'BLOQUEADO' })}><Ban size={16} />Bloquear</button>
+            <button type="button" disabled={acao.isPending} onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'ATIVO' })}>{acao.isPending ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}Aprovar</button>
+          </div>}
+          <footer className="approval-profile-footer"><button type="button" disabled={acao.isPending} onClick={fecharDetalhes}>Fechar</button></footer>
+        </>}
+      </dialog>
       <style jsx>{`
         :global(.approvals-workspace) { --approval-surface:#fff; --approval-border:#dbe6e4; --approval-muted:#607b86; --approval-accent:#008d85; }
         :global(.dark .approvals-workspace) { --approval-surface:#0b1b18; --approval-border:#203b34; --approval-muted:#a8c7d5; --approval-accent:#00efdf; }
@@ -887,6 +869,52 @@ export default function AdminAprovacoesPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-menu) { width:100%; }
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger),
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option) { font-size:16px!important; }
+        }
+
+        /* Profile approval dialog follows the organized user profile. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog) {
+          width:min(600px,calc(100vw - 32px)); max-height:calc(100dvh - 32px);
+          margin:auto; padding:24px; border:1px solid var(--shapeos-border)!important;
+          border-radius:18px!important; background:var(--shapeos-surface)!important;
+          color:var(--shapeos-text)!important; overflow-y:auto; overscroll-behavior:contain; box-shadow:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog::backdrop) { background:rgba(0,12,9,.68); backdrop-filter:blur(3px); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-heading) { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-heading p) { color:var(--shapeos-muted)!important; font-size:10px!important; letter-spacing:.09em; margin-bottom:6px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-heading h2) { color:var(--shapeos-text)!important; font-size:22px; font-weight:750; line-height:1.3; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog button) {
+          display:inline-flex; align-items:center; justify-content:center; gap:8px;
+          min-height:40px; padding:0 18px; border:1px solid var(--shapeos-border)!important;
+          background:transparent; color:var(--shapeos-text)!important; font-size:12px; font-weight:600; white-space:nowrap;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog .approval-profile-close) { width:40px; padding:0; flex-shrink:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog button:disabled) { opacity:.45; cursor:not-allowed; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person) { display:flex; align-items:center; gap:18px; padding:18px; margin-top:20px; border:1px solid var(--shapeos-border); border-radius:13px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-avatar) { display:grid; place-items:center; width:56px; height:56px; flex:0 0 56px; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:18px; font-weight:700; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person > div:last-child) { min-width:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person h3) { font-size:18px; font-weight:700; line-height:1.4; overflow-wrap:anywhere; color:var(--shapeos-text)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-status) { display:inline-flex; margin-top:6px; padding:7px 12px; border:0!important; border-radius:999px; font-size:11px; font-weight:500; line-height:1.5; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-status[data-profile-status="ATIVO"]) { background:#e4f3eb!important; color:#0d7e70!important; }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-status[data-profile-status="ATIVO"]) { background:#123b31!important; color:#00e9df!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data) { margin:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data > div) { display:flex; align-items:flex-start; gap:16px; padding:18px 8px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data > div + div) { border-top:1px solid var(--shapeos-border); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data > div > svg) { flex-shrink:0; color:var(--shapeos-muted); margin-top:3px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data > div > div) { min-width:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data dt) { font-size:12px; color:var(--shapeos-muted)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-data dd) { font-size:14px; line-height:1.6; margin-top:3px; overflow-wrap:anywhere; color:var(--shapeos-text)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-footer) { display:flex; justify-content:flex-end; padding-top:16px; border-top:1px solid var(--shapeos-border); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-actions) { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; padding:0 0 18px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog .approval-profile-block) { color:#b42336!important; border-color:#e7bcc2!important; }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog .approval-profile-block) { color:#ff8f9b!important; border-color:#75434b!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-error) { color:#b42336; font-size:13px; margin-bottom:16px; }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-error) { color:#ff8f9b; }
+        @media(max-width:600px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog) { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:20px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-heading h2) { font-size:20px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person) { gap:14px; padding:16px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person h3) { font-size:16px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog button) { min-height:44px; }
         }
 `}</style>
     </div>
