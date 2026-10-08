@@ -242,7 +242,7 @@ export default function AdminAprovacoesPage() {
           </g>
         </svg>
       </section>    <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
-        <Card className="overflow-hidden rounded-2xl border-amber-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-gradient-to-br dark:from-amber-950/50 dark:via-slate-950/90 dark:to-slate-900/90 dark:shadow-xl dark:shadow-black/10">
+        <Card data-approval-summary-card="pending" className="overflow-hidden rounded-2xl border-border bg-card shadow-none">
           <CardContent className="flex items-center gap-5 p-5 sm:p-6">
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-warning/10 dark:text-warning dark:ring-0">
               <Clock3 className="h-7 w-7" strokeWidth={1.8} />
@@ -788,6 +788,15 @@ export default function AdminAprovacoesPage() {
         :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [role="dialog"] [data-approvals-details] [data-approvals-detail-status="ATIVO"]) {
           border:1px solid #bddfd0!important;
         }
+
+        /* Pending summary uses a neutral surface; amber belongs to its status icon. */
+        :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-summary] [data-approval-summary-card="pending"]) {
+          background:#fcfdf9!important; background-image:none!important; border-color:#d7ded3!important; box-shadow:none!important;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-summary] [data-approval-summary-card="pending"]) {
+          background:#091c18!important; background-image:none!important; border-color:#1c4037!important; box-shadow:none!important;
+        }
+
 `}</style>
     </div>
   )
