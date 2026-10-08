@@ -423,18 +423,20 @@ function UsuariosConteudo() {
         html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace { --users-surface:#091c18; --users-border:#1c4037; --users-muted:#a3becd; --users-title:#f5faf9; --users-accent:#00e9df; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table-card { border-radius:17px; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table thead { background:transparent; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table thead th { border-bottom:1px solid var(--users-border); }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th { padding:14px 20px; font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; text-align:left; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(1) { width:25%; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(2) { width:29%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(1) { width:24%; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(2) { width:27%; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(3) { width:12%; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(4) { width:15%; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(5) { width:10%; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:9%; text-align:right; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:124px; text-align:right; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { padding:6px 20px; height:50px; font-size:12px; border-bottom:1px solid var(--users-border); }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td:first-child p { font-weight:650; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-avatar { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:50%; background:linear-gradient(145deg,#8a9de5,#546cac); color:#fff; font-size:11px; font-weight:700; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-email, html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-date { color:var(--users-muted); font-size:12px; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { text-align:right; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] { text-align:right; overflow-wrap:normal; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td[data-label="Ações"] .users-view { min-width:84px; padding:0 14px; white-space:nowrap; word-break:normal; overflow-wrap:normal; flex-shrink:0; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-status { border:1px solid currentColor; min-height:30px; white-space:nowrap; padding:4px 12px; font-size:11px; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace [data-user-status="ATIVO"] { background:rgba(18,155,137,.07); color:#0d7e70; }
         html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace [data-user-status="ATIVO"] { background:rgba(0,233,223,.07); color:#00e9df; }
