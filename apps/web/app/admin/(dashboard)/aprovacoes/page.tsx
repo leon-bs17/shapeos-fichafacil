@@ -273,7 +273,7 @@ export default function AdminAprovacoesPage() {
 
       <section data-approvals-filters className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
-          <label data-admin-search className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition focus-within:border-cyan-300 focus-within:shadow-[0_0_0_3px_rgba(34,211,238,0.07)] dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 dark:focus-within:border-primary/30">
+          <label data-admin-search className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition   dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 ">
             <Search className="h-5 w-5 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
             <input
               ref={buscaRef}
@@ -294,7 +294,7 @@ export default function AdminAprovacoesPage() {
                 }}
                 aria-label="Limpar busca"
                 title="Limpar busca"
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition    "
               >
                 <X className="h-4 w-4" strokeWidth={1.9} />
               </button>
@@ -320,7 +320,7 @@ export default function AdminAprovacoesPage() {
                 className={`h-12 rounded-[18px] px-5 text-xs font-bold transition ${
                   filtroStatus === valor
                     ? 'border border-cyan-300 bg-cyan-50/80 text-cyan-800 shadow-[0_7px_18px_rgba(6,182,212,0.08)] dark:border-primary/35 dark:bg-primary/10 dark:text-primary'
-                    : 'border border-transparent bg-transparent text-slate-400 hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-white/[0.035] dark:hover:text-white'
+                    : 'border border-transparent bg-transparent text-slate-400   dark:text-slate-400  '
                 }`}
               >
                 {label}
@@ -328,7 +328,7 @@ export default function AdminAprovacoesPage() {
             ))}
 
             </div>
-            <label className="flex h-12 items-center gap-2 rounded-[18px] border border-slate-100 bg-white px-4 text-xs font-bold text-slate-400 shadow-[0_4px_14px_rgba(15,23,42,0.02)] transition hover:border-cyan-200 dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 dark:hover:border-primary/20">
+            <label className="flex h-12 items-center gap-2 rounded-[18px] border border-slate-100 bg-white px-4 text-xs font-bold text-slate-400 shadow-[0_4px_14px_rgba(15,23,42,0.02)] transition  dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 ">
               <CalendarDays className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
               <select
                 value={filtroPeriodo}
@@ -349,7 +349,7 @@ export default function AdminAprovacoesPage() {
             <button
               type="button"
               onClick={limparFiltros}
-              className="w-fit text-cyan-700 transition hover:text-cyan-800 dark:text-primary dark:hover:text-primary/80"
+              className="w-fit text-cyan-700 transition  dark:text-primary "
             >
               Limpar busca e filtros
             </button>
@@ -382,7 +382,7 @@ export default function AdminAprovacoesPage() {
           <Button
             type="button"
             onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-aprovacoes'] })}
-            className="relative mt-7 min-w-[260px] gap-3 rounded-full bg-teal-600 px-8 py-5 font-bold text-white shadow-[0_10px_28px_rgba(13,148,136,0.20)] hover:bg-teal-700 dark:bg-primary dark:text-primary-foreground dark:shadow-[0_10px_35px_rgba(0,255,204,0.18)] dark:hover:bg-primary/90"
+            className="relative mt-7 min-w-[260px] gap-3 rounded-full bg-teal-600 px-8 py-5 font-bold text-white shadow-[0_10px_28px_rgba(13,148,136,0.20)]  dark:bg-primary dark:text-primary-foreground dark:shadow-[0_10px_35px_rgba(0,255,204,0.18)] "
           >
             Verificar novamente
             <ArrowRight className="h-4 w-4" strokeWidth={1.8} />
@@ -400,7 +400,7 @@ export default function AdminAprovacoesPage() {
           <button
             type="button"
             onClick={limparFiltros}
-            className="mt-4 text-sm font-bold text-cyan-700 hover:text-cyan-800 dark:text-primary dark:hover:text-primary/80"
+            className="mt-4 text-sm font-bold text-cyan-700  dark:text-primary "
           >
             Limpar filtros
           </button>
@@ -456,7 +456,7 @@ export default function AdminAprovacoesPage() {
                       type="button"
                       data-approval-review={pendente ? 'pending' : 'approved'}
                       onClick={() => setPersonalSelecionado(personal)}
-                      className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition hover:border-cyan-200 hover:bg-cyan-50 dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white dark:hover:bg-primary/10"
+                      className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition   dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white "
                     >
                       {pendente ? <Clock3 className="h-4 w-4" /> : <Eye className="h-4 w-4" strokeWidth={1.9} />}
                       {pendente ? 'Revisar' : 'Ver'}
@@ -479,7 +479,7 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setPagina(1)}
                 disabled={paginaAtual === 1}
-                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Primeira página"
               >
                 <ChevronLeft className="h-3.5 w-3.5 -mr-1" strokeWidth={1.8} />
@@ -489,7 +489,7 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setPagina((atual) => Math.max(1, atual - 1))}
                 disabled={paginaAtual === 1}
-                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Página anterior"
               >
                 <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -501,7 +501,7 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setPagina((atual) => Math.min(totalPaginas, atual + 1))}
                 disabled={paginaAtual === totalPaginas}
-                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Próxima página"
               >
                 <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -510,7 +510,7 @@ export default function AdminAprovacoesPage() {
                 type="button"
                 onClick={() => setPagina(totalPaginas)}
                 disabled={paginaAtual === totalPaginas}
-                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
+                className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Última página"
               >
                 <ChevronRight className="h-3.5 w-3.5 -mr-1" strokeWidth={1.8} />
@@ -543,7 +543,7 @@ export default function AdminAprovacoesPage() {
               <button
                 type="button"
                 onClick={() => setPersonalSelecionado(null)}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/[0.06]"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-500 transition  dark:border-white/10 dark:text-slate-300 "
                 aria-label="Fechar detalhes"
               >
                 <X className="h-4 w-4" />
@@ -569,7 +569,7 @@ export default function AdminAprovacoesPage() {
                   variant="outline"
                   onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'BLOQUEADO' })}
                   disabled={acao.isPending}
-                  className="gap-2 rounded-xl border-red-200 text-red-700 hover:bg-red-50 dark:border-red-400/20 dark:bg-transparent dark:text-red-300 dark:hover:bg-red-400/10"
+                  className="gap-2 rounded-xl border-red-200 text-red-700  dark:border-red-400/20 dark:bg-transparent dark:text-red-300 "
                 >
                   <Ban className="h-4 w-4" />
                   Bloquear
@@ -577,7 +577,7 @@ export default function AdminAprovacoesPage() {
                 <Button
                   onClick={() => acao.mutate({ personal: personalSelecionado, novoStatus: 'ATIVO' })}
                   disabled={acao.isPending}
-                  className="gap-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 dark:bg-primary dark:text-primary-foreground"
+                  className="gap-2 rounded-xl bg-teal-600 text-white  dark:bg-primary dark:text-primary-foreground"
                 >
                   {acao.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                   Aprovar
@@ -808,6 +808,45 @@ export default function AdminAprovacoesPage() {
         }
 
 
+
+        /* Quiet interactive controls in both themes. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace) { --approval-hover-primary:#129b89; }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace) { --approval-hover-primary:#00e9df; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace button),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-admin-search]),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace label:has(select)) {
+          border-width:1px!important; border-style:solid!important;
+          border-radius:13px!important;
+          box-shadow:none!important; filter:none!important;
+          transform:none!important; translate:none!important; scale:none!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-admin-search]),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-admin-search]:focus-within),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace label:has(select)),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace label:has(select):focus-within) {
+          border-color:var(--shapeos-border)!important;
+          box-shadow:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-admin-search] input) { box-shadow:none!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group]) {
+          border:0!important; border-radius:13px!important; overflow:visible!important; gap:6px;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace section[data-approvals-filters] [data-approval-status-group] button+button) {
+          border:1px solid var(--shapeos-border)!important; border-radius:13px!important;
+        }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace button:hover:enabled),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-admin-search]:not(:has(input:disabled)):hover),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace label:has(select:not(:disabled)):hover) {
+            background:color-mix(in srgb,var(--approval-hover-primary) 7%,transparent)!important;
+            background-image:none!important;
+            border-color:color-mix(in srgb,var(--approval-hover-primary) 40%,transparent)!important;
+            box-shadow:none!important; filter:none!important;
+            transform:none!important;
+          }
+        }
 `}</style>
     </div>
   )
