@@ -803,6 +803,15 @@ export default function AdminAprovacoesPage() {
           box-shadow:none!important; border:0!important;
         }
 
+
+        /* Pending icon uses orange in both themes; the card stays neutral. */
+        :global(html.light [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon] > svg) {
+          color:#d97706!important;
+        }
+        :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon] > svg) {
+          color:#f59e0b!important;
+        }
+
 `}</style>
     </div>
   )
