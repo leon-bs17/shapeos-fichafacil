@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,9 @@ import {
   Ban,
   CalendarDays,
   CheckCircle2,
+  Check,
+  ChevronDown,
+  ChevronUp,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -328,18 +331,7 @@ export default function AdminAprovacoesPage() {
             ))}
 
             </div>
-            <label className="flex h-12 items-center gap-2 rounded-[18px] border border-slate-100 bg-white px-4 text-xs font-bold text-slate-400 shadow-[0_4px_14px_rgba(15,23,42,0.02)] transition  dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-300 ">
-              <CalendarDays className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.8} />
-              <select
-                value={filtroPeriodo}
-                onChange={(event) => setFiltroPeriodo(event.target.value as FiltroPeriodo)}
-                aria-label="Filtrar por período"
-                className="cursor-pointer bg-transparent pr-1 outline-none"
-              >
-                <option value="TODOS">Todo período</option>
-                <option value="30_DIAS">Últimos 30 dias</option>
-              </select>
-            </label>
+            <ApprovalPeriod value={filtroPeriodo} onChange={setFiltroPeriodo} />
           </div>
         </div>
 
@@ -847,7 +839,143 @@ export default function AdminAprovacoesPage() {
             transform:none!important;
           }
         }
+
+        /* Custom period selector shares the approved control geometry. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period) { position:relative; width:190px; flex-shrink:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger) {
+          display:flex; align-items:center; gap:10px; width:100%; height:48px!important;
+          padding:0 14px!important; background:var(--shapeos-surface)!important;
+          border:1px solid var(--shapeos-border)!important; border-radius:13px!important;
+          color:var(--shapeos-muted)!important; font-size:13px!important; font-weight:400!important;
+          white-space:nowrap;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger > svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger > svg:last-child) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-menu) {
+          position:absolute; z-index:40; top:calc(100% + 8px); right:0;
+          width:240px; max-width:calc(100vw - 32px); padding:6px;
+          border:1px solid var(--shapeos-border); border-radius:13px;
+          background:var(--shapeos-surface); color:var(--shapeos-text);
+          box-shadow:0 8px 24px rgba(0,0,0,.12); outline:none;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-menu[data-above="true"]) { top:auto; bottom:calc(100% + 8px); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option) {
+          display:flex; align-items:center; gap:10px; min-height:44px; padding:0 10px;
+          border:1px solid transparent; border-radius:13px; cursor:pointer;
+          font-size:13px; font-weight:400; color:var(--shapeos-text);
+          transition:background-color 150ms ease,border-color 150ms ease;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option + .approval-period-option) { margin-top:4px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option > svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option > svg:last-child:not(:first-child)) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option[aria-selected="true"]) {
+          background:color-mix(in srgb,var(--approval-hover-primary) 7%,transparent);
+          color:var(--approval-hover-primary);
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-menu:focus .approval-period-option[data-active="true"]) {
+          border-color:color-mix(in srgb,var(--approval-hover-primary) 40%,transparent);
+        }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger:hover:enabled),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option:hover) {
+            background:color-mix(in srgb,var(--approval-hover-primary) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--approval-hover-primary) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:480px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period) { width:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-menu) { width:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-trigger),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-period-option) { font-size:16px!important; }
+        }
 `}</style>
     </div>
   )
+}
+
+
+function ApprovalPeriod({ value, onChange }: { value: FiltroPeriodo; onChange: (value: FiltroPeriodo) => void }) {
+  const options = [
+    { value: 'TODOS' as const, label: 'Todo período', Icon: CalendarDays },
+    { value: '30_DIAS' as const, label: 'Últimos 30 dias', Icon: Clock3 },
+  ]
+  const id = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [above, setAbove] = useState(false)
+  const selected = options.findIndex((option) => option.value === value)
+
+  useEffect(() => {
+    if (!open) return
+    const outside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const place = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (rect) setAbove(window.innerHeight - rect.bottom < 120 && rect.top > 120)
+    }
+    place()
+    listRef.current?.focus({ preventScroll: true })
+    document.addEventListener('pointerdown', outside)
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
+
+  function choose(index: number) {
+    onChange(options[index].value)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  return <div ref={rootRef} className="approval-period" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+  }}>
+    <button ref={triggerRef} type="button" className="approval-period-trigger"
+      aria-label={`Filtrar por período: ${options[selected].label}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
+      onClick={() => { setActive(selected); setOpen(!open) }}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive(selected); setOpen(true)
+        }
+      }}>
+      <CalendarDays size={17} strokeWidth={1.8} />
+      <span>{options[selected].label}</span>
+      {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+    </button>
+    {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="approval-period-menu"
+      data-above={above} aria-label="Período dos cadastros" aria-activedescendant={`${id}-${active}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive((index) => (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault(); setActive(event.key === 'Home' ? 0 : options.length - 1)
+        } else if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); choose(active)
+        } else if (event.key.length === 1) {
+          const index = options.findIndex((option) => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+          if (index >= 0) { event.preventDefault(); setActive(index) }
+        }
+      }}>
+      {options.map(({ value: optionValue, label, Icon }, index) => <div
+        key={optionValue} id={`${id}-${index}`} role="option"
+        aria-selected={value === optionValue} data-active={active === index}
+        className="approval-period-option"
+        onPointerMove={() => setActive(index)}
+        onClick={() => choose(index)}>
+        <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
+        {value === optionValue && <Check size={17} strokeWidth={2} />}
+      </div>)}
+    </div>}
+  </div>
 }
