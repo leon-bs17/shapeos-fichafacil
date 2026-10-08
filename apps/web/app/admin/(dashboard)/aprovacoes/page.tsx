@@ -244,7 +244,7 @@ export default function AdminAprovacoesPage() {
       </section>    <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
         <Card data-approval-summary-card="pending" className="overflow-hidden rounded-2xl border-border bg-card shadow-none">
           <CardContent className="flex items-center gap-5 p-5 sm:p-6">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-warning/10 dark:text-warning dark:ring-0">
+            <div data-pending-summary-icon className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
               <Clock3 className="h-7 w-7" strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
@@ -795,6 +795,12 @@ export default function AdminAprovacoesPage() {
         }
         :global(html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-summary] [data-approval-summary-card="pending"]) {
           background:#091c18!important; background-image:none!important; border-color:#1c4037!important; box-shadow:none!important;
+        }
+
+
+        :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace div[data-approvals-summary].grid:nth-of-type(1) > div[data-approval-summary-card="pending"] [data-pending-summary-icon]) {
+          background:var(--shapeos-brand-soft)!important; color:var(--shapeos-brand)!important;
+          box-shadow:none!important; border:0!important;
         }
 
 `}</style>
