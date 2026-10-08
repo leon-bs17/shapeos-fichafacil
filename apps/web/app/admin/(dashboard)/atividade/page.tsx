@@ -165,7 +165,7 @@ export default function AdminAtividadePage() {
         h1 { font-size:clamp(28px,3.1vw,46px); line-height:1.12; letter-spacing:-.045em; font-weight:800; color:var(--text); }
         h1 span { color:var(--accent); }
         .hero-copy>p:last-child { color:var(--muted); font-size:16px; line-height:1.6; margin-top:13px; }
-        .wireframe { position:absolute; z-index:1; width:360px; height:auto; aspect-ratio:520 / 320; top:50%; right:40px; transform:translateY(-50%); color:var(--accent); opacity:.4; pointer-events:none; }
+        .wireframe { position:absolute; z-index:1; width:500px; height:310px; top:50%; right:40px; transform:translateY(-50%); color:var(--accent); opacity:.4; pointer-events:none; }
         .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
         .metric { display:flex; align-items:center; gap:20px; background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:19px; min-height:102px; }
         .metric-icon { display:grid; place-items:center; width:60px; height:60px; flex-shrink:0; color:var(--accent); background:color-mix(in srgb,var(--accent) 9%,transparent); border-radius:13px; }
@@ -211,8 +211,8 @@ export default function AdminAtividadePage() {
         .dialog { width:100%; max-width:500px; max-height:85vh; overflow:auto; padding:26px; border-radius:20px; border:1px solid var(--border); background:var(--surface); color:var(--text); }
         .dialog-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; } h2 { font-size:19px; font-weight:700; }
         dl { margin-top:24px; } dt { font-size:11px; color:var(--muted); margin-top:15px; } dd { margin-top:5px; font-size:14px; overflow-wrap:anywhere; }
-        @media(max-width:1200px) { .toolbar { flex-wrap:wrap; } .search { flex-basis:100%; } .hero-copy { max-width:80%; } .wireframe { width:300px; right:16px; opacity:.25; } }
-        @media(max-width:640px) { .activity-hero { min-height:230px; padding:27px 23px; } .hero-copy { max-width:100%; } .wireframe { width:260px; right:-70px; opacity:.16; } .metrics { grid-template-columns:1fr; gap:10px; } .metric { min-height:86px; padding:15px; } .metric-icon { width:48px; height:48px; } .segments { flex:1; } .segments button { flex:1; padding:0 12px; font-size:12px; } .period { flex:1; } footer { padding:12px; gap:10px; } }
+        @media(max-width:1200px) { .toolbar { flex-wrap:wrap; } .search { flex-basis:100%; } .hero-copy { max-width:80%; } .wireframe { right:-140px; opacity:.25; } }
+        @media(max-width:640px) { .activity-hero { min-height:230px; padding:27px 23px; } .hero-copy { max-width:100%; } .wireframe { right:-235px; opacity:.16; } .metrics { grid-template-columns:1fr; gap:10px; } .metric { min-height:86px; padding:15px; } .metric-icon { width:48px; height:48px; } .segments { flex:1; } .segments button { flex:1; padding:0 12px; font-size:12px; } .period { flex:1; } footer { padding:12px; gap:10px; } }
       
         :global(html:not(.dark)) .segments button[aria-pressed="true"] {
           background:#e4f3eb; color:#0d7e70;
