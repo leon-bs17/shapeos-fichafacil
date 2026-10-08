@@ -5,6 +5,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import {
   Ban,
+  Mail,
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -289,15 +291,18 @@ function UsuariosConteudo() {
             <div><p className="users-detail-label">Gestão de usuários</p><h2 id="users-details-title">Detalhes do usuário</h2></div>
             <button type="button" className="users-view" aria-label="Fechar detalhes" disabled={acaoMutation.isPending} onClick={closeDetails}><X size={18} /></button>
           </header>
-          <div className="users-detail-person"><div className="users-avatar">{iniciaisUsuario(selected.nome)}</div><strong>{selected.nome}</strong></div>
-          <dl className="users-detail-fields">
-            <div><dt>E-mail</dt><dd>{selected.email}</dd></div>
-            <div><dt>Tipo</dt><dd><TipoBadge tipo={selected.tipo} /></dd></div>
-            <div><dt>Status</dt><dd><StatusBadge status={selected.status_conta} /></dd></div>
-            <div><dt>Data do cadastro</dt><dd>{formatarData(selected.criado_em)}</dd></div>
+          <section className="users-profile-card" aria-label="Perfil do usuário">
+            <div className="users-avatar">{iniciaisUsuario(selected.nome)}</div>
+            <div className="users-profile-identity"><h3>{selected.nome}</h3><div className="users-profile-badges"><TipoBadge tipo={selected.tipo} /><StatusBadge status={selected.status_conta} /></div></div>
+          </section>
+          <dl className="users-profile-data">
+            <div><Mail size={22} strokeWidth={1.7} /><div><dt>E-mail</dt><dd>{selected.email}</dd></div></div>
+            <div><CalendarDays size={22} strokeWidth={1.7} /><div><dt>Data do cadastro</dt><dd>{formatarData(selected.criado_em)}</dd></div></div>
           </dl>
           {acaoMutation.error && <p role="alert" className="users-detail-error">{acaoMutation.error instanceof Error ? acaoMutation.error.message : 'Não foi possível concluir a ação.'}</p>}
           {acaoMutation.isSuccess && <p role="status" className="users-detail-success">Status atualizado com sucesso.</p>}
+          <section className="users-access-panel" aria-labelledby="users-access-title">
+            <div className="users-access-copy"><h3 id="users-access-title">Controle de acesso</h3><p>Gerencie o acesso deste usuário à plataforma.</p></div>
           {selected.tipo === 'ADMIN' ? <p className="users-detail-label">Conta administrativa protegida. O status não pode ser alterado nesta tela.</p> :
             confirmBlock ? <div className="users-confirm" role="group" aria-labelledby="users-block-question">
               <h3 id="users-block-question">Bloquear {selected.nome}?</h3>
@@ -311,6 +316,7 @@ function UsuariosConteudo() {
               {selected.status_conta === 'BLOQUEADO' ? <button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={() => acaoMutation.mutate({ usuario: selected, status: 'ATIVO' })}>{acaoMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}Desbloquear usuário</button> :
                 <button type="button" className="users-view users-danger" disabled={acaoMutation.isPending} onClick={() => { acaoMutation.reset(); setConfirmBlock(true) }}><Ban size={16} />Bloquear usuário</button>}
             </div>}
+          </section>
           <footer className="users-detail-actions"><button type="button" className="users-view" disabled={acaoMutation.isPending} onClick={closeDetails}>Fechar</button></footer>
         </div>}
       </dialog>
@@ -493,6 +499,42 @@ function UsuariosConteudo() {
         @media(max-width:380px) {
           html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-fields { grid-template-columns:1fr; }
           html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-detail-actions button { width:100%; }
+        }
+
+
+        /* Organized user profile with grouped access controls. */
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details { width:min(600px,calc(100vw - 32px)); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading { border:0; padding-bottom:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading .users-detail-label { text-transform:uppercase; font-size:10px; letter-spacing:.06em; margin-bottom:4px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading h2 { font-size:22px; line-height:1.3; letter-spacing:-.025em; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-card { display:flex; align-items:center; gap:18px; padding:18px; margin-top:20px; border:1px solid var(--users-border); border-radius:13px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-card .users-avatar { width:64px; height:64px; flex-basis:64px; font-size:20px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-identity { min-width:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-identity h3 { font-size:18px; font-weight:700; line-height:1.4; overflow-wrap:anywhere; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-badges { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:7px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data { margin:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data > div { display:flex; align-items:flex-start; gap:16px; padding:16px 8px; min-width:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data > div + div { border-top:1px solid var(--users-border); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data > div > svg { color:var(--users-muted); flex-shrink:0; margin-top:3px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data > div > div { min-width:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data dt { color:var(--users-muted); font-size:12px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-data dd { color:var(--users-title); font-size:14px; line-height:1.6; overflow-wrap:anywhere; margin-top:2px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:16px; border:1px solid var(--users-border); border-radius:13px; background:#e4f3eb; margin-top:2px; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel { background:rgba(0,233,223,.035); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy { flex:1 1 200px; min-width:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy h3 { font-size:15px; font-weight:700; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-copy p { color:var(--users-muted); font-size:11px; line-height:1.6; margin-top:4px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel > .users-detail-actions { margin-top:0; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel .users-confirm { flex:1 1 100%; background:var(--users-surface); }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details footer { margin-top:16px; padding-top:12px; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel .users-view { padding-left:12px; padding-right:12px; white-space:nowrap; }
+        @media(max-width:600px) {
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details { width:calc(100vw - 24px); }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-details-heading h2 { font-size:20px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-card { padding:16px; gap:14px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-card .users-avatar { width:52px; height:52px; flex-basis:52px; font-size:16px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-identity h3 { font-size:16px; }
+          html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel > .users-detail-actions { width:100%; justify-content:flex-start; }
         }
 
       `}</style>
