@@ -651,3 +651,31 @@ html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/apr
   border:1px solid #1c4037 !important;
   box-shadow:none !important;
 }
+
+/* Approved status follows the activity table's Registered badge. */
+html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-approval-status="ATIVO"] {
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:7px 12px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  font-size:11px !important;
+  font-weight:500 !important;
+  line-height:1.5 !important;
+  background:#e4f3eb !important;
+  color:#0d7e70 !important;
+  box-shadow:none !important;
+}
+html.dark [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-approval-status="ATIVO"] {
+  background:#123b31 !important;
+  color:#00e9df !important;
+}
+html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace [data-approval-status="ATIVO"] > svg {
+  width:15px !important;
+  height:15px !important;
+  flex-shrink:0;
+  color:inherit !important;
+}
