@@ -141,15 +141,12 @@ export default function AdminLoginPage() {
     </div>
     <style jsx global>{`
 
-.admin-login { --login-bg:#f7f8f2; --login-surface:#fcfdf9; --login-border:#d7ded3; --login-text:#162623; --login-muted:#5f6f68; --login-brand:#129b89; --login-on-brand:#ffffff; --login-mode-icon:#162623; min-height:100svh; display:flex; flex-direction:column; background:var(--login-bg)!important; color:var(--login-text)!important; font-family:'Sora',sans-serif; }
-html.dark .admin-login { --login-bg:#041512; --login-surface:#091c18; --login-border:#1c4037; --login-text:#f5faf9; --login-muted:#a3becd; --login-brand:#00e9df; --login-on-brand:#002a26; --login-mode-icon:#b1c7cd; }
+.admin-login { --login-bg:#f7f8f2; --login-surface:#fcfdf9; --login-border:#d7ded3; --login-text:#162623; --login-muted:#5f6f68; --login-brand:#129b89; --login-on-brand:#ffffff; min-height:100svh; display:flex; flex-direction:column; background:var(--login-bg)!important; color:var(--login-text)!important; font-family:'Sora',sans-serif; }
+html.dark .admin-login { --login-bg:#041512; --login-surface:#091c18; --login-border:#1c4037; --login-text:#f5faf9; --login-muted:#a3becd; --login-brand:#00e9df; --login-on-brand:#002a26; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-header { display:flex; justify-content:space-between; align-items:center; gap:20px; width:100%; max-width:1100px; margin:0 auto; padding:24px 32px; border-bottom:1px solid var(--login-border); }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-logo { display:inline-flex; min-width:0; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-header-tools { display:flex; align-items:center; gap:16px; flex-shrink:0; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-back { display:inline-flex; align-items:center; gap:8px; min-height:44px; font-size:12px; color:var(--login-muted)!important; border:1px solid transparent; border-radius:13px; padding:8px; transition:background-color 150ms ease,border-color 150ms ease; }
-html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] { --control-text:var(--login-mode-icon); --control-border:var(--login-border); --control-surface:var(--login-surface); --control-focus:var(--login-brand); }
-html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button { border:1px solid transparent!important; border-radius:13px!important; color:var(--login-mode-icon)!important; background:transparent!important; box-shadow:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
-html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button svg { color:var(--login-mode-icon)!important; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-main { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.15fr); gap:48px; align-items:center; width:100%; max-width:960px; margin:auto; padding:56px 32px; flex:1; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-intro { position:relative; min-width:0; padding:18px 32px 18px 0; border-right:1px solid var(--login-border); }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-eyebrow { display:inline-flex; align-items:center; width:fit-content; max-width:100%; min-height:28px; padding:6px 16px; margin:0 0 17px; border:1px solid var(--login-brand); border-radius:999px; background:transparent; color:var(--login-brand); font-size:10px; font-weight:650; letter-spacing:.1em; text-transform:uppercase; line-height:14px; }
@@ -186,8 +183,7 @@ html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { anima
 @keyframes admin-login-spin { to { transform:rotate(360deg); } }
 @media(hover:hover) and (pointer:fine) {
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-command:not(:disabled):hover,
- html:is(.light,.dark) body .admin-login.admin-login .admin-login-field:not(:has(input:disabled)):hover,
-  html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button:hover:enabled { background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-field:not(:has(input:disabled)):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-submit:not(:disabled):hover { background:linear-gradient(rgba(0,0,0,.07),rgba(0,0,0,.07)),var(--login-brand)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
 }
 @media(max-width:767px) {
@@ -206,7 +202,7 @@ html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { anima
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-field input { font-size:16px; }
 }
 @media(max-width:359px) { html:is(.light,.dark) body .admin-login.admin-login .admin-login-header { padding-inline:16px; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-main { padding-inline:16px; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-header-tools { gap:0; } }
-@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-field,.admin-login-submit,.admin-login-command,.admin-login-text-action,.admin-login-visibility,.admin-login-back,[data-shapeos-theme-inline] button) { transition:none!important; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { animation:none; } }
+@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-field,.admin-login-submit,.admin-login-command,.admin-login-text-action,.admin-login-visibility,.admin-login-back) { transition:none!important; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { animation:none; } }
 
 
 /* Recovery text remains a text action without a surrounding field. */

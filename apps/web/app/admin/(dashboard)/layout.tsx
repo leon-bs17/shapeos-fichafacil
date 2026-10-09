@@ -543,13 +543,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
 
         /* Header notification and theme icons share one color in each mode. */
-        html.light [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) {
+        html.light [data-admin-route] button[aria-label^="Abrir notificações"] {
           color:#5f6f68!important;
         }
-        html.dark [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) {
+        html.dark [data-admin-route] button[aria-label^="Abrir notificações"] {
           color:#a3becd!important;
         }
-        html:is(.light,.dark) [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) > svg {
+        html:is(.light,.dark) [data-admin-route] button[aria-label^="Abrir notificações"] > svg {
           color:inherit!important;
         }
 

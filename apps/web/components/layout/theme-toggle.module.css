@@ -1,100 +1,91 @@
 .control {
-  --control-surface: #fcfdf9;
-  --control-text: #162623;
-  --control-border: #d7ded3;
-  --control-hover: #e4f3eb;
-  --control-focus: #129b89;
-  position: relative;
-  display: inline-flex;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+  --theme-toggle-surface:#fcfdf9;
+  --theme-toggle-text:#5f6f68;
+  --theme-toggle-border:#d7ded3;
+  --theme-toggle-primary:#129b89;
+  position:relative;
+  display:inline-flex;
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
 }
-
 :global(html.dark) .control {
-  --control-surface: #19261f;
-  --control-text: #b1c7cd;
-  --control-border: #2e4239;
-  --control-hover: #20352d;
-  --control-focus: #4dddc6;
+  --theme-toggle-surface:#091c18;
+  --theme-toggle-text:#a3becd;
+  --theme-toggle-border:#1c4037;
+  --theme-toggle-primary:#00e9df;
 }
-
-.button {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--control-text);
-  box-shadow: none;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color .15s, border-color .15s, color .15s;
+.control .button {
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  min-width:44px;
+  min-height:44px;
+  padding:0;
+  border:0!important;
+  border-radius:13px;
+  background:transparent;
+  color:var(--theme-toggle-text)!important;
+  box-shadow:none!important;
+  transform:none;
+  filter:none;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:background-color 150ms ease;
 }
-
-.button svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+.control .button svg {
+  width:20px;
+  height:20px;
+  flex-shrink:0;
+  color:inherit!important;
 }
-
-.button:focus-visible {
-  outline: 2px solid var(--control-focus);
-  outline-offset: 3px;
+.control .button:focus-visible {
+  outline:2px solid var(--theme-toggle-primary);
+  outline-offset:3px;
 }
-
-.button:disabled { cursor: default; }
-.button:active:enabled { background: var(--control-hover); }
-
+.control .button:disabled { cursor:default; opacity:.5; }
 .tooltip {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  z-index: 70;
-  padding: 8px 10px;
-  border: 1px solid var(--control-border);
-  border-radius: 8px;
-  background: var(--control-text);
-  color: var(--control-surface);
-  font: 500 11px/1.5 'Sora', sans-serif;
-  white-space: nowrap;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+  position:absolute;
+  top:calc(100% + 10px);
+  right:0;
+  z-index:70;
+  padding:8px 10px;
+  border:1px solid var(--theme-toggle-border);
+  border-radius:8px;
+  background:var(--theme-toggle-surface);
+  color:var(--theme-toggle-text);
+  font:500 11px/1.5 'Sora',sans-serif;
+  white-space:nowrap;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
 }
-
-.button:focus-visible + .tooltip { visibility: visible; opacity: 1; }
-
-@media (hover: hover) {
-  .button:hover:enabled {
-    background: var(--control-hover);
-    border-color: var(--control-focus);
-    color: var(--control-focus);
+.button:focus-visible + .tooltip { visibility:visible; opacity:1; }
+@media(hover:hover) and (pointer:fine) {
+  .control .button:hover:enabled {
+    background:color-mix(in srgb,var(--theme-toggle-primary) 7%,transparent);
+    color:var(--theme-toggle-text)!important;
   }
-  .control:hover .button:enabled + .tooltip { visibility: visible; opacity: 1; }
+  .control:hover .button:enabled + .tooltip { visibility:visible; opacity:1; }
 }
-
-/* Routes without a header still have the same control in the top corner. */
 .floating {
-  position: fixed;
-  top: max(16px, env(safe-area-inset-top));
-  right: max(16px, env(safe-area-inset-right));
-  z-index: 40;
+  position:fixed;
+  top:max(16px,env(safe-area-inset-top));
+  right:max(16px,env(safe-area-inset-right));
+  z-index:40;
 }
-
-/* Only the header control is visible on pages that provide one. */
-:global(body:has([data-shapeos-theme-inline])) .floating { display: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .button { transition: none; }
+:global(body:has([data-shapeos-theme-inline])) .floating { display:none; }
+.control:not(.floating) { margin-left:12px; }
+.control:not(.floating)::before {
+  content:'';
+  position:absolute;
+  left:-9px;
+  top:14px;
+  height:16px;
+  width:1px;
+  background:var(--theme-toggle-border);
+  pointer-events:none;
 }
-
-/* The divider belongs to the inline theme control, so every shared header gets it. */
-.control:not(.floating) { margin-left: 12px; }
-.control:not(.floating)::before { content: ''; position: absolute; left: -9px; top: 14px; height: 16px; width: 1px; background: var(--control-border); pointer-events: none; }
+@media(prefers-reduced-motion:reduce) { .control .button { transition:none; } }
