@@ -1,10 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import {
   Ban,
+  Check,
+  ChevronDown,
+  ChevronUp,
   Mail,
   CalendarDays,
   ChevronLeft,
@@ -41,6 +44,30 @@ export default function AdminUsuariosPage() {
 }
 
 function UsuariosConteudo() {
+  useEffect(() => {
+    const html = document.documentElement
+    const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+    let previousTheme = theme()
+    let frame = 0
+    let suppression: HTMLStyleElement | null = null
+    const restore = () => { suppression?.remove(); suppression = null }
+    const observer = new MutationObserver(() => {
+      const nextTheme = theme()
+      if (nextTheme === previousTheme) return
+      previousTheme = nextTheme
+      cancelAnimationFrame(frame)
+      restore()
+      suppression = document.createElement('style')
+      suppression.textContent = '.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace.users-workspace * { transition:none!important; }'
+      document.head.appendChild(suppression)
+      const workspace = document.querySelector('.users-workspace')
+      if (workspace) window.getComputedStyle(workspace).backgroundColor
+      frame = requestAnimationFrame(() => { frame = requestAnimationFrame(restore) })
+    })
+    observer.observe(html, { attributes:true, attributeFilter:['class'] })
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+  }, [])
+
   const queryClient = useQueryClient()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -182,41 +209,29 @@ function UsuariosConteudo() {
         <ContadorCard titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
       </div>
 
-      <div className="users-filters space-y-3">
-        <div data-admin-search className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            aria-label="Buscar usuários por nome ou e-mail"
-            placeholder="Buscar por nome ou e-mail..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="users-search pl-9 h-11"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
-          <div className="users-filter-group flex flex-wrap gap-2">
-            {['TODOS', 'ADMIN', 'PERSONAL', 'ALUNO'].map((tipo) => (
-              <FiltroBotao
-                key={tipo}
-                ativo={filtroTipo === tipo}
-                onClick={() => setFiltroTipo(tipo)}
-                label={tipo === 'TODOS' ? 'Todos os tipos' : tipo}
-              />
-            ))}
+      <section className="users-filters" aria-label="Busca e filtros de usuários">
+        <div className="users-filter-toolbar">
+          <div data-admin-search className="users-filter-search">
+            <Search size={19} strokeWidth={1.8} aria-hidden="true" />
+            <Input aria-label="Buscar usuários por nome ou e-mail" placeholder="Buscar por nome ou e-mail..."
+              value={busca} onChange={(e) => setBusca(e.target.value)} className="users-search" />
           </div>
-          <div className="users-filter-group flex flex-wrap gap-2">
-            {['TODOS', 'ATIVO', 'PENDENTE', 'BLOQUEADO'].map((status) => (
-              <FiltroBotao
-                key={status}
-                ativo={filtroStatus === status}
-                onClick={() => setFiltroStatus(status)}
-                label={status === 'TODOS' ? 'Todos os status' : status}
-              />
-            ))}
-          </div>
+          <UsersFilterSelect label="Perfil" value={filtroTipo} onChange={setFiltroTipo} options={TIPOS_FILTRO} />
+          <UsersFilterSelect label="Status" value={filtroStatus} onChange={setFiltroStatus} options={STATUS_FILTRO} />
         </div>
-      </div>
+        {(filtroTipo !== 'TODOS' || filtroStatus !== 'TODOS') && <div className="users-active-filters">
+          <span>Filtros ativos:</span>
+          {filtroTipo !== 'TODOS' && <button type="button" className="users-filter-chip"
+            aria-label="Remover filtro de perfil" onClick={() => setFiltroTipo('TODOS')}>
+            {TIPOS_FILTRO.find(option => option.value === filtroTipo)?.label}<X size={14} aria-hidden="true" />
+          </button>}
+          {filtroStatus !== 'TODOS' && <button type="button" className="users-filter-chip"
+            aria-label="Remover filtro de status" onClick={() => setFiltroStatus('TODOS')}>
+            {STATUS_FILTRO.find(option => option.value === filtroStatus)?.label}<X size={14} aria-hidden="true" />
+          </button>}
+          <button type="button" className="users-clear-filters" onClick={() => { setFiltroTipo('TODOS'); setFiltroStatus('TODOS') }}>Limpar filtros</button>
+        </div>}
+      </section>
 
       {acaoMutation.error ? (
         <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -558,6 +573,67 @@ function UsuariosConteudo() {
         html.light [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table :is(.users-email,.users-date) { color:#5f6f68!important; }
         html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table :is(.users-email,.users-date) { color:#a3becd!important; }
 
+
+        /* Compact search and custom selectors, matching the approved example. */
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filters { position:relative; padding:0; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-toolbar { display:grid; grid-template-columns:minmax(0,1fr) 190px 190px; align-items:start; gap:12px; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search { border-radius:13px!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search > input { background:transparent!important; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select { position:relative; min-width:0; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-trigger {
+          display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-height:48px; padding:0 14px;
+          border:1px solid var(--users-border)!important; border-radius:13px!important;
+          background:var(--users-surface)!important; color:var(--users-muted)!important;
+          font-size:13px; font-weight:400; cursor:pointer;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; transform:none!important; filter:none!important;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-trigger strong { color:var(--users-title); font-weight:600; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-trigger svg { flex-shrink:0; color:inherit; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-menu {
+          position:absolute; top:calc(100% + 8px); right:0; z-index:40; width:240px; max-width:calc(100vw - 32px);
+          max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; padding:6px;
+          background:var(--users-surface); color:var(--users-title); border:1px solid var(--users-border);
+          border-radius:13px; box-shadow:0 8px 24px rgba(0,0,0,.12); outline:none;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-menu[data-above="true"] { top:auto; bottom:calc(100% + 8px); }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-option {
+          display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:44px; padding:0 10px;
+          border:1px solid transparent; border-radius:13px; font-size:13px; cursor:pointer;
+          transition:background-color 150ms ease,border-color 150ms ease;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-option + .users-filter-select-option { margin-top:4px; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-option[aria-selected="true"] { background:color-mix(in srgb,var(--users-accent) 7%,transparent); color:var(--users-accent); }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-menu:focus .users-filter-select-option[data-active="true"] { border-color:color-mix(in srgb,var(--users-accent) 40%,transparent); }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-active-filters { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px; color:var(--users-muted); font-size:12px; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-chip {
+          display:inline-flex; align-items:center; gap:8px; min-height:36px; padding:6px 12px;
+          background:color-mix(in srgb,var(--users-accent) 7%,transparent); color:var(--users-accent);
+          border:1px solid var(--users-border); border-radius:13px; font-size:12px; cursor:pointer;
+          transition:background-color 150ms ease,border-color 150ms ease;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-clear-filters { min-height:36px; padding:6px 10px; border:1px solid transparent; border-radius:13px; background:transparent; color:var(--users-muted); font-size:12px; cursor:pointer; transition:background-color 150ms ease,border-color 150ms ease; }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filters button:focus-visible { outline:2px solid var(--users-accent); outline-offset:3px; }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search:hover,
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace :is(.users-filter-select-trigger,.users-filter-chip,.users-clear-filters):hover:enabled,
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-option:hover {
+            background:color-mix(in srgb,var(--users-accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--users-accent) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:767px) {
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-toolbar { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search { grid-column:1/-1; }
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-trigger, html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-option { font-size:16px; }
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-select-menu { width:100%; min-width:0; }
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace :is(.users-filter-chip,.users-clear-filters) { min-height:44px; }
+        }
+        @media(max-width:359px) { html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-toolbar { grid-template-columns:minmax(0,1fr); } }
+        @media(prefers-reduced-motion:reduce) {
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace :is(.users-filter-search,.users-filter-select-trigger,.users-filter-select-option,.users-filter-chip,.users-clear-filters) { transition:none!important; }
+        }
+
       `}</style>
     </div>
   )
@@ -568,21 +644,99 @@ function iniciaisUsuario(nome: string) {
   return partes.length > 1 ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase() : (partes[0]?.slice(0, 2).toUpperCase() || '?')
 }
 
-function FiltroBotao({ ativo, onClick, label }: { ativo: boolean; onClick: () => void; label: string }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`h-9 flex-shrink-0 rounded-xl px-3 text-xs font-medium transition-all ${
-        ativo
-          ? 'bg-primary text-primary-foreground shadow-sm'
-          : 'bg-muted text-muted-foreground hover:bg-muted/80'
-      }`}
-      aria-pressed={ativo}
-    >
-      {label}
+type UserFilterOption = { value: string; label: string }
+const TIPOS_FILTRO: UserFilterOption[] = [
+  { value: 'TODOS', label: 'Todos' }, { value: 'ADMIN', label: 'Admin' },
+  { value: 'PERSONAL', label: 'Personal' }, { value: 'ALUNO', label: 'Aluno' },
+]
+const STATUS_FILTRO: UserFilterOption[] = [
+  { value: 'TODOS', label: 'Todos' }, { value: 'ATIVO', label: 'Ativo' },
+  { value: 'PENDENTE', label: 'Pendente' }, { value: 'BLOQUEADO', label: 'Bloqueado' },
+]
+function UsersFilterSelect({ label: fieldLabel, value, onChange, options }: {
+  label: string; value: string; onChange: (value: string) => void; options: UserFilterOption[]
+}) {
+  const id = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [above, setAbove] = useState(false)
+  const selected = Math.max(0, options.findIndex((option) => option.value === value))
+
+  useEffect(() => {
+    if (!open) return
+    const outside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const place = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (rect) setAbove(window.innerHeight - rect.bottom < 220 && rect.top > 220)
+    }
+    place()
+    listRef.current?.focus({ preventScroll: true })
+    document.addEventListener('pointerdown', outside)
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
+
+  function choose(index: number) {
+    onChange(options[index].value)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  return <div ref={rootRef} className="users-filter-select" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+  }}>
+    <button ref={triggerRef} type="button" className="users-filter-select-trigger"
+      aria-label={`Filtrar por ${fieldLabel.toLowerCase()}: ${options[selected].label}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
+      onClick={() => { setActive(selected); setOpen(!open) }}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive(selected); setOpen(true)
+        }
+      }}>
+      <span>{fieldLabel}: <strong>{options[selected].label}</strong></span>
+      {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
     </button>
-  )
+    {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="users-filter-select-menu"
+      data-above={above} aria-label={`Opções de ${fieldLabel.toLowerCase()}`} aria-activedescendant={`${id}-${active}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive((index) => (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault(); setActive(event.key === 'Home' ? 0 : options.length - 1)
+        } else if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); choose(active)
+        } else if (event.key.length === 1) {
+          const index = options.findIndex((option) => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+          if (index >= 0) { event.preventDefault(); setActive(index) }
+        }
+      }}>
+      {options.map(({ value: optionValue, label }, index) => <div
+        key={optionValue} id={`${id}-${index}`} role="option"
+        aria-selected={value === optionValue} data-active={active === index}
+        className="users-filter-select-option"
+        onPointerDown={(event) => event.preventDefault()}
+        onPointerMove={() => setActive(index)}
+        onClick={() => choose(index)}>
+        <span>{label}</span>
+        {value === optionValue && <Check size={17} strokeWidth={2} />}
+      </div>)}
+    </div>}
+  </div>
 }
+
 
 function TipoBadge({ tipo }: { tipo: TipoUsuario }) {
   return (

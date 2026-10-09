@@ -100,11 +100,11 @@ export default function AdminSistemaPage() {
           </g>)}
         </g></svg>
       </section>
-      {error ? <div className="error" role="alert" aria-busy={isFetching}>Leitura do diagnóstico indisponível. <button type="button" disabled={isFetching} onClick={()=>refetch()}>{isFetching ? 'Verificando...' : 'Tentar novamente'}</button></div> : isLoading || !data ? <div className="h-64 rounded-3xl skeleton" role="status" aria-label="Verificando serviços"/> : <>
-        <section className={data.saudavel?'status-bar':'status-bar failure'} aria-live="polite" aria-busy={isFetching}>
+      {error ? <div className="error" role="alert">Leitura do diagnóstico indisponível. <button type="button" disabled={isFetching} onClick={()=>refetch()}>{isFetching ? 'Verificando...' : 'Tentar novamente'}</button></div> : isLoading || !data ? <div className="h-64 rounded-3xl skeleton" role="status" aria-label="Verificando serviços"/> : <>
+        <section className={data.saudavel?'status-bar':'status-bar failure'} aria-live="polite">
           <div className="status-copy">{data.saudavel?<CheckCircle2 size={43} strokeWidth={1.6}/>:<XCircle size={43} strokeWidth={1.6}/>}<div><h2>{data.saudavel?'Serviços operacionais':'Há serviços com falha'}</h2><p>Última verificação: {hora(data.verificadoEm)}</p></div></div>
           <span className="latency">Diagnóstico: <strong>{data.latencia.toLocaleString('pt-BR')} ms</strong></span>
-          <button type="button" className="verify" onClick={()=>refetch()} disabled={isFetching}><RefreshCw size={17} className={isFetching?'animate-spin':''}/>{isFetching?'Verificando...':'Verificar agora'}</button>
+          <button className="verify" onClick={()=>refetch()} disabled={isFetching}><RefreshCw size={17} className={isFetching?'animate-spin':''}/>{isFetching?'Verificando...':'Verificar agora'}</button>
         </section>
         <div className="services">{data.checks.map((check,i)=>{const Icon=icons[i]??FileText;return <section className="service" key={check.nome}>
           <header><Icon size={29} strokeWidth={1.6}/><span className={check.ok?'badge':'badge unavailable'}><i/>{check.ok?'Disponível':'Indisponível'}</span></header>
@@ -114,7 +114,7 @@ export default function AdminSistemaPage() {
       </>}
       <style jsx>{`
         .system-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:18px; padding-bottom:24px; min-width:0; }
-        :global(.dark) .system-workspace { --surface:#091c18; --border:#1c4037; --text:#f5faf9; --muted:#a3becd; --accent:#00e9df; }
+        :global(.dark) .system-workspace { --surface:#071b17; --border:#1a4439; --text:#f5f9f7; --muted:#a6c2cc; --accent:#00e9df; }
         :global(.dark [data-admin-route="/admin/sistema"]) { background:#041512!important; --shapeos-brand:#00e9df; }
         .hero { position:relative; overflow:hidden; min-height:225px; display:flex; align-items:center; padding:34px 36px; border:1px solid var(--border); border-radius:17px; background:var(--surface); }
         :global(.dark) .hero { background:radial-gradient(ellipse at 83% 65%,#07342a,#071b17 45%,#041512); }
@@ -167,50 +167,6 @@ export default function AdminSistemaPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation-intro) { min-width:0; gap:14px; }
         }
 
-        /* Finish the shared palette and keep status content readable at every width. */
-        :global(html.light [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace) {
-          --surface:#fcfdf9!important; --border:#d7ded3!important; --text:#162623!important;
-          --muted:#5f6f68!important; --accent:#129b89!important;
-          --status-error:#a52b3d; --status-error-border:#e2b8be; --status-error-soft:#fce6e8;
-        }
-        :global(html.dark [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace) {
-          --surface:#091c18!important; --border:#1c4037!important; --text:#f5faf9!important;
-          --muted:#a3becd!important; --accent:#00e9df!important;
-          --status-error:#ff8f9b; --status-error-border:#68343f; --status-error-soft:#3b1d26;
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .hero h1) { color:var(--text)!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .hero h1 span), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .wireframe) { color:var(--accent)!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .hero h1 + p) { color:var(--muted)!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy > div) { min-width:0; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy h2), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy p) { overflow-wrap:anywhere; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service) { display:flex; flex-direction:column; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service h3) { overflow-wrap:anywhere; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service p) { flex:1; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service footer) { flex-wrap:wrap; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .scope > svg) { flex-shrink:0; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation-intro > div:last-child) { min-width:0; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation li) { line-height:1.6; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .failure), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .error) {
-          background:var(--surface); border-color:var(--status-error-border);
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .failure .status-copy > svg) { color:var(--status-error); }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .error) { color:var(--text); line-height:1.6; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace button:focus-visible) { outline:2px solid var(--accent); outline-offset:3px; }
-        @media(max-width:767px) {
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .services) { grid-template-columns:minmax(0,1fr); gap:14px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service) { padding:20px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service p) { font-size:13px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service footer) { font-size:11px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation) { padding:20px; gap:20px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation-intro) { align-items:flex-start; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation ul) { grid-template-columns:minmax(0,1fr); gap:14px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation p), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation li) { font-size:12px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .error button) { min-height:48px; }
-        }
-        @media(prefers-reduced-motion:reduce) {
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace :is(.verify,.error button)) { transition:none!important; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .animate-spin) { animation:none!important; }
-        }
       `}</style>
     </div>
   )
