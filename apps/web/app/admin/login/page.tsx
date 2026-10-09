@@ -185,7 +185,7 @@ html:is(.light,.dark) body .admin-login.admin-login :is(a,button):focus-visible 
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { animation:admin-login-spin 1s linear infinite; }
 @keyframes admin-login-spin { to { transform:rotate(360deg); } }
 @media(hover:hover) and (pointer:fine) {
- html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-command,.admin-login-text-action,.admin-login-visibility):not(:disabled):hover,
+ html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-command,.admin-login-visibility):not(:disabled):hover,
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-field:not(:has(input:disabled)):hover,
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-back:hover,
  html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button:hover:enabled { background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
@@ -208,6 +208,14 @@ html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { anima
 }
 @media(max-width:359px) { html:is(.light,.dark) body .admin-login.admin-login .admin-login-header { padding-inline:16px; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-main { padding-inline:16px; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-header-tools { gap:0; } }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-field,.admin-login-submit,.admin-login-command,.admin-login-text-action,.admin-login-visibility,.admin-login-back,[data-shapeos-theme-inline] button) { transition:none!important; } html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { animation:none; } }
+
+
+/* Recovery text remains a text action without a surrounding field. */
+html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action,
+html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action:hover,
+html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action:active {
+  background:transparent!important; border-color:transparent!important; box-shadow:none!important;
+}
 
     `}</style>
   </main>
