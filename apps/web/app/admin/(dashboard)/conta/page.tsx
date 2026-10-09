@@ -165,7 +165,7 @@ html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][d
 html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-spinner { animation:account-spin 1s linear infinite; }
 @keyframes account-spin { to { transform:rotate(360deg); } }
 @media(hover:hover) and (pointer:fine) {
- html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace :is(.account-command,.account-visibility):not(:disabled):hover,
+ html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-command:not(:disabled):hover,
  html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-password:not(:has(input:disabled)):hover { background:color-mix(in srgb,var(--account-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--account-brand) 40%,transparent)!important; }
 }
 @media(max-width:900px) {
@@ -185,6 +185,12 @@ html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][d
  html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-success button { width:100%; }
 }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace :is(.account-password,.account-command,.account-visibility) { transition:none!important; } html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-spinner { animation:none; } }
+
+
+html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-visibility,
+html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .account-workspace.account-workspace .account-visibility:hover {
+  background:transparent!important; border-color:transparent!important; box-shadow:none!important;
+}
 
     `}</style>
   </div>
