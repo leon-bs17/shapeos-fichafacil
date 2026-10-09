@@ -227,7 +227,7 @@ function ExerciciosConteudo() {
         </div>
       )}
 
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
+      <Modal admin open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ex-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -278,7 +278,7 @@ function ExerciciosConteudo() {
         </div>
       </Modal>
 
-      <Modal open={!!editandoMedia} onClose={() => setEditandoMedia(null)} titulo="Demonstração do exercício">
+      <Modal admin open={!!editandoMedia} onClose={() => setEditandoMedia(null)} titulo="Demonstração do exercício">
         <div className="space-y-4">
           <p className="font-medium">{editandoMedia?.nome}</p>
           <div className="space-y-1.5">

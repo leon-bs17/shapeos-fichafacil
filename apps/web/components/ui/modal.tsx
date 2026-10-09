@@ -1,6 +1,6 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -10,13 +10,16 @@ export function Modal({
   titulo,
   children,
   className,
+  admin = false,
 }: {
   open: boolean
   onClose: () => void
   titulo: string
   children: ReactNode
   className?: string
+  admin?: boolean
 }) {
+  if (admin) return <AdminModal open={open} onClose={onClose} titulo={titulo} className={className}>{children}</AdminModal>
   if (!open) return null
 
   return (
@@ -49,4 +52,45 @@ export function Modal({
       </div>
     </div>
   )
+}
+
+function AdminModal({ open, onClose, titulo, children, className }: {
+  open: boolean
+  onClose: () => void
+  titulo: string
+  children: ReactNode
+  className?: string
+}) {
+  const ref = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+
+  useEffect(() => {
+    const dialog = ref.current
+    if (!open || !dialog) return
+    const focused = document.activeElement as HTMLElement | null
+    if (!dialog.open) dialog.showModal()
+    return () => {
+      dialog.close()
+      focused?.focus()
+    }
+  }, [open])
+
+  return <dialog ref={ref} data-admin-modal aria-labelledby={titleId}
+    className={cn('w-full max-w-lg rounded-2xl p-6', className)}
+    onCancel={(event) => { event.preventDefault(); onClose() }}
+    onClick={(event) => {
+      if (event.target !== event.currentTarget) return
+      const rect = event.currentTarget.getBoundingClientRect()
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
+    }}>
+    {open && <>
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h2 id={titleId} className="text-lg font-bold tracking-tight">{titulo}</h2>
+        <button type="button" onClick={onClose} autoFocus
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted"
+          aria-label="Fechar"><X className="h-4 w-4" /></button>
+      </div>
+      {children}
+    </>}
+  </dialog>
 }

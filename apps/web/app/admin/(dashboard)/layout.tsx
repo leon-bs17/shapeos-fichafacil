@@ -464,6 +464,46 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         html.dark [data-admin-route] [data-admin-content] .approvals-workspace [data-approvals-filters] label:focus-within { border-color:#00e9df!important; }
 
 
+
+        /* Admin dialogs share one viewport-based presentation in both themes. */
+        html:is(.light,.dark) body [data-admin-route][data-admin-route] dialog[open][open][open][open] {
+          position:fixed!important;
+          inset:0!important;
+          margin:auto!important;
+          height:fit-content!important;
+          min-width:0!important;
+          max-width:calc(100vw - 32px)!important;
+          max-height:calc(100dvh - 32px)!important;
+          box-sizing:border-box!important;
+          overflow-y:auto!important;
+          overscroll-behavior:contain!important;
+          transform:none!important;
+          translate:none!important;
+          animation:none!important;
+        }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route] dialog[open][open][open][open]::backdrop {
+          background:rgba(0,0,0,.5)!important;
+          backdrop-filter:blur(3px)!important;
+          -webkit-backdrop-filter:blur(3px)!important;
+        }
+        html:has([data-admin-route] dialog[open]),
+        html:has([data-admin-route] dialog[open]) body {
+          overflow:hidden!important;
+          overscroll-behavior:none;
+        }
+        html.light body [data-admin-route] dialog[data-admin-modal] {
+          background:#fcfdf9; color:#162623; border:1px solid #d7ded3;
+        }
+        html.dark body [data-admin-route] dialog[data-admin-modal] {
+          background:#091c18; color:#f5faf9; border:1px solid #1c4037;
+        }
+        @media(max-width:767px) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route] dialog[open][open][open][open] {
+            max-width:calc(100vw - 24px)!important;
+            max-height:calc(100dvh - 24px)!important;
+          }
+        }
+
       `}</style>
     </div>
   )
