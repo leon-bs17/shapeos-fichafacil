@@ -7,6 +7,10 @@ import {
   ArrowLeft,
   ChartColumn,
   CircleCheck,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
   CircleUserRound,
   ClipboardList,
   Dumbbell,
@@ -65,6 +69,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
   }, [pathname])
   const router = useRouter()
+  const [collapsed, setCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState<string|null>(null)
+  const mobileDialog = useRef<HTMLDialogElement>(null)
+  const mobileTrigger = useRef<HTMLButtonElement>(null)
   const [busca, setBusca] = useState('')
   const buscaRef = useRef<HTMLInputElement>(null)
 
@@ -93,11 +103,56 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('keydown', focarBusca)
   }, [pathname])
 
+  useEffect(() => { setMobileOpen(false) }, [pathname])
+  useEffect(() => {
+    if (!mobileOpen) return
+    const dialog = mobileDialog.current
+    const previousOverflow = document.body.style.overflow
+    if (dialog && !dialog.open) dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    const desktop = window.matchMedia('(min-width:1024px)')
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false) }
+    desktop.addEventListener('change',closeOnDesktop)
+    return () => {
+      desktop.removeEventListener('change',closeOnDesktop)
+      dialog?.close()
+      document.body.style.overflow = previousOverflow
+      if (!desktop.matches) mobileTrigger.current?.focus()
+    }
+  }, [mobileOpen])
+  useEffect(() => {
+    const html = document.documentElement
+    let dark = html.classList.contains('dark')
+    let first = 0
+    let second = 0
+    let suppression:HTMLStyleElement|null = null
+    const restore = () => { suppression?.remove(); suppression=null }
+    const observer = new MutationObserver(() => {
+      const next = html.classList.contains('dark')
+      if (next===dark) return
+      dark=next
+      cancelAnimationFrame(first); cancelAnimationFrame(second); restore()
+      suppression=document.createElement('style')
+      suppression.textContent='html body [data-admin-route] .shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation.shapeos-navigation * { transition:none!important; }'
+      document.head.appendChild(suppression)
+      const menu=document.querySelector('.shapeos-navigation')
+      if(menu)void getComputedStyle(menu).backgroundColor
+      first=requestAnimationFrame(()=>{second=requestAnimationFrame(restore)})
+    })
+    observer.observe(html,{attributes:true,attributeFilter:['class']})
+    return ()=>{observer.disconnect();cancelAnimationFrame(first);cancelAnimationFrame(second);restore()}
+  }, [])
   async function sair() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/admin/login')
-    router.refresh()
+    if (signingOut) return
+    setSigningOut(true);setSignOutError(null)
+    try {
+      const {error}=await createClient().auth.signOut()
+      if(error)throw error
+      setMobileOpen(false)
+      router.push('/admin/login')
+      router.refresh()
+    } catch {setSignOutError('Não foi possível sair. Tente novamente.')}
+    finally {setSigningOut(false)}
   }
 
   function buscarNoAdmin(event: React.FormEvent<HTMLFormElement>) {
@@ -112,110 +167,59 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     router.push(destino.href)
   }
 
-  function linkDesktop(item: typeof contaLink) {
-    const Icon = item.icone
-    const ativo = item.href === '/admin' ? pathname === item.href : pathname.startsWith(item.href)
-    return (
-      <Link
-        key={item.href}
-        href={item.href}
-        aria-current={ativo ? 'page' : undefined}
-        className="group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent/50"
-        style={{
-          color: ativo ? 'var(--shapeos-text)' : 'var(--shapeos-muted)',
-          background: ativo ? 'rgba(var(--shapeos-neutral-rgb),.06)' : 'transparent',
-          border: '1px solid transparent',
-        }}
-      >
-        {ativo && <span className="absolute left-0 h-5 w-0.5 rounded-full bg-[var(--shapeos-brand)]" />}
-        <Icon className="shapeos-menu-icon h-[18px] w-[18px] shrink-0" strokeWidth={1.8} aria-hidden="true" />
-        <span className="flex-1">{item.label}</span>
-
-      </Link>
-    )
+  function menuLink(item: typeof contaLink, mobile=false) {
+    const Icon=item.icone
+    const active=item.href==='/admin'?pathname===item.href:pathname.startsWith(item.href)
+    return <Link key={item.href} href={item.href} aria-current={active?'page':undefined}
+      aria-label={item.label} title={!mobile&&collapsed?item.label:undefined}
+      className="admin-menu-row" onClick={()=>setMobileOpen(false)}>
+      <Icon className="shapeos-menu-icon" size={18} strokeWidth={1.8} aria-hidden="true"/>
+      <span className="admin-menu-label">{item.label}</span>
+    </Link>
+  }
+  function menuContents(mobile=false) {
+    const compact=!mobile&&collapsed
+    const initials=(user?.nome?.trim()||'Administrador').split(/\s+/).filter(Boolean).slice(0,2).map((part:string)=>part[0]).join('').toLocaleUpperCase('pt-BR')
+    return <>
+      <header className="admin-menu-header">
+        <div className="admin-menu-logo">{compact?<ShieldCheck size={26} aria-hidden="true"/>:<Logo size="sm"/>}</div>
+        <button type="button" className="admin-menu-toggle" autoFocus={mobile}
+          aria-label={mobile?'Fechar menu':compact?'Expandir menu':'Recolher menu'}
+          aria-expanded={mobile?undefined:!collapsed} aria-controls={mobile?'admin-mobile-navigation':'admin-desktop-navigation'}
+          onClick={()=>mobile?setMobileOpen(false):setCollapsed(!collapsed)}>
+          {mobile?<X size={20}/>:compact?<ChevronRight size={20}/>:<ChevronLeft size={20}/>}
+        </button>
+      </header>
+      <div className="admin-menu-identity"><ShieldCheck size={19} aria-hidden="true"/><span className="admin-menu-label">Administração</span></div>
+      <nav id={mobile?'admin-mobile-navigation':'admin-desktop-navigation'} aria-label={mobile?'Administração no celular':'Administração'} className="admin-menu-nav">
+        <section aria-label="Operação"><h2 className="admin-menu-group">Operação</h2><div>{novasFerramentas.map(item=>menuLink(item,mobile))}</div></section>
+        <section aria-label="Gestão"><h2 className="admin-menu-group">Gestão</h2><div>{gestaoLinks.map(item=>menuLink(item,mobile))}</div></section>
+        <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}</div></section>
+      </nav>
+      <div className="admin-menu-footer">
+        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" title={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
+        <button type="button" className="admin-menu-row" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
+        {signOutError&&<p className="admin-menu-error" role="alert">{signOutError}</p>}
+      </div>
+      {user&&<div className="admin-menu-profile" title={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
+    </>
   }
 
   return (
-    <div data-admin-route={pathname} className="min-h-screen bg-[var(--shapeos-bg)] text-[var(--shapeos-text)]" style={{ fontFamily: "'Sora', sans-serif" }}>
-      <aside
-        className="shapeos-navigation fixed inset-y-0 left-0 z-50 hidden w-64 flex-col lg:flex"
-        style={{
-          background: 'var(--shapeos-surface)',
-          borderRight: '1px solid rgba(var(--shapeos-neutral-rgb),.06)',
-          boxShadow: 'none',
-        }}
-      >
-        <div className="flex h-20 flex-shrink-0 items-center px-5" style={{ borderBottom: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
-          <Logo size="sm" />
-        </div>
-
-        <div className="flex-shrink-0 px-4 pt-4">
-          <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(34,199,199,.045)', border: '1px solid rgba(34,199,199,.12)' }}>
-            <ShieldCheck className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground">Administração</p>
-              <p className="mt-0.5 text-[9px] text-muted-foreground">controle da plataforma</p>
-            </div>
-          </div>
-        </div>
-
-        <nav aria-label="Administração" className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
-          <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[var(--shapeos-brand)]">Operação</p>
-          <div className="space-y-1">
-            {novasFerramentas.map((item) => linkDesktop(item))}
-          </div>
-
-          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Gestão</p>
-          <div className="space-y-1">
-            {gestaoLinks.map((item) => linkDesktop(item))}
-          </div>
-
-          <p className="mb-2 mt-5 px-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Conta</p>
-          <div className="space-y-1">{linkDesktop(contaLink)}</div>
-        </nav>
-
-        <div className="flex-shrink-0 space-y-1 p-4" style={{ borderTop: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
-          <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground">
-            <ArrowLeft className="shapeos-menu-icon h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden="true" /> Voltar ao app
-          </Link>
-          <button onClick={sair} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-red-400/[.05] hover:text-red-300">
-            <LogOut className="shapeos-menu-icon h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden="true" /> Sair
-          </button>
-        </div>
-
-        {user && (
-          <div className="flex-shrink-0 p-4" style={{ borderTop: '1px solid rgba(var(--shapeos-neutral-rgb),.055)' }}>
-            <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl text-xs font-bold text-[var(--shapeos-on-brand)]" style={{ background: 'var(--shapeos-brand)' }}>
-                {user.nome?.charAt(0)?.toUpperCase() ?? 'A'}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-xs font-semibold text-foreground">{user.nome}</p>
-                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{user.email}</p>
-              </div>
-            </div>
-          </div>
-        )}
+    <div data-admin-route={pathname} data-menu-collapsed={collapsed} className="min-h-screen bg-[var(--shapeos-bg)] text-[var(--shapeos-text)]" style={{ fontFamily: "'Sora', sans-serif" }}>
+      <aside id="admin-desktop-menu" className="shapeos-navigation admin-desktop-menu" data-collapsed={collapsed}>
+        {menuContents()}
       </aside>
-
-      <div className="sticky top-0 z-40 border-b border-border bg-[var(--shapeos-bg)]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Logo size="sm" />
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <ThemeToggle />
-            <button onClick={sair} className="rounded-xl p-2 text-muted-foreground" aria-label="Sair">
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-        <details className="mt-3 group">
-          <summary className="cursor-pointer rounded-lg border border-border px-3 py-2.5 text-sm text-muted-foreground">Navegar · {todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</summary>
-          <nav aria-label="Administração no celular" className="mt-2 grid max-h-[60vh] grid-cols-2 gap-1 overflow-y-auto rounded-xl border border-border bg-card p-2">
-            {todosLinks.map((item) => linkDesktop(item))}
-          </nav>
-        </details>
+      <div className="admin-mobile-bar">
+        <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
+        <Logo size="sm"/>
+        <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>
       </div>
+      <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
+        onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
+        onClick={event=>{if(event.target!==event.currentTarget)return;const rect=event.currentTarget.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)setMobileOpen(false)}}>
+        {mobileOpen&&menuContents(true)}
+      </dialog>
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
@@ -634,6 +638,63 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         html.light body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] { --admin-section-label-color:#129b89; }
         html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] { --admin-section-label-color:#00e9df; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .control-heading-copy > p:first-child,.approvals-workspace [data-approvals-hero] .eyebrow,.activity-workspace .activity-hero .eyebrow,.reports-workspace .hero .eyebrow,.notices-workspace .hero .eyebrow,.system-workspace .hero .eyebrow,.users-workspace .users-hero .eyebrow,.personals-workspace .personals-hero .eyebrow,.exercises-workspace .exercises-hero .eyebrow,.audit-workspace .audit-hero .eyebrow) > svg { display:none!important; }
+
+
+        /* Admin navigation: matching desktop, compact and mobile presentations. */
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] { --admin-menu-bg:#fcfdf9; --admin-menu-border:#d7ded3; --admin-menu-text:#162623; --admin-menu-muted:#5f6f68; --admin-menu-brand:#129b89; }
+        html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] { --admin-menu-bg:#101917; --admin-menu-border:#2e4239; --admin-menu-text:#eff5ed; --admin-menu-muted:#a5b8ae; --admin-menu-brand:#4dddc6; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation { font-family:'Sora',sans-serif!important; background:var(--admin-menu-bg)!important; color:var(--admin-menu-text)!important; border-right:1px solid var(--admin-menu-border)!important; box-shadow:none!important; padding:0!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-desktop-menu { position:fixed; inset:0 auto 0 0; width:290px; height:100dvh; z-index:50; display:none; flex-direction:column; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-header { display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:80px; padding:16px 18px; border-bottom:1px solid var(--admin-menu-border); flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-logo { min-width:0; color:var(--admin-menu-brand); }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-toggle,.admin-menu-row) { border:1px solid transparent!important; border-radius:13px!important; box-shadow:none!important; filter:none!important; transform:none!important; background:transparent!important; color:var(--admin-menu-muted)!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-toggle { display:grid; place-items:center; width:44px; min-width:44px; height:44px; padding:0; cursor:pointer; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-identity { display:flex; align-items:center; gap:12px; min-height:56px; padding:12px 26px; border-bottom:1px solid var(--admin-menu-border); flex-shrink:0; font-size:13px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-identity svg { color:var(--admin-menu-brand)!important; flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-nav { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:20px 14px 14px; scrollbar-width:thin; scrollbar-color:var(--admin-menu-border) transparent; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-nav section+section { margin-top:20px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-group { color:var(--admin-menu-brand)!important; font-size:10px!important; font-weight:650!important; letter-spacing:.1em!important; line-height:1.4; text-transform:uppercase; padding:0 12px; margin-bottom:9px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row { display:flex; align-items:center; gap:12px; width:100%; min-height:44px; padding:10px 12px; font-size:13px!important; font-weight:400; text-align:left; cursor:pointer; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row+.admin-menu-row { margin-top:3px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row[aria-current="page"] { color:var(--admin-menu-brand)!important; background:color-mix(in srgb,var(--admin-menu-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--admin-menu-brand) 40%,transparent)!important; font-weight:600; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .shapeos-menu-icon { width:18px!important; height:18px!important; flex-shrink:0; color:inherit!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-label { min-width:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-footer { padding:12px 14px; border-top:1px solid var(--admin-menu-border); flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-profile { display:flex; align-items:center; gap:12px; border-top:1px solid var(--admin-menu-border); padding:16px 24px; flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-avatar { display:grid; place-items:center; width:42px; height:42px; flex-shrink:0; border-radius:50%; background:color-mix(in srgb,var(--admin-menu-brand) 15%,var(--admin-menu-bg)); color:var(--admin-menu-brand); font-size:14px; font-weight:650; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-profile p { color:var(--admin-menu-text)!important; font-size:12px; font-weight:600; line-height:1.5; overflow-wrap:anywhere; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-profile .admin-menu-label>span { display:block; color:var(--admin-menu-muted)!important; font-size:11px; margin-top:3px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-error { color:#b42336; font-size:11px; line-height:1.6; margin-top:8px; overflow-wrap:anywhere; }
+        html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-error { color:#ff8f9b; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation button:disabled { opacity:.5; cursor:not-allowed; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(a,button):focus-visible { outline:2px solid var(--admin-menu-brand)!important; outline-offset:2px!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-mobile-bar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; position:sticky; top:0; z-index:40; padding:12px 16px; border-bottom:1px solid var(--admin-menu-border); background:var(--admin-menu-bg); color:var(--admin-menu-text); }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-mobile-tools { margin-left:auto; display:flex; align-items:center; gap:6px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open { display:grid; place-items:center; width:44px; min-width:44px; height:44px; border:1px solid var(--admin-menu-border); border-radius:13px; color:var(--admin-menu-text); background:transparent; transition:background-color 150ms ease,border-color 150ms ease; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open:focus-visible { outline:2px solid var(--admin-menu-brand); outline-offset:2px; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-mobile-menu { display:none!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-mobile-menu[open][open][open][open] { display:flex!important; flex-direction:column!important; position:fixed!important; inset:0 auto 0 0!important; margin:0!important; width:min(300px,calc(100vw - 24px))!important; max-width:calc(100vw - 24px)!important; height:100dvh!important; max-height:100dvh!important; border:0!important; border-right:1px solid var(--admin-menu-border)!important; border-radius:0 18px 18px 0!important; overflow:hidden!important; transform:none!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-mobile-menu[open][open][open][open]::backdrop { background:rgba(0,0,0,.5)!important; backdrop-filter:blur(3px)!important; -webkit-backdrop-filter:blur(3px)!important; }
+        @media(min-width:1024px) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-desktop-menu { display:flex; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-mobile-bar { display:none; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] > main { margin-left:290px!important; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation.admin-desktop-menu[data-collapsed="true"] { width:84px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-menu-collapsed="true"] > main { margin-left:84px!important; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-header { flex-direction:column; gap:8px; padding:14px 8px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] :is(.admin-menu-label,.admin-menu-group) { display:none; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-identity { justify-content:center; padding:12px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-row { justify-content:center; padding:10px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-nav { padding:16px 10px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-nav section+section { margin-top:16px; padding-top:16px; border-top:1px solid var(--admin-menu-border); }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-footer { padding:12px 10px; }
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation[data-collapsed="true"] .admin-menu-profile { justify-content:center; padding:14px 8px; }
+        }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-row,.admin-menu-toggle):not(:disabled):hover,
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open:hover { background:color-mix(in srgb,var(--admin-menu-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--admin-menu-brand) 40%,transparent)!important; }
+        }
+        @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-row,.admin-menu-toggle),html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open { transition:none!important; } }
 
       `}</style>
     </div>
