@@ -298,7 +298,7 @@ export default function AdminAuditoriaPage() {
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setSelected(null)
     }}>
       {selected && <><header className="audit-dialog-heading"><div><p>Auditoria</p><h2 id={titleId}>Detalhes do registro</h2></div><button type="button" autoFocus className="audit-button" aria-label="Fechar detalhes" onClick={() => setSelected(null)}><X size={20}/></button></header>
-        <div className="audit-dialog-body"><div className="audit-detail-summary"><ShieldCheck size={26}/><div><h3>{configFor(selected).label}</h3><p>{dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p></div></div>
+        <div className="audit-dialog-body" tabIndex={0} role="region" aria-label="Conteúdo do registro"><div className="audit-detail-summary"><ShieldCheck size={26}/><div><h3>{configFor(selected).label}</h3><p>{dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p></div></div>
         <dl className="audit-detail-people"><div><dt>Administrador</dt><dd>{nomes.get(selected.admin_id)?.nome ?? 'Administrador'}</dd>{nomes.get(selected.admin_id)?.email && <dd className="audit-detail-email">{nomes.get(selected.admin_id)?.email}</dd>}</div>
           <div><dt>Usuário</dt><dd>{targetName(selected)}</dd>{selected.usuario_id && nomes.get(selected.usuario_id)?.email && <dd className="audit-detail-email">{nomes.get(selected.usuario_id)?.email}</dd>}</div></dl>
         <section className="audit-changes"><h3>Alterações registradas</h3><DetailFields details={selected.detalhes ?? {}} /></section></div>
@@ -521,6 +521,39 @@ export default function AdminAuditoriaPage() {
         html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-people > div + div { border-left:0; padding-left:0; }
         html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table colgroup, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table .audit-diff-arrow { display:none; }
         html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog footer { margin-top:18px; padding-top:16px; }
+      }
+
+
+      /* Center the original wireframe artwork without changing its dimensions. */
+      @media(min-width:768px) {
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-wireframe { top:calc(50% - 16px); }
+      }
+      /* Match the approved detail preview and use one content scroll area. */
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog { width:min(600px,calc(100vw - 32px)); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog-body { scrollbar-gutter:auto; scrollbar-width:thin; scrollbar-color:var(--audit-border) transparent; padding-right:0; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog-body::-webkit-scrollbar { width:6px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog-body::-webkit-scrollbar-track { background:transparent; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog-body::-webkit-scrollbar-thumb { border-radius:999px; background:var(--audit-border); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog-body:focus-visible { outline:2px solid var(--audit-brand); outline-offset:-2px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary { padding:20px; border-radius:13px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary > svg { width:30px; height:30px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary h3 { font-size:18px; line-height:1.4; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary p { font-size:14px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-people dt { font-size:13px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-people .audit-detail-email { font-size:13px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message { padding:20px; gap:16px; background:color-mix(in srgb,var(--audit-muted) 9%,var(--audit-surface)); border-color:color-mix(in srgb,var(--audit-muted) 35%,var(--audit-border)); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message > svg { width:34px; height:34px; padding:3px; border-radius:50%; background:color-mix(in srgb,var(--audit-muted) 12%,transparent); margin-top:0; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message h4 { font-size:15px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message p, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-note { font-size:13px; line-height:1.65; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary { min-height:56px; padding:15px 18px; font-size:13px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-record-scroll { max-height:none; overflow:visible; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog footer .audit-button { padding:0 20px; font-size:13px; }
+      @media(max-width:767px) {
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-dialog { width:calc(100vw - 24px); }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary h3 { font-size:16px; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-detail-summary p { font-size:13px; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message { padding:16px; gap:12px; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message h4 { font-size:14px; }
       }
 
     `}</style>
