@@ -436,7 +436,7 @@ function UsuariosConteudo() {
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(3) { width:12%; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(4) { width:15%; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(5) { width:10%; }
-        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:124px; text-align:right; }
+        html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table th:nth-child(6) { width:124px; text-align:center; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td { padding:6px 20px; height:50px; font-size:12px; border-bottom:1px solid var(--users-border); }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-table td:first-child p { font-weight:650; }
         html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-avatar { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:11px; font-weight:700; }
@@ -536,6 +536,27 @@ function UsuariosConteudo() {
           html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-profile-identity h3 { font-size:16px; }
           html [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace .users-access-panel > .users-detail-actions { width:100%; justify-content:flex-start; }
         }
+
+
+        /* Align the Actions heading and controls without changing mobile cards. */
+        @media(min-width:768px) {
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table th:last-child, html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table td[data-label="Ações"] { text-align:center!important; }
+        }
+        /* Informational status labels share the soft table badge treatment. */
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table .users-status {
+          border:0!important; min-height:0; gap:7px; padding:7px 12px;
+          border-radius:999px; font-size:11px; font-weight:500; line-height:1.5;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table .users-status svg { width:15px; height:15px; flex-shrink:0; }
+        html.light [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table [data-user-status="ATIVO"] {
+          background:#e4f3eb!important; color:#0d7e70!important;
+        }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table [data-user-status="ATIVO"] {
+          background:#123b31!important; color:#00e9df!important;
+        }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table :is(.users-email,.users-date) { color:var(--users-muted)!important; }
+        html.light [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table :is(.users-email,.users-date) { color:#5f6f68!important; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table :is(.users-email,.users-date) { color:#a3becd!important; }
 
       `}</style>
     </div>
