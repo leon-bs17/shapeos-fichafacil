@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { BarChart3, CalendarDays, Download, Dumbbell, FileText, GraduationCap, RefreshCw, UserCheck, Users } from 'lucide-react'
@@ -38,6 +38,31 @@ function variacao(atual: number, anterior: number) {
   return (v > 0 ? '+' : '') + v + '%'
 }
 export default function AdminRelatoriosPage() {
+
+  useEffect(() => {
+    const html = document.documentElement
+    const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+    let previousTheme = theme()
+    let frame = 0
+    let suppression: HTMLStyleElement | null = null
+    const restore = () => { suppression?.remove(); suppression = null }
+    const observer = new MutationObserver(() => {
+      const nextTheme = theme()
+      if (nextTheme === previousTheme) return
+      previousTheme = nextTheme
+      cancelAnimationFrame(frame)
+      restore()
+      suppression = document.createElement('style')
+      suppression.textContent = '.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace.reports-workspace * { transition:none!important; }'
+      document.head.appendChild(suppression)
+      const workspace = document.querySelector('.reports-workspace')
+      if (workspace) window.getComputedStyle(workspace).backgroundColor
+      frame = requestAnimationFrame(() => { frame = requestAnimationFrame(restore) })
+    })
+    observer.observe(html, { attributes:true, attributeFilter:['class'] })
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+  }, [])
+
   const [dias, setDias] = useState(30)
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['admin-relatorios'],
@@ -287,6 +312,27 @@ export default function AdminRelatoriosPage() {
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table td:first-child) { text-align:left!important; }
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table th:not(:first-child)),
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table td:not(:first-child)) { text-align:right!important; font-variant-numeric:tabular-nums; }
+
+
+        /* Quiet theme-aware hover for report inputs and export commands. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.toolbar select,.update,.export,.summary-footer button)) {
+          border:1px solid var(--border)!important; border-radius:13px!important;
+          background:var(--surface)!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; filter:none!important; transform:none!important;
+          translate:none!important; scale:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .export) { color:var(--text)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .summary-footer button) { padding:10px 14px; min-height:44px; }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.toolbar select,.update,.export,.summary-footer button):hover:enabled) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:767px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .toolbar select) { font-size:16px!important; }
+        }
 
 `}</style>
     </div>
