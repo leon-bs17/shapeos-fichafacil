@@ -1,150 +1,139 @@
 'use client'
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { X, CalendarDays, CheckCircle2, FileText, GraduationCap, Info, Megaphone, PauseCircle, Search, Send, Trash2, UserRound, Users } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Eye, FileText, GraduationCap, Info, Megaphone, PauseCircle, Plus, Search, Send, Trash2, UserRound, Users, X } from 'lucide-react'
+
 type Publico = 'TODOS' | 'PERSONAL' | 'ALUNO'
-type Comunicado = {
-  id: string
-  titulo: string
-  mensagem: string
-  publico: Publico
-  ativa: boolean
-  criado_em: string
-}
+type Comunicado = { id:string; titulo:string; mensagem:string; publico:Publico; ativa:boolean; criado_em:string }
+type NoticeOption = { value:string; label:string }
+const publicoLabel = (value:Publico) => value === 'TODOS' ? 'Todos' : value === 'PERSONAL' ? 'Personais' : 'Alunos'
+const dateLabel = (value:string) => new Date(value).toLocaleDateString('pt-BR',{timeZone:'America/Fortaleza'})
+const timeLabel = (value:string) => new Date(value).toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza',hour:'2-digit',minute:'2-digit'})
+const publicOptions:NoticeOption[] = [{value:'QUALQUER',label:'Todos os públicos'},{value:'TODOS',label:'Todos'},{value:'PERSONAL',label:'Personais'},{value:'ALUNO',label:'Alunos'}]
+const statusOptions:NoticeOption[] = [{value:'TODOS',label:'Todos os status'},{value:'ATIVO',label:'Ativos'},{value:'INATIVO',label:'Inativos'}]
 
 export default function AdminComunicadosPage() {
   const queryClient = useQueryClient()
-  const deleteDialog = useRef<HTMLDialogElement>(null)
-  const [selectedDelete, setSelectedDelete] = useState<Comunicado | null>(null)
-  const [deleting, setDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [modal,setModal] = useState<'create'|'view'|'delete'|null>(null)
+  const [selectedId,setSelectedId] = useState<string|null>(null)
+  const [titulo,setTitulo] = useState('')
+  const [mensagem,setMensagem] = useState('')
+  const [publico,setPublico] = useState<Publico>('TODOS')
+  const [salvando,setSalvando] = useState(false)
+  const [busyId,setBusyId] = useState<string|null>(null)
+  const [erro,setErro] = useState<string|null>(null)
+  const [actionError,setActionError] = useState<string|null>(null)
+  const [success,setSuccess] = useState<string|null>(null)
+  const [busca,setBusca] = useState('')
+  const [filtroPublico,setFiltroPublico] = useState('QUALQUER')
+  const [filtroStatus,setFiltroStatus] = useState('TODOS')
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const open = modal !== null
 
   useEffect(() => {
-    if (!selectedDelete) return
-    const dialog = deleteDialog.current
-    const previousFocus = document.activeElement as HTMLElement | null
-    const previousOverflow = document.body.style.overflow
+    if (!open) return
+    const dialog = dialogRef.current
+    const focus = document.activeElement as HTMLElement|null
+    const overflow = document.body.style.overflow
     if (dialog && !dialog.open) dialog.showModal()
     document.body.style.overflow = 'hidden'
-    return () => { dialog?.close(); document.body.style.overflow = previousOverflow; previousFocus?.focus() }
-  }, [selectedDelete])
-
+    return () => { dialog?.close(); document.body.style.overflow = overflow; if (focus?.isConnected) focus.focus() }
+  },[open])
+  useEffect(() => {
+    if (modal === 'create') document.getElementById('notice-title')?.focus()
+  },[modal])
   useEffect(() => {
     const html = document.documentElement
-    const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
-    let previousTheme = theme()
-    let frame = 0
-    let suppression: HTMLStyleElement | null = null
-    const restore = () => { suppression?.remove(); suppression = null }
+    const keyboard = (event:KeyboardEvent) => { if(event.key==='Tab') html.setAttribute('data-notice-search-keyboard','true') }
+    const pointer = () => html.removeAttribute('data-notice-search-keyboard')
+    document.addEventListener('keydown',keyboard,true)
+    document.addEventListener('pointerdown',pointer,true)
+    let previousTheme = html.classList.contains('dark')
+    let first = 0
+    let second = 0
+    let suppression:HTMLStyleElement|null = null
+    const restore = () => { suppression?.remove(); suppression=null }
     const observer = new MutationObserver(() => {
-      const nextTheme = theme()
-      if (nextTheme === previousTheme) return
-      previousTheme = nextTheme
-      cancelAnimationFrame(frame)
-      restore()
-      suppression = document.createElement('style')
-      suppression.textContent = '.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace :is(#notice-title,#notice-message,*) { transition:none!important; }'
+      const next = html.classList.contains('dark')
+      if(next===previousTheme) return
+      previousTheme=next
+      cancelAnimationFrame(first); cancelAnimationFrame(second); restore()
+      suppression=document.createElement('style')
+      suppression.textContent='html body [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace * { transition:none!important; }'
       document.head.appendChild(suppression)
       const workspace = document.querySelector('.notices-workspace')
-      if (workspace) window.getComputedStyle(workspace).backgroundColor
-      frame = requestAnimationFrame(() => { frame = requestAnimationFrame(restore) })
+      if(workspace) void getComputedStyle(workspace).backgroundColor
+      first=requestAnimationFrame(()=>{second=requestAnimationFrame(restore)})
     })
-    observer.observe(html, { attributes:true, attributeFilter:['class'] })
-    return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
-  }, [])
-  const [titulo, setTitulo] = useState('')
-  const [mensagem, setMensagem] = useState('')
-  const [publico, setPublico] = useState<Publico>('TODOS')
-  const [salvando, setSalvando] = useState(false)
-  const [busca, setBusca] = useState('')
-  const [soAtivos, setSoAtivos] = useState(false)
-  const [erro, setErro] = useState<string | null>(null)
+    observer.observe(html,{attributes:true,attributeFilter:['class']})
+    return () => {
+      observer.disconnect(); cancelAnimationFrame(first); cancelAnimationFrame(second); restore()
+      document.removeEventListener('keydown',keyboard,true)
+      document.removeEventListener('pointerdown',pointer,true)
+      html.removeAttribute('data-notice-search-keyboard')
+    }
+  },[])
 
-  const { data: comunicados, isLoading, error: erroConsulta } = useQuery({
-    queryKey: ['admin-notificacoes'],
-    queryFn: async () => {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('admin_notificacoes')
-        .select('id, titulo, mensagem, publico, ativa, criado_em')
-        .order('criado_em', { ascending: false })
-      if (error) throw error
+  const {data:comunicados,isLoading,error:erroConsulta,refetch} = useQuery({
+    queryKey:['admin-notificacoes'],
+    queryFn:async () => {
+      const {data,error}=await createClient().from('admin_notificacoes').select('id, titulo, mensagem, publico, ativa, criado_em').order('criado_em',{ascending:false})
+      if(error) throw error
       return (data ?? []) as Comunicado[]
-    },
+    }
   })
+  const selected = comunicados?.find(item=>item.id===selectedId)
+  const filtered = (comunicados??[]).filter(item=>
+    (filtroPublico==='QUALQUER'||item.publico===filtroPublico)&&
+    (filtroStatus==='TODOS'||item.ativa===(filtroStatus==='ATIVO'))&&
+    (item.titulo+' '+item.mensagem).toLocaleLowerCase('pt-BR').includes(busca.trim().toLocaleLowerCase('pt-BR')))
+  const ativos = comunicados?.filter(item=>item.ativa).length??0
+  const busy = salvando || busyId !== null
+  const closeModal = () => { if(!busy) {setModal(null);setErro(null);setActionError(null)} }
+  function newNotice() { setErro(null);setActionError(null);setSuccess(null);setModal('create') }
+  function viewNotice(item:Comunicado) {setSelectedId(item.id);setActionError(null);setModal('view')}
 
-  async function publicar(e: FormEvent) {
-    e.preventDefault()
+  async function publicar(event:FormEvent) {
+    event.preventDefault()
+    if(salvando) return
     setErro(null)
-    const tituloLimpo = titulo.trim()
-    const mensagemLimpa = mensagem.trim()
-    if (tituloLimpo.length < 3 || mensagemLimpa.length < 5) {
-      setErro('Informe um título e uma mensagem válidos.')
-      return
-    }
-
+    if(titulo.trim().length<3||mensagem.trim().length<5) {setErro('Informe um título com pelo menos 3 caracteres e uma mensagem com pelo menos 5.');return}
     setSalvando(true)
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setErro('Sessão administrativa expirada.')
-      setSalvando(false)
-      return
-    }
-
-    const { error } = await supabase.from('admin_notificacoes').insert({
-      titulo: tituloLimpo,
-      mensagem: mensagemLimpa,
-      publico,
-      criado_por: user.id,
-      ativa: true,
-    })
-
-    if (error) {
-      setErro('Não foi possível publicar o comunicado.')
-    } else {
-      setTitulo('')
-      setMensagem('')
-      setPublico('TODOS')
-      await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
-    }
-    setSalvando(false)
-  }
-
-  async function alternar(item: Comunicado) {
-    const supabase = createClient()
-    const { error } = await supabase.from('admin_notificacoes').update({ ativa: !item.ativa }).eq('id', item.id)
-    if (!error) await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
-  }
-
-  async function excluir() {
-    if (!selectedDelete || deleting) return
-    setDeleting(true)
-    setDeleteError(null)
     try {
-      const supabase = createClient()
-      const { error } = await supabase.from('admin_notificacoes').delete().eq('id', selectedDelete.id)
-      if (error) throw error
-      await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
-      setSelectedDelete(null)
-    } catch {
-      setDeleteError('Não foi possível excluir o comunicado. Tente novamente.')
-    } finally {
-      setDeleting(false)
-    }
+      const supabase=createClient()
+      const {data:{user},error:authError}=await supabase.auth.getUser()
+      if(authError||!user) throw new Error('Sessão administrativa expirada.')
+      const {error}=await supabase.from('admin_notificacoes').insert({titulo:titulo.trim(),mensagem:mensagem.trim(),publico,criado_por:user.id,ativa:true})
+      if(error) throw new Error('Não foi possível publicar o comunicado. Tente novamente.')
+      setTitulo('');setMensagem('');setPublico('TODOS');setModal(null);setSuccess('Comunicado publicado.')
+      await queryClient.invalidateQueries({queryKey:['admin-notificacoes']})
+    } catch(error) {setErro(error instanceof Error?error.message:'Não foi possível publicar o comunicado.')}
+    finally {setSalvando(false)}
+  }
+  async function alternar(item:Comunicado) {
+    if(busyId) return
+    setBusyId(item.id);setActionError(null)
+    try {
+      const {error}=await createClient().from('admin_notificacoes').update({ativa:!item.ativa}).eq('id',item.id)
+      if(error) throw error
+      await queryClient.invalidateQueries({queryKey:['admin-notificacoes']})
+    } catch {setActionError('Não foi possível alterar o status. Tente novamente.')}
+    finally {setBusyId(null)}
+  }
+  async function excluir() {
+    if(!selected||busyId) return
+    setBusyId(selected.id);setActionError(null)
+    try {
+      const {error}=await createClient().from('admin_notificacoes').delete().eq('id',selected.id)
+      if(error) throw error
+      setModal(null);setSelectedId(null);setSuccess('Comunicado excluído.')
+      await queryClient.invalidateQueries({queryKey:['admin-notificacoes']})
+    } catch {setActionError('Não foi possível excluir o comunicado. Tente novamente.')}
+    finally {setBusyId(null)}
   }
 
-  function closeDelete() {
-    if (!deleting) setSelectedDelete(null)
-  }
-
-  const ativos = comunicados?.filter((item) => item.ativa).length ?? 0
-
-  const labelPublico = (p: Publico) => p === 'TODOS' ? 'Todos' : p === 'PERSONAL' ? 'Personais' : 'Alunos'
-  const filtrados = (comunicados ?? []).filter(c => (!soAtivos || c.ativa) && (c.titulo+' '+c.mensagem).toLocaleLowerCase('pt-BR').includes(busca.trim().toLocaleLowerCase('pt-BR')))
-  return (
-    <div className="notices-workspace">
+  return <div className="notices-workspace">
       <section className="hero"><div className="hero-copy"><p className="eyebrow">Comunicação</p><h1>Comunicados da <span>plataforma</span></h1><p>Publique avisos para alunos e personais e gerencie a comunicação da ShapeOS.</p></div>
         <svg className="wireframe" viewBox="0 0 500 300" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeWidth=".7">
@@ -167,135 +156,265 @@ export default function AdminComunicadosPage() {
           </g>
         </svg>
       </section>
-      <div className="columns">
-        <section className="panel editor"><h2><Megaphone size={23} />Novo comunicado</h2>
-          <form onSubmit={publicar}>
-            <label htmlFor="notice-title">Título</label><input id="notice-title" disabled={salvando} value={titulo} onChange={e=>setTitulo(e.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" />
-            <label htmlFor="notice-message">Mensagem</label><textarea id="notice-message" disabled={salvando} value={mensagem} onChange={e=>setMensagem(e.target.value)} maxLength={1500} rows={7} placeholder="Escreva o comunicado..." />
-            <fieldset><legend>Público</legend><div className="audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(p=><button type="button" key={p} disabled={salvando} aria-pressed={publico===p} onClick={()=>setPublico(p)}>{p==='TODOS'?<Users size={16}/>:p==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {labelPublico(p)}</button>)}</div></fieldset>
-            {erro && <p role="alert" className="error">{erro}</p>}
-            <button type="submit" className="publish" disabled={salvando}><Send size={18}/>{salvando?'Publicando...':'Publicar comunicado'}</button>
-            <p className="helper"><Info size={14}/>O aviso será enviado ao público selecionado.</p>
-          </form>
-        </section>
-        <section className="panel published">
-          <header><h2><FileText size={23}/>Comunicados publicados</h2><span className="count">{ativos} {ativos===1?'ativo':'ativos'}</span></header>
-          <div className="list-tools"><label data-admin-search className="search"><Search size={16}/><input value={busca} onChange={e=>setBusca(e.target.value)} placeholder="Buscar comunicado..." aria-label="Buscar comunicado"/></label><div className="filters"><button aria-pressed={!soAtivos} onClick={()=>setSoAtivos(false)}>Todos</button><button aria-pressed={soAtivos} onClick={()=>setSoAtivos(true)}>Ativos</button></div></div>
-          {erroConsulta ? <p role="alert" className="empty">Não foi possível carregar os comunicados.</p> : isLoading ? <div className="h-48 rounded-2xl skeleton" role="status" aria-label="Carregando comunicados"/> : !filtrados.length ? <div className="empty"><Megaphone size={30}/><p>{comunicados?.length?'Nenhum comunicado encontrado.':'Nenhum comunicado publicado.'}</p></div> : <div className="notice-list">{filtrados.map(item=><article className="notice" key={item.id}>
-            <div className="notice-icon"><Megaphone size={21}/></div>
-            <div className="notice-body"><div className="notice-heading"><h3>{item.titulo}</h3><span className="audience-tag">{labelPublico(item.publico)}</span><span className={item.ativa?'state':'state paused'}><i/>{item.ativa?'Ativo':'Pausado'}</span></div>
-              <p className="message">{item.mensagem}</p>
-              <footer><span className="date"><CalendarDays size={15}/>{new Date(item.criado_em).toLocaleString('pt-BR',{timeZone:'America/Fortaleza',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
-                <div className="actions"><button onClick={()=>alternar(item)}>{item.ativa?<PauseCircle size={15}/>:<CheckCircle2 size={15}/>} {item.ativa?'Desativar':'Reativar'}</button><button className="delete" onClick={()=>{ setDeleteError(null); setSelectedDelete(item) }} aria-label={`Excluir comunicado: ${item.titulo}`} title="Excluir comunicado"><Trash2 size={15}/></button></div>
-              </footer>
-            </div>
-          </article>)}</div>}
-        </section>
+
+    <section className="notice-panel">
+      <header className="notice-panel-heading">
+        <div className="notice-panel-title"><h2><FileText size={22} aria-hidden="true"/>Comunicados publicados</h2><span className="notice-count">{ativos} {ativos===1?'ativo':'ativos'}</span></div>
+        <button type="button" className="notice-command" onClick={newNotice}><Plus size={17} aria-hidden="true"/>Novo comunicado</button>
+      </header>
+      <div className="notice-toolbar">
+        <label data-admin-search className="notice-search"><Search size={19} aria-hidden="true"/><input value={busca} onChange={event=>setBusca(event.target.value)} placeholder="Buscar comunicado..." aria-label="Buscar comunicado por título ou mensagem"/></label>
+        <NoticeSelect label="Público" value={filtroPublico} onChange={setFiltroPublico} options={publicOptions}/>
+        <NoticeSelect label="Status" value={filtroStatus} onChange={setFiltroStatus} options={statusOptions}/>
       </div>
+      {success&&<p className="notice-feedback" role="status">{success}</p>}
+      {erroConsulta ? <div className="notice-empty" role="alert"><p>Não foi possível carregar os comunicados.</p><button className="notice-command" onClick={()=>void refetch()}>Tentar novamente</button></div> :
+      isLoading ? <div className="notice-empty" role="status">Carregando comunicados...</div> :
+      !filtered.length ? <div className="notice-empty"><Megaphone size={30} aria-hidden="true"/><h3>{comunicados?.length?'Nenhum comunicado encontrado':'Nenhum comunicado publicado'}</h3><p>{comunicados?.length?'Ajuste a busca ou os filtros para encontrar um comunicado.':'Crie um comunicado para informar alunos e personais.'}</p>{!comunicados?.length&&<button type="button" className="notice-command" onClick={newNotice}><Plus size={16}/>Novo comunicado</button>}</div> :
+      <div className="notice-table-wrap"><table className="notice-table">
+        <colgroup><col style={{width:'44%'}}/><col style={{width:'15%'}}/><col style={{width:'13%'}}/><col style={{width:'18%'}}/><col style={{width:'10%'}}/></colgroup>
+        <thead><tr><th scope="col">Comunicado</th><th scope="col">Público</th><th scope="col">Status</th><th scope="col">Publicado em</th><th scope="col" className="notice-action-cell">Ações</th></tr></thead>
+        <tbody>{filtered.map(item=><tr key={item.id}>
+          <td data-label="Comunicado" className="notice-title-cell"><strong>{item.titulo}</strong><p>{item.mensagem}</p></td>
+          <td data-label="Público"><span className="notice-audience">{publicoLabel(item.publico)}</span></td>
+          <td data-label="Status"><span className="notice-state" data-active={item.ativa}><i/>{item.ativa?'Ativo':'Inativo'}</span></td>
+          <td data-label="Publicado em"><time dateTime={item.criado_em}>{dateLabel(item.criado_em)}<small>{timeLabel(item.criado_em)}</small></time></td>
+          <td data-label="Ações" className="notice-action-cell"><button type="button" className="notice-command notice-view" onClick={()=>viewNotice(item)} aria-label={'Ver comunicado: '+item.titulo}><Eye size={15} aria-hidden="true"/>Ver</button></td>
+        </tr>)}</tbody>
+      </table></div>}
+      {!isLoading&&!erroConsulta&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
+    </section>
 
-      <dialog ref={deleteDialog} className="notice-delete-dialog" aria-labelledby="notice-delete-title" aria-describedby="notice-delete-description"
-        onCancel={event => { event.preventDefault(); closeDelete() }}
-        onClick={event => {
-          if (event.target !== event.currentTarget) return
-          const rect = event.currentTarget.getBoundingClientRect()
-          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeDelete()
-        }}>
-        {selectedDelete && <>
-          <header className="notice-delete-heading"><h2 id="notice-delete-title">Excluir comunicado</h2><button type="button" className="notice-delete-close" autoFocus aria-label="Fechar confirmação" disabled={deleting} onClick={closeDelete}><X size={20}/></button></header>
-          <p id="notice-delete-description">Deseja excluir o comunicado <strong>{selectedDelete.titulo}</strong>? Esta ação não pode ser desfeita.</p>
-          {deleteError && <p className="error" role="alert">{deleteError}</p>}
-          <footer className="notice-delete-footer"><button type="button" disabled={deleting} onClick={closeDelete}>Cancelar</button><button type="button" className="notice-delete-confirm" disabled={deleting} onClick={() => void excluir()}><Trash2 size={16}/>{deleting ? 'Excluindo...' : 'Excluir comunicado'}</button></footer>
-        </>}
-      </dialog>
+    <dialog ref={dialogRef} className="notice-modal" aria-labelledby="notice-modal-title" onCancel={event=>{event.preventDefault();closeModal()}}
+      onClick={event=>{if(event.target!==event.currentTarget)return;const rect=event.currentTarget.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeModal()}}>
+      <header className="notice-modal-heading"><h2 id="notice-modal-title">{modal==='create'?'Novo comunicado':modal==='delete'?'Excluir comunicado':'Detalhes do comunicado'}</h2><button type="button" className="notice-command notice-close" aria-label="Fechar janela" disabled={busy} onClick={closeModal} autoFocus><X size={20}/></button></header>
+      {modal==='create'&&<form className="notice-create-form" onSubmit={publicar}>
+        <div className="notice-modal-body">
+          <label htmlFor="notice-title">Título</label><input id="notice-title" className="notice-field" value={titulo} disabled={salvando} onChange={event=>setTitulo(event.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" required/>
+          <label htmlFor="notice-message">Mensagem</label><textarea id="notice-message" className="notice-field" value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." required/>
+          <fieldset><legend>Público</legend><div className="notice-audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(value=><button key={value} type="button" className="notice-command" aria-pressed={publico===value} disabled={salvando} onClick={()=>setPublico(value)}>{value==='TODOS'?<Users size={16}/>:value==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {publicoLabel(value)}</button>)}</div></fieldset>
+          <p className="notice-helper"><Info size={15}/>O aviso será enviado ao público selecionado.</p>
+          {erro&&<p className="notice-error" role="alert">{erro}</p>}
+        </div>
+        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command" disabled={salvando}><Send size={16}/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
+      </form>}
+      {modal==='view'&&selected&&<>
+        <div className="notice-modal-body notice-detail"><div className="notice-detail-title"><Megaphone size={26}/><h3>{selected.titulo}</h3></div><div className="notice-detail-tags"><span className="notice-audience">{publicoLabel(selected.publico)}</span><span className="notice-state" data-active={selected.ativa}><i/>{selected.ativa?'Ativo':'Inativo'}</span></div><p className="notice-detail-date">Publicado em {dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p><div className="notice-detail-message">{selected.mensagem}</div>{actionError&&<p role="alert" className="notice-error">{actionError}</p>}</div>
+        <footer className="notice-modal-footer"><button className="notice-command notice-danger" disabled={busy} onClick={()=>{setActionError(null);setModal('delete')}}><Trash2 size={16}/>Excluir</button><button className="notice-command" disabled={busy} onClick={()=>void alternar(selected)}><PauseCircle size={16}/>{busyId===selected.id?'Atualizando...':selected.ativa?'Desativar':'Reativar'}</button><button className="notice-command" disabled={busy} onClick={closeModal}>Fechar</button></footer>
+      </>}
+      {modal==='delete'&&selected&&<>
+        <div className="notice-modal-body"><p className="notice-delete-description">Deseja excluir o comunicado <strong>{selected.titulo}</strong>? Esta ação não pode ser desfeita.</p>{actionError&&<p role="alert" className="notice-error">{actionError}</p>}</div>
+        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={busy} onClick={()=>{setActionError(null);setModal('view')}}>Cancelar</button><button type="button" className="notice-command notice-danger" disabled={busy} onClick={()=>void excluir()}><Trash2 size={16}/>{busyId?'Excluindo...':'Excluir comunicado'}</button></footer>
+      </>}
+    </dialog>
+    <style jsx global>{`
 
-      <style jsx>{`
-        .notices-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:20px; padding-bottom:24px; }
-        :global(.dark) .notices-workspace { --surface:#071b17; --border:#1c4138; --text:#f1f8f5; --muted:#a5bdcc; --accent:#00e9df; }
-        :global(.dark [data-admin-route="/admin/comunicados"]) { background:#041512!important; --shapeos-brand:#00e9df; }
-        .hero { position:relative; overflow:hidden; min-height:225px; display:flex; align-items:center; padding:35px 36px; border:1px solid var(--border); border-radius:17px; background:var(--surface); }
-        :global(.dark) .hero { background:radial-gradient(ellipse at 83% 60%,#07382e,#071b17 45%,#041512); }
-        .hero-copy { position:relative; z-index:2; max-width:80%; } .eyebrow { font-size:11px!important; text-transform:uppercase; letter-spacing:.2em; font-weight:700; color:var(--accent)!important; margin-bottom:18px; }
-        h1 { color:var(--text); font-size:clamp(29px,3.2vw,47px); line-height:1.15; font-weight:800; letter-spacing:-.04em; } h1 span { color:var(--accent); } .hero-copy>p:last-child { font-size:15px; line-height:1.6; color:var(--muted); margin-top:14px; } .wireframe { position:absolute; width:440px; height:280px; top:5px; right:-30px; transform:rotate(-18deg); color:var(--accent); opacity:.45; pointer-events:none; }
-        .columns { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr); gap:20px; align-items:start; }
-        .panel { border:1px solid var(--border); border-radius:15px; padding:23px; background:var(--surface); } h2 { display:flex; align-items:center; gap:12px; font-size:17px; font-weight:650; color:var(--text); } h2> :global(svg) { color:var(--accent); flex-shrink:0; }
-        .editor h2 { padding-bottom:20px; border-bottom:1px solid var(--border); } form { display:grid; gap:10px; margin-top:23px; }
-        form>label,legend { text-transform:uppercase; letter-spacing:.06em; color:var(--text); font-size:10px; font-weight:600; } form>label:not(:first-child) { margin-top:14px; }
-        form input,textarea { border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:transparent; color:var(--text); width:100%; font-size:12px; outline:none; } textarea { min-height:170px; resize:vertical; line-height:1.7; }
-        input::placeholder,textarea::placeholder { color:var(--muted); } input:focus,textarea:focus { border-color:var(--accent); } fieldset { margin-top:15px; min-width:0; } legend { margin-bottom:11px; }
-        button { cursor:pointer; } button:disabled { opacity:.55; cursor:default; } button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
-        .audiences { display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; } .audiences button { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; min-height:43px; font-size:11px; color:var(--muted); border-right:1px solid var(--border); } .audiences button:last-child { border-right:0; } .audiences button[aria-pressed="true"] { color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); box-shadow:none; border-radius:0; }
-        .publish { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; width:100%; min-height:49px; border-radius:12px; background:var(--accent); color:#002c27; font-weight:650; font-size:13px; } .helper { display:flex; gap:7px; align-items:center; color:var(--muted); font-size:10px; margin-top:5px; } .helper> :global(svg) { flex-shrink:0; } .error { font-size:12px; color:#c94d45; }
-        .published { min-height:540px; } .published header { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding-bottom:18px; border-bottom:1px solid var(--border); }
-        .count { font-size:10px; color:var(--accent); border:1px solid var(--accent); border-radius:99px; padding:4px 11px; white-space:nowrap; } .list-tools { display:flex; gap:12px; align-items:center; margin:15px 0; } .search { display:flex; align-items:center; gap:8px; min-width:0; flex:1; height:36px; border:1px solid var(--border); border-radius:9px; padding:0 10px; color:var(--muted); } .search input { background:transparent; color:var(--text); width:100%; min-width:0; font-size:11px; outline:none; } .search:focus-within { border-color:var(--accent); } .filters { display:flex; gap:5px; } .filters button { padding:8px 13px; border:1px solid var(--border); border-radius:9px; font-size:11px; color:var(--text); } .filters button[aria-pressed="true"] { background:var(--accent); color:#002c27; border-color:var(--accent); }
-        .notice-list { display:grid; gap:12px; } .notice { display:flex; gap:15px; border:1px solid var(--border); border-radius:12px; padding:15px; }
-        .notice-icon { display:grid; place-items:center; flex-shrink:0; width:42px; height:42px; color:var(--muted); border:1px solid var(--border); border-radius:11px; } .notice-body { flex:1; min-width:0; } .notice-heading { display:flex; gap:9px; flex-wrap:wrap; align-items:center; } h3 { color:var(--text); font-size:13px; font-weight:650; overflow-wrap:anywhere; } .audience-tag { font-size:9px; color:var(--muted); background:color-mix(in srgb,var(--muted) 12%,transparent); padding:4px 9px; border-radius:99px; } .state { display:flex; gap:6px; align-items:center; font-size:9px; color:var(--muted); margin-left:auto; } .state i { display:block; width:7px; height:7px; border-radius:50%; background:var(--accent); } .paused i { background:#7e9292; }
-        .message { color:var(--muted); font-size:12px; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:12px; } footer { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); } .date { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:10px; } .actions { display:flex; gap:6px; } .actions button { display:flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:9px; color:var(--text); min-height:33px; padding:6px 10px; font-size:10px; }   .empty { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:15px; min-height:330px; color:var(--muted); font-size:13px; text-align:center; }
-        @media(max-width:1100px) { .columns { grid-template-columns:1fr; } .hero-copy { max-width:100%; } .wireframe { right:-140px; opacity:.18; } .published { min-height:350px; } }
-        @media(max-width:600px) { .hero { padding:28px 22px; } .panel { padding:18px; } .wireframe { right:-230px; } .list-tools { flex-wrap:wrap; } .search { flex-basis:100%; } .notice { padding:12px; gap:10px; } .notice-icon { width:33px; height:33px; } .state { margin-left:0; } h2 { font-size:15px; } .audiences button { gap:5px; font-size:10px; } }
-        :global(html:not(.dark)) .publish { color:#fff; }
-        :global(html:not(.dark)) .filters button[aria-pressed="true"],
-        :global(html:not(.dark)) .audiences button[aria-pressed="true"] { background:#e4f3eb; color:#0d7e70; border-color:#129b89; }
-        :global(html:not(.dark)) .audiences button[aria-pressed="true"] { border-color:var(--border); }
-        :global(html.dark) .audiences button[aria-pressed="true"] { background:color-mix(in srgb,#00e9df 10%,#091c18); color:#00e9df; border-color:var(--border); }
-        :global(html:not(.dark)) .wireframe { color:#008d85; }
-        :global(html:not(.dark)) input::placeholder,
-        :global(html:not(.dark)) textarea::placeholder { color:#7b8983; }
+.notices-workspace { --notice-surface:#fcfdf9; --notice-border:#d7ded3; --notice-text:#162623; --notice-muted:#5f6f68; --notice-brand:#129b89; --notice-soft:#e4f3eb; --notice-soft-text:#0d7e70; display:grid; gap:20px; min-width:0; padding-bottom:24px; font-family:'Sora',sans-serif; }
+html.dark .notices-workspace { --notice-surface:#091c18; --notice-border:#1c4037; --notice-text:#f5faf9; --notice-muted:#a3becd; --notice-brand:#00e9df; --notice-soft:#123b31; --notice-soft-text:#00e9df; }
+.notices-workspace .hero { position:relative; overflow:hidden; min-height:225px; display:flex; align-items:center; padding:35px 36px; border:1px solid var(--notice-border); border-radius:17px; background:radial-gradient(ellipse at 83% 60%,#e4f3eb,#f2f8f1 45%,#fcfdf9); }
+html.dark .notices-workspace .hero { background:radial-gradient(ellipse at 83% 60%,#07382e,#071b17 45%,#041512); }
+.notices-workspace .hero-copy { position:relative; z-index:2; max-width:80%; }
+.notices-workspace .hero h1 { color:var(--notice-text); font-size:46px; line-height:1.12; font-weight:800; letter-spacing:-.045em; }
+.notices-workspace .hero h1 span { color:var(--notice-brand); }
+.notices-workspace .hero-copy>p:last-child { font-size:16px; line-height:1.6; color:var(--notice-muted); margin-top:14px; }
+.notices-workspace .wireframe { position:absolute; width:440px; height:280px; top:5px; right:-30px; transform:rotate(-18deg); color:var(--notice-brand); opacity:.45; pointer-events:none; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel { min-width:0; padding:24px; border:1px solid var(--notice-border)!important; border-radius:15px!important; background:var(--notice-surface)!important; color:var(--notice-text)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel-heading { display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap; padding-bottom:20px; border-bottom:1px solid var(--notice-border); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel-title { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace h2 { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:650; color:var(--notice-text)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel-title svg { color:var(--notice-brand)!important; flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-count { color:var(--notice-soft-text)!important; background:var(--notice-soft)!important; border:1px solid var(--notice-border); padding:4px 10px; border-radius:999px; font-size:10px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-toolbar { display:grid; grid-template-columns:minmax(0,1fr) 210px 190px; gap:12px; margin:20px 0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-field,.notice-search,.notice-select-trigger) {
+  border:1px solid var(--notice-border)!important; border-radius:13px!important; background:var(--notice-surface)!important; color:var(--notice-text)!important;
+  box-shadow:none!important; filter:none!important; transform:none!important; translate:none!important; scale:none!important; animation:none!important;
+  transition:background-color 150ms ease,border-color 150ms ease!important;
+}
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-select-trigger) { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 14px; font-size:13px; font-weight:500; cursor:pointer; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(button,input,textarea):disabled { opacity:.55; cursor:not-allowed; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace button svg { color:inherit!important; flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace button:focus-visible,html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-field:focus-visible { outline:2px solid var(--notice-brand)!important; outline-offset:3px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-field:focus { border-color:var(--notice-brand)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search { display:flex!important; align-items:center!important; min-width:0!important; height:48px!important; padding:0 16px!important; gap:13px!important; color:var(--notice-muted)!important; outline:none!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search:focus-within { border-color:var(--notice-border)!important; outline:none!important; box-shadow:none!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search input,html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search input:is(:focus,:focus-visible) { border:0!important; background:transparent!important; outline:none!important; box-shadow:none!important; padding:0!important; min-width:0; font-size:13px!important; transition:none!important; color:var(--notice-text)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search svg { color:var(--notice-muted)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace input::placeholder,html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace textarea::placeholder { color:var(--notice-muted)!important; }
+html:is(.light,.dark)[data-notice-search-keyboard="true"] body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search:has(input:focus-visible) { outline:2px solid var(--notice-brand)!important; outline-offset:3px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select { position:relative; min-width:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-trigger { width:100%; height:48px; padding:0 14px; justify-content:space-between; font-size:12px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-trigger span { min-width:0; text-align:left; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-trigger strong { font-weight:500; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-menu { position:absolute; z-index:30; top:calc(100% + 8px); left:0; width:100%; min-width:180px; max-height:240px; overflow:auto; padding:6px; border:1px solid var(--notice-border); border-radius:13px; background:var(--notice-surface); color:var(--notice-text); box-shadow:0 12px 28px #0002; outline:none; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-menu[data-above="true"] { top:auto; bottom:calc(100% + 8px); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-option { min-height:44px; display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px; font-size:12px; border:1px solid transparent; border-radius:9px; cursor:pointer; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-option[aria-selected="true"] { background:color-mix(in srgb,var(--notice-brand) 7%,transparent); color:var(--notice-brand); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-option[data-active="true"] { border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent); background:color-mix(in srgb,var(--notice-brand) 7%,transparent); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table-wrap { min-width:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table { width:100%; border-collapse:collapse; table-layout:fixed; color:var(--notice-text); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table :is(th,td) { text-align:left!important; vertical-align:middle!important; padding:16px!important; border-bottom:1px solid var(--notice-border)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table th { font-size:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:600; color:var(--notice-muted); background:color-mix(in srgb,var(--notice-muted) 4%,var(--notice-surface)); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td { font-size:12px; overflow-wrap:anywhere; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table .notice-action-cell { text-align:center!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-title-cell strong { display:block; font-size:13px; font-weight:600; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-title-cell p { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; color:var(--notice-muted); font-size:11px; line-height:1.6; margin-top:5px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace time small { display:block; color:var(--notice-muted); font-size:11px; margin-top:4px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-view { min-height:36px; padding:7px 10px; font-size:12px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-audience,.notice-state) { display:inline-flex; align-items:center; gap:6px; width:fit-content; padding:5px 10px; border-radius:999px; font-size:10px; white-space:nowrap; background:color-mix(in srgb,var(--notice-muted) 10%,var(--notice-surface)); color:var(--notice-muted); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-state[data-active="true"] { background:var(--notice-soft); color:var(--notice-soft-text); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-state i { width:6px; height:6px; border-radius:50%; background:currentColor; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-list-summary { padding-top:18px; font-size:12px; color:var(--notice-muted); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; min-height:230px; padding:24px; color:var(--notice-muted); font-size:13px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-empty h3 { color:var(--notice-text); font-weight:600; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-feedback { color:var(--notice-soft-text); font-size:13px; padding:12px 0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal { width:min(600px,calc(100vw - 32px))!important; max-height:calc(100dvh - 32px)!important; inset:0!important; margin:auto!important; padding:24px!important; border:1px solid var(--notice-border)!important; border-radius:18px!important; background:var(--notice-surface)!important; color:var(--notice-text)!important; overflow:hidden!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal[open][open][open][open] { display:flex!important; flex-direction:column!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal::backdrop { background:rgba(0,0,0,.5)!important; backdrop-filter:blur(3px)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--notice-border); flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-close { width:44px; padding:0; flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-create-form { display:flex; flex-direction:column; min-height:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:22px 2px 4px; font-size:13px; line-height:1.65; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-body :is(label,legend) { display:block; color:var(--notice-text); font-size:11px; font-weight:600; margin-bottom:8px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-body label:not(:first-child),html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace fieldset { margin-top:18px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-field { width:100%; min-height:48px; padding:12px 14px; font-family:inherit; font-size:13px; outline:none; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace textarea.notice-field { min-height:150px; resize:vertical; line-height:1.7; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences .notice-command { padding:10px 8px; font-size:12px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences [aria-pressed="true"] { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; color:var(--notice-brand)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-helper { display:flex; align-items:flex-start; gap:8px; font-size:11px; margin-top:18px; color:var(--notice-muted); }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-helper svg { flex-shrink:0; margin-top:2px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-footer { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; border-top:1px solid var(--notice-border); padding-top:18px; margin-top:22px; flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-title { display:flex; align-items:flex-start; gap:14px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-title svg { color:var(--notice-brand); flex-shrink:0; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-title h3 { font-size:20px; font-weight:650; line-height:1.4; overflow-wrap:anywhere; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-tags { display:flex; gap:8px; margin-top:16px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-date { font-size:12px; color:var(--notice-muted); margin-top:12px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-detail-message { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.8; font-size:14px; margin-top:22px; padding:18px; border:1px solid var(--notice-border); border-radius:13px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-delete-description { overflow-wrap:anywhere; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-error { color:#b42336; margin-top:16px; font-size:13px; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-danger { color:#b42336!important; }
+html.dark body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-error,.notice-danger) { color:#ff8f9b!important; }
+@media(hover:hover) and (pointer:fine) {
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-field,.notice-select-trigger):not(:disabled):hover,
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search:not(:has(input:disabled)):hover { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; }
+}
+@media(max-width:1100px) { .notices-workspace .hero-copy { max-width:100%; } .notices-workspace .wireframe { right:-140px; opacity:.18; } }
+@media(max-width:767px) {
+ .notices-workspace .hero { padding:28px 22px; }
+ .notices-workspace .hero h1 { font-size:32px; }
+ .notices-workspace .hero-copy>p:last-child { font-size:14px; }
+ .notices-workspace .wireframe { right:-230px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel { padding:18px!important; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel-heading { align-items:stretch; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-panel-heading>.notice-command { width:100%; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace h2 { font-size:15px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-toolbar { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-search { grid-column:1/-1; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-search input,.notice-field) { font-size:16px!important; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-trigger { font-size:11px; padding:0 10px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-select-menu { min-width:0; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table,html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table tbody { display:block; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table :is(colgroup,thead) { display:none; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table tr { display:grid; gap:14px; border:1px solid var(--notice-border); border-radius:13px; margin-bottom:12px; padding:16px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:0!important; border:0!important; text-align:left!important; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td::before { content:attr(data-label); color:var(--notice-muted); font-size:11px; flex-shrink:0; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td.notice-title-cell { display:block; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td.notice-title-cell::before { display:none; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td.notice-action-cell { justify-content:flex-end; text-align:right!important; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-table td.notice-action-cell::before { display:none; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-view { min-height:44px; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal { width:calc(100vw - 24px)!important; max-height:calc(100dvh - 24px)!important; padding:20px!important; }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-footer .notice-command { flex:1; }
+}
+@media(max-width:359px) {
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-toolbar { grid-template-columns:minmax(0,1fr); }
+ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences { grid-template-columns:minmax(0,1fr); }
+}
+@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-field,.notice-search,.notice-select-trigger) { transition:none!important; } }
 
-        :global(html:not(.dark)) .audience-tag { background:#eef1e9; color:#5f6f68; }
-        :global(html:not(.dark)) .paused i { background:#7b8983; }
+    `}</style>
+  </div>
+}
+function NoticeSelect({ label: fieldLabel, value, onChange, options }: {
+  label: string; value: string; onChange: (value: string) => void; options: NoticeOption[]
+}) {
+  const id = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [above, setAbove] = useState(false)
+  const selected = Math.max(0, options.findIndex((option) => option.value === value))
 
-        /* Shared input and command treatment in both themes. */
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.editor input,.editor textarea,[data-admin-search],.audiences button,.filters button,.publish,.actions button,.notice-delete-dialog button)) {
-          border:1px solid var(--border)!important; border-radius:13px!important;
-          background:var(--surface)!important;
-          transition:background-color 150ms ease,border-color 150ms ease!important;
-          box-shadow:none!important; filter:none!important; transform:none!important;
-          translate:none!important; scale:none!important; animation:none!important;
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.publish,.actions button,.notice-delete-dialog button)) { color:var(--text)!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences), :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters) { display:flex; gap:6px; border:0; border-radius:0; overflow:visible; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences button) { min-height:44px; padding:8px; min-width:0; font-size:11px; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters button) { min-height:44px; padding:8px 14px; color:var(--muted)!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.audiences button,.filters button)[aria-pressed="true"]) {
-          background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
-          color:var(--accent)!important; border-color:var(--border)!important;
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .search input) { background:transparent!important; box-shadow:none!important; outline:none!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm)) { color:#b42336!important; }
-        :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm)) { color:#ff8f9b!important; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .actions button) { min-height:44px; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(input,textarea):disabled) { opacity:.55; cursor:not-allowed; }
-        @media(hover:hover) and (pointer:fine) {
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.editor input,.editor textarea,[data-admin-search],.audiences button,.filters button,.publish,.actions button,.notice-delete-dialog button):not(:disabled):not(.delete):not(.notice-delete-confirm):not(:has(input:disabled)):hover) {
-            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
-            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
-          }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm):hover:enabled) { background:rgba(180,35,54,.07)!important; border-color:rgba(180,35,54,.4)!important; }
-          :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm):hover:enabled) { background:rgba(255,143,155,.07)!important; border-color:rgba(255,143,155,.4)!important; }
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog) {
-          width:min(500px,calc(100vw - 32px)); margin:auto; padding:24px; border:1px solid var(--border);
-          border-radius:18px; background:var(--surface); color:var(--text); max-height:calc(100dvh - 32px); overflow-y:auto;
-        }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-heading) { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-close) { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p) { margin-top:18px; color:var(--muted); font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p.error) { color:#b42336; }
-        :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p.error) { color:#ff8f9b; }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer) { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin-top:24px; padding-top:18px; border-top:1px solid var(--border); }
-        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer button) { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 14px; font-size:13px; }
-        @media(max-width:767px) {
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(#notice-title,#notice-message,.search input)) { font-size:16px!important; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .list-tools) { flex-wrap:wrap; align-items:stretch; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .search) { flex-basis:100%; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters) { width:100%; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters button) { flex:1; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog) { width:calc(100vw - 24px); padding:20px; }
-          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer button) { flex:1; }
-        }
-        @media(max-width:359px) { :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences) { flex-direction:column; } }
+  useEffect(() => {
+    if (!open) return
+    const outside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const place = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (rect) setAbove(window.innerHeight - rect.bottom < 220 && rect.top > 220)
+    }
+    place()
+    listRef.current?.focus({ preventScroll: true })
+    document.addEventListener('pointerdown', outside)
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
 
-      `}</style>
-    </div>
-  )
+  function choose(index: number) {
+    onChange(options[index].value)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  return <div ref={rootRef} className="notice-select" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+  }}>
+    <button ref={triggerRef} type="button" className="notice-select-trigger"
+      aria-label={`Filtrar por ${fieldLabel.toLowerCase()}: ${options[selected].label}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
+      onClick={() => { setActive(selected); setOpen(!open) }}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive(selected); setOpen(true)
+        }
+      }}>
+      <span>{fieldLabel}: <strong>{options[selected].label}</strong></span>
+      {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+    </button>
+    {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="notice-select-menu"
+      data-above={above} aria-label={`Opções de ${fieldLabel.toLowerCase()}`} aria-activedescendant={`${id}-${active}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive((index) => (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault(); setActive(event.key === 'Home' ? 0 : options.length - 1)
+        } else if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); choose(active)
+        } else if (event.key.length === 1) {
+          const index = options.findIndex((option) => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+          if (index >= 0) { event.preventDefault(); setActive(index) }
+        }
+      }}>
+      {options.map(({ value: optionValue, label }, index) => <div
+        key={optionValue} id={`${id}-${index}`} role="option"
+        aria-selected={value === optionValue} data-active={active === index}
+        className="notice-select-option"
+        onPointerDown={(event) => event.preventDefault()}
+        onPointerMove={() => setActive(index)}
+        onClick={() => choose(index)}>
+        <span>{label}</span>
+        {value === optionValue && <Check size={17} strokeWidth={2} />}
+      </div>)}
+    </div>}
+  </div>
 }
