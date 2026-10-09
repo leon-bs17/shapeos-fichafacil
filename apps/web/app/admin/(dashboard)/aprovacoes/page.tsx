@@ -59,6 +59,35 @@ export default function AdminAprovacoesPage() {
   const queryClient = useQueryClient()
   const buscaRef = useRef<HTMLInputElement>(null)
   const detailsRef = useRef<HTMLDialogElement>(null)
+ // Cancel color interpolation before the browser paints a newly applied theme.
+ useEffect(() => {
+  const html = document.documentElement
+  const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+  let previousTheme = theme()
+  let frame = 0
+  let suppression: HTMLStyleElement | null = null
+  const restore = () => { suppression?.remove(); suppression = null }
+  const observer = new MutationObserver(() => {
+   const nextTheme = theme()
+   if (nextTheme === previousTheme) return
+   previousTheme = nextTheme
+   cancelAnimationFrame(frame)
+   restore()
+   suppression = document.createElement('style')
+   suppression.textContent = '.approvals-workspace.approvals-workspace.approvals-workspace.approvals-workspace.approvals-workspace.approvals-workspace.approvals-workspace.approvals-workspace * { transition: none !important; }'
+   document.head.appendChild(suppression)
+   // Flush the final palette while transitions are suppressed.
+   const control = document.querySelector('.approvals-workspace')
+   if (control) window.getComputedStyle(control).backgroundColor
+   frame = requestAnimationFrame(() => {
+    frame = requestAnimationFrame(restore)
+   })
+  })
+  observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+  return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+ }, [])
+
+
   const [buscaLocal, setBuscaLocal] = useState('')
   const [atalhoBusca, setAtalhoBusca] = useState('Ctrl + K')
   const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('TODOS')
