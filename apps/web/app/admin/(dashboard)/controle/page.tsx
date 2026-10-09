@@ -148,6 +148,35 @@ function ControlGlobe() {
 
 export default function ControlPage() {
  const cache = useQueryClient()
+
+ // Cancel color interpolation before the browser paints a newly applied theme.
+ useEffect(() => {
+  const html = document.documentElement
+  const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+  let previousTheme = theme()
+  let frame = 0
+  let suppression: HTMLStyleElement | null = null
+  const restore = () => { suppression?.remove(); suppression = null }
+  const observer = new MutationObserver(() => {
+   const nextTheme = theme()
+   if (nextTheme === previousTheme) return
+   previousTheme = nextTheme
+   cancelAnimationFrame(frame)
+   restore()
+   suppression = document.createElement('style')
+   suppression.textContent = '.control-center.control-center.control-center.control-center.control-center.control-center.control-center.control-center :is(#control-manage-name, *) { transition: none !important; }'
+   document.head.appendChild(suppression)
+   // Flush the final palette while transitions are suppressed.
+   const control = document.querySelector('.control-center')
+   if (control) window.getComputedStyle(control).backgroundColor
+   frame = requestAnimationFrame(() => {
+    frame = requestAnimationFrame(restore)
+   })
+  })
+  observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+  return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+ }, [])
+
  const [tab, setTab] = useState('Contas')
  const [search, setSearch] = useState('')
  const [profileFilter, setProfileFilter] = useState('')
