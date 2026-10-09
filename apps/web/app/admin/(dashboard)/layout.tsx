@@ -504,6 +504,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           }
         }
 
+
+        /* Light wireframe backdrops mirror each page's dark lighting position. */
+        html.light body [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace section[data-approvals-hero] {
+          background:radial-gradient(ellipse at 84% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+        }
+        html.light body [data-admin-route="/admin/atividade"] [data-admin-content] .activity-workspace .activity-hero {
+          background:radial-gradient(ellipse at 84% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+        }
+        html.light body [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .hero {
+          background:radial-gradient(ellipse at 85% 65%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+        }
+        html.light body [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace .hero {
+          background:radial-gradient(ellipse at 83% 60%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+        }
+        html.light body [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace .hero {
+          background:radial-gradient(ellipse at 83% 65%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
+        }
+
       `}</style>
     </div>
   )
