@@ -281,6 +281,13 @@ export default function AdminRelatoriosPage() {
         :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary td),
         :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary .change),
         :global(html [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary .summary-footer button) { font-weight:500!important; }
+
+        /* Numeric headings and values share the right edge for comparison. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table th:first-child),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table td:first-child) { text-align:left!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table th:not(:first-child)),
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace .summary table td:not(:first-child)) { text-align:right!important; font-variant-numeric:tabular-nums; }
+
 `}</style>
     </div>
   )

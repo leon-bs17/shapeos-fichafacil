@@ -814,6 +814,17 @@ export default function ControlPage() {
    :global(.control-center .control-manage-header) { gap:10px; }
   }
 
+
+  /* Both themes use the same column anchors on the desktop table. */
+  @media(min-width:768px) {
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table th),
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table td) { text-align:left!important; }
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table th:last-child),
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table .action-cell),
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table .selection-cell) { text-align:center!important; }
+    :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center .account-table .action-cell > div) { justify-content:center!important; }
+  }
+
 `}</style>
  </div>
 }

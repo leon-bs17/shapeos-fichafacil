@@ -945,6 +945,14 @@ export default function AdminAprovacoesPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-person h3) { font-size:16px; }
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content="/admin/aprovacoes"] .approvals-workspace .approval-profile-dialog button) { min-height:44px; }
         }
+
+        /* Grid column headings share the same anchor as their row contents. */
+        @media(min-width:1100px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-columns] > span) { text-align:left!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-columns] > span:last-child) { text-align:center!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-row] > div:last-child) { justify-content:center!important; }
+        }
+
 `}</style>
     </div>
   )
