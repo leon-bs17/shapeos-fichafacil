@@ -200,7 +200,7 @@ function ExerciciosConteudo() {
           aria-pressed={!filtroGrupo}
           onClick={() => setFiltroGrupo(null)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            !filtroGrupo ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            !filtroGrupo ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
           }`}
         >
           Todos
@@ -211,7 +211,7 @@ function ExerciciosConteudo() {
             aria-pressed={filtroGrupo === g}
             onClick={() => setFiltroGrupo(filtroGrupo === g ? null : g)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              filtroGrupo === g ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              filtroGrupo === g ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
             }`}
           >
             {g}
@@ -354,7 +354,6 @@ function ExerciciosConteudo() {
         .exercises-workspace .exercises-filters button[aria-pressed="true"] { background:var(--exercise-brand); color:white; border-color:var(--exercise-brand); }
         html.dark .exercises-workspace .exercises-filters button[aria-pressed="true"] { color:#04231e; }
         .exercises-workspace .exercise-card { border:1px solid var(--exercise-border); border-radius:14px; background:var(--exercise-surface); box-shadow:none; transition:border-color .2s,background .2s; }
-        .exercises-workspace .exercise-card:hover { border-color:var(--exercise-brand); }
         .exercises-workspace .exercise-card > div { padding:14px; }
         .exercises-workspace .exercise-visual-row { display:flex; align-items:center; gap:14px; position:relative; padding-right:22px; min-height:120px; }
         .exercises-workspace .exercise-details { align-self:center; }
@@ -433,6 +432,33 @@ function ExerciciosConteudo() {
           html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create { width:100%!important; }
         }
         @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-search,.exercises-create) { transition:none!important; } }
+
+
+        /* Group filters and exercise tiles share the approved hover treatment. */
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-filters button,.exercise-card) {
+          border:1px solid var(--exercise-border)!important; border-radius:13px!important;
+          background:var(--exercise-surface)!important; box-shadow:none!important;
+          transform:none!important; filter:none!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+        }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-filters button { color:var(--exercise-muted)!important; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-filters button[aria-pressed="true"] {
+          background:var(--exercise-filter-selected-bg)!important;
+          border-color:var(--exercise-brand)!important; color:var(--exercise-filter-selected-text)!important;
+        }
+        html.light body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace { --exercise-filter-selected-bg:#e4f3eb; --exercise-filter-selected-text:#0d7e70; }
+        html.dark body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace { --exercise-filter-selected-bg:#123b31; --exercise-filter-selected-text:#00e9df; }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-filters button:not(:disabled):hover,
+          html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercise-card:hover {
+            background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important;
+          }
+        }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-filters button:focus-visible { outline:2px solid var(--exercise-brand)!important; outline-offset:3px!important; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-filters button:disabled { cursor:not-allowed; opacity:.5; }
+        html.exercises-theme-changing body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace.exercises-workspace :is(.exercises-search,.exercises-create,.exercises-filters button,.exercise-card) { transition:none!important; }
+        @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-filters button,.exercise-card) { transition:none!important; } }
 
       `}</style>
     </div>
