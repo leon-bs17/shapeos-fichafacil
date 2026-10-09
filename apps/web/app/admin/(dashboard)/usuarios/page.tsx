@@ -194,7 +194,7 @@ function UsuariosConteudo() {
   return (
     <div className="users-workspace space-y-5">
       <header className="users-hero">
-        <div className="users-hero-copy"><p className="eyebrow">Gestão</p>
+        <div className="users-hero-copy"><p className="eyebrow">Contas</p>
         <h1>Gestão de <span>usuários</span></h1>
         <p className="users-subtitle">
           Aprove cadastros de Personal, bloqueie acessos e acompanhe o estado das contas.

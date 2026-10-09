@@ -239,7 +239,7 @@ export default function AdminAuditoriaPage() {
   }, [])
   return <div className="audit-workspace">
     <header className="audit-hero">
-      <div className="audit-hero-copy"><p className="eyebrow">Gestão</p>
+      <div className="audit-hero-copy"><p className="eyebrow">Rastreabilidade</p>
         <h1>Histórico <span>administrativo</span></h1>
         <p>Acompanhe decisões de acesso e alterações realizadas no painel.</p>
       </div>

@@ -146,7 +146,7 @@ function ExerciciosConteudo() {
   return (
     <div className="exercises-workspace space-y-5">
       <header className="exercises-hero">
-        <div className="exercises-hero-copy"><p className="eyebrow">Gestão</p>
+        <div className="exercises-hero-copy"><p className="eyebrow">Biblioteca</p>
           <h1>Biblioteca de <span>exercícios</span></h1>
           <p className="exercises-subtitle">
             Biblioteca global de exercícios da plataforma.

@@ -174,7 +174,7 @@ export default function AdminPersonaisPage() {
   </li>)}</ul>
   return <div className="personals-workspace space-y-5">
       <header className="personals-hero">
-        <div className="personals-hero-copy"><p className="eyebrow">Gestão</p>
+        <div className="personals-hero-copy"><p className="eyebrow">Profissionais</p>
         <h1>Gestão de <span>personais</span></h1>
         <p className="personals-subtitle">
           Personal trainers e seus respectivos alunos.
