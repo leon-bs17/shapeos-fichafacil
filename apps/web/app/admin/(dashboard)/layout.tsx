@@ -612,6 +612,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             height:44px!important; min-height:44px!important;
           }
         }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .approvals-workspace [data-approvals-pagination] button:first-child,
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .approvals-workspace [data-approvals-pagination] button:last-child { display:none!important; }
         @media(prefers-reduced-motion:reduce) {
           html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) :is(button,[aria-current="page"]) { transition:none!important; }
         }
