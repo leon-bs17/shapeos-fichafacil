@@ -3,7 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Activity, Ban, CheckCircle2, Clock3, Search, ShieldCheck, UserRoundCheck, ClipboardList, Users, Eye, X, Check, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Info, Activity, Ban, CheckCircle2, Clock3, Search, ShieldCheck, UserRoundCheck, ClipboardList, Users, Eye, X, Check, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 type Auditoria = {
@@ -47,21 +47,89 @@ function initials(name: string) {
   return words.length > 1 ? (words[0][0] + words[words.length - 1][0]).toUpperCase() : words[0]?.slice(0, 2).toUpperCase() || '?'
 }
 const detailLabels: Record<string, string> = {
-  nome: 'Nome', email: 'E-mail', status_anterior: 'Status anterior', status_novo: 'Novo status',
-  tipo_anterior: 'Perfil anterior', tipo_novo: 'Novo perfil', antes: 'Antes', depois: 'Depois',
-  alteracoes: 'Alterações', dados: 'Dados', acao: 'Ação',
+  nome: 'Nome', email: 'E-mail', tipo: 'Perfil', status_conta: 'Status da conta', status: 'Status',
+  ativo: 'Ativo', titulo: 'Título', descricao: 'Descrição', criado_em: 'Data de cadastro',
+  admin_id: 'Administrador', usuario_id: 'Usuário', aluno_id: 'Aluno', personal_id: 'Personal',
+  registro_id: 'Identificador do registro', id: 'Identificador', antes: 'Antes', depois: 'Depois',
 }
-function displayValue(value: unknown): string {
+type AuditChange = { key: string; before: unknown; after: unknown; beforePresent: boolean; afterPresent: boolean }
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+function equalAuditValues(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true
+  if (Array.isArray(a) && Array.isArray(b)) return a.length === b.length && a.every((value, i) => equalAuditValues(value, b[i]))
+  if (isRecord(a) && isRecord(b)) {
+    const keys = Object.keys(a)
+    return keys.length === Object.keys(b).length && keys.every(key => Object.prototype.hasOwnProperty.call(b, key) && equalAuditValues(a[key], b[key]))
+  }
+  return false
+}
+function compareAuditRecords(before: Record<string, unknown>, after: Record<string, unknown>, prefix = ''): AuditChange[] {
+  return Array.from(new Set([...Object.keys(before), ...Object.keys(after)])).flatMap(key => {
+    const path = prefix ? prefix + '.' + key : key
+    const beforePresent = Object.prototype.hasOwnProperty.call(before, key)
+    const afterPresent = Object.prototype.hasOwnProperty.call(after, key)
+    if (beforePresent === afterPresent && equalAuditValues(before[key], after[key])) return []
+    if (beforePresent && afterPresent && isRecord(before[key]) && isRecord(after[key]))
+      return compareAuditRecords(before[key], after[key], path)
+    return [{ key: path, before: before[key], after: after[key], beforePresent, afterPresent }]
+  })
+}
+function getAuditChanges(details: Record<string, unknown>): { comparable: boolean; changes: AuditChange[] } {
+  const has = (key: string) => Object.prototype.hasOwnProperty.call(details, key)
+  if (has('antes') && has('depois') && (isRecord(details.antes) || details.antes === null) && (isRecord(details.depois) || details.depois === null)) {
+    return { comparable: true, changes: compareAuditRecords(isRecord(details.antes) ? details.antes : {}, isRecord(details.depois) ? details.depois : {}) }
+  }
+  const pairs = Object.keys(details).filter(key => key.endsWith('_anterior') && has(key.slice(0, -9) + '_novo'))
+  return {
+    comparable: pairs.length > 0,
+    changes: pairs.flatMap(key => {
+      const newKey = key.slice(0, -9) + '_novo'
+      return equalAuditValues(details[key], details[newKey]) ? [] : [{
+        key: key.slice(0, -9), before: details[key], after: details[newKey], beforePresent: true, afterPresent: true,
+      }]
+    }),
+  }
+}
+function auditFieldLabel(key: string): string {
+  return key.split('.').map(part => detailLabels[part] ?? part.replace(/_/g, ' ').replace(/^./, letter => letter.toUpperCase())).join(' · ')
+}
+function displayAuditValue(value: unknown, present = true): string {
+  if (!present) return 'Não registrado'
   if (value === null || value === undefined) return 'Não informado'
   if (typeof value === 'boolean') return value ? 'Sim' : 'Não'
-  if (typeof value === 'object') return JSON.stringify(value, null, 2)
+  if (typeof value === 'string') {
+    const labels: Record<string, string> = { ATIVO:'Ativo', INATIVO:'Inativo', PENDENTE:'Pendente', BLOQUEADO:'Bloqueado', ADMIN:'Administrador', PERSONAL:'Personal', ALUNO:'Aluno' }
+    if (labels[value]) return labels[value]
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value) && !Number.isNaN(new Date(value).getTime())) return dateLabel(value) + ' às ' + timeLabel(value)
+    return value || 'Vazio'
+  }
+  if (Array.isArray(value)) return value.length ? value.map(item => displayAuditValue(item)).join('; ') : 'Lista vazia'
+  if (isRecord(value)) return Object.entries(value).map(([key, item]) => auditFieldLabel(key) + ': ' + displayAuditValue(item)).join('; ') || 'Sem dados'
   return String(value)
 }
 function DetailFields({ details }: { details: Record<string, unknown> }) {
-  const entries = Object.entries(details)
-  return entries.length ? <dl className="audit-detail-changes">{entries.map(([key, value]) =>
-    <div key={key}><dt>{detailLabels[key] ?? key.replace(/_/g, ' ')}</dt><dd>{displayValue(value)}</dd></div>
-  )}</dl> : <p className="audit-no-details">Este registro não contém alterações adicionais.</p>
+  const { comparable, changes } = getAuditChanges(details)
+  return <>
+    {changes.length ? <div className="audit-diff-wrap"><table className="audit-diff-table">
+      <caption className="sr-only">Campos modificados neste registro</caption>
+      <thead><tr><th scope="col">Campo</th><th scope="col">Antes</th><th scope="col">Depois</th></tr></thead>
+      <tbody>{changes.map(change => <tr key={change.key}>
+        <th scope="row">{auditFieldLabel(change.key)}</th>
+        <td data-label="Antes">{displayAuditValue(change.before, change.beforePresent)}</td>
+        <td data-label="Depois">{displayAuditValue(change.after, change.afterPresent)}</td>
+      </tr>)}</tbody>
+    </table></div> : <><div className="audit-change-message"><Info size={25} aria-hidden="true"/><div>
+      <h4>{comparable ? 'Nenhuma alteração identificada' : 'Comparação indisponível'}</h4>
+      <p>{comparable ? 'Os dados anteriores e posteriores são iguais neste registro.' : 'Este registro não contém os valores anteriores e posteriores para comparação.'}</p>
+    </div></div>{comparable && <p className="audit-change-note">A ação foi registrada, mas os valores exibidos não apresentam diferenças.</p>}</>}
+    {Object.keys(details).length > 0 && <details className="audit-full-record">
+      <summary><span>Consultar dados do registro</span><ChevronDown size={17} aria-hidden="true"/></summary>
+      <p>Dados completos conforme registrados na auditoria.</p>
+      <pre tabIndex={0} aria-label="Dados completos do registro">{JSON.stringify(details, null, 2)}</pre>
+    </details>}
+  </>
 }
 
 export default function AdminAuditoriaPage() {
@@ -348,6 +416,41 @@ export default function AdminAuditoriaPage() {
       }
       @media(max-width:359px) { html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-stats { grid-template-columns:minmax(0,1fr); } html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-table tr { grid-template-columns:minmax(0,1fr); } }
       @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace :is(.audit-search,.audit-select-trigger,.audit-select-option,.audit-button,.audit-active-filters button) { transition:none!important; } }
+
+      /* Human-readable audit comparison; original details remain available on demand. */
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message { display:flex; align-items:flex-start; gap:14px; margin-top:16px; padding:18px; border:1px solid var(--audit-border); border-radius:13px; background:color-mix(in srgb,var(--audit-muted) 5%,var(--audit-surface)); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message > svg { flex-shrink:0; color:var(--audit-muted); margin-top:2px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message h4 { font-size:14px; font-weight:650; line-height:1.5; color:var(--audit-text); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message p, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-note { color:var(--audit-muted); font-size:12px; line-height:1.7; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message p { margin-top:4px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-note { margin-top:12px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-wrap { margin-top:16px; border:1px solid var(--audit-border); border-radius:13px; overflow:hidden; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table { width:100%; table-layout:fixed; border-collapse:collapse; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table th, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table td { padding:14px; text-align:left; vertical-align:top; overflow-wrap:anywhere; white-space:pre-wrap; font-size:12px; line-height:1.6; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table thead th { color:var(--audit-muted); font-weight:600; background:color-mix(in srgb,var(--audit-brand) 5%,var(--audit-surface)); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody th { font-weight:600; color:var(--audit-text); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody tr > * { border-top:1px solid var(--audit-border); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody td:nth-child(2) { color:var(--audit-muted); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody td:last-child { color:var(--audit-text); font-weight:600; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record { margin-top:18px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; min-height:48px; border:1px solid var(--audit-border); border-radius:13px; list-style:none; cursor:pointer; font-size:12px; font-weight:600; color:var(--audit-text); background:var(--audit-surface); transition:background-color 150ms ease,border-color 150ms ease!important; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary::-webkit-details-marker { display:none; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record[open] summary > svg { transform:rotate(180deg); }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary:focus-visible, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record pre:focus-visible { outline:2px solid var(--audit-brand); outline-offset:3px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record > p { font-size:11px; line-height:1.6; color:var(--audit-muted); margin:12px 0 8px; }
+      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record pre { max-height:280px; overflow:auto; overscroll-behavior:contain; padding:14px; border:1px solid var(--audit-border); border-radius:13px; background:var(--audit-surface); color:var(--audit-muted); font-family:monospace; font-size:11px; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; }
+      @media(hover:hover) and (pointer:fine) { html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary:hover { background:color-mix(in srgb,var(--audit-brand) 7%,transparent); border-color:color-mix(in srgb,var(--audit-brand) 40%,transparent); } }
+      @media(max-width:767px) {
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message { padding:16px; gap:12px; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody { display:block; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table thead { display:none; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tr { display:grid; grid-template-columns:minmax(0,1fr); padding:14px; gap:10px; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tr + tr { border-top:1px solid var(--audit-border); }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table tbody tr > * { display:block; padding:0; border:0; }
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-diff-table td::before { content:attr(data-label); display:block; font-size:10px; font-weight:400; color:var(--audit-muted); margin-bottom:3px; }
+      }
+      @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-full-record summary { transition:none!important; } }
+
     `}</style>
   </div>
 }
