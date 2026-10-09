@@ -159,7 +159,7 @@ export default function AdminComunicadosPage() {
 
     <section className="notice-panel">
       <header className="notice-panel-heading">
-        <div className="notice-panel-title"><h2><FileText size={22} aria-hidden="true"/>Comunicados publicados</h2><span className="notice-count">{ativos} {ativos===1?'ativo':'ativos'}</span></div>
+        <div className="notice-panel-title"><h2><FileText size={22} aria-hidden="true"/>Comunicados publicados</h2>{!!comunicados?.length&&<span className="notice-count">{ativos} {ativos===1?'ativo':'ativos'}</span>}</div>
         <button type="button" className="notice-command" onClick={newNotice}><Plus size={17} aria-hidden="true"/>Novo comunicado</button>
       </header>
       <div className="notice-toolbar">
@@ -170,7 +170,7 @@ export default function AdminComunicadosPage() {
       {success&&<p className="notice-feedback" role="status">{success}</p>}
       {erroConsulta ? <div className="notice-empty" role="alert"><p>Não foi possível carregar os comunicados.</p><button className="notice-command" onClick={()=>void refetch()}>Tentar novamente</button></div> :
       isLoading ? <div className="notice-empty" role="status">Carregando comunicados...</div> :
-      !filtered.length ? <div className="notice-empty"><Megaphone size={30} aria-hidden="true"/><h3>{comunicados?.length?'Nenhum comunicado encontrado':'Nenhum comunicado publicado'}</h3><p>{comunicados?.length?'Ajuste a busca ou os filtros para encontrar um comunicado.':'Crie um comunicado para informar alunos e personais.'}</p>{!comunicados?.length&&<button type="button" className="notice-command" onClick={newNotice}><Plus size={16}/>Novo comunicado</button>}</div> :
+      !filtered.length ? <div className="notice-empty"><Megaphone size={30} aria-hidden="true"/><h3>{comunicados?.length?'Nenhum comunicado encontrado':'Nenhum comunicado publicado'}</h3><p>{comunicados?.length?'Ajuste a busca ou os filtros para encontrar um comunicado.':'Crie um comunicado para informar alunos e personais.'}</p></div> :
       <div className="notice-table-wrap"><table className="notice-table">
         <colgroup><col style={{width:'44%'}}/><col style={{width:'15%'}}/><col style={{width:'13%'}}/><col style={{width:'18%'}}/><col style={{width:'10%'}}/></colgroup>
         <thead><tr><th scope="col">Comunicado</th><th scope="col">Público</th><th scope="col">Status</th><th scope="col">Publicado em</th><th scope="col" className="notice-action-cell">Ações</th></tr></thead>
@@ -182,7 +182,7 @@ export default function AdminComunicadosPage() {
           <td data-label="Ações" className="notice-action-cell"><button type="button" className="notice-command notice-view" onClick={()=>viewNotice(item)} aria-label={'Ver comunicado: '+item.titulo}><Eye size={15} aria-hidden="true"/>Ver</button></td>
         </tr>)}</tbody>
       </table></div>}
-      {!isLoading&&!erroConsulta&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
+      {!isLoading&&!erroConsulta&&!!comunicados?.length&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
     </section>
 
     <dialog ref={dialogRef} className="notice-modal" aria-labelledby="notice-modal-title" onCancel={event=>{event.preventDefault();closeModal()}}
@@ -387,7 +387,7 @@ function NoticeSelect({ label: fieldLabel, value, onChange, options }: {
           event.preventDefault(); setActive(selected); setOpen(true)
         }
       }}>
-      <span>{fieldLabel}: <strong>{options[selected].label}</strong></span>
+      <span>{options[selected].label}</span>
       {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
     </button>
     {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="notice-select-menu"
