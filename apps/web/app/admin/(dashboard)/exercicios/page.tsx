@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Dumbbell, Search, Plus, Trash2, X, Loader2, Pencil } from 'lucide-react'
@@ -35,6 +35,42 @@ function ExerciciosConteudo() {
   const [novoEquipamento, setNovoEquipamento] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const html = document.documentElement
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') html.setAttribute('data-exercises-search-keyboard', 'true')
+    }
+    const pointer = () => html.removeAttribute('data-exercises-search-keyboard')
+    document.addEventListener('keydown', keyboard, true)
+    document.addEventListener('pointerdown', pointer, true)
+    let first = 0
+    let second = 0
+    let dark = html.classList.contains('dark')
+    const observer = new MutationObserver(() => {
+      const nextDark = html.classList.contains('dark')
+      if (nextDark === dark) return
+      dark = nextDark
+      html.classList.add('exercises-theme-changing')
+      void getComputedStyle(html).color
+      cancelAnimationFrame(first)
+      cancelAnimationFrame(second)
+      first = requestAnimationFrame(() => {
+        second = requestAnimationFrame(() => html.classList.remove('exercises-theme-changing'))
+      })
+    })
+    observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+    return () => {
+      document.removeEventListener('keydown', keyboard, true)
+      document.removeEventListener('pointerdown', pointer, true)
+      observer.disconnect()
+      cancelAnimationFrame(first)
+      cancelAnimationFrame(second)
+      html.removeAttribute('data-exercises-search-keyboard')
+      html.classList.remove('exercises-theme-changing')
+    }
+  }, [])
+
 
   const { data: exercicios, isLoading } = useQuery({
     queryKey: ['admin-exercicios'],
@@ -116,9 +152,7 @@ function ExerciciosConteudo() {
             Biblioteca global de exercícios da plataforma.
           </p>
         </div>
-        <Button onClick={() => setModalAberto(true)} className="exercises-create">
-          <Plus className="mr-1.5 h-4 w-4" /> Novo exercício
-        </Button>
+
         <ExerciseWireframe />
       </header>
 
@@ -145,7 +179,7 @@ function ExerciciosConteudo() {
         </Card>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="exercises-toolbar">
         <div data-admin-search className="exercises-search relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -156,6 +190,9 @@ function ExerciciosConteudo() {
             className="pl-9 h-11"
           />
         </div>
+        <button type="button" onClick={() => setModalAberto(true)} className="exercises-create">
+          <Plus size={16} aria-hidden="true" /> Novo exercício
+        </button>
       </div>
 
       <div className="exercises-filters flex flex-wrap gap-2" aria-label="Filtrar por grupo muscular">
@@ -362,6 +399,41 @@ function ExerciciosConteudo() {
         html:not(.dark) .exercises-workspace .exercises-search input::placeholder { color:#7b8983; }
         html:not(.dark) .exercises-workspace .exercises-filters button[aria-pressed="true"] { background:#e4f3eb; color:#0d7e70; border-color:#129b89; }
         html:not(.dark) .exercises-workspace .exercises-create:hover { background:#0d7e70; }
+
+        .exercises-workspace .exercises-toolbar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-search,.exercises-create) {
+          height:48px!important; min-height:48px!important; border:1px solid var(--exercise-border)!important;
+          border-radius:13px!important; background:var(--exercise-surface)!important;
+          box-shadow:none!important; outline:none!important; transform:none!important; filter:none!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+        }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create {
+          display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important;
+          padding:0 18px!important; color:var(--exercise-ink)!important; font-family:inherit!important;
+          font-size:13px!important; font-weight:500!important; white-space:nowrap;
+        }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create svg { color:inherit!important; flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-search:focus-within { border-color:var(--exercise-border)!important; outline:none!important; box-shadow:none!important; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-search input:is(:focus,:focus-visible) { outline:none!important; box-shadow:none!important; background:transparent!important; border:0!important; }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-search input { transition:none!important; }
+        html:is(.light,.dark)[data-exercises-search-keyboard="true"] body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-search:has(input:focus-visible),
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create:focus-visible { outline:2px solid var(--exercise-brand)!important; outline-offset:3px!important; }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-search:not(:has(input:disabled)):hover,
+          html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create:not(:disabled):hover {
+            background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important;
+          }
+        }
+        html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create:disabled { cursor:not-allowed; opacity:.5; }
+        html.exercises-theme-changing .exercises-workspace,
+        html.exercises-theme-changing .exercises-workspace * { transition:none!important; }
+        @media(max-width:767px) {
+          .exercises-workspace .exercises-toolbar { grid-template-columns:minmax(0,1fr); }
+          html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace .exercises-create { width:100%!important; }
+        }
+        @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-search,.exercises-create) { transition:none!important; } }
+
       `}</style>
     </div>
   )
