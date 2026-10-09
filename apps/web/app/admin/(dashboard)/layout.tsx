@@ -198,7 +198,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </nav>
       <div className="admin-menu-footer">
         <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" title={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
-        <button type="button" className="admin-menu-row" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
+        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
         {signOutError&&<p className="admin-menu-error" role="alert">{signOutError}</p>}
       </div>
       {user&&<div className="admin-menu-profile" title={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
@@ -695,6 +695,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open:hover { background:color-mix(in srgb,var(--admin-menu-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--admin-menu-brand) 40%,transparent)!important; }
         }
         @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-row,.admin-menu-toggle),html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open { transition:none!important; } }
+
+
+        /* Logout shares the destructive command treatment, retaining the menu geometry. */
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout { color:#b42336!important; }
+        html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout { color:#ff8f9b!important; }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout:not(:disabled):hover { background:rgba(180,35,54,.07)!important; border-color:rgba(180,35,54,.4)!important; }
+          html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout:not(:disabled):hover { background:rgba(255,143,155,.07)!important; border-color:rgba(255,143,155,.4)!important; }
+        }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout:focus-visible { outline-color:#b42336!important; }
+        html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout:focus-visible { outline-color:#ff8f9b!important; }
 
       `}</style>
     </div>
