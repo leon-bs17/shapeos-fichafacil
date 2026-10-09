@@ -522,6 +522,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           background:radial-gradient(ellipse at 83% 65%,#e4f3eb 0%,#f2f8f1 43%,#fcfdf9 100%)!important;
         }
 
+
+        /* Header notification and theme icons share one color in each mode. */
+        html.light [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) {
+          color:#5f6f68!important;
+        }
+        html.dark [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) {
+          color:#a3becd!important;
+        }
+        html:is(.light,.dark) [data-admin-route] :is(button[aria-label^="Abrir notificações"],[data-shapeos-theme-inline] > button) > svg {
+          color:inherit!important;
+        }
+
       `}</style>
     </div>
   )
