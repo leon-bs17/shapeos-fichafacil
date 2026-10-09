@@ -566,6 +566,56 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             border-color:color-mix(in srgb,var(--admin-search-accent) 40%,transparent)!important;
           }
         }
+        /* Shared table pagination geometry and mode-aware current-page indicator. */
+        html.light [data-admin-route] {
+          --admin-pagination-surface:#fcfdf9; --admin-pagination-border:#d7ded3;
+          --admin-pagination-muted:#5f6f68; --admin-pagination-brand:#129b89;
+          --admin-pagination-on-brand:#ffffff;
+        }
+        html.dark [data-admin-route] {
+          --admin-pagination-surface:#091c18; --admin-pagination-border:#1c4037;
+          --admin-pagination-muted:#a3becd; --admin-pagination-brand:#00e9df;
+          --admin-pagination-on-brand:#002a26;
+        }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) { display:flex; align-items:center; flex-wrap:wrap; gap:6px!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) :is(button,[aria-current="page"]) {
+          display:inline-grid!important; place-items:center!important; flex-shrink:0!important;
+          box-sizing:border-box!important; width:36px!important; min-width:36px!important;
+          height:36px!important; min-height:36px!important; padding:0!important; margin:0!important;
+          border:1px solid var(--admin-pagination-border)!important; border-radius:10px!important;
+          background:var(--admin-pagination-surface)!important; color:var(--admin-pagination-muted)!important;
+          font-family:'Sora',sans-serif!important; font-size:12px!important; font-weight:500!important;
+          line-height:1!important; font-variant-numeric:tabular-nums;
+          box-shadow:none!important; filter:none!important; transform:none!important;
+          translate:none!important; scale:none!important;
+          transition:border-color 150ms ease!important;
+        }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) [aria-current="page"] {
+          background:var(--admin-pagination-brand)!important;
+          border-color:var(--admin-pagination-brand)!important;
+          color:var(--admin-pagination-on-brand)!important;
+          font-weight:600!important; transition:none!important;
+        }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) button:disabled { opacity:.35!important; cursor:default!important; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) button:focus-visible {
+          outline:2px solid var(--admin-pagination-brand)!important; outline-offset:3px;
+        }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) button:not([aria-current="page"]):hover:enabled {
+            background:color-mix(in srgb,var(--admin-pagination-brand) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--admin-pagination-brand) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:767px) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) :is(button,[aria-current="page"]) {
+            width:44px!important; min-width:44px!important;
+            height:44px!important; min-height:44px!important;
+          }
+        }
+        @media(prefers-reduced-motion:reduce) {
+          html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) :is(button,[aria-current="page"]) { transition:none!important; }
+        }
+
       `}</style>
     </div>
   )
