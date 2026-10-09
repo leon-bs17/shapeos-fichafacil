@@ -1,8 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { BarChart3, CalendarDays, Download, Dumbbell, FileText, GraduationCap, RefreshCw, UserCheck, Users } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Clock3, BarChart3, CalendarDays, Download, Dumbbell, FileText, GraduationCap, RefreshCw, UserCheck, Users } from 'lucide-react'
 type Usuario = {
   id: string
   nome: string
@@ -162,7 +162,7 @@ export default function AdminRelatoriosPage() {
         </g></svg>
       </section>
       <section className="toolbar" aria-label="Período e exportação">
-        <span>Período</span><select aria-label="Período do relatório" value={dias} onChange={e=>setDias(Number(e.target.value))}><option value={7}>Últimos 7 dias</option><option value={30}>Últimos 30 dias</option><option value={90}>Últimos 90 dias</option></select>
+        <span>Período</span><ReportPeriod value={dias} onChange={setDias} />
         <span className="date-range"><CalendarDays size={17} />{dataLabel(inicio)} – {dataLabel(fim)}</span>
         <button className="update" disabled={isFetching} onClick={()=>refetch()}><RefreshCw size={16} className={isFetching?'animate-spin':''} />Atualizar</button>
         <button className="export" onClick={exportarResumo}><Download size={16} /><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
@@ -315,7 +315,7 @@ export default function AdminRelatoriosPage() {
 
 
         /* Quiet theme-aware hover for report inputs and export commands. */
-        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.toolbar select,.update,.export,.summary-footer button)) {
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.report-period-trigger,.update,.export,.summary-footer button)) {
           border:1px solid var(--border)!important; border-radius:13px!important;
           background:var(--surface)!important;
           transition:background-color 150ms ease,border-color 150ms ease!important;
@@ -325,7 +325,7 @@ export default function AdminRelatoriosPage() {
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .export) { color:var(--text)!important; }
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .summary-footer button) { padding:10px 14px; min-height:44px; }
         @media(hover:hover) and (pointer:fine) {
-          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.toolbar select,.update,.export,.summary-footer button):hover:enabled) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace :is(.report-period-trigger,.update,.export,.summary-footer button):hover:enabled) {
             background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
             border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
           }
@@ -334,7 +334,131 @@ export default function AdminRelatoriosPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .toolbar select) { font-size:16px!important; }
         }
 
+
+        /* Custom period menu shares the admin selector appearance and keyboard behavior. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period) { position:relative; width:200px; flex-shrink:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-trigger) {
+          display:flex; align-items:center; gap:10px; width:100%; min-height:44px; padding:0 14px;
+          color:var(--muted)!important; font-family:inherit; font-size:13px; font-weight:400;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-trigger svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-trigger svg:last-child) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-menu) {
+          position:absolute; z-index:40; top:calc(100% + 8px); right:0; width:240px; max-width:calc(100vw - 32px);
+          max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain;
+          padding:6px; border:1px solid var(--border); border-radius:13px;
+          background:var(--surface); color:var(--text); box-shadow:0 8px 24px rgba(0,0,0,.12); outline:none;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-menu[data-above="true"]) { top:auto; bottom:calc(100% + 8px); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option) {
+          display:flex; align-items:center; gap:10px; min-height:44px; padding:0 10px;
+          border:1px solid transparent; border-radius:13px; cursor:pointer; color:var(--text);
+          font-size:13px; transition:background-color 150ms ease,border-color 150ms ease;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option + .report-period-option) { margin-top:4px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option svg:last-child:not(:first-child)) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option[aria-selected="true"]) { background:color-mix(in srgb,var(--accent) 7%,transparent); color:var(--accent); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-menu:focus .report-period-option[data-active="true"]) { border-color:color-mix(in srgb,var(--accent) 40%,transparent); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-trigger:focus-visible) { outline:2px solid var(--accent); outline-offset:3px; }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option:hover) { background:color-mix(in srgb,var(--accent) 7%,transparent); border-color:color-mix(in srgb,var(--accent) 40%,transparent); }
+        }
+        @media(max-width:767px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period) { grid-column:1/-1; width:100%; min-width:0; order:0; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-trigger), :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-option) { min-height:48px; font-size:16px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-menu) { width:100%; }
+        }
+
 `}</style>
     </div>
   )
+}
+
+function ReportPeriod({ value, onChange }: { value: number; onChange: (value: number) => void }) {
+  const options = [
+    { value: 7, label: 'Últimos 7 dias', Icon: Clock3 },
+    { value: 30, label: 'Últimos 30 dias', Icon: CalendarDays },
+    { value: 90, label: 'Últimos 90 dias', Icon: CalendarDays },
+  ]
+  const id = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [above, setAbove] = useState(false)
+  const selected = Math.max(0, options.findIndex((option) => option.value === value))
+
+  useEffect(() => {
+    if (!open) return
+    const outside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const place = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (rect) setAbove(window.innerHeight - rect.bottom < 170 && rect.top > 170)
+    }
+    place()
+    listRef.current?.focus({ preventScroll: true })
+    document.addEventListener('pointerdown', outside)
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
+
+  function choose(index: number) {
+    onChange(options[index].value)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  return <div ref={rootRef} className="report-period" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+  }}>
+    <button ref={triggerRef} type="button" className="report-period-trigger"
+      aria-label={`Filtrar por período: ${options[selected].label}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
+      onClick={() => { setActive(selected); setOpen(!open) }}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive(selected); setOpen(true)
+        }
+      }}>
+      <CalendarDays size={17} strokeWidth={1.8} />
+      <span>{options[selected].label}</span>
+      {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+    </button>
+    {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="report-period-menu"
+      data-above={above} aria-label="Período do relatório" aria-activedescendant={`${id}-${active}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive((index) => (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault(); setActive(event.key === 'Home' ? 0 : options.length - 1)
+        } else if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); choose(active)
+        } else if (event.key.length === 1) {
+          const index = options.findIndex((option) => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+          if (index >= 0) { event.preventDefault(); setActive(index) }
+        }
+      }}>
+      {options.map(({ value: optionValue, label, Icon }, index) => <div
+        key={optionValue} id={`${id}-${index}`} role="option"
+        aria-selected={value === optionValue} data-active={active === index}
+        className="report-period-option"
+        onPointerMove={() => setActive(index)}
+        onPointerDown={(event) => event.preventDefault()}
+        onClick={() => choose(index)}>
+        <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
+        {value === optionValue && <Check size={17} strokeWidth={2} />}
+      </div>)}
+    </div>}
+  </div>
 }
