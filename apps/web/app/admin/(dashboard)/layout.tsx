@@ -618,6 +618,23 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .account-pagination nav,.approvals-workspace [data-approvals-pagination],.activity-workspace nav[aria-label="Paginação da atividade"],.users-workspace .users-pagination nav,.personals-workspace .personals-pagination nav,.audit-workspace .audit-pagination nav) :is(button,[aria-current="page"]) { transition:none!important; }
         }
 
+
+        /* One section-label style for the existing Admin page headers. */
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .control-heading-copy > p:first-child,.approvals-workspace [data-approvals-hero] .eyebrow,.activity-workspace .activity-hero .eyebrow,.reports-workspace .hero .eyebrow,.notices-workspace .hero .eyebrow,.system-workspace .hero .eyebrow,.users-workspace .users-hero .eyebrow,.personals-workspace .personals-hero .eyebrow,.exercises-workspace .exercises-hero .eyebrow,.audit-workspace .audit-hero .eyebrow) {
+          display:inline-flex!important; align-items:center!important; justify-content:center!important;
+          width:fit-content!important; max-width:100%!important; min-height:28px!important; height:auto!important;
+          box-sizing:border-box!important; padding:6px 16px!important; margin:0 0 17px!important;
+          border:1px solid var(--admin-section-label-color)!important; border-radius:999px!important;
+          background:transparent!important; color:var(--admin-section-label-color)!important;
+          font-family:'Sora',sans-serif!important; font-size:10px!important; font-weight:650!important;
+          line-height:14px!important; letter-spacing:.1em!important; text-transform:uppercase!important;
+          white-space:normal!important; overflow-wrap:anywhere!important;
+          box-shadow:none!important; text-shadow:none!important; transform:none!important;
+        }
+        html.light body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] { --admin-section-label-color:#129b89; }
+        html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] { --admin-section-label-color:#00e9df; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] :is(.control-center .control-heading-copy > p:first-child,.approvals-workspace [data-approvals-hero] .eyebrow,.activity-workspace .activity-hero .eyebrow,.reports-workspace .hero .eyebrow,.notices-workspace .hero .eyebrow,.system-workspace .hero .eyebrow,.users-workspace .users-hero .eyebrow,.personals-workspace .personals-hero .eyebrow,.exercises-workspace .exercises-hero .eyebrow,.audit-workspace .audit-hero .eyebrow) > svg { display:none!important; }
+
       `}</style>
     </div>
   )
