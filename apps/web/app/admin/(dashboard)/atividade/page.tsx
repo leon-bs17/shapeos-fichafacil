@@ -260,7 +260,7 @@ export default function AdminAtividadePage() {
         .status { display:inline-flex; align-items:center; gap:7px; color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); background:color-mix(in srgb,var(--accent) 6%,transparent); border-radius:12px; padding:7px 10px; font-size:10px; }
         .status>span { height:6px; width:6px; border-radius:50%; background:var(--accent); }
         .detail { display:grid; place-items:center; width:46px; height:36px; margin:auto; border:1px solid var(--border); border-radius:9px; color:var(--muted); }
-        .detail:hover,.refresh:hover { color:var(--accent); border-color:var(--accent); }
+        .detail:hover { color:var(--accent); border-color:var(--accent); }
         footer { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-top:1px solid var(--border); font-size:12px; color:var(--muted); }
         nav { display:flex; gap:9px; align-items:center; } nav button,nav>span { display:grid; place-items:center; height:35px; width:35px; border:1px solid var(--border); border-radius:9px; } nav>span { border-color:var(--accent); color:var(--accent); }
         .empty { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; padding:55px 20px; color:var(--muted); background:var(--surface); border-radius:15px; }
@@ -416,6 +416,22 @@ export default function AdminAtividadePage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option) { font-size:16px!important; }
         }
 
+
+
+        /* Refresh keeps the same quiet hover as the search and filters. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .refresh) {
+          border:1px solid var(--border)!important; border-radius:13px!important;
+          background:var(--surface)!important; color:var(--muted)!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; filter:none!important; transform:none!important;
+          translate:none!important; scale:none!important;
+        }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .refresh:hover:enabled) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+        }
 
 `}</style>
     </div>
