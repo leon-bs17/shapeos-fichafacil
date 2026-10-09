@@ -1,8 +1,8 @@
 'use client'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { CalendarDays, CheckCircle2, FileText, GraduationCap, Info, Megaphone, PauseCircle, Search, Send, Trash2, UserRound, Users } from 'lucide-react'
+import { X, CalendarDays, CheckCircle2, FileText, GraduationCap, Info, Megaphone, PauseCircle, Search, Send, Trash2, UserRound, Users } from 'lucide-react'
 type Publico = 'TODOS' | 'PERSONAL' | 'ALUNO'
 type Comunicado = {
   id: string
@@ -15,6 +15,44 @@ type Comunicado = {
 
 export default function AdminComunicadosPage() {
   const queryClient = useQueryClient()
+  const deleteDialog = useRef<HTMLDialogElement>(null)
+  const [selectedDelete, setSelectedDelete] = useState<Comunicado | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!selectedDelete) return
+    const dialog = deleteDialog.current
+    const previousFocus = document.activeElement as HTMLElement | null
+    const previousOverflow = document.body.style.overflow
+    if (dialog && !dialog.open) dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => { dialog?.close(); document.body.style.overflow = previousOverflow; previousFocus?.focus() }
+  }, [selectedDelete])
+
+  useEffect(() => {
+    const html = document.documentElement
+    const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+    let previousTheme = theme()
+    let frame = 0
+    let suppression: HTMLStyleElement | null = null
+    const restore = () => { suppression?.remove(); suppression = null }
+    const observer = new MutationObserver(() => {
+      const nextTheme = theme()
+      if (nextTheme === previousTheme) return
+      previousTheme = nextTheme
+      cancelAnimationFrame(frame)
+      restore()
+      suppression = document.createElement('style')
+      suppression.textContent = '.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace.notices-workspace :is(#notice-title,#notice-message,*) { transition:none!important; }'
+      document.head.appendChild(suppression)
+      const workspace = document.querySelector('.notices-workspace')
+      if (workspace) window.getComputedStyle(workspace).backgroundColor
+      frame = requestAnimationFrame(() => { frame = requestAnimationFrame(restore) })
+    })
+    observer.observe(html, { attributes:true, attributeFilter:['class'] })
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+  }, [])
   const [titulo, setTitulo] = useState('')
   const [mensagem, setMensagem] = useState('')
   const [publico, setPublico] = useState<Publico>('TODOS')
@@ -80,11 +118,25 @@ export default function AdminComunicadosPage() {
     if (!error) await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
   }
 
-  async function excluir(id: string) {
-    if (!window.confirm('Excluir este comunicado?')) return
-    const supabase = createClient()
-    const { error } = await supabase.from('admin_notificacoes').delete().eq('id', id)
-    if (!error) await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
+  async function excluir() {
+    if (!selectedDelete || deleting) return
+    setDeleting(true)
+    setDeleteError(null)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.from('admin_notificacoes').delete().eq('id', selectedDelete.id)
+      if (error) throw error
+      await queryClient.invalidateQueries({ queryKey: ['admin-notificacoes'] })
+      setSelectedDelete(null)
+    } catch {
+      setDeleteError('Não foi possível excluir o comunicado. Tente novamente.')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  function closeDelete() {
+    if (!deleting) setSelectedDelete(null)
   }
 
   const ativos = comunicados?.filter((item) => item.ativa).length ?? 0
@@ -118,9 +170,9 @@ export default function AdminComunicadosPage() {
       <div className="columns">
         <section className="panel editor"><h2><Megaphone size={23} />Novo comunicado</h2>
           <form onSubmit={publicar}>
-            <label htmlFor="notice-title">Título</label><input id="notice-title" value={titulo} onChange={e=>setTitulo(e.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" />
-            <label htmlFor="notice-message">Mensagem</label><textarea id="notice-message" value={mensagem} onChange={e=>setMensagem(e.target.value)} maxLength={1500} rows={7} placeholder="Escreva o comunicado..." />
-            <fieldset><legend>Público</legend><div className="audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(p=><button type="button" key={p} aria-pressed={publico===p} onClick={()=>setPublico(p)}>{p==='TODOS'?<Users size={16}/>:p==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {labelPublico(p)}</button>)}</div></fieldset>
+            <label htmlFor="notice-title">Título</label><input id="notice-title" disabled={salvando} value={titulo} onChange={e=>setTitulo(e.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" />
+            <label htmlFor="notice-message">Mensagem</label><textarea id="notice-message" disabled={salvando} value={mensagem} onChange={e=>setMensagem(e.target.value)} maxLength={1500} rows={7} placeholder="Escreva o comunicado..." />
+            <fieldset><legend>Público</legend><div className="audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(p=><button type="button" key={p} disabled={salvando} aria-pressed={publico===p} onClick={()=>setPublico(p)}>{p==='TODOS'?<Users size={16}/>:p==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {labelPublico(p)}</button>)}</div></fieldset>
             {erro && <p role="alert" className="error">{erro}</p>}
             <button type="submit" className="publish" disabled={salvando}><Send size={18}/>{salvando?'Publicando...':'Publicar comunicado'}</button>
             <p className="helper"><Info size={14}/>O aviso será enviado ao público selecionado.</p>
@@ -134,12 +186,28 @@ export default function AdminComunicadosPage() {
             <div className="notice-body"><div className="notice-heading"><h3>{item.titulo}</h3><span className="audience-tag">{labelPublico(item.publico)}</span><span className={item.ativa?'state':'state paused'}><i/>{item.ativa?'Ativo':'Pausado'}</span></div>
               <p className="message">{item.mensagem}</p>
               <footer><span className="date"><CalendarDays size={15}/>{new Date(item.criado_em).toLocaleString('pt-BR',{timeZone:'America/Fortaleza',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
-                <div className="actions"><button onClick={()=>alternar(item)}>{item.ativa?<PauseCircle size={15}/>:<CheckCircle2 size={15}/>} {item.ativa?'Desativar':'Reativar'}</button><button className="delete" onClick={()=>excluir(item.id)} aria-label={`Excluir comunicado: ${item.titulo}`} title="Excluir comunicado"><Trash2 size={15}/></button></div>
+                <div className="actions"><button onClick={()=>alternar(item)}>{item.ativa?<PauseCircle size={15}/>:<CheckCircle2 size={15}/>} {item.ativa?'Desativar':'Reativar'}</button><button className="delete" onClick={()=>{ setDeleteError(null); setSelectedDelete(item) }} aria-label={`Excluir comunicado: ${item.titulo}`} title="Excluir comunicado"><Trash2 size={15}/></button></div>
               </footer>
             </div>
           </article>)}</div>}
         </section>
       </div>
+
+      <dialog ref={deleteDialog} className="notice-delete-dialog" aria-labelledby="notice-delete-title" aria-describedby="notice-delete-description"
+        onCancel={event => { event.preventDefault(); closeDelete() }}
+        onClick={event => {
+          if (event.target !== event.currentTarget) return
+          const rect = event.currentTarget.getBoundingClientRect()
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeDelete()
+        }}>
+        {selectedDelete && <>
+          <header className="notice-delete-heading"><h2 id="notice-delete-title">Excluir comunicado</h2><button type="button" className="notice-delete-close" autoFocus aria-label="Fechar confirmação" disabled={deleting} onClick={closeDelete}><X size={20}/></button></header>
+          <p id="notice-delete-description">Deseja excluir o comunicado <strong>{selectedDelete.titulo}</strong>? Esta ação não pode ser desfeita.</p>
+          {deleteError && <p className="error" role="alert">{deleteError}</p>}
+          <footer className="notice-delete-footer"><button type="button" disabled={deleting} onClick={closeDelete}>Cancelar</button><button type="button" className="notice-delete-confirm" disabled={deleting} onClick={() => void excluir()}><Trash2 size={16}/>{deleting ? 'Excluindo...' : 'Excluir comunicado'}</button></footer>
+        </>}
+      </dialog>
+
       <style jsx>{`
         .notices-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:20px; padding-bottom:24px; }
         :global(.dark) .notices-workspace { --surface:#071b17; --border:#1c4138; --text:#f1f8f5; --muted:#a5bdcc; --accent:#00e9df; }
@@ -161,7 +229,7 @@ export default function AdminComunicadosPage() {
         .count { font-size:10px; color:var(--accent); border:1px solid var(--accent); border-radius:99px; padding:4px 11px; white-space:nowrap; } .list-tools { display:flex; gap:12px; align-items:center; margin:15px 0; } .search { display:flex; align-items:center; gap:8px; min-width:0; flex:1; height:36px; border:1px solid var(--border); border-radius:9px; padding:0 10px; color:var(--muted); } .search input { background:transparent; color:var(--text); width:100%; min-width:0; font-size:11px; outline:none; } .search:focus-within { border-color:var(--accent); } .filters { display:flex; gap:5px; } .filters button { padding:8px 13px; border:1px solid var(--border); border-radius:9px; font-size:11px; color:var(--text); } .filters button[aria-pressed="true"] { background:var(--accent); color:#002c27; border-color:var(--accent); }
         .notice-list { display:grid; gap:12px; } .notice { display:flex; gap:15px; border:1px solid var(--border); border-radius:12px; padding:15px; }
         .notice-icon { display:grid; place-items:center; flex-shrink:0; width:42px; height:42px; color:var(--muted); border:1px solid var(--border); border-radius:11px; } .notice-body { flex:1; min-width:0; } .notice-heading { display:flex; gap:9px; flex-wrap:wrap; align-items:center; } h3 { color:var(--text); font-size:13px; font-weight:650; overflow-wrap:anywhere; } .audience-tag { font-size:9px; color:var(--muted); background:color-mix(in srgb,var(--muted) 12%,transparent); padding:4px 9px; border-radius:99px; } .state { display:flex; gap:6px; align-items:center; font-size:9px; color:var(--muted); margin-left:auto; } .state i { display:block; width:7px; height:7px; border-radius:50%; background:var(--accent); } .paused i { background:#7e9292; }
-        .message { color:var(--muted); font-size:12px; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:12px; } footer { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); } .date { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:10px; } .actions { display:flex; gap:6px; } .actions button { display:flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:9px; color:var(--text); min-height:33px; padding:6px 10px; font-size:10px; } .actions button:hover { color:var(--accent); border-color:var(--accent); } .actions .delete:hover { color:#c94d45; border-color:#c94d45; } .empty { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:15px; min-height:330px; color:var(--muted); font-size:13px; text-align:center; }
+        .message { color:var(--muted); font-size:12px; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; margin-top:12px; } footer { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); } .date { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:10px; } .actions { display:flex; gap:6px; } .actions button { display:flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:9px; color:var(--text); min-height:33px; padding:6px 10px; font-size:10px; }   .empty { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:15px; min-height:330px; color:var(--muted); font-size:13px; text-align:center; }
         @media(max-width:1100px) { .columns { grid-template-columns:1fr; } .hero-copy { max-width:100%; } .wireframe { right:-140px; opacity:.18; } .published { min-height:350px; } }
         @media(max-width:600px) { .hero { padding:28px 22px; } .panel { padding:18px; } .wireframe { right:-230px; } .list-tools { flex-wrap:wrap; } .search { flex-basis:100%; } .notice { padding:12px; gap:10px; } .notice-icon { width:33px; height:33px; } .state { margin-left:0; } h2 { font-size:15px; } .audiences button { gap:5px; font-size:10px; } }
         :global(html:not(.dark)) .publish { color:#fff; }
@@ -175,6 +243,58 @@ export default function AdminComunicadosPage() {
 
         :global(html:not(.dark)) .audience-tag { background:#eef1e9; color:#5f6f68; }
         :global(html:not(.dark)) .paused i { background:#7b8983; }
+
+        /* Shared input and command treatment in both themes. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.editor input,.editor textarea,[data-admin-search],.audiences button,.filters button,.publish,.actions button,.notice-delete-dialog button)) {
+          border:1px solid var(--border)!important; border-radius:13px!important;
+          background:var(--surface)!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; filter:none!important; transform:none!important;
+          translate:none!important; scale:none!important; animation:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.publish,.actions button,.notice-delete-dialog button)) { color:var(--text)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences), :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters) { display:flex; gap:6px; border:0; border-radius:0; overflow:visible; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences button) { min-height:44px; padding:8px; min-width:0; font-size:11px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters button) { min-height:44px; padding:8px 14px; color:var(--muted)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.audiences button,.filters button)[aria-pressed="true"]) {
+          background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+          color:var(--accent)!important; border-color:var(--border)!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .search input) { background:transparent!important; box-shadow:none!important; outline:none!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm)) { color:#b42336!important; }
+        :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm)) { color:#ff8f9b!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .actions button) { min-height:44px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(input,textarea):disabled) { opacity:.55; cursor:not-allowed; }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.editor input,.editor textarea,[data-admin-search],.audiences button,.filters button,.publish,.actions button,.notice-delete-dialog button):not(:disabled):not(.delete):not(.notice-delete-confirm):not(:has(input:disabled)):hover) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm):hover:enabled) { background:rgba(180,35,54,.07)!important; border-color:rgba(180,35,54,.4)!important; }
+          :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(.actions .delete,.notice-delete-confirm):hover:enabled) { background:rgba(255,143,155,.07)!important; border-color:rgba(255,143,155,.4)!important; }
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog) {
+          width:min(500px,calc(100vw - 32px)); margin:auto; padding:24px; border:1px solid var(--border);
+          border-radius:18px; background:var(--surface); color:var(--text); max-height:calc(100dvh - 32px); overflow-y:auto;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-heading) { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-close) { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p) { margin-top:18px; color:var(--muted); font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p.error) { color:#b42336; }
+        :global(html.dark [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog > p.error) { color:#ff8f9b; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer) { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin-top:24px; padding-top:18px; border-top:1px solid var(--border); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer button) { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 14px; font-size:13px; }
+        @media(max-width:767px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace :is(#notice-title,#notice-message,.search input)) { font-size:16px!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .list-tools) { flex-wrap:wrap; align-items:stretch; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .search) { flex-basis:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters) { width:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .filters button) { flex:1; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-dialog) { width:calc(100vw - 24px); padding:20px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .notice-delete-footer button) { flex:1; }
+        }
+        @media(max-width:359px) { :global(html:is(.light,.dark) [data-admin-route="/admin/comunicados"] [data-admin-content] .notices-workspace.notices-workspace .audiences) { flex-direction:column; } }
+
       `}</style>
     </div>
   )
