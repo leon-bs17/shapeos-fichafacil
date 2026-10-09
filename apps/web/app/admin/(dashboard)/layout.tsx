@@ -49,6 +49,21 @@ const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  useEffect(() => {
+    if (pathname !== '/admin/auditoria' && pathname !== '/admin/usuarios') return
+    const html = document.documentElement
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') html.setAttribute('data-admin-search-keyboard', 'true')
+    }
+    const pointer = () => html.removeAttribute('data-admin-search-keyboard')
+    document.addEventListener('keydown', keyboard, true)
+    document.addEventListener('pointerdown', pointer, true)
+    return () => {
+      document.removeEventListener('keydown', keyboard, true)
+      document.removeEventListener('pointerdown', pointer, true)
+      html.removeAttribute('data-admin-search-keyboard')
+    }
+  }, [pathname])
   const router = useRouter()
   const [busca, setBusca] = useState('')
   const buscaRef = useRef<HTMLInputElement>(null)
@@ -534,6 +549,23 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           color:inherit!important;
         }
 
+        /* Pointer focus keeps the search hover; keyboard focus remains visible. */
+        html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-search:focus-within,
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search:focus-within {
+          border-color:var(--admin-search-border)!important;
+          box-shadow:none!important; outline:none!important;
+        }
+        html:is(.light,.dark)[data-admin-search-keyboard="true"] [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-search:has(input:focus-visible),
+        html:is(.light,.dark)[data-admin-search-keyboard="true"] [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search:has(input:focus-visible) {
+          outline:2px solid var(--admin-search-accent)!important;
+          outline-offset:3px;
+        }
+        @media(hover:hover) and (pointer:fine) {
+          html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-search:focus-within:hover,
+          html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-filter-search:focus-within:hover {
+            border-color:color-mix(in srgb,var(--admin-search-accent) 40%,transparent)!important;
+          }
+        }
       `}</style>
     </div>
   )
