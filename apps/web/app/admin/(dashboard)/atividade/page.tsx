@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Activity, CircleCheck, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, Network, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Activity, CircleCheck, CalendarDays, ChevronLeft, ChevronRight, Clock3, Eye, FileText, Network, RefreshCw, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react'
 
 type Usuario = { id: string; nome: string; email: string; tipo: string; criado_em: string }
 type Auditoria = { id: string; acao: string; detalhes: Record<string, unknown>; criado_em: string }
 type Evento = { id: string; tipo: 'cadastro' | 'admin'; titulo: string; descricao: string; data: string }
+type Periodo = 'todos' | 'hoje' | '7dias'
 type Filtro = 'todos' | 'cadastro' | 'admin'
 const POR_PAGINA = 6
 const texto = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
@@ -15,10 +16,40 @@ const formatarData = (v: string) => new Date(v).toLocaleString('pt-BR', { timeZo
 function iniciais(v: string) { return v.split(' · ')[0].trim().split(/\s+/).slice(0,2).map(p => p[0]).join('').toUpperCase() || 'AD' }
 
 export default function AdminAtividadePage() {
+ // Cancel color interpolation before the browser paints a newly applied theme.
+ useEffect(() => {
+  const html = document.documentElement
+  const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+  let previousTheme = theme()
+  let frame = 0
+  let suppression: HTMLStyleElement | null = null
+  const restore = () => { suppression?.remove(); suppression = null }
+  const observer = new MutationObserver(() => {
+   const nextTheme = theme()
+   if (nextTheme === previousTheme) return
+   previousTheme = nextTheme
+   cancelAnimationFrame(frame)
+   restore()
+   suppression = document.createElement('style')
+   suppression.textContent = '.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace.activity-workspace * { transition: none !important; }'
+   document.head.appendChild(suppression)
+   // Flush the final palette while transitions are suppressed.
+   const control = document.querySelector('.activity-workspace')
+   if (control) window.getComputedStyle(control).backgroundColor
+   frame = requestAnimationFrame(() => {
+    frame = requestAnimationFrame(restore)
+   })
+  })
+  observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+  return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+ }, [])
+
+
+
   const detailsRef = useRef<HTMLDialogElement>(null)
   const [busca, setBusca] = useState('')
   const [filtro, setFiltro] = useState<Filtro>('todos')
-  const [periodo, setPeriodo] = useState('todos')
+  const [periodo, setPeriodo] = useState<Periodo>('todos')
   const [pagina, setPagina] = useState(1)
   const [selecionado, setSelecionado] = useState<Evento | null>(null)
   const { data, isLoading, refetch, isFetching, error } = useQuery({
@@ -125,7 +156,7 @@ export default function AdminAtividadePage() {
         <div className="segments" aria-label="Tipo de evento">
           {([['todos','Todos'],['cadastro','Cadastros'],['admin','Ações admin.']] as const).map(([value,label]) => <button key={value} aria-pressed={filtro === value} onClick={() => setFiltro(value)}>{label}</button>)}
         </div>
-        <label className="period"><CalendarDays size={17} /><select aria-label="Filtrar período" value={periodo} onChange={e => setPeriodo(e.target.value)}><option value="todos">Todo período</option><option value="hoje">Hoje</option><option value="7dias">Últimos 7 dias</option></select></label>
+        <ActivityPeriod value={periodo} onChange={setPeriodo} />
         <button className="refresh" aria-label="Atualizar atividade" title="Atualizar atividade" onClick={() => refetch()} disabled={isFetching}><RefreshCw size={18} className={isFetching ? 'animate-spin' : ''} /></button>
       </section>
 
@@ -306,7 +337,174 @@ export default function AdminAtividadePage() {
           .details-metadata > div + div { border-left:0; padding:0; }
           .details-footer button,.details-close { min-height:44px; }
         }
+
+        /* Separate filters follow the Approvals reference. */
+        .segments { gap:6px; border:0; border-radius:13px; overflow:visible; }
+        .segments button,.segments button:last-child { height:48px; padding:0 20px; border:1px solid var(--border); border-radius:13px; background:transparent; color:var(--muted); font-size:13px; font-weight:400; white-space:nowrap; }
+        .segments button[aria-pressed="true"] { background:color-mix(in srgb,var(--accent) 7%,transparent); color:var(--accent); }
+        :global(html:not(.dark)) .segments button[aria-pressed="true"] { background:color-mix(in srgb,var(--accent) 7%,transparent); color:var(--accent); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace :is(.search,.segments button,.activity-period-trigger,.activity-period-option)) {
+          border-width:1px!important; border-style:solid!important; border-radius:13px!important;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; transform:none!important; translate:none!important; scale:none!important; filter:none!important; animation:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .search) { background:var(--surface)!important; border-color:var(--border)!important; color:var(--muted)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .search:focus-within) { border-color:var(--border)!important; box-shadow:none!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .search input) { background:transparent!important; box-shadow:none!important; outline:none!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .segments button) { background:transparent!important; border-color:var(--border)!important; color:var(--muted)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .segments button[aria-pressed="true"]) { background:color-mix(in srgb,var(--accent) 7%,transparent)!important; color:var(--accent)!important; }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .search:not(:has(input:disabled)):hover),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .segments button:hover:enabled) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:640px) {
+          .toolbar { gap:12px; }
+          .segments { flex:1 1 100%; min-width:0; }
+          .segments button { flex:1; min-width:0; padding:0 10px; font-size:12px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .search input) { font-size:16px!important; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period) { flex:1; width:auto; min-width:0; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-menu) { width:100%; }
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period) { position:relative; width:190px; flex-shrink:0; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-trigger) {
+          display:flex; align-items:center; gap:10px; width:100%; height:48px!important;
+          padding:0 14px!important; background:var(--surface)!important;
+          border:1px solid var(--border)!important; border-radius:13px!important;
+          color:var(--muted)!important; font-size:13px!important; font-weight:400!important;
+          white-space:nowrap;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-trigger > svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-trigger > svg:last-child) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-menu) {
+          position:absolute; z-index:40; top:calc(100% + 8px); right:0;
+          width:240px; max-width:calc(100vw - 32px); padding:6px;
+          border:1px solid var(--border); border-radius:13px;
+          background:var(--surface); color:var(--text);
+          box-shadow:0 8px 24px rgba(0,0,0,.12); outline:none;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-menu[data-above="true"]) { top:auto; bottom:calc(100% + 8px); }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option) {
+          display:flex; align-items:center; gap:10px; min-height:44px; padding:0 10px;
+          border:1px solid transparent; border-radius:13px; cursor:pointer;
+          font-size:13px; font-weight:400; color:var(--text);
+          transition:background-color 150ms ease,border-color 150ms ease;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option + .activity-period-option) { margin-top:4px; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option > svg) { flex-shrink:0; color:inherit; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option > svg:last-child:not(:first-child)) { margin-left:auto; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option[aria-selected="true"]) {
+          background:color-mix(in srgb,var(--accent) 7%,transparent);
+          color:var(--accent);
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-menu:focus .activity-period-option[data-active="true"]) {
+          border-color:color-mix(in srgb,var(--accent) 40%,transparent);
+        }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-trigger:hover:enabled),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option:hover) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+        }
+        @media(max-width:480px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period) { width:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-menu) { width:100%; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-trigger),
+          :global(html:is(.light,.dark) [data-admin-route="/admin/atividade"] [data-admin-content="/admin/atividade"] .activity-workspace.activity-workspace .activity-period-option) { font-size:16px!important; }
+        }
+
+
 `}</style>
     </div>
   )
+}
+
+function ActivityPeriod({ value, onChange }: { value: Periodo; onChange: (value: Periodo) => void }) {
+  const options = [
+    { value: 'todos' as const, label: 'Todo período', Icon: CalendarDays },
+    { value: 'hoje' as const, label: 'Hoje', Icon: CalendarDays },
+    { value: '7dias' as const, label: 'Últimos 7 dias', Icon: Clock3 },
+  ]
+  const id = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [above, setAbove] = useState(false)
+  const selected = options.findIndex((option) => option.value === value)
+
+  useEffect(() => {
+    if (!open) return
+    const outside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const place = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (rect) setAbove(window.innerHeight - rect.bottom < 120 && rect.top > 120)
+    }
+    place()
+    listRef.current?.focus({ preventScroll: true })
+    document.addEventListener('pointerdown', outside)
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
+
+  function choose(index: number) {
+    onChange(options[index].value)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  return <div ref={rootRef} className="activity-period" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
+  }}>
+    <button ref={triggerRef} type="button" className="activity-period-trigger"
+      aria-label={`Filtrar por período: ${options[selected].label}`}
+      aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
+      onClick={() => { setActive(selected); setOpen(!open) }}
+      onKeyDown={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive(selected); setOpen(true)
+        }
+      }}>
+      <CalendarDays size={17} strokeWidth={1.8} />
+      <span>{options[selected].label}</span>
+      {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+    </button>
+    {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="activity-period-menu"
+      data-above={above} aria-label="Período da atividade" aria-activedescendant={`${id}-${active}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault(); setActive((index) => (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length)
+        } else if (event.key === 'Home' || event.key === 'End') {
+          event.preventDefault(); setActive(event.key === 'Home' ? 0 : options.length - 1)
+        } else if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); choose(active)
+        } else if (event.key.length === 1) {
+          const index = options.findIndex((option) => option.label.toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+          if (index >= 0) { event.preventDefault(); setActive(index) }
+        }
+      }}>
+      {options.map(({ value: optionValue, label, Icon }, index) => <div
+        key={optionValue} id={`${id}-${index}`} role="option"
+        aria-selected={value === optionValue} data-active={active === index}
+        className="activity-period-option"
+        onPointerMove={() => setActive(index)}
+        onClick={() => choose(index)}>
+        <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
+        {value === optionValue && <Check size={17} strokeWidth={2} />}
+      </div>)}
+    </div>}
+  </div>
 }
