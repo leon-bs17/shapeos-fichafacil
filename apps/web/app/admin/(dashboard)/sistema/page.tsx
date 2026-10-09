@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Bell, CheckCircle2, Clock3, Database, Dumbbell, FileText, Info, ListChecks, LockKeyhole, RefreshCw, XCircle } from 'lucide-react'
@@ -9,6 +10,31 @@ type Check = {
 }
 
 export default function AdminSistemaPage() {
+
+  useEffect(() => {
+    const html = document.documentElement
+    const theme = () => html.classList.contains('dark') ? 'dark' : 'light'
+    let previousTheme = theme()
+    let frame = 0
+    let suppression: HTMLStyleElement | null = null
+    const restore = () => { suppression?.remove(); suppression = null }
+    const observer = new MutationObserver(() => {
+      const nextTheme = theme()
+      if (nextTheme === previousTheme) return
+      previousTheme = nextTheme
+      cancelAnimationFrame(frame)
+      restore()
+      suppression = document.createElement('style')
+      suppression.textContent = '.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace.system-workspace * { transition:none!important; }'
+      document.head.appendChild(suppression)
+      const workspace = document.querySelector('.system-workspace')
+      if (workspace) window.getComputedStyle(workspace).backgroundColor
+      frame = requestAnimationFrame(() => { frame = requestAnimationFrame(restore) })
+    })
+    observer.observe(html, { attributes:true, attributeFilter:['class'] })
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
+  }, [])
+
   const { data, isLoading, refetch, isFetching, error } = useQuery({
     queryKey: ['admin-system-health'],
     refetchInterval: 60_000,
@@ -74,7 +100,7 @@ export default function AdminSistemaPage() {
           </g>)}
         </g></svg>
       </section>
-      {error ? <div className="error" role="alert">Leitura do diagnóstico indisponível. <button onClick={()=>refetch()}>Tentar novamente</button></div> : isLoading || !data ? <div className="h-64 rounded-3xl skeleton" role="status" aria-label="Verificando serviços"/> : <>
+      {error ? <div className="error" role="alert">Leitura do diagnóstico indisponível. <button type="button" disabled={isFetching} onClick={()=>refetch()}>{isFetching ? 'Verificando...' : 'Tentar novamente'}</button></div> : isLoading || !data ? <div className="h-64 rounded-3xl skeleton" role="status" aria-label="Verificando serviços"/> : <>
         <section className={data.saudavel?'status-bar':'status-bar failure'} aria-live="polite">
           <div className="status-copy">{data.saudavel?<CheckCircle2 size={43} strokeWidth={1.6}/>:<XCircle size={43} strokeWidth={1.6}/>}<div><h2>{data.saudavel?'Serviços operacionais':'Há serviços com falha'}</h2><p>Última verificação: {hora(data.verificadoEm)}</p></div></div>
           <span className="latency">Diagnóstico: <strong>{data.latencia.toLocaleString('pt-BR')} ms</strong></span>
@@ -104,9 +130,43 @@ export default function AdminSistemaPage() {
         @media(max-width:600px) { .hero { padding:27px 22px; min-height:220px; } .hero-copy { max-width:100%; } .wireframe { right:-260px; opacity:.15; } .services { grid-template-columns:minmax(0,1fr); } .status-bar { padding:16px; gap:13px; } .status-copy { gap:12px; } .status-copy> :global(svg) { width:34px; } .verify { flex:1; font-size:11px; padding:11px; } .latency { font-size:10px; padding:9px; } ul { grid-template-columns:1fr; } .service { padding:19px; } }
 
         :global(html:not(.dark)) .verify { color:#fff; }
-        :global(html:not(.dark)) .verify:hover { background:#0d7e70; }
+        
         :global(html:not(.dark)) .wireframe { color:#008d85; }
         :global(html:not(.dark)) .badge:not(.unavailable) { color:#0d7e70; background:#e4f3eb; border-color:#129b89; }
+
+        /* Quiet command buttons, with the same appearance in both themes. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace :is(.verify,.error button)) {
+          display:inline-flex; align-items:center; justify-content:center; gap:10px;
+          min-height:44px; padding:12px 18px; border:1px solid var(--border)!important;
+          border-radius:13px!important; background:var(--surface)!important; color:var(--text)!important;
+          font-size:12px; font-weight:600; text-decoration:none;
+          transition:background-color 150ms ease,border-color 150ms ease!important;
+          box-shadow:none!important; filter:none!important; transform:none!important; translate:none!important; scale:none!important;
+        }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .error button) { margin-left:12px; }
+        @media(hover:hover) and (pointer:fine) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace :is(.verify,.error button):hover:enabled) {
+            background:color-mix(in srgb,var(--accent) 7%,transparent)!important;
+            border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;
+          }
+        }
+        /* Status is informational: use a soft badge rather than a strong outline. */
+        :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .badge) { border:0!important; border-radius:999px; padding:7px 12px; font-size:11px; font-weight:500; line-height:1.5; white-space:nowrap; }
+        :global(html.light [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .badge:not(.unavailable)) { background:#e4f3eb!important; color:#0d7e70!important; }
+        :global(html.dark [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .badge:not(.unavailable)) { background:#123b31!important; color:#00e9df!important; }
+        :global(html.light [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .badge.unavailable) { background:#fce6e8!important; color:#a52b3d!important; }
+        :global(html.dark [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .badge.unavailable) { background:#3b1d26!important; color:#ff8f9b!important; }
+        @media(max-width:767px) {
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-bar) { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy > div) { min-width:0; margin-right:0; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy h2), :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .status-copy p) { overflow-wrap:anywhere; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .latency) { justify-self:start; margin:0; max-width:100%; white-space:normal; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .verify) { width:100%; min-height:48px; white-space:normal; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .service header) { flex-wrap:wrap; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .error button) { display:flex; width:100%; margin:14px 0 0; }
+          :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation-intro) { min-width:0; gap:14px; }
+        }
+
       `}</style>
     </div>
   )
