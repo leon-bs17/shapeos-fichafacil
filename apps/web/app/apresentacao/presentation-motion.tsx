@@ -75,7 +75,11 @@ export function RotatingWord() {
     <>
       <span className={s.srOnly}>treino</span>
       <span className={s.word} aria-hidden="true">
-        <span key={index}>{["treino", "ritmo", "foco"][index]}</span>
+        <span key={index}>
+          {index === 1 ? (
+            <><span style={{ paddingRight: "0.045em" }}>r</span>itmo</>
+          ) : ["treino", "ritmo", "foco"][index]}
+        </span>
       </span>
     </>
   );
