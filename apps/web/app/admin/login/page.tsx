@@ -185,10 +185,9 @@ html:is(.light,.dark) body .admin-login.admin-login :is(a,button):focus-visible 
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-spinner { animation:admin-login-spin 1s linear infinite; }
 @keyframes admin-login-spin { to { transform:rotate(360deg); } }
 @media(hover:hover) and (pointer:fine) {
- html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-command,.admin-login-visibility):not(:disabled):hover,
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-command:not(:disabled):hover,
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-field:not(:has(input:disabled)):hover,
- html:is(.light,.dark) body .admin-login.admin-login .admin-login-back:hover,
- html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button:hover:enabled { background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
+  html:is(.light,.dark) body .admin-login.admin-login [data-shapeos-theme-inline] button:hover:enabled { background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-submit:not(:disabled):hover { background:linear-gradient(rgba(0,0,0,.07),rgba(0,0,0,.07)),var(--login-brand)!important; border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important; }
 }
 @media(max-width:767px) {
@@ -215,6 +214,14 @@ html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action,
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action:hover,
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action:active {
   background:transparent!important; border-color:transparent!important; box-shadow:none!important;
+}
+
+
+/* Header link and password visibility icon have no boxed pointer hover. */
+html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin-login-visibility),
+html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin-login-visibility):hover,
+html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin-login-visibility):active {
+ background:transparent!important; border-color:transparent!important; box-shadow:none!important;
 }
 
     `}</style>
