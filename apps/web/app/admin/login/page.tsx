@@ -136,6 +136,7 @@ export default function AdminLoginPage() {
           {modoEsqueci?<button type="button" className="admin-login-text-action" disabled={busy} onClick={voltarLogin}>Voltar ao login</button>:
           <button type="button" className="admin-login-text-action" disabled={busy} onClick={()=>{setModoEsqueci(true);setMostrarSenha(false);setSenha('');setErro(null);requestAnimationFrame(()=>emailRef.current?.focus())}}>Esqueci minha senha</button>}
         </form>}
+        <div className="admin-login-mobile-about"><p>Ainda não conhece a plataforma?</p><Link href="/apresentacao">Conhecer o ShapeOS <ArrowRight size={16} aria-hidden="true"/></Link></div>
         <footer className="admin-login-permission"><Shield size={16} aria-hidden="true"/><p>Acesso exclusivo para administradores.</p></footer>
       </section>
     </div>
@@ -218,6 +219,31 @@ html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin
 html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin-login-visibility):hover,
 html:is(.light,.dark) body .admin-login.admin-login :is(.admin-login-back,.admin-login-visibility):active {
  background:transparent!important; border-color:transparent!important; box-shadow:none!important;
+}
+
+
+/* Mobile login: stacked identity and form, using the existing theme tokens. */
+html:is(.light,.dark) body .admin-login.admin-login .admin-login-mobile-about { display:none; }
+@media(max-width:767px) {
+ html:is(.light,.dark) body .admin-login.admin-login { background:linear-gradient(180deg,color-mix(in srgb,var(--login-brand) 7%,var(--login-bg)) 0,var(--login-bg) 300px)!important; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-header { border-bottom:0; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-back { display:none; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-main { flex:0 0 auto; align-items:start; margin:0 auto; gap:24px; padding-top:24px; padding-bottom:max(32px,env(safe-area-inset-bottom)); }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-intro { min-height:170px; padding:12px 0 16px; isolation:isolate; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-wireframe { top:calc(50% - 84px); right:-48px; width:240px; opacity:.35; z-index:-1; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-card { border-radius:13px; padding:24px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-card-heading h2 { font-size:24px; line-height:1.3; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-field-group label { font-size:14px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-submit { font-size:14px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-text-action { font-size:14px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-mobile-about { display:grid; justify-items:center; gap:8px; border-top:1px solid var(--login-border); margin-top:20px; padding-top:20px; text-align:center; font-size:13px; line-height:1.6; color:var(--login-muted); }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-mobile-about p { margin:0; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-mobile-about a { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:8px 0; color:var(--login-brand)!important; background:transparent!important; border:0!important; box-shadow:none!important; text-decoration:underline; text-underline-offset:3px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-permission { margin-top:8px; padding-top:0; border-top:0; }
+}
+@media(max-width:359px) {
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-card { padding:20px 16px; }
+ html:is(.light,.dark) body .admin-login.admin-login .admin-login-wireframe { right:-80px; }
 }
 
     `}</style>
