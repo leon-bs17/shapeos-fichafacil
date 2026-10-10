@@ -851,6 +851,48 @@ export default function ControlPage() {
   }
   @media(max-width:767px) { :global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table colgroup) { display:none; } }
 
+
+/* Approved mobile account cards and overview hierarchy. */
+@media(max-width:767px){
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center){display:flex;flex-direction:column;gap:20px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > *){margin-top:0!important;margin-bottom:0!important;order:5;min-width:0;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > .control-heading){order:0;min-height:190px;padding:24px 20px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-heading-art){width:290px!important;right:-105px;top:50%;opacity:.24;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > .control-metrics){order:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-metric){min-height:90px;padding:14px 12px;gap:10px;border-radius:13px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-metric > span){width:40px;height:40px;border-radius:999px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-metric > span svg){width:24px;height:24px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-metric > div > p:first-child){font-size:12px;line-height:1.5;overflow-wrap:anywhere;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > .control-export-row){order:2;width:100%;padding:0;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-export){width:100%;min-height:48px;font-size:13px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > .control-tabs){order:3;min-height:44px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-tabs button){min-height:44px;padding:10px 14px;font-size:13px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center > .control-toolbar){order:4;display:flex;flex-direction:column;gap:12px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar [data-admin-search]){width:100%;min-height:48px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar [data-admin-search] input){height:48px;font-size:16px!important;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar .control-filter-group){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar .control-filter){display:grid;gap:6px;min-width:0;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar .control-filter-label){display:block;font-size:12px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar .control-filter-field){width:100%;min-width:0;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .control-toolbar .control-filter-trigger){width:100%;min-width:0;padding:10px;font-size:13px!important;min-height:48px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table){border:0!important;background:transparent!important;overflow:visible;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table table){display:block;width:100%;background:transparent!important;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table tbody){display:block;width:100%;background:transparent!important;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table tbody tr){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:16px;margin-bottom:12px;border:1px solid #d7ded3!important;border-radius:13px;background:#fcfdf9!important;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table td){padding:0!important;min-width:0;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .avatar){display:flex;width:40px;height:40px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .user-cell){grid-column:1;grid-row:1;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .selection-cell){grid-column:2;grid-row:1;min-width:44px;min-height:44px;display:grid;place-items:center;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .selection-cell input){width:18px;height:18px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .email-cell){grid-column:1/-1;grid-row:2;font-size:13px;white-space:normal;overflow-wrap:anywhere;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .profile-cell){grid-column:1;grid-row:3;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .status-cell){grid-column:2;grid-row:3;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .action-cell){grid-column:1/-1;grid-row:4;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table .control-manage-trigger){width:100%;min-height:44px;justify-content:center;border-radius:13px;font-size:13px;}
+:global(html:is(.light,.dark) [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-pagination){padding:16px;border:1px solid #d7ded3;border-radius:13px;flex-direction:column;align-items:flex-start;}
+:global(html.dark [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-table tbody tr){border-color:#1c4037!important;background:#091c18!important;}
+:global(html.dark [data-admin-route="/admin/controle"] [data-admin-content] .control-center.control-center .account-pagination){border-color:#1c4037;}
+}
 `}</style>
  </div>
 }
