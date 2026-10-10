@@ -354,3 +354,40 @@
  .workspace .newChat:hover:enabled { background:hsl(var(--card) / .55); border-color:var(--mys-line); }
  .workspace .quickPrompts button:hover:enabled { background:hsl(var(--card) / .6); border-color:var(--mys-line); }
 }
+
+/* Admin mobile Mys: match the approved mobile reading and touch hierarchy. */
+@media(max-width:750px) {
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace { --background:68 30% 96%; --card:75 50% 98%; --foreground:164 27% 12%; --muted-foreground:154 8% 40%; --border:98 14% 85%; --primary:172 79% 34%; --primary-foreground:0 0% 100%; --mys-accent:#129b89; --mys-line:#d7ded3; --mys-soft:color-mix(in srgb,#129b89 7%,transparent); width:100%; padding-bottom:max(24px,env(safe-area-inset-bottom)); color:#162623; }
+ :global(html.dark [data-admin-route="/admin/mys"]) .workspace.workspace { --background:166 68% 5%; --card:164 51% 7%; --foreground:168 33% 97%; --muted-foreground:200 29% 72%; --border:164 39% 18%; --primary:177 100% 46%; --primary-foreground:166 68% 5%; --mys-accent:#00e9df; --mys-line:#1c4037; --mys-soft:color-mix(in srgb,#00e9df 7%,transparent); color:#f5faf9; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .header { align-items:flex-start; flex-direction:column; gap:20px; margin-bottom:0; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .identity { width:100%; flex:0 0 auto; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .identity .smallMark { display:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .identity h1 { font-size:32px; font-weight:800; line-height:1.12; letter-spacing:-.045em; gap:10px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .identity h1>span { font-size:10px; font-weight:650; letter-spacing:.1em; padding:6px 12px; border-radius:999px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .identity p { display:block; max-width:none; font-size:14px; line-height:1.6; margin-top:10px; color:#5f6f68!important; }
+ :global(html.dark [data-admin-route="/admin/mys"]) .workspace.workspace .identity p { color:#a3becd!important; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .newChat { width:auto; min-height:44px; padding:10px 16px; font-size:14px!important; border:1px solid var(--mys-line); border-radius:13px; background:hsl(var(--card)); color:inherit; transition:background-color 150ms ease,border-color 150ms ease; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .emptyThread { padding:42px 0 24px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .welcomeMark { --mys-welcome-mark-size:64px; margin-bottom:26px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .welcomeWireframe { filter:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .emptyThread .welcome h2 { font-size:28px; line-height:1.2; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .welcomeSubtitle { font-size:14px; line-height:1.6; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .quickPrompts { grid-template-columns:minmax(0,1fr); gap:12px; margin-top:24px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .quickPrompts button { min-height:80px; padding:16px; border-radius:13px; background:hsl(var(--card)); transform:none; transition:background-color 150ms ease,border-color 150ms ease; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .promptCopy strong { font-size:14px; line-height:1.5; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .promptCopy>span { display:block; font-size:12px; line-height:1.6; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .composerArea { padding:12px; background:hsl(var(--card)); }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .emptyPanel .composerArea { padding:0; background:transparent; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .composer, :global([data-admin-route="/admin/mys"]) .workspace.workspace .emptyPanel .composer { padding:14px; border:1px solid var(--mys-line); border-radius:13px; background:hsl(var(--card)); box-shadow:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .composer textarea { font-size:16px; min-height:48px; max-height:130px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .composer:focus-within { border-color:color-mix(in srgb,var(--mys-accent) 60%,transparent); box-shadow:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .send { width:44px; height:44px; filter:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .footnote { font-size:12px; line-height:1.6; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .scope summary { min-height:44px; }
+}
+@media(max-width:750px) and (hover:hover) and (pointer:fine) {
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .newChat:hover:enabled, :global([data-admin-route="/admin/mys"]) .workspace.workspace .quickPrompts button:hover:enabled { background:var(--mys-soft); border-color:color-mix(in srgb,var(--mys-accent) 40%,transparent); transform:none; }
+}
+@media(max-width:750px) and (hover:none) {
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace .newChat:hover:enabled, :global([data-admin-route="/admin/mys"]) .workspace.workspace .quickPrompts button:hover:enabled { background:hsl(var(--card)); border-color:var(--mys-line); }
+}
