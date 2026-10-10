@@ -1110,3 +1110,11 @@
     transform: none !important;
   }
 }
+
+/* Theme icon contrast is scoped to the presentation header. */
+.page .header :global([data-shapeos-theme-inline]) {
+  --theme-toggle-text: #162623;
+}
+:global(html.dark) .page .header :global([data-shapeos-theme-inline]) {
+  --theme-toggle-text: #f5faf9;
+}
