@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Check, ChevronDown, ChevronUp, Eye, FileText, GraduationCap, Info, Megaphone, PauseCircle, Plus, Search, Send, Trash2, UserRound, Users, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Eye, FileText, GraduationCap, Info, Megaphone, PauseCircle, Plus, Search, Trash2, UserRound, Users, X } from 'lucide-react'
 
 type Publico = 'TODOS' | 'PERSONAL' | 'ALUNO'
 type Comunicado = { id:string; titulo:string; mensagem:string; publico:Publico; ativa:boolean; criado_em:string }
@@ -28,6 +28,7 @@ export default function AdminComunicadosPage() {
   const [busca,setBusca] = useState('')
   const [filtroPublico,setFiltroPublico] = useState('QUALQUER')
   const [filtroStatus,setFiltroStatus] = useState('TODOS')
+  const noticeMessageRef = useRef<HTMLTextAreaElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const open = modal !== null
 
@@ -43,6 +44,23 @@ export default function AdminComunicadosPage() {
   useEffect(() => {
     if (modal === 'create') document.getElementById('notice-title')?.focus()
   },[modal])
+  useEffect(() => {
+    if (modal !== 'create') return
+    const field = noticeMessageRef.current
+    if (!field) return
+    const resize = () => {
+      field.style.height = 'auto'
+      field.style.height = Math.max(150, field.scrollHeight + 2) + 'px'
+    }
+    resize()
+    let previousWidth = field.getBoundingClientRect().width
+    const observer = new ResizeObserver(() => {
+      const width = field.getBoundingClientRect().width
+      if (width !== previousWidth) { previousWidth = width; resize() }
+    })
+    observer.observe(field)
+    return () => observer.disconnect()
+  },[mensagem,modal])
   useEffect(() => {
     const html = document.documentElement
     const keyboard = (event:KeyboardEvent) => { if(event.key==='Tab') html.setAttribute('data-notice-search-keyboard','true') }
@@ -191,12 +209,12 @@ export default function AdminComunicadosPage() {
       {modal==='create'&&<form className="notice-create-form" onSubmit={publicar}>
         <div className="notice-modal-body">
           <label htmlFor="notice-title">Título</label><input id="notice-title" className="notice-field" value={titulo} disabled={salvando} onChange={event=>setTitulo(event.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" required/>
-          <label htmlFor="notice-message">Mensagem</label><textarea id="notice-message" className="notice-field" value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." required/>
+          <label htmlFor="notice-message">Mensagem</label><textarea ref={noticeMessageRef} id="notice-message" className="notice-field" value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." required/>
           <fieldset><legend>Público</legend><div className="notice-audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(value=><button key={value} type="button" className="notice-command" aria-pressed={publico===value} disabled={salvando} onClick={()=>setPublico(value)}>{value==='TODOS'?<Users size={16}/>:value==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {publicoLabel(value)}</button>)}</div></fieldset>
           <p className="notice-helper"><Info size={15}/>O aviso será enviado ao público selecionado.</p>
           {erro&&<p className="notice-error" role="alert">{erro}</p>}
         </div>
-        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command" disabled={salvando}><Send size={16}/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
+        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
       </form>}
       {modal==='view'&&selected&&<>
         <div className="notice-modal-body notice-detail"><div className="notice-detail-title"><Megaphone size={26}/><h3>{selected.titulo}</h3></div><div className="notice-detail-tags"><span className="notice-audience">{publicoLabel(selected.publico)}</span><span className="notice-state" data-active={selected.ativa}><i/>{selected.ativa?'Ativo':'Inativo'}</span></div><p className="notice-detail-date">Publicado em {dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p><div className="notice-detail-message">{selected.mensagem}</div>{actionError&&<p role="alert" className="notice-error">{actionError}</p>}</div>
@@ -278,7 +296,7 @@ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-ro
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-body :is(label,legend) { display:block; color:var(--notice-text); font-size:11px; font-weight:600; margin-bottom:8px; }
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-modal-body label:not(:first-child),html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace fieldset { margin-top:18px; }
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-field { width:100%; min-height:48px; padding:12px 14px; font-family:inherit; font-size:13px; outline:none; }
-html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace textarea.notice-field { min-height:150px; resize:vertical; line-height:1.7; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace textarea.notice-field { min-height:150px; max-height:none!important; resize:none!important; overflow-y:hidden!important; box-sizing:border-box; flex-shrink:0; line-height:1.7; }
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences .notice-command { padding:10px 8px; font-size:12px; }
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences [aria-pressed="true"] { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; color:var(--notice-brand)!important; }
@@ -331,6 +349,8 @@ html.dark body [data-admin-route="/admin/comunicados"][data-admin-route][data-ad
  html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-toolbar { grid-template-columns:minmax(0,1fr); }
  html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-audiences { grid-template-columns:minmax(0,1fr); }
 }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-command.notice-publish { min-height:48px; padding:12px 20px; border:1px solid var(--notice-border)!important; border-radius:13px; background:transparent!important; color:var(--notice-brand)!important; font-size:14px; font-weight:600; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-command.notice-publish:not(:disabled):hover { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-field,.notice-search,.notice-select-trigger) { transition:none!important; } }
 
     `}</style>
