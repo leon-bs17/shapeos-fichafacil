@@ -464,6 +464,10 @@ html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-rout
 html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .personals-workspace.personals-workspace .personals-pagination button { width:44px!important;min-width:44px!important;height:44px!important;border-radius:13px!important; }
 html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .personals-workspace.personals-workspace .personals-pagination button[aria-current="page"] { background:var(--personal-brand)!important;border-color:var(--personal-brand)!important;color:#002a26!important; }
 }
+
+@media(max-width:767px) {
+html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .personals-workspace.personals-workspace .personal-dialog { position:fixed!important; inset:0!important; margin:auto!important; box-sizing:border-box!important; width:calc(100vw - 24px)!important; max-width:calc(100vw - 24px)!important; height:fit-content!important; max-height:calc(100dvh - 24px)!important; overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior:contain!important; }
+}
 `}</style>
   </div>
 }
