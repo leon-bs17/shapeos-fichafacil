@@ -684,6 +684,10 @@ html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route
 html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace.users-workspace .users-pagination nav { flex-wrap:wrap!important;justify-content:center!important;gap:6px!important; }
 html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace.users-workspace .users-pagination button { width:44px!important;min-width:44px!important;height:44px!important;border-radius:13px!important; }
 }
+
+@media(max-width:767px) {
+html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace.users-workspace .users-details { position:fixed!important; inset:0!important; margin:auto!important; box-sizing:border-box!important; width:calc(100vw - 24px)!important; max-width:calc(100vw - 24px)!important; height:fit-content!important; max-height:calc(100dvh - 24px)!important; overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior:contain!important; }
+}
 `}</style>
     </div>
   )
