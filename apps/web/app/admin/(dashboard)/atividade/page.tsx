@@ -314,7 +314,8 @@ export default function AdminAtividadePage() {
         :global(html.dark) .details-summary { background:rgba(0,233,223,.055); }
         .details-icon { display:grid; place-items:center; width:56px; height:56px; flex:0 0 56px; border-radius:13px; background:color-mix(in srgb,var(--accent) 14%,var(--surface)); color:var(--accent); }
         .details-summary h3 { font-size:22px; font-weight:700; line-height:1.35; letter-spacing:-.025em; text-transform:capitalize; overflow-wrap:anywhere; min-width:0; }
-        .details-badge { margin-left:auto; flex-shrink:0; padding:6px 12px; border:1px solid var(--accent); border-radius:999px; color:var(--accent); font-size:11px; font-weight:600; }
+        .details-badge { display:inline-flex; align-items:center; margin-left:auto; flex-shrink:0; padding:7px 12px; border:0; border-radius:999px; background:#e4f3eb; color:#0d7e70; font-size:11px; font-weight:500; }
+        :global(html.dark) .details-badge { background:#123b31; color:#00e9df; }
         .details-reference { margin:20px 0 0; padding:18px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
         .activity-details dt { color:var(--muted); font-size:12px; margin:0; }
         .activity-details dd { font-size:14px; line-height:1.6; margin-top:5px; overflow-wrap:anywhere; }
