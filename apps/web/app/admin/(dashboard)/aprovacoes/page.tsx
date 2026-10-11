@@ -508,7 +508,7 @@ export default function AdminAprovacoesPage() {
             })}
           </div>
 
-          <div className="flex flex-col gap-3 rounded-b-[24px] border-t border-slate-100 px-5 py-4 text-[12px] font-medium text-[#6076a3] sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
+          <div data-approval-footer className="flex flex-col gap-3 rounded-b-[24px] border-t border-slate-100 px-5 py-4 text-[12px] font-medium text-[#6076a3] sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-slate-500">
             <span>
               {cadastrosFiltrados.length ? inicioPagina + 1 : 0} – {Math.min(inicioPagina + ITENS_POR_PAGINA, cadastrosFiltrados.length)} de {cadastrosFiltrados.length} profissionais
             </span>
@@ -533,9 +533,7 @@ export default function AdminAprovacoesPage() {
               >
                 <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
               </button>
-              <span aria-current="page" aria-label={`Página atual: ${paginaAtual}`} className="grid h-8 min-w-8 place-items-center rounded-lg bg-primary px-2 text-xs font-bold text-primary-foreground">
-                {paginaAtual}
-              </span>
+              {Array.from({length:totalPaginas},(_,i)=>i+1).filter(n=>n===1||n===totalPaginas||Math.abs(n-paginaAtual)<=1).map((n,i,list)=><span key={n} className="approval-page-item">{i>0&&n-list[i-1]>1&&<span className="approval-page-gap" aria-hidden="true">…</span>}<button type="button" className="approval-page-number" aria-label={`Página ${n}`} aria-current={n===paginaAtual?'page':undefined} onClick={()=>setPagina(n)}>{n}</button></span>)}
               <button
                 type="button"
                 onClick={() => setPagina((atual) => Math.min(totalPaginas, atual + 1))}
@@ -1003,6 +1001,17 @@ export default function AdminAprovacoesPage() {
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-pending-summary-icon] svg) { color:#b88400!important; }
 :global(html.dark body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-pending-summary-icon]) { color:#ffd52d!important; background:rgba(255,213,45,.10)!important; }
 :global(html.dark body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-pending-summary-icon] svg) { color:#ffd52d!important; }
+}
+
+:global(.approval-page-item) { display:flex; align-items:center; gap:8px; }
+:global(.approval-page-gap) { padding:0 2px; }
+@media(max-width:767px) {
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-row]>div:first-child p:last-child:not(:first-child)) { display:block!important; font-size:10px!important; line-height:1.4!important; margin-top:3px!important; color:var(--mobile-muted)!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-footer]) { display:flex!important; flex-direction:column!important; align-items:flex-start!important; gap:14px!important; padding:18px!important; border:1px solid var(--mobile-border)!important; border-radius:18px!important; background:var(--mobile-bg)!important; color:var(--mobile-muted)!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination]) { display:flex!important; flex-wrap:wrap!important; gap:8px!important; width:100%; background:transparent!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button) { display:grid!important; place-items:center!important; width:44px!important; min-width:44px!important; height:44px!important; padding:0!important; border:1px solid var(--mobile-border)!important; border-radius:13px!important; background:transparent!important; color:var(--mobile-muted)!important; box-shadow:none!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button[aria-current="page"]) { background:var(--mobile-brand)!important; border-color:var(--mobile-brand)!important; color:#002a26!important; font-weight:700!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button[aria-label="Primeira página"]), :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button[aria-label="Última página"]) { display:none!important; }
 }
 `}</style>
     </div>
