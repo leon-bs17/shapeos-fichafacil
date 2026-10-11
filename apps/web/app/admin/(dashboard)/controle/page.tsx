@@ -970,6 +970,23 @@ export default function ControlPage() {
 :global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-filter-trigger:hover:enabled),:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-create-action:hover:enabled){background:color-mix(in srgb,var(--bond-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--bond-brand) 40%,transparent)!important;}
 :global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-action button:hover:enabled){background:color-mix(in srgb,var(--bond-danger) 7%,transparent);border-color:color-mix(in srgb,var(--bond-danger) 40%,transparent);}
 }
+
+/* Match the Contas table visual language without changing bond actions. */
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-avatar){background:linear-gradient(145deg,#6f86b6,#4f678f);color:#fff;font-weight:700;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-person > span:last-child){font-size:12px;font-weight:600;color:var(--bond-text);}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-list){border-radius:15px;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds th){font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;background:var(--bond-bg);color:var(--bond-muted);}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-action button){display:inline-flex;align-items:center;justify-content:center;gap:8px;border-color:var(--bond-line);font-weight:600;}
+@media(min-width:768px){
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-list > header){position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds th){padding:15px 16px;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds td){padding:7px 16px;height:50px;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-avatar){width:36px;height:36px;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-person > span:last-child){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-action button){min-height:34px;padding:6px 12px;font-size:12px;}
+}
+
+@media(max-width:767px){:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-bonds .control-bond-avatar){width:40px;height:40px;}}
 `}</style>
  </div>
 }
