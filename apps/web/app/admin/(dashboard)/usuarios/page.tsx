@@ -308,7 +308,7 @@ function UsuariosConteudo() {
           </header>
           <section className="users-profile-card" aria-label="Perfil do usuário">
             <div className="users-avatar">{iniciaisUsuario(selected.nome)}</div>
-            <div className="users-profile-identity"><h3>{selected.nome}</h3><div className="users-profile-badges"><TipoBadge tipo={selected.tipo} /><StatusBadge status={selected.status_conta} /></div></div>
+            <div className="users-profile-identity"><h3>{selected.nome}</h3><div className="users-profile-badges"><TipoBadge tipo={selected.tipo} /><StatusBadge status={selected.status_conta} hideActiveIcon /></div></div>
           </section>
           <dl className="users-profile-data">
             <div><Mail size={22} strokeWidth={1.7} /><div><dt>E-mail</dt><dd>{selected.email}</dd></div></div>
@@ -557,6 +557,9 @@ function UsuariosConteudo() {
         @media(min-width:768px) {
           html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table th:last-child, html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table td[data-label="Ações"] { text-align:center!important; }
         }
+        html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-profile-badges [data-user-status="ATIVO"] { border:0!important; min-height:0; padding:7px 12px; border-radius:999px; font-size:11px; font-weight:500; line-height:1.5; background:#e4f3eb!important; color:#0d7e70!important; }
+        html.dark [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-profile-badges [data-user-status="ATIVO"] { background:#123b31!important; color:#00e9df!important; }
+
         /* Informational status labels share the soft table badge treatment. */
         html:is(.light,.dark) [data-admin-route="/admin/usuarios"] [data-admin-content] .users-workspace.users-workspace .users-table .users-status {
           border:0!important; min-height:0; gap:7px; padding:7px 12px;
@@ -753,7 +756,7 @@ function TipoBadge({ tipo }: { tipo: TipoUsuario }) {
   )
 }
 
-function StatusBadge({ status }: { status: StatusConta }) {
+function StatusBadge({ status, hideActiveIcon = false }: { status: StatusConta; hideActiveIcon?: boolean }) {
   const config = {
     ATIVO: { classe: 'bg-success/10 text-success', icone: CheckCircle2, label: 'Ativo' },
     PENDENTE: { classe: 'bg-warning/10 text-warning', icone: Clock3, label: 'Pendente' },
@@ -763,7 +766,7 @@ function StatusBadge({ status }: { status: StatusConta }) {
 
   return (
     <span data-user-status={status} className={`users-status inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.classe}`}>
-      <Icone className="h-3 w-3" /> {config.label}
+      {!(hideActiveIcon && status === 'ATIVO') && <Icone className="h-3 w-3" />} {config.label}
     </span>
   )
 }
