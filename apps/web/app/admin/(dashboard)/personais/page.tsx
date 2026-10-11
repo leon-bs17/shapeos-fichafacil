@@ -401,6 +401,19 @@ html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-rout
 @media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled { background:color-mix(in srgb,var(--personal-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--personal-brand) 40%,transparent)!important; } }
 @media(max-width:640px) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { height:44px!important; min-height:44px!important; } }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { transition:none!important; } }
+
+/* Compact table matching the approved Users reference. */
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table-card { border-radius:18px; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table-heading h2 { color:var(--personal-ink); font-size:14px; font-weight:700; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table th { letter-spacing:.09em; font-weight:600; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personal-person strong { font-weight:600; color:var(--personal-ink); }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table td { color:var(--personal-ink); }
+@media(min-width:641px) {
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table th { padding:14px 20px; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table td { height:50px; padding:7px 20px; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table :is(th,td):nth-child(3), html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-table :is(th,td):nth-child(4) { text-align:center; }
+html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personal-person { gap:13px; }
+}
 `}</style>
   </div>
 }
