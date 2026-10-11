@@ -182,7 +182,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const initials=(user?.nome?.trim()||'Administrador').split(/\s+/).filter(Boolean).slice(0,2).map((part:string)=>part[0]).join('').toLocaleUpperCase('pt-BR')
     return <>
       <header className="admin-menu-header">
-        <div className="admin-menu-logo">{compact?<ShieldCheck size={26} strokeWidth={1.75} aria-hidden="true"/>:<Logo size="sm"/>}</div>
+        <div className="admin-menu-logo"><Logo size="sm"/></div>
         <button type="button" className="admin-menu-toggle" autoFocus={mobile}
           aria-label={mobile?'Fechar menu':compact?'Expandir menu':'Recolher menu'}
           aria-expanded={mobile?undefined:!collapsed} aria-controls={mobile?'admin-mobile-navigation':'admin-desktop-navigation'}
@@ -696,6 +696,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }
         @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-row,.admin-menu-toggle),html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .admin-menu-open { transition:none!important; } }
 
+
+        /* Compact navigation keeps the original brand symbol. */
+        [data-admin-route] .admin-desktop-menu[data-collapsed="true"] .admin-menu-logo [data-testid="brand-logo"] { justify-content:center; gap:0; }
+        [data-admin-route] .admin-desktop-menu[data-collapsed="true"] .admin-menu-logo [data-testid="brand-logo"] > div { display:none; }
+        [data-admin-route] .admin-desktop-menu[data-collapsed="true"] .admin-menu-logo { width:36px; height:36px; }
 
         /* Logout shares the destructive command treatment, retaining the menu geometry. */
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-row.admin-menu-logout { color:#b42336!important; }
