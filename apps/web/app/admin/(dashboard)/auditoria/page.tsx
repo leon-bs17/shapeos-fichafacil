@@ -281,7 +281,7 @@ export default function AdminAuditoriaPage() {
               <td data-label="Administrador"><div className="audit-person"><span className="audit-avatar" aria-hidden="true">{initials(admin)}</span><span>{admin}</span></div></td>
               <td data-label="Usuário"><div className="audit-person"><span className="audit-avatar" aria-hidden="true">{initials(target)}</span><span>{target}</span></div></td>
               <td data-label="Data e hora"><time dateTime={evento.criado_em}>{dateLabel(evento.criado_em)}<span>{timeLabel(evento.criado_em)}</span></time></td>
-              <td data-label="Ações"><button type="button" className="audit-button" aria-label={'Ver detalhes de ' + config.label} onClick={() => setSelected(evento)}><Eye size={15}/>Ver</button></td>
+              <td data-label="Ações"><button type="button" data-admin-view className="audit-button" aria-label={'Ver detalhes de ' + config.label} onClick={() => setSelected(evento)}><Eye size={15}/>Ver</button></td>
             </tr>
           })}</tbody>
         </table></div>
@@ -556,7 +556,13 @@ export default function AdminAuditoriaPage() {
         html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-change-message h4 { font-size:14px; }
       }
 
-    `}</style>
+    
+html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; width:auto!important; min-width:84px!important; height:36px!important; min-height:36px!important; padding:0 14px!important; border:1px solid var(--audit-border)!important; border-radius:13px!important; background:transparent!important; background-image:none!important; color:var(--audit-text,#162623)!important; font-size:12px!important; font-weight:600!important; line-height:1.5!important; white-space:nowrap!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] svg { width:15px!important; height:15px!important; color:var(--audit-brand)!important; flex-shrink:0!important; }
+@media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled { background:color-mix(in srgb,var(--audit-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--audit-brand) 40%,transparent)!important; } }
+@media(max-width:640px) { html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { height:44px!important; min-height:44px!important; } }
+@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { transition:none!important; } }
+`}</style>
   </div>
 }
 function AuditFilterSelect({ label: fieldLabel, value, onChange, options }: {
