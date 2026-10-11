@@ -492,6 +492,7 @@ export default function AdminAprovacoesPage() {
                   <div className="relative flex items-center justify-start gap-2 md:justify-end">
                     <button
                       type="button"
+                      data-admin-view={pendente ? undefined : true}
                       data-approval-review={pendente ? 'pending' : 'approved'}
                       onClick={() => setPersonalSelecionado(personal)}
                       className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition   dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white "
@@ -953,6 +954,12 @@ export default function AdminAprovacoesPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/aprovacoes"] [data-admin-content] .approvals-workspace [data-approvals-row] > div:last-child) { justify-content:center!important; }
         }
 
+
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; width:auto!important; min-width:84px!important; height:36px!important; min-height:36px!important; padding:0 14px!important; border:1px solid var(--approval-border)!important; border-radius:13px!important; background:transparent!important; background-image:none!important; color:var(--shapeos-text,#162623)!important; font-size:12px!important; font-weight:600!important; line-height:1.5!important; white-space:nowrap!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] svg) { width:15px!important; height:15px!important; color:var(--approval-hover-primary)!important; flex-shrink:0!important; }
+@media(hover:hover) and (pointer:fine) { :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled) { background:color-mix(in srgb,var(--approval-hover-primary) 7%,transparent)!important; border-color:color-mix(in srgb,var(--approval-hover-primary) 40%,transparent)!important; } }
+@media(max-width:640px) { :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { height:44px!important; min-height:44px!important; } }
+@media(prefers-reduced-motion:reduce) { :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { transition:none!important; } }
 `}</style>
     </div>
   )
