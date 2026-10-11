@@ -220,7 +220,7 @@ export default function AdminPersonaisPage() {
             <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><strong>{personal.nome}</strong></div></td>
             <td data-label="E-mail"><span className="personal-email">{personal.email}</span></td>
             <td data-label="Alunos">{personal.total_alunos}</td><td data-label="Treinos">{personal.total_treinos}</td>
-            <td data-label="Ações"><button type="button" className="personal-button" aria-label={'Ver alunos e treinos de ' + personal.nome} onClick={() => openDetails(personal.id)}><Eye size={15}/>Ver</button></td>
+            <td data-label="Ações"><button type="button" data-admin-view className="personal-button" aria-label={'Ver alunos e treinos de ' + personal.nome} onClick={() => openDetails(personal.id)}><Eye size={15}/>Ver</button></td>
           </tr>)}</tbody>
         </table>
         <footer className="personals-pagination"><span>{start + 1}–{Math.min(start + 5,total)} de {total} personais</span><nav aria-label="Paginação dos personais">
@@ -395,7 +395,13 @@ export default function AdminPersonaisPage() {
       }
       @media(max-width:359px) { html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace .personals-stats { grid-template-columns:minmax(0,1fr); } }
       @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) [data-admin-route="/admin/personais"] [data-admin-content] .personals-workspace.personals-workspace :is(.personals-search,.personal-sort-trigger,.personal-sort-option,.personal-button,.personal-student-workouts summary) { transition:none!important; } }
-    `}</style>
+    
+html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; width:auto!important; min-width:84px!important; height:36px!important; min-height:36px!important; padding:0 14px!important; border:1px solid var(--personal-border)!important; border-radius:13px!important; background:transparent!important; background-image:none!important; color:var(--personal-ink,#162623)!important; font-size:12px!important; font-weight:600!important; line-height:1.5!important; white-space:nowrap!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] svg { width:15px!important; height:15px!important; color:var(--personal-brand)!important; flex-shrink:0!important; }
+@media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled { background:color-mix(in srgb,var(--personal-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--personal-brand) 40%,transparent)!important; } }
+@media(max-width:640px) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { height:44px!important; min-height:44px!important; } }
+@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { transition:none!important; } }
+`}</style>
   </div>
 }
 function PersonalSort({ label: fieldLabel, value, onChange, options }: {
