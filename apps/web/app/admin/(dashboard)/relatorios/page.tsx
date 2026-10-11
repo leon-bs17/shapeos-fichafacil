@@ -370,6 +370,9 @@ export default function AdminRelatoriosPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .report-period-menu) { width:100%; }
         }
 
+
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .update) { color:var(--text)!important; }
+        :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .export) { color:var(--accent)!important; }
 `}</style>
     </div>
   )
