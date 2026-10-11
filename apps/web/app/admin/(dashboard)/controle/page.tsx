@@ -1153,6 +1153,11 @@ export default function ControlPage() {
 
 /* Note grows and shrinks with content instead of showing an internal scrollbar. */
 :global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-config textarea){resize:none!important;overflow-y:hidden!important;max-height:none!important;box-sizing:border-box;}
+
+/* Save changes matches the configuration outline command, without an icon. */
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-workouts .workout-editor-footer .workout-editor-save.workout-editor-save){display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border:1px solid var(--bond-line)!important;border-radius:13px!important;background:transparent!important;color:var(--bond-brand)!important;font-size:14px;font-weight:600;box-shadow:none!important;filter:none!important;transform:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+:global(html.dark :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-workouts .workout-editor-footer .workout-editor-save.workout-editor-save){color:var(--bond-brand)!important;}
+@media(hover:hover) and (pointer:fine){:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-workouts .workout-editor-footer .workout-editor-save.workout-editor-save:hover:enabled){background:color-mix(in srgb,var(--bond-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--bond-brand) 40%,transparent)!important;}}
 `}</style>
  </div>
 }
