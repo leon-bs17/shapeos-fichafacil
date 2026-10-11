@@ -274,7 +274,7 @@ export default function AdminAprovacoesPage() {
   }
 
   return (
-    <div className="approvals-workspace space-y-5 pb-8">
+    <div className="approvals-workspace space-y-5">
       <section data-approvals-hero className="relative isolate overflow-hidden">
         <header data-approvals-heading>
           <p data-approval-hero-label className="eyebrow">Aprovações</p>
@@ -613,7 +613,7 @@ export default function AdminAprovacoesPage() {
         :global(.approvals-workspace [data-approvals-filters] button),
         :global(.approvals-workspace [data-approvals-filters] label:has(select)) { height:48px!important; border-radius:12px!important; }
         :global(.approvals-workspace [data-approvals-filters]>div:last-child) { display:none; }
-        :global(.approvals-workspace [data-approvals-table]) { border-radius:17px!important; background:var(--approval-surface)!important; border-color:var(--approval-border)!important; box-shadow:none!important; }
+        :global(.approvals-workspace [data-approvals-table]) { border-radius:18px!important; background:var(--approval-surface)!important; border-color:var(--approval-border)!important; box-shadow:none!important; }
         :global(.approvals-workspace [data-approvals-columns]) { padding:14px 20px!important; border-radius:17px 17px 0 0!important; background:transparent!important; }
         :global(.approvals-workspace [data-approvals-row]) { min-height:54px!important; padding:7px 20px!important; gap:16px!important; }
         :global(.approvals-workspace [data-approvals-row]>p) { color:var(--approval-muted)!important; }
@@ -1007,7 +1007,7 @@ export default function AdminAprovacoesPage() {
 :global(.approval-page-gap) { padding:0 2px; }
 @media(max-width:767px) {
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-row]>div:first-child p:last-child:not(:first-child)) { display:block!important; font-size:10px!important; line-height:1.4!important; margin-top:3px!important; color:var(--mobile-muted)!important; }
-:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-footer]) { display:flex!important; flex-direction:column!important; align-items:flex-start!important; gap:14px!important; padding:18px!important; border:1px solid var(--mobile-border)!important; border-radius:18px!important; background:var(--mobile-bg)!important; color:var(--mobile-muted)!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-footer]) { display:flex!important; flex-direction:column!important; align-items:flex-start!important; gap:12px!important; padding:16px!important; border:1px solid var(--mobile-border)!important; border-radius:13px!important; background:var(--mobile-bg)!important; color:var(--mobile-muted)!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination]) { display:flex!important; flex-wrap:wrap!important; gap:8px!important; width:100%; background:transparent!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button) { display:grid!important; place-items:center!important; width:44px!important; min-width:44px!important; height:44px!important; padding:0!important; border:1px solid var(--mobile-border)!important; border-radius:13px!important; background:transparent!important; color:var(--mobile-muted)!important; box-shadow:none!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approvals-pagination] button[aria-current="page"]) { background:var(--mobile-brand)!important; border-color:var(--mobile-brand)!important; color:#002a26!important; font-weight:700!important; }
