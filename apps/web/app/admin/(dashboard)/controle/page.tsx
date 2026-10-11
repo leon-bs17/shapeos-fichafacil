@@ -194,6 +194,23 @@ export default function ControlPage() {
  const [workout, setWorkout] = useState<Workout | null>(null)
  const [open, setOpen] = useState(true)
  const [message, setMessage] = useState('')
+ const configNoteRef = useRef<HTMLTextAreaElement>(null)
+ useEffect(() => {
+  if (tab !== 'Configurações') return
+  const field = configNoteRef.current
+  if (!field) return
+  const resize = () => { field.style.height = 'auto'; field.style.height = `${Math.max(130, field.scrollHeight + 2)}px` }
+  resize()
+  const observer = new ResizeObserver(() => {
+   const width = field.getBoundingClientRect().width
+   if (width === previousWidth) return
+   previousWidth = width
+   resize()
+  })
+  let previousWidth = field.getBoundingClientRect().width
+  observer.observe(field)
+  return () => observer.disconnect()
+ }, [message, tab])
  const { data, error, isLoading } = useQuery({ queryKey: ['admin-control'], queryFn: async () => {
    const db = createClient()
    const [users, bonds, workouts, config] = await Promise.all([
@@ -363,9 +380,9 @@ export default function ControlPage() {
    </form>}</div>}
   {tab === 'Configurações' && <form className="control-config" aria-labelledby="control-config-title" aria-busy={busy} onSubmit={e => { e.preventDefault(); void act('CONFIGURAR',null,{cadastro_aberto:open,mensagem_publica:message}) }}>
    <header className="config-heading"><span className="config-icon" aria-hidden="true"><Users size={28} strokeWidth={1.75}/></span><div><h2 id="control-config-title">Controle de cadastros</h2><p>Defina se novos usuários podem criar uma conta.</p></div></header>
-   <div className="config-registration"><div><label htmlFor="config-registration-switch">Permitir novas contas</label><p>Novos cadastros ficam disponíveis enquanto esta opção estiver ativa.</p></div><div className="config-state"><input id="config-registration-switch" type="checkbox" role="switch" checked={open} disabled={!data?.ready || busy} onChange={e => setOpen(e.target.checked)}/><span className="config-badge" data-open={open}>{open ? <CircleCheck size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{open ? 'Cadastros abertos' : 'Cadastros bloqueados'}</span></div></div>
+   <div className="config-registration"><div><label htmlFor="config-registration-switch">Permitir novas contas</label><p>Novos cadastros ficam disponíveis enquanto esta opção estiver ativa.</p></div><div className="config-state"><input id="config-registration-switch" type="checkbox" role="switch" checked={open} disabled={!data?.ready || busy} onChange={e => setOpen(e.target.checked)}/><span className="config-badge" data-open={open}>{open ? 'Cadastros abertos' : 'Cadastros bloqueados'}</span></div></div>
    <p className="config-notice"><ShieldCheck size={28} strokeWidth={1.75} aria-hidden="true"/><span>Ao desativar, novos cadastros serão bloqueados.<br/>As contas existentes continuam disponíveis.</span></p>
-   <div className="config-note"><label htmlFor="config-admin-note">Nota administrativa</label><p id="config-note-help">Adicione uma observação sobre esta configuração.</p><textarea id="config-admin-note" aria-describedby="config-note-help config-note-count" maxLength={500} rows={4} placeholder="Escreva uma nota..." disabled={!data?.ready || busy} value={message} onChange={e => setMessage(e.target.value)}/><span id="config-note-count">{message.length}/500</span></div>
+   <div className="config-note"><label htmlFor="config-admin-note">Nota administrativa</label><p id="config-note-help">Adicione uma observação sobre esta configuração.</p><textarea ref={configNoteRef} id="config-admin-note" aria-describedby="config-note-help config-note-count" maxLength={500} rows={4} placeholder="Escreva uma nota..." disabled={!data?.ready || busy} value={message} onChange={e => setMessage(e.target.value)}/><span id="config-note-count">{message.length}/500</span></div>
    <footer><button type="submit" disabled={!data?.ready || busy}><Check size={20} strokeWidth={1.75} aria-hidden="true"/>{busy ? 'Salvando…' : 'Salvar configuração'}</button></footer>
   </form>}
  <style jsx>{`
@@ -1133,6 +1150,9 @@ export default function ControlPage() {
 :global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-config footer button){border:1px solid var(--config-line)!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;filter:none!important;transform:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
 @media(hover:hover) and (pointer:fine){:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-config footer button:hover:enabled){background:color-mix(in srgb,var(--config-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--config-brand) 40%,transparent)!important;color:var(--config-brand)!important;}}
 @media(prefers-reduced-motion:reduce){:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-config footer button){transition:none!important;}}
+
+/* Note grows and shrinks with content instead of showing an internal scrollbar. */
+:global(html:is(.light,.dark) :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) [data-admin-content] .control-center.control-center .control-config textarea){resize:none!important;overflow-y:hidden!important;max-height:none!important;box-sizing:border-box;}
 `}</style>
  </div>
 }
