@@ -173,7 +173,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     return <Link key={item.href} href={item.href} aria-current={active?'page':undefined}
       aria-label={item.label} title={!mobile&&collapsed?item.label:undefined}
       className="admin-menu-row" onClick={()=>setMobileOpen(false)}>
-      <Icon className="shapeos-menu-icon" size={18} strokeWidth={1.8} aria-hidden="true"/>
+      <Icon className="shapeos-menu-icon" size={18} strokeWidth={1.75} aria-hidden="true"/>
       <span className="admin-menu-label">{item.label}</span>
     </Link>
   }
@@ -182,7 +182,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const initials=(user?.nome?.trim()||'Administrador').split(/\s+/).filter(Boolean).slice(0,2).map((part:string)=>part[0]).join('').toLocaleUpperCase('pt-BR')
     return <>
       <header className="admin-menu-header">
-        <div className="admin-menu-logo">{compact?<ShieldCheck size={26} aria-hidden="true"/>:<Logo size="sm"/>}</div>
+        <div className="admin-menu-logo">{compact?<ShieldCheck size={26} strokeWidth={1.75} aria-hidden="true"/>:<Logo size="sm"/>}</div>
         <button type="button" className="admin-menu-toggle" autoFocus={mobile}
           aria-label={mobile?'Fechar menu':compact?'Expandir menu':'Recolher menu'}
           aria-expanded={mobile?undefined:!collapsed} aria-controls={mobile?'admin-mobile-navigation':'admin-desktop-navigation'}
@@ -190,15 +190,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           {mobile?<X size={20}/>:compact?<ChevronRight size={20}/>:<ChevronLeft size={20}/>}
         </button>
       </header>
-      <div className="admin-menu-identity"><ShieldCheck size={19} aria-hidden="true"/><span className="admin-menu-label">Administração</span></div>
+      <div className="admin-menu-identity"><ShieldCheck size={18} strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Administração</span></div>
       <nav id={mobile?'admin-mobile-navigation':'admin-desktop-navigation'} aria-label={mobile?'Administração no celular':'Administração'} className="admin-menu-nav">
         <section aria-label="Operação"><h2 className="admin-menu-group">Operação</h2><div>{novasFerramentas.map(item=>menuLink(item,mobile))}</div></section>
         <section aria-label="Gestão"><h2 className="admin-menu-group">Gestão</h2><div>{gestaoLinks.map(item=>menuLink(item,mobile))}</div></section>
         <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}</div></section>
       </nav>
       <div className="admin-menu-footer">
-        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" title={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
-        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.8} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
+        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" title={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
+        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
         {signOutError&&<p className="admin-menu-error" role="alert">{signOutError}</p>}
       </div>
       {user&&<div className="admin-menu-profile" title={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
@@ -650,7 +650,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation :is(.admin-menu-toggle,.admin-menu-row) { border:1px solid transparent!important; border-radius:13px!important; box-shadow:none!important; filter:none!important; transform:none!important; background:transparent!important; color:var(--admin-menu-muted)!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-toggle { display:grid; place-items:center; width:44px; min-width:44px; height:44px; padding:0; cursor:pointer; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-identity { display:flex; align-items:center; gap:12px; min-height:56px; padding:12px 26px; border-bottom:1px solid var(--admin-menu-border); flex-shrink:0; font-size:13px; }
-        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-identity svg { color:var(--admin-menu-brand)!important; flex-shrink:0; }
+        html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-identity svg { color:#4dddc6!important; flex-shrink:0; width:18px; height:18px; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-nav { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:20px 14px 14px; scrollbar-width:thin; scrollbar-color:var(--admin-menu-border) transparent; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-nav section+section { margin-top:20px; }
         html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] .shapeos-navigation.shapeos-navigation .admin-menu-group { color:var(--admin-menu-brand)!important; font-size:10px!important; font-weight:650!important; letter-spacing:.1em!important; line-height:1.4; text-transform:uppercase; padding:0 12px; margin-bottom:9px; }
