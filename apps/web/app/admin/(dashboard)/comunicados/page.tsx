@@ -197,7 +197,7 @@ export default function AdminComunicadosPage() {
           <td data-label="Público"><span className="notice-audience">{publicoLabel(item.publico)}</span></td>
           <td data-label="Status"><span className="notice-state" data-active={item.ativa}><i/>{item.ativa?'Ativo':'Inativo'}</span></td>
           <td data-label="Publicado em"><time dateTime={item.criado_em}>{dateLabel(item.criado_em)}<small>{timeLabel(item.criado_em)}</small></time></td>
-          <td data-label="Ações" className="notice-action-cell"><button type="button" className="notice-command notice-view" onClick={()=>viewNotice(item)} aria-label={'Ver comunicado: '+item.titulo}><Eye size={15} aria-hidden="true"/>Ver</button></td>
+          <td data-label="Ações" className="notice-action-cell"><button type="button" data-admin-view className="notice-command notice-view" onClick={()=>viewNotice(item)} aria-label={'Ver comunicado: '+item.titulo}><Eye size={15} aria-hidden="true"/>Ver</button></td>
         </tr>)}</tbody>
       </table></div>}
       {!isLoading&&!erroConsulta&&!!comunicados?.length&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
@@ -353,7 +353,13 @@ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-ro
 html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace .notice-command.notice-publish:not(:disabled):hover { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] .notices-workspace.notices-workspace :is(.notice-command,.notice-field,.notice-search,.notice-select-trigger) { transition:none!important; } }
 
-    `}</style>
+    
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; width:auto!important; min-width:84px!important; height:36px!important; min-height:36px!important; padding:0 14px!important; border:1px solid var(--notice-border)!important; border-radius:13px!important; background:transparent!important; background-image:none!important; color:var(--notice-text,#162623)!important; font-size:12px!important; font-weight:600!important; line-height:1.5!important; white-space:nowrap!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] svg { width:15px!important; height:15px!important; color:var(--notice-brand)!important; flex-shrink:0!important; }
+@media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; } }
+@media(max-width:640px) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { height:44px!important; min-height:44px!important; } }
+@media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { transition:none!important; } }
+`}</style>
   </div>
 }
 function NoticeSelect({ label: fieldLabel, value, onChange, options }: {
