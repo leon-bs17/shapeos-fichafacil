@@ -501,6 +501,8 @@ export default function AdminAtividadePage() {
 :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .details-metadata) { grid-template-columns:1fr!important;gap:18px!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .details-metadata>div + div) { border-left:0!important;padding:0!important; }
 }
+
+:global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .activity-details .details-summary) { background:var(--surface)!important; border-color:var(--border)!important; }
 `}</style>
     </div>
   )
