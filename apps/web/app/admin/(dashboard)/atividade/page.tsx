@@ -171,7 +171,7 @@ export default function AdminAtividadePage() {
                   <td><div className="action">{e.tipo === 'cadastro' ? <UserPlus size={19} /> : <ShieldCheck size={19} />}<span>{e.titulo.toLowerCase()}</span></div></td>
                   <td className="date">{formatarData(e.data)}</td>
                   <td><span className="status"><CircleCheck size={15} aria-hidden="true" />Registrado</span></td>
-                  <td><button className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={16} aria-hidden="true" /><span>Ver</span></button></td>
+                  <td><button data-admin-view className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={16} aria-hidden="true" /><span>Ver</span></button></td>
                 </tr>
               ))}</tbody>
             </table>
@@ -434,6 +434,12 @@ export default function AdminAtividadePage() {
           }
         }
 
+
+:global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; width:auto!important; min-width:84px!important; height:36px!important; min-height:36px!important; padding:0 14px!important; border:1px solid var(--border)!important; border-radius:13px!important; background:transparent!important; background-image:none!important; color:var(--text,#162623)!important; font-size:12px!important; font-weight:600!important; line-height:1.5!important; white-space:nowrap!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:background-color 150ms ease,border-color 150ms ease!important; }
+:global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] svg) { width:15px!important; height:15px!important; color:var(--accent)!important; flex-shrink:0!important; }
+@media(hover:hover) and (pointer:fine) { :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled) { background:color-mix(in srgb,var(--accent) 7%,transparent)!important; border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important; } }
+@media(max-width:640px) { :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { height:44px!important; min-height:44px!important; } }
+@media(prefers-reduced-motion:reduce) { :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]) { transition:none!important; } }
 `}</style>
     </div>
   )
