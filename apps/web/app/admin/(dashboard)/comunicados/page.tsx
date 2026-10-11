@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Check, ChevronDown, ChevronUp, Eye, FileText, GraduationCap, Info, Megaphone, PauseCircle, Plus, Search, Trash2, UserRound, Users, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Eye, FileText, GraduationCap, Info, Megaphone, PauseCircle, Plus, Search, Send, Trash2, UserRound, Users, X } from 'lucide-react'
 
 type Publico = 'TODOS' | 'PERSONAL' | 'ALUNO'
 type Comunicado = { id:string; titulo:string; mensagem:string; publico:Publico; ativa:boolean; criado_em:string }
@@ -214,7 +214,7 @@ export default function AdminComunicadosPage() {
           <p className="notice-helper"><Info size={15}/>O aviso será enviado ao público selecionado.</p>
           {erro&&<p className="notice-error" role="alert">{erro}</p>}
         </div>
-        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
+        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}><Send size={16} aria-hidden="true"/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
       </form>}
       {modal==='view'&&selected&&<>
         <div className="notice-modal-body notice-detail"><div className="notice-detail-title"><Megaphone size={26}/><h3>{selected.titulo}</h3></div><div className="notice-detail-tags"><span className="notice-audience">{publicoLabel(selected.publico)}</span><span className="notice-state" data-active={selected.ativa}><i/>{selected.ativa?'Ativo':'Inativo'}</span></div><p className="notice-detail-date">Publicado em {dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p><div className="notice-detail-message">{selected.mensagem}</div>{actionError&&<p role="alert" className="notice-error">{actionError}</p>}</div>
