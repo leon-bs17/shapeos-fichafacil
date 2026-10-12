@@ -264,7 +264,7 @@ function ExerciciosConteudo() {
         </div>
       )}
 
-      <Modal admin open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
+      {modalAberto && <Modal admin open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ex-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -313,9 +313,9 @@ function ExerciciosConteudo() {
             </Button>
           </div>
         </div>
-      </Modal>
+      </Modal>}
 
-      <Modal admin open={!!editandoMedia} onClose={() => setEditandoMedia(null)} titulo="Demonstração do exercício">
+      {editandoMedia && <Modal admin open={!!editandoMedia} onClose={() => setEditandoMedia(null)} titulo="Demonstração do exercício">
         <div className="space-y-4">
           <p className="font-medium">{editandoMedia?.nome}</p>
           <div className="space-y-1.5">
@@ -329,7 +329,7 @@ function ExerciciosConteudo() {
             <Button onClick={() => salvarMedia.mutate()} disabled={salvarMedia.isPending}>{salvarMedia.isPending ? 'Salvando...' : 'Salvar demonstração'}</Button>
           </div>
         </div>
-      </Modal>
+      </Modal>}
 
       <style jsx global>{`
         .exercises-workspace { --exercise-surface:#fcfdf9; --exercise-border:#d7ded3; --exercise-muted:#5f6f68; --exercise-ink:#162623; --exercise-brand:#129b89; min-width:0; font-family:'Sora',sans-serif; }
@@ -538,6 +538,8 @@ html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-rou
 }
 
 @media(max-width:767px) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercises-create { box-sizing:border-box!important;width:100%!important;min-width:0!important;height:48px!important;min-height:48px!important;max-height:48px!important;padding:0 16px!important;border-radius:13px!important; } }
+
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace dialog:not([open]) { display:none!important; }
 `}</style>
     </div>
   )
