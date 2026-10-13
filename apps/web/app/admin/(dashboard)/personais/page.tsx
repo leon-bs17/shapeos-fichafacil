@@ -184,19 +184,19 @@ export default function AdminPersonaisPage() {
 
       <div className="personals-stats grid grid-cols-3 gap-3">
         <Card className="personals-stat">
-          <CardContent className="p-4"><div className="personals-stat-icon"><UserCheck size={20} /></div><div>
+          <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><UserCheck size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : personais?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Personais cadastrados</p>
           </div></CardContent>
         </Card>
         <Card className="personals-stat">
-          <CardContent className="p-4"><div className="personals-stat-icon"><Users size={20} /></div><div>
+          <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><Users size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : new Set((personais ?? []).flatMap(p => p.alunos.map(a => a.id))).size}</p>
             <p className="text-xs text-muted-foreground">Total de alunos</p>
           </div></CardContent>
         </Card>
         <Card className="personals-stat">
-          <CardContent className="p-4"><div className="personals-stat-icon"><Dumbbell size={20} /></div><div>
+          <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><Dumbbell size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : personais?.reduce((acc, p) => acc + p.total_treinos, 0) ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de treinos</p>
           </div></CardContent>
