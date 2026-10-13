@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Dumbbell, Search, Plus, Trash2, X, Loader2, Pencil } from 'lucide-react'
+import { FileText, Users, Dumbbell, Search, Plus, Trash2, X, Loader2, Pencil } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -158,24 +158,24 @@ function ExerciciosConteudo() {
 
       <div className="exercises-stats grid grid-cols-3 gap-3">
         <Card className="exercise-stat">
-          <CardContent className="p-4">
+          <CardContent className="p-4"><span className="exercise-stat-icon"><FileText size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{exercicios?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de exercícios</p>
-          </CardContent>
+          </div></CardContent>
         </Card>
         <Card className="exercise-stat">
-          <CardContent className="p-4">
+          <CardContent className="p-4"><span className="exercise-stat-icon"><Users size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{grupos.length}</p>
             <p className="text-xs text-muted-foreground">Grupos musculares</p>
-          </CardContent>
+          </div></CardContent>
         </Card>
         <Card className="exercise-stat">
-          <CardContent className="p-4">
+          <CardContent className="p-4"><span className="exercise-stat-icon"><Dumbbell size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">
               {exercicios?.filter((e) => e.equipamento).length ?? 0}
             </p>
             <p className="text-xs text-muted-foreground">Com equipamento</p>
-          </CardContent>
+          </div></CardContent>
         </Card>
       </div>
 
@@ -231,6 +231,7 @@ function ExerciciosConteudo() {
           </CardContent>
         </Card>
       ) : (
+        <><div className="exercise-list-heading"><h2>Exercícios cadastrados</h2><span>{filtrados?.length ?? 0} exercícios</span></div>
         <div className="exercise-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {filtrados?.map((e) => (
             <Card key={e.id} className="exercise-card group">
@@ -243,8 +244,10 @@ function ExerciciosConteudo() {
                     {e.equipamento && (
                       <p className="text-muted-foreground text-xs mt-1">Equipamento: {e.equipamento}</p>
                     )}
-                    <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
-                  </div>
+                    </div>
+                </div>
+                <div className="exercise-card-actions">
+                  <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
                   <button type="button" onClick={() => { setEditandoMedia(e); setMediaUrl(e.video_url ?? ''); salvarMedia.reset() }}
                     className="exercise-edit p-2 rounded-lg text-muted-foreground hover:bg-muted" aria-label={`Editar demonstração de ${e.nome}`} title="Editar demonstração">
                     <Pencil className="h-4 w-4" />
@@ -261,7 +264,7 @@ function ExerciciosConteudo() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div></>
       )}
 
       <Modal admin open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
@@ -481,6 +484,35 @@ html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-rou
 }
 html.exercises-theme-changing body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace * { transition:none!important; }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace :is(.exercises-search,.exercises-create,.exercises-filters button,.exercise-details>button,.exercise-edit,.exercise-delete) { transition:none!important; } }
+
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercises-hero { min-height:180px!important;padding:28px 32px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat>div { display:flex!important;align-items:center!important;gap:16px!important;padding:18px 20px!important;min-height:82px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat-icon { display:grid!important;place-items:center!important;flex-shrink:0!important;width:42px!important;height:42px!important;border-radius:13px!important;background:color-mix(in srgb,var(--exercise-brand) 8%,transparent)!important;color:var(--exercise-brand)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat-copy { min-width:0!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-list-heading { display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;margin-bottom:12px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-list-heading h2 { font-size:14px!important;font-weight:650!important;color:var(--exercise-ink)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-list-heading>span { font-size:12px!important;color:var(--exercise-muted)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card>div { padding:14px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-visual-row { display:flex!important;align-items:center!important;min-height:120px!important;gap:16px!important;padding-right:0!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-details { align-self:center!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-name { font-size:14px!important;line-height:1.4!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-details>p:nth-child(2) { display:inline-flex!important;align-items:center!important;width:fit-content!important;padding:3px 8px!important;margin-top:8px!important;border:1px solid var(--exercise-border)!important;border-radius:999px!important;font-size:11px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-details>p:nth-child(3) { font-size:12px!important;line-height:1.5!important;margin-top:7px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions { display:grid!important;grid-template-columns:minmax(0,1fr) 40px 40px!important;align-items:center!important;gap:8px!important;margin-top:12px!important;padding-top:12px!important;border-top:1px solid var(--exercise-border)!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions>button { position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;padding:0 8px!important;font-size:12px!important;border:1px solid var(--exercise-border)!important;border-radius:13px!important;background:transparent!important;color:var(--exercise-brand)!important;box-shadow:none!important;transform:none!important;filter:none!important;opacity:1!important;transition:background-color 150ms ease,border-color 150ms ease!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions>.exercise-delete { color:var(--exercise-muted)!important; }
+@media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions>button:hover:enabled { background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important; } }
+@media(max-width:767px) {
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercises-hero { min-height:0!important;padding:24px 20px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat>div { gap:8px!important;flex-direction:column!important;text-align:center!important;padding:12px 6px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat-icon { width:32px!important;height:32px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat-copy p:first-child { font-size:24px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-stat-copy p:last-child { font-size:10px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-visual-row { gap:12px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions { grid-template-columns:minmax(0,1fr) 44px 44px!important; }
+html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions>button { height:44px!important;min-height:44px!important; }
+}
+html.exercises-theme-changing body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace * { transition:none!important; }
 `}</style>
     </div>
   )
