@@ -1033,6 +1033,11 @@ html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-rou
 @media(hover:hover) and (pointer:fine) {
 html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-status-group] button:hover:enabled { background:color-mix(in srgb,var(--shapeos-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--shapeos-brand) 40%,transparent)!important; }
 }
+
+/* Also support a mouse on devices whose primary pointer is touch. */
+@media(any-hover:hover) {
+html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-status-group] button:hover:not(:disabled) { background:color-mix(in srgb,var(--shapeos-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--shapeos-brand) 40%,transparent)!important;color:var(--shapeos-brand)!important;cursor:pointer!important; }
+}
 `}</style>
     </div>
   )
