@@ -142,7 +142,7 @@ export default function AdminAtividadePage() {
           ['Ações administrativas', data?.acoesAdmin, FileText],
         ] as const).map(([label, value, Icon]) => (
           <section className="metric" key={label}>
-            <div className="metric-icon"><Icon size={27} strokeWidth={1.7} /></div>
+            <div data-admin-metric-icon aria-hidden="true" className="metric-icon"><Icon size={27} strokeWidth={1.7} /></div>
             <div><p>{label}</p><strong>{isLoading ? '—' : value ?? 0}</strong></div>
           </section>
         ))}
