@@ -158,19 +158,19 @@ function ExerciciosConteudo() {
 
       <div className="exercises-stats grid grid-cols-3 gap-3">
         <Card className="exercise-stat">
-          <CardContent className="p-4"><span className="exercise-stat-icon"><FileText size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
+          <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><FileText size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{exercicios?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de exercícios</p>
           </div></CardContent>
         </Card>
         <Card className="exercise-stat">
-          <CardContent className="p-4"><span className="exercise-stat-icon"><Users size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
+          <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Users size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{grupos.length}</p>
             <p className="text-xs text-muted-foreground">Grupos musculares</p>
           </div></CardContent>
         </Card>
         <Card className="exercise-stat">
-          <CardContent className="p-4"><span className="exercise-stat-icon"><Dumbbell size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
+          <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Dumbbell size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">
               {exercicios?.filter((e) => e.equipamento).length ?? 0}
             </p>
