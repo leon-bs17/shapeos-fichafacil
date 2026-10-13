@@ -169,7 +169,7 @@ export default function AdminRelatoriosPage() {
       </section>
       <div className="metrics">{grupos.map(g=>{
         const atual=contar(g.datas,inicio,fim), anterior=contar(g.datas,inicioAnterior,inicio)
-        return <section className="metric" key={g.label}><g.Icon size={26} strokeWidth={1.7} /><div><p>{g.label}</p><strong>{g.valor}</strong><span className="metric-note">{atual} no período · {variacao(atual,anterior)}</span></div></section>
+        return <section className="metric" key={g.label}><span data-admin-metric-icon aria-hidden="true"><g.Icon size={24} strokeWidth={1.75} /></span><div><p>{g.label}</p><strong>{g.valor}</strong><span className="metric-note">{atual} no período · {variacao(atual,anterior)}</span></div></section>
       })}</div>
       <div className="charts">
         <section className="panel evolution"><h2><BarChart3 size={19} />Evolução dos cadastros</h2><p className="chart-note">Total acumulado de usuários cadastrados</p>
