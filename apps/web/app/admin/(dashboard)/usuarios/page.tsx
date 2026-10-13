@@ -834,7 +834,7 @@ function ContadorCard({ titulo, valor, icone, cor }: { titulo: string; valor: nu
     <Card className="users-stat">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
+          <div data-admin-metric-icon data-metric-tone={cor} aria-hidden="true" className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
             {icone}
           </div>
           <div>
