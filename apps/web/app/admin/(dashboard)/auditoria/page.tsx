@@ -246,9 +246,9 @@ export default function AdminAuditoriaPage() {
       <AuditWireframe />
     </header>
     <section className="audit-stats" aria-label="Resumo dos registros carregados">
-      <div className="audit-stat"><span className="audit-stat-icon"><ClipboardList size={25} /></span><div><p>Registros</p><strong>{isLoading || error ? '—' : data?.eventos.length ?? 0}</strong></div></div>
-      <div className="audit-stat"><span className="audit-stat-icon"><Users size={25} /></span><div><p>Administradores</p><strong>{isLoading || error ? '—' : admins}</strong></div></div>
-      <div className="audit-stat"><span className="audit-stat-icon"><Clock3 size={25} /></span><div><p>Último registro</p><strong>{!error && latest ? new Date(latest.criado_em).toLocaleDateString('pt-BR', { ...dateOptions, day: '2-digit', month: 'short' }) : '—'}</strong></div></div>
+      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><ClipboardList size={25} /></span><div><p>Registros</p><strong>{isLoading || error ? '—' : data?.eventos.length ?? 0}</strong></div></div>
+      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Users size={25} /></span><div><p>Administradores</p><strong>{isLoading || error ? '—' : admins}</strong></div></div>
+      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Clock3 size={25} /></span><div><p>Último registro</p><strong>{!error && latest ? new Date(latest.criado_em).toLocaleDateString('pt-BR', { ...dateOptions, day: '2-digit', month: 'short' }) : '—'}</strong></div></div>
     </section>
     <section className="audit-filters" aria-label="Busca e filtros de auditoria">
       <div className="audit-toolbar"><div data-admin-search className="audit-search"><Search size={19} aria-hidden="true" />
