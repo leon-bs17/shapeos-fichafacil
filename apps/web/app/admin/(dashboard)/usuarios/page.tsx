@@ -688,6 +688,17 @@ html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route
 @media(max-width:767px) {
 html:is(.light,.dark) body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace.users-workspace .users-details { position:fixed!important; inset:0!important; margin:auto!important; box-sizing:border-box!important; width:calc(100vw - 24px)!important; max-width:calc(100vw - 24px)!important; height:fit-content!important; max-height:calc(100dvh - 24px)!important; overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior:contain!important; }
 }
+
+/* Keep account roles readable at notebook widths and in mobile cards. */
+html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace .users-type-badge {
+  display:inline-flex!important; flex-wrap:nowrap!important;
+  white-space:nowrap!important; overflow-wrap:normal!important; word-break:normal!important;
+  width:max-content!important; max-width:none!important; flex-shrink:0!important;
+}
+html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace .users-type-badge svg { flex-shrink:0!important; }
+@media(min-width:768px) {
+  html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace .users-table th:nth-child(3) { width:132px!important; }
+}
 `}</style>
     </div>
   )
@@ -794,7 +805,7 @@ function UsersFilterSelect({ label: fieldLabel, value, onChange, options }: {
 
 function TipoBadge({ tipo }: { tipo: TipoUsuario }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
+    <span className={`users-type-badge inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
       tipo === 'ADMIN' ? 'bg-warning/10 text-warning' :
       tipo === 'PERSONAL' ? 'bg-success/10 text-success' :
       'bg-info/10 text-info'
