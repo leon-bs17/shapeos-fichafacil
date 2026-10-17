@@ -59,6 +59,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const reports = pathname === '/admin/relatorios'
   const notices = pathname === '/admin/comunicados'
   const system = pathname === '/admin/sistema'
+  const users = pathname === '/admin/usuarios'
   useEffect(() => {
     if (pathname !== '/admin/auditoria' && pathname !== '/admin/usuarios') return
     const html = document.documentElement
@@ -219,7 +220,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="admin-mobile-bar">
         <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
         <Logo size="sm"/>
-        {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
+        {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
       </div>
       <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
         onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
@@ -229,16 +230,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
           </div>}
 
-          {(central || approvals || activity || reports || notices || system) && <header className="control-compact-top">
+          {(central || approvals || activity || reports || notices || system || users) && <header className="control-compact-top">
             <div className="control-compact-identity">
-              <span className="control-compact-icon" aria-hidden="true">{system ? <Settings size={22} strokeWidth={1.75}/> : notices ? <Megaphone size={22} strokeWidth={1.75}/> : reports ? <FileText size={22} strokeWidth={1.75}/> : activity ? <ChartColumn size={22} strokeWidth={1.75}/> : approvals ? <CircleCheck size={22} strokeWidth={1.75}/> : <LayoutGrid size={22} strokeWidth={1.75}/>}</span>
-              <div><h1>{system ? 'Sistema' : notices ? 'Comunicados' : reports ? 'Relatórios' : activity ? 'Atividade' : approvals ? 'Aprovações' : 'Central de controle'}</h1><p>{system ? 'Acompanhe a disponibilidade dos serviços da plataforma.' : notices ? 'Gerencie a comunicação da plataforma.' : reports ? 'Acompanhe os resultados e indicadores da plataforma.' : activity ? 'Histórico de cadastros e ações da plataforma.' : approvals ? 'Revise os cadastros e gerencie novos acessos.' : 'Acompanhe a plataforma e gerencie sua operação.'}</p></div>
+              <span className="control-compact-icon" aria-hidden="true">{users ? <Users size={22} strokeWidth={1.75}/> : system ? <Settings size={22} strokeWidth={1.75}/> : notices ? <Megaphone size={22} strokeWidth={1.75}/> : reports ? <FileText size={22} strokeWidth={1.75}/> : activity ? <ChartColumn size={22} strokeWidth={1.75}/> : approvals ? <CircleCheck size={22} strokeWidth={1.75}/> : <LayoutGrid size={22} strokeWidth={1.75}/>}</span>
+              <div><h1>{users ? 'Usuários' : system ? 'Sistema' : notices ? 'Comunicados' : reports ? 'Relatórios' : activity ? 'Atividade' : approvals ? 'Aprovações' : 'Central de controle'}</h1><p>{users ? 'Gerencie as contas e os acessos da plataforma.' : system ? 'Acompanhe a disponibilidade dos serviços da plataforma.' : notices ? 'Gerencie a comunicação da plataforma.' : reports ? 'Acompanhe os resultados e indicadores da plataforma.' : activity ? 'Histórico de cadastros e ações da plataforma.' : approvals ? 'Revise os cadastros e gerencie novos acessos.' : 'Acompanhe a plataforma e gerencie sua operação.'}</p></div>
             </div>
             <div className="control-compact-tools"><NotificationBell/><ThemeToggle/></div>
           </header>}
