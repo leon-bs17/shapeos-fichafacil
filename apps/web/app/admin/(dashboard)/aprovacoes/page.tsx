@@ -475,7 +475,7 @@ export default function AdminAprovacoesPage() {
                       {iniciais(personal.nome, personal.email)}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-[13px] font-semibold text-[#0d2148] dark:text-white">
+                      <p className="approval-person-name truncate text-[13px] font-semibold text-[#0d2148] dark:text-white">
                         {personal.nome?.trim() || 'Personal sem nome'}
                       </p>
                       <p className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">Personal</p>
@@ -1127,6 +1127,12 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:14px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){width:100%!important;height:44px!important;min-height:44px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:16px!important;border-radius:13px!important;}
+}
+
+/* Dark-mode names use the reference's light foreground, independently of legacy blue text rules. */
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] .approval-person-name) {
+  color:#f5faf9!important;
+  -webkit-text-fill-color:#f5faf9!important;
 }
 `}</style>
     </div>
