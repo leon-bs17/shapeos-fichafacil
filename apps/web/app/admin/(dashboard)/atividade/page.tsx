@@ -627,6 +627,22 @@ export default function AdminAtividadePage() {
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(4)){grid-column:1 / -1!important;grid-row:4!important;padding-left:0!important;align-self:stretch!important;}
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(4) .detail){width:100%!important;}
 }
+
+/* Mobile cards use content height and independent metadata rows. */
+@media(max-width:767px){
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table){display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table tbody){display:grid!important;gap:12px!important;width:100%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table thead){display:none!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table tbody tr){display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important;grid-template-rows:none!important;padding:14px!important;margin:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table tbody tr>td){display:block!important;position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;grid-column:auto!important;grid-row:auto!important;align-self:stretch!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table tbody tr>td:before){position:static!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events .identity){align-items:flex-start!important;gap:10px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events .identity>span:last-child){flex:1!important;min-width:0!important;white-space:normal!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events .avatar){flex:0 0 32px!important;width:32px!important;height:32px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events .date){font-size:11px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events .status){display:inline-flex!important;width:max-content!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table tbody tr>td:last-child button){width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;margin:0!important;}
+}
 `}</style>
     </div>
   )
