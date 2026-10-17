@@ -452,3 +452,40 @@
  :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace .identity { flex-basis:100%; }
  :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace .header .newChat { width:100%; }
 }
+
+/* One compact Mys toolbar replaces the duplicated admin breadcrumb row. */
+.headerActions { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.headerTools { display:flex; align-items:center; gap:6px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .header { display:flex; flex-wrap:nowrap; min-height:64px; margin-bottom:20px; padding:0 0 12px; border-bottom:1px solid var(--mys-line); gap:16px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity { flex:1; min-width:0; gap:10px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity h1 { font-size:20px; line-height:1.25; gap:8px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity p { font-size:11px; margin-top:3px; line-height:1.4; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity .smallMark { width:36px; height:36px; border-radius:11px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity .smallMark svg { width:24px; height:24px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity h1>span { font-size:9px; padding:4px 7px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools { padding-right:12px; border-right:1px solid var(--mys-line); }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools :global([data-shapeos-theme-inline]) { margin-left:0; width:36px; height:36px; flex:0 0 36px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools :global([data-shapeos-theme-inline])::before { display:none; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools>:global(button),
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools :global([data-shapeos-theme-inline] button) { width:36px; height:36px; min-width:36px; min-height:36px; }
+:global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .newChat { min-height:40px; padding:8px 14px; font-size:12px!important; }
+@media(max-width:750px) {
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .header { min-height:64px; margin-bottom:16px; gap:10px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity { width:auto; flex:1; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity h1 { font-size:20px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity p { max-width:210px; font-size:11px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerActions { gap:8px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools { gap:2px; padding-right:8px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools :global([data-shapeos-theme-inline]) { width:44px; height:44px; flex-basis:44px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools>:global(button),
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools :global([data-shapeos-theme-inline] button) { width:44px; height:44px; min-width:44px; min-height:44px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .newChat { min-height:44px; }
+}
+@media(max-width:600px) {
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .newChat { width:44px; height:44px; min-width:44px; padding:0; justify-content:center; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .newChat>span { display:none; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity h1 { flex-wrap:wrap; font-size:19px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .identity p { font-size:10px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerActions { gap:6px; }
+ :global([data-admin-route="/admin/mys"]) .workspace.workspace.workspace.workspace .headerTools { padding-right:6px; }
+}
