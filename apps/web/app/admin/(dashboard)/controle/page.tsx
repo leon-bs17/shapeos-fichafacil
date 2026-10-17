@@ -1186,7 +1186,7 @@ export default function ControlPage() {
 
 /* Approved compact Central: existing banner and controls, persistent config. */
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined])){display:grid!important;gap:20px!important;min-width:0;--control-refined-surface:#fcfdf9;--control-refined-line:#d7ded3;}
-:global(html.dark body [data-control-refined]){--control-refined-surface:#091c18;--control-refined-line:#1c4037;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined])){--control-refined-surface:#091c18;--control-refined-line:#1c4037;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) > *){margin-top:0!important;margin-bottom:0!important;min-width:0;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading){min-height:140px!important;padding:24px 28px!important;border-radius:13px!important;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-copy){max-width:68%;}
