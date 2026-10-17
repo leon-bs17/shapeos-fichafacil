@@ -54,6 +54,7 @@ const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const central = pathname === '/admin' || pathname === '/admin/controle'
+  const approvals = pathname === '/admin/aprovacoes'
   useEffect(() => {
     if (pathname !== '/admin/auditoria' && pathname !== '/admin/usuarios') return
     const html = document.documentElement
@@ -214,7 +215,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="admin-mobile-bar">
         <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
         <Logo size="sm"/>
-        {pathname !== '/admin/mys' && !central && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
+        {pathname !== '/admin/mys' && !central && !approvals && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
       </div>
       <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
         onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
@@ -224,22 +225,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          {pathname !== '/admin/mys' && !central && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          {pathname !== '/admin/mys' && !central && !approvals && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
           </div>}
 
-          {central && <header className="control-compact-top">
+          {(central || approvals) && <header className="control-compact-top">
             <div className="control-compact-identity">
-              <span className="control-compact-icon" aria-hidden="true"><LayoutGrid size={22} strokeWidth={1.75}/></span>
-              <div><h1>Central de controle</h1><p>Acompanhe a plataforma e gerencie sua operação.</p></div>
+              <span className="control-compact-icon" aria-hidden="true">{approvals ? <CircleCheck size={22} strokeWidth={1.75}/> : <LayoutGrid size={22} strokeWidth={1.75}/>}</span>
+              <div><h1>{approvals ? 'Aprovações' : 'Central de controle'}</h1><p>{approvals ? 'Revise os cadastros e gerencie novos acessos.' : 'Acompanhe a plataforma e gerencie sua operação.'}</p></div>
             </div>
             <div className="control-compact-tools"><NotificationBell/><ThemeToggle/></div>
           </header>}
 
           {pathname === '/admin/aprovacoes' ? (
-            <div className="mb-6 flex items-center gap-3">
+            <div className="admin-approval-global-search mb-6 flex items-center gap-3">
               <form onSubmit={buscarNoAdmin} className="min-w-0 flex-1 sm:max-w-[620px]">
                 <label className="flex h-12 items-center gap-3 rounded-2xl border border-border bg-card/95 px-4 text-muted-foreground shadow-[0_8px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl sm:h-14 sm:px-5 dark:shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
                   <Search className="h-5 w-5 shrink-0 text-foreground/70" strokeWidth={1.8} />
@@ -764,6 +765,7 @@ html.dark .control-compact-identity p { color:#a3becd; }
  .control-compact-tools [data-shapeos-theme-inline] { margin-left:0; }
  .control-compact-icon { display:none; }
 }
+.admin-approval-global-search { display:none!important; }
 `}</style>
     </div>
   )
