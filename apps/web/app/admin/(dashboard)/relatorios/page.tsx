@@ -153,9 +153,9 @@ export default function AdminRelatoriosPage() {
     baixarCsv('shapeos-usuarios.csv',[['ID','Nome','E-mail','Tipo','Status','Criado em'],...data.usuarios.map(u=>[u.id,u.nome,u.email,u.tipo,u.status_conta,u.criado_em])])
   }
   return (
-    <div className="reports-workspace">
+    <div data-reports-refined className="reports-workspace">
       <section className="hero">
-        <div className="hero-copy"><p className="eyebrow">Análise da plataforma</p><h1>Relatórios e <span>indicadores</span></h1><p>Visualize resultados e acompanhe a evolução da plataforma.</p></div>
+        <div className="hero-copy"><p className="eyebrow">Análise da plataforma</p><h2 className="reports-banner-title">Relatórios e <span>indicadores</span></h2><p>Visualize resultados e acompanhe a evolução da plataforma.</p></div>
         <svg className="wireframe" viewBox="0 0 500 300" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth=".65">
           {Array.from({length:32},(_,i)=><ellipse key={i} cx="265" cy="160" rx={105+i*2.9} ry={65+i*2.2} transform={`rotate(${-28+i*3.2} 265 160)`} />)}
           {Array.from({length:14},(_,i)=><ellipse key={'o'+i} cx="265" cy="160" rx="202" ry={25+i*6} transform="rotate(-28 265 160)" />)}
@@ -373,6 +373,67 @@ export default function AdminRelatoriosPage() {
 
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .update) { color:var(--text)!important; }
         :global(html:is(.light,.dark) [data-admin-route="/admin/relatorios"] [data-admin-content] .reports-workspace.reports-workspace .export) { color:var(--accent)!important; }
+
+/* Refined reports: compact chrome, original data and charts. */
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined])){display:grid!important;gap:18px!important;--surface:#fcfdf9;--border:#d7ded3;--text:#162623;--muted:#5f6f68;--accent:#129b89;}
+:global(html.dark body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined])){--surface:#091c18;--border:#1c4037;--text:#f5faf9;--muted:#a3becd;--accent:#00e9df;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .hero){min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-banner-title){font-size:28px!important;line-height:1.2!important;letter-spacing:-.035em!important;font-weight:700!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-banner-title span){color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .eyebrow){font-size:9px!important;border:0!important;padding:0!important;background:transparent!important;margin-bottom:8px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .hero-copy>p:last-child){font-size:13px!important;margin-top:8px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .wireframe){width:300px!important;height:200px!important;top:50%!important;transform:translateY(-50%)!important;right:12px!important;opacity:.32!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .toolbar){padding:14px 18px!important;gap:12px!important;border-radius:13px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .report-period-trigger){min-height:44px!important;height:44px!important;border-radius:13px!important;font-size:12px!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .update,.export){height:40px!important;min-height:40px!important;padding:0 12px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:transparent!important;font-size:11px!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .export){color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .update){color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metrics){grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric){padding:10px 18px!important;gap:12px!important;min-height:90px!important;align-items:center!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric:not(:last-child)){border-right:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric p){font-size:11px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric strong){font-size:24px!important;margin:3px 0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric-note){font-size:10px!important;line-height:1.5!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .charts){gap:16px!important;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .panel){padding:18px!important;border-radius:13px!important;box-shadow:none!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .panel h2){font-size:14px!important;font-weight:600!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .chart-note){font-size:11px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .line-chart){max-height:260px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .profile-body){min-height:220px!important;gap:18px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .donut){width:140px!important;height:140px!important;padding:23px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .donut strong){font-size:24px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .profile li){font-size:11px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .table-scroll){border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) th){font-size:10px!important;letter-spacing:.05em!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) td){font-size:12px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer){gap:12px!important;line-height:1.6!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer button){min-height:36px!important;padding:0 12px!important;border:1px solid var(--border)!important;border-radius:13px!important;}
+@media(any-hover:hover){:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) button:hover:enabled){background:color-mix(in srgb,var(--accent) 7%,transparent)!important;border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;box-shadow:none!important;transform:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+}
+@media(min-width:768px) and (max-width:1199px){:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .profile-body){flex-direction:column!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric){padding:10px!important;gap:10px!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .hero){min-height:150px!important;padding:22px 18px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-banner-title){font-size:26px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .hero-copy){max-width:100%!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .wireframe){right:-170px!important;opacity:.15!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .toolbar){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:14px!important;gap:10px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .report-period){grid-column:1 / -1!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .report-period-trigger){width:100%!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .date-range){grid-column:1 / -1!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .update,.export){min-height:44px!important;height:44px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metrics){grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric){padding:12px 10px!important;gap:10px!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric:nth-child(2)){border-right:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric:nth-child(n+3)){border-top:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric strong){font-size:23px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .charts){grid-template-columns:minmax(0,1fr)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .panel){padding:14px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .profile-body){flex-direction:row!important;min-height:170px!important;gap:14px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .donut){width:112px!important;height:112px!important;padding:19px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer){justify-content:center!important;text-align:center!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer button){min-height:44px!important;}
+}
 `}</style>
     </div>
   )
