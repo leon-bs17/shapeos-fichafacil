@@ -178,7 +178,7 @@ export default function AdminComunicadosPage() {
     <section className="notice-panel">
       <header className="notice-panel-heading">
         <div className="notice-panel-title"><h2><FileText size={22} aria-hidden="true"/>Comunicados publicados</h2>{!!comunicados?.length&&<span className="notice-count">{ativos} {ativos===1?'ativo':'ativos'}</span>}</div>
-        <button type="button" className="notice-command" onClick={newNotice}><Plus size={17} aria-hidden="true"/>Novo comunicado</button>
+        <button type="button" className="notice-command notice-new-shortcut" onClick={newNotice}><Plus size={17} aria-hidden="true"/>Novo comunicado</button>
       </header>
       <div className="notice-toolbar">
         <label data-admin-search className="notice-search"><Search size={19} aria-hidden="true"/><input value={busca} onChange={event=>setBusca(event.target.value)} placeholder="Buscar comunicado..." aria-label="Buscar comunicado por título ou mensagem"/></label>
@@ -404,6 +404,8 @@ html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-not
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-search{grid-column:1 / -1!important;}
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-modal-footer{flex-wrap:wrap!important;}
 }
+
+@media(min-width:768px){html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-new-shortcut{display:none!important;}}
 `}</style>
   </div>
 }
