@@ -83,9 +83,9 @@ export default function ContaAdminPage() {
     finally{setCarregando(false)}
   }
 
-  return <div className="account-workspace">
+  return <div className="account-workspace" data-account-refined>
     <header className="account-hero">
-      <div className="account-hero-copy"><p className="eyebrow">Identidade</p><h1>Minha <span>conta</span></h1><p className="account-subtitle">Gerencie seus dados e a segurança da sua conta.</p></div>
+      <div className="account-hero-copy"><p className="eyebrow">Identidade</p><h2 className="account-banner-title">Minha <span>conta</span></h2><p className="account-subtitle">Gerencie seus dados e a segurança da sua conta.</p></div>
       <AccountWireframe/>
     </header>
     <div className="account-columns">
@@ -192,7 +192,49 @@ html:is(.light,.dark) body [data-admin-route="/admin/conta"][data-admin-route][d
   background:transparent!important; border-color:transparent!important; box-shadow:none!important;
 }
 
-    `}</style>
+    html body :is(#account-refined,[data-account-refined]) .account-hero{min-height:130px!important;padding:22px 26px!important;border-radius:16px!important}
+html body :is(#account-refined,[data-account-refined]) .account-banner-title{display:block!important;margin:5px 0 8px!important;font-size:28px!important;font-weight:650!important;line-height:1.15!important;letter-spacing:-.035em!important;color:var(--account-text)!important}
+html body :is(#account-refined,[data-account-refined]) .account-banner-title span{display:inline!important;color:var(--account-brand)!important}
+html body :is(#account-refined,[data-account-refined]) .eyebrow{min-height:0!important;padding:4px 10px!important;margin:0 0 6px!important;font-size:9px!important}
+html body :is(#account-refined,[data-account-refined]) .account-subtitle{font-size:12px!important;margin-top:8px!important;line-height:1.5!important}
+html body :is(#account-refined,[data-account-refined]) .account-columns{gap:16px!important;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)!important;align-items:start!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel{padding:20px!important;border-radius:16px!important;box-shadow:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel-heading{gap:10px!important;align-items:center!important;padding-bottom:16px!important;border-bottom:1px solid var(--account-border)!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel-heading>svg{width:20px!important;height:20px!important;margin:0!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel-heading h2{font-size:15px!important;line-height:1.4!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel-heading p{font-size:11px!important;margin-top:3px!important;line-height:1.5!important}
+html body :is(#account-refined,[data-account-refined]) .account-identity{gap:12px!important;margin-top:18px!important}
+html body :is(#account-refined,[data-account-refined]) .account-avatar{width:44px!important;height:44px!important;min-width:44px!important;max-width:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1!important;border-radius:50%!important;padding:0!important;font-size:14px!important;line-height:1!important}
+html body :is(#account-refined,[data-account-refined]) .account-identity>div{min-width:0!important}
+html body :is(#account-refined,[data-account-refined]) .account-identity h3{font-size:15px!important}
+html body :is(#account-refined,[data-account-refined]) .account-role{padding:3px 7px!important;font-size:10px!important;margin-top:5px!important}
+html body :is(#account-refined,[data-account-refined]) .account-data{gap:16px!important;margin-top:20px!important}
+html body :is(#account-refined,[data-account-refined]) .account-data dt{font-size:10px!important;margin-bottom:6px!important}
+html body :is(#account-refined,[data-account-refined]) .account-data dd{min-height:0!important;padding:0 0 12px!important;border:0!important;border-bottom:1px solid var(--account-border)!important;border-radius:0!important;font-size:12px!important;line-height:1.6!important}
+html body :is(#account-refined,[data-account-refined]) .account-form{gap:18px!important;margin-top:18px!important}
+html body :is(#account-refined,[data-account-refined]) .account-form label{font-size:10px!important;margin-bottom:7px!important}
+html body :is(#account-refined,[data-account-refined]) .account-password{height:44px!important;padding-left:12px!important;border-radius:13px!important;box-shadow:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-password input{font-size:12px!important}
+html body :is(#account-refined,[data-account-refined]) .account-visibility{width:42px!important;min-width:42px!important;height:42px!important;margin:0!important}
+html body :is(#account-refined,[data-account-refined]) .account-form-field>p{font-size:10px!important;margin-top:7px!important;line-height:1.5!important}
+html body :is(#account-refined,[data-account-refined]) .account-form-footer{margin-top:0!important;padding-top:16px!important;border-top:1px solid var(--account-border)!important}
+html body :is(#account-refined,[data-account-refined]) .account-command{min-height:44px!important;padding:10px 16px!important;font-size:12px!important;border-radius:13px!important;box-shadow:none!important;transform:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-password:has(input:focus){border-color:var(--account-brand)!important;outline:none!important;box-shadow:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-password:has(input:focus-visible){border-color:var(--account-brand)!important;outline:none!important;box-shadow:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-password:not(:has(input:disabled)):hover{background:color-mix(in srgb,var(--account-brand) 7%,var(--account-surface))!important;border-color:color-mix(in srgb,var(--account-brand) 40%,var(--account-border))!important;box-shadow:none!important;transform:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-command:not(:disabled):hover{background:color-mix(in srgb,var(--account-brand) 7%,var(--account-surface))!important;border-color:color-mix(in srgb,var(--account-brand) 40%,var(--account-border))!important;box-shadow:none!important;transform:none!important}
+html body :is(#account-refined,[data-account-refined]) .account-success{margin-top:18px!important;padding:16px!important;gap:10px!important}
+html body :is(#account-refined,[data-account-refined]) .account-success p{font-size:11px!important;line-height:1.5!important}
+@media(max-width:767px){html body :is(#account-refined,[data-account-refined]) .account-hero{min-height:150px!important;padding:20px!important}
+html body :is(#account-refined,[data-account-refined]) .account-hero-copy{max-width:100%!important}
+html body :is(#account-refined,[data-account-refined]) .account-banner-title{font-size:25px!important;max-width:100%!important;white-space:normal!important}
+html body :is(#account-refined,[data-account-refined]) .account-subtitle{font-size:11px!important}
+html body :is(#account-refined,[data-account-refined]) .account-columns{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}
+html body :is(#account-refined,[data-account-refined]) .account-panel{padding:18px!important;border-radius:13px!important}
+html body :is(#account-refined,[data-account-refined]) .account-command{width:100%!important;min-height:44px!important}
+html body :is(#account-refined,[data-account-refined]) .account-form-footer{display:block!important}
+html body :is(#account-refined,[data-account-refined]) .account-success>div{min-width:0!important;flex-basis:calc(100% - 36px)!important}}
+`}</style>
   </div>
 }
 
