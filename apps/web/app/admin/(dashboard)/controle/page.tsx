@@ -1366,6 +1366,20 @@ export default function ControlPage() {
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer){display:flex!important;flex-wrap:wrap;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer button){flex:1;min-width:120px;}
 }
+
+/* Shared selector foregrounds across the two management pages. */
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger>span){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger>svg){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option:not([aria-selected="true"])){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option:not([aria-selected="true"])>span){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option[aria-selected="true"]),:global(html.light body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option[aria-selected="true"]>span){color:#129b89!important;-webkit-text-fill-color:#129b89!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger>span){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-trigger>svg){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option:not([aria-selected="true"])){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option:not([aria-selected="true"])>span){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option[aria-selected="true"]),:global(html.dark body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-option[aria-selected="true"]>span){color:#00e9df!important;-webkit-text-fill-color:#00e9df!important;}
 `}</style>
  </div>
 }
