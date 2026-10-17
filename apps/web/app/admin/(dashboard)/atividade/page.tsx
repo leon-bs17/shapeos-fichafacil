@@ -206,7 +206,7 @@ export default function AdminAtividadePage() {
           <section className="details-summary" aria-label="Ação registrada">
             <div className="details-icon">{selecionado.tipo === 'cadastro' ? <UserPlus size={29} strokeWidth={1.7} /> : <ShieldCheck size={29} strokeWidth={1.7} />}</div>
             <h3>{selecionado.titulo.toLowerCase()}</h3>
-            <span className="details-badge">Registrado</span>
+            <span className="details-badge"><CircleCheck size={14} aria-hidden="true"/>Registrado</span>
           </section>
           <dl className="details-reference"><dt>Referência</dt><dd>{selecionado.descricao}</dd></dl>
           <dl className="details-metadata">
@@ -577,6 +577,39 @@ export default function AdminAtividadePage() {
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events>footer){flex-direction:column!important;justify-content:center!important;gap:12px!important;text-align:center!important;}
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events nav){justify-content:center!important;flex-wrap:wrap!important;}
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events nav button){width:44px!important;height:44px!important;}
+}
+
+/* Refined centered activity detail panel. */
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details){position:fixed!important;inset:0!important;margin:auto!important;width:min(520px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;height:fit-content!important;min-height:0!important;max-height:calc(100dvh - 32px)!important;overflow-y:auto!important;overflow-x:hidden!important;padding:24px!important;border:1px solid var(--border)!important;border-radius:18px!important;background:var(--surface)!important;color:var(--text)!important;box-shadow:none!important;transform:none!important;translate:none!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details:not([open])){display:none!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details[open]){display:block!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details::backdrop){background:rgba(0,0,0,.48)!important;backdrop-filter:blur(3px)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-heading){display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:14px!important;padding-bottom:18px!important;border-bottom:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-heading>div){display:flex!important;flex-direction:column-reverse!important;gap:6px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-heading h2){font-size:22px!important;line-height:1.3!important;font-weight:650!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-heading p){margin:0!important;font-size:10px!important;letter-spacing:.08em!important;color:var(--muted)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-close){width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;display:grid!important;place-items:center!important;border:1px solid var(--border)!important;border-radius:13px!important;background:transparent!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-summary){display:grid!important;grid-template-columns:40px minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;margin:0!important;padding:18px 0!important;border:0!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-icon){grid-column:1!important;grid-row:1!important;width:40px!important;height:40px!important;min-width:40px!important;border-radius:13px!important;background:color-mix(in srgb,var(--accent) 7%,transparent)!important;color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-icon svg){width:22px!important;height:22px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-summary h3){grid-column:2!important;grid-row:1!important;min-width:0!important;font-size:15px!important;line-height:1.5!important;font-weight:600!important;letter-spacing:normal!important;overflow-wrap:anywhere!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-badge){grid-column:3!important;grid-row:1!important;display:inline-flex!important;align-items:center!important;gap:6px!important;margin:0!important;padding:6px 9px!important;font-size:10px!important;white-space:nowrap!important;border:0!important;border-radius:999px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-reference){margin:0!important;padding:16px 0!important;border-top:0!important;border-bottom:1px solid var(--border)!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details dt){font-size:11px!important;margin:0!important;color:var(--muted)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details dd){font-size:13px!important;line-height:1.6!important;margin:5px 0 0!important;font-weight:400!important;color:var(--text)!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-metadata){display:grid!important;grid-template-columns:1fr 1fr!important;margin:0!important;padding:18px 0!important;gap:16px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-metadata>div){padding:0!important;border:0!important;gap:10px!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-metadata svg){width:20px!important;height:20px!important;color:var(--muted)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-footer){display:flex!important;justify-content:flex-end!important;margin:0!important;padding:16px 0 0!important;border-top:1px solid var(--border)!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-footer button){min-height:44px!important;padding:0 20px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:transparent!important;font-size:12px!important;font-weight:500!important;color:var(--text)!important;box-shadow:none!important;}
+@media(any-hover:hover){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details button:hover:enabled){background:color-mix(in srgb,var(--accent) 7%,transparent)!important;border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;box-shadow:none!important;transform:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+}
+@media(max-width:480px){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-details){width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-heading h2){font-size:20px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-summary){grid-template-columns:40px minmax(0,1fr)!important;gap:8px 12px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-badge){grid-column:2!important;grid-row:2!important;justify-self:start!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-metadata){grid-template-columns:1fr!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-footer button){width:100%!important;}
 }
 `}</style>
     </div>
