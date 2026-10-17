@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { UserCheck, Search, Users, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check, Eye, X, Calendar, Dumbbell, Mail } from 'lucide-react'
+import { UserCheck, Search, Users, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check, Eye, X, Calendar, Dumbbell, Mail, CheckCircle2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatarData } from '@/lib/utils'
@@ -170,12 +170,12 @@ export default function AdminPersonaisPage() {
   const workoutList = (list: PersonalTreino[]) => <ul className="personal-workouts">{list.map(treino => <li key={treino.id}>
     <Dumbbell size={17}/><div><strong>{treino.titulo}</strong>
       <p>{selected?.alunos.find(aluno => aluno.id === treino.aluno_id)?.nome ?? 'Aluno fora dos vínculos atuais'} · {formatarData(treino.criado_em)}</p></div>
-    <span className="personal-status" data-active={treino.ativo}>{treino.ativo ? 'Ativo' : 'Inativo'}</span>
+    <span className="personal-status" data-active={treino.ativo}>{treino.ativo && <CheckCircle2 size={13}/>} {treino.ativo ? 'Ativo' : 'Inativo'}</span>
   </li>)}</ul>
-  return <div className="personals-workspace space-y-5">
+  return <div className="personals-workspace space-y-5" data-personals-refined>
       <header className="personals-hero">
         <div className="personals-hero-copy"><p className="eyebrow">Profissionais</p>
-        <h1>Gestão de <span>personais</span></h1>
+        <h2 className="personals-banner-title">Gestão de <span>personais</span></h2>
         <p className="personals-subtitle">
           Personal trainers e seus respectivos alunos.
         </p></div>
@@ -203,7 +203,7 @@ export default function AdminPersonaisPage() {
         </Card>
       </div>
 
-    <section className="personals-toolbar" aria-label="Busca e ordenação de personais">
+    <section className="personals-management"><header className="personals-management-heading"><h2>Personais cadastrados</h2><span>{total} {total === 1 ? 'personal' : 'personais'}</span></header><section className="personals-toolbar" aria-label="Busca e ordenação de personais">
       <div data-admin-search className="personals-search"><Search size={19} aria-hidden="true"/>
         <Input aria-label="Buscar personal por nome ou e-mail" placeholder="Buscar nome ou e-mail" value={busca} onChange={event => setBusca(event.target.value)} />
       </div><PersonalSort label="Ordenar" value={ordem} onChange={setOrdem} options={SORT_OPTIONS} />
@@ -212,13 +212,12 @@ export default function AdminPersonaisPage() {
       isLoading ? <div role="status" aria-label="Carregando personais" className="space-y-3">{[0,1,2].map(i => <div key={i} className="h-20 rounded-xl skeleton"/>)}</div> :
       !total ? <section className="personals-message"><UserCheck size={32}/><h2>Nenhum personal encontrado</h2><p>{busca ? 'Tente ajustar a busca.' : 'Os personais cadastrados aparecerão aqui.'}</p></section> :
       <section className="personals-table-card">
-        <div className="personals-table-heading"><h2>Personais cadastrados</h2><span>{total} {total === 1 ? 'personal' : 'personais'}</span></div>
+        
         <table className="personals-table"><caption className="sr-only">Personais, alunos e treinos cadastrados</caption>
-          <colgroup><col className="personal-col-name"/><col className="personal-col-email"/><col className="personal-col-number"/><col className="personal-col-number"/><col className="personal-col-action"/></colgroup>
-          <thead><tr>{['Personal','E-mail','Alunos','Treinos','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
+          <colgroup><col className="personal-col-name"/><col className="personal-col-number"/><col className="personal-col-number"/><col className="personal-col-action"/></colgroup>
+          <thead><tr>{['Personal','Alunos','Treinos','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
           <tbody>{rows.map(personal => <tr key={personal.id}>
-            <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><div className="personal-card-name"><strong>{personal.nome}</strong><small className="personal-mobile-only">Personal</small></div></div></td>
-            <td data-label="E-mail"><span className="personal-email">{personal.email}</span></td>
+            <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><div className="personal-card-name"><strong>{personal.nome}</strong><small className="personal-role">Personal</small><span className="personal-email">{personal.email}</span></div></div></td>
             <td data-label="Alunos"><Users className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Alunos</small>{personal.total_alunos}</span></td><td data-label="Treinos"><Dumbbell className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Treinos</small>{personal.total_treinos}</span></td>
             <td data-label="Ações"><button type="button" data-admin-view className="personal-button" aria-label={'Ver alunos e treinos de ' + personal.nome} onClick={() => openDetails(personal.id)}><Eye size={15}/>Ver</button></td>
           </tr>)}</tbody>
@@ -229,6 +228,7 @@ export default function AdminPersonaisPage() {
           <button type="button" className="personal-button" aria-label="Próxima página" disabled={current === pages} onClick={() => setPagina(current + 1)}><ChevronRight size={16}/></button>
         </nav></footer>
       </section>}
+    </section>
     <dialog ref={dialogRef} className="personal-dialog" aria-labelledby={headingId} onCancel={event => { event.preventDefault(); setSelectedId(null) }} onClick={event => {
       if (event.target !== event.currentTarget) return
       const rect = event.currentTarget.getBoundingClientRect()
@@ -242,7 +242,7 @@ export default function AdminPersonaisPage() {
           {errorTreinos && <div className="personal-query-error" role="alert"><p>Não foi possível consultar os treinos.</p><button type="button" className="personal-button" disabled={fetchingTreinos} onClick={() => retryTreinos()}>{fetchingTreinos ? 'Carregando...' : 'Tentar novamente'}</button></div>}
           {tab === 'ALUNOS' ? selected.alunos.length ? <ul className="personal-students">{selected.alunos.map(aluno => {
             const assigned = (treinos ?? []).filter(treino => treino.aluno_id === aluno.id)
-            return <li key={aluno.id}><div className="personal-student-top"><span className="personal-table-avatar" aria-hidden="true">{initials(aluno.nome)}</span><div><h3>{aluno.nome}</h3><p>{aluno.email}</p></div><span className="personal-status" data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? 'Ativo' : 'Inativo'}</span></div>
+            return <li key={aluno.id}><div className="personal-student-top"><span className="personal-table-avatar" aria-hidden="true">{initials(aluno.nome)}</span><div><h3>{aluno.nome}</h3><p>{aluno.email}</p></div><span className="personal-status" data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' && <CheckCircle2 size={13}/>} {aluno.status === 'ATIVO' ? 'Ativo' : 'Inativo'}</span></div>
               <p className="personal-linked"><Calendar size={14}/>Vínculo desde {aluno.vinculo_desde ? formatarData(aluno.vinculo_desde) : 'não informado'}</p>
               {loadingTreinos ? <p className="personal-empty" role="status">Carregando treinos...</p> : !errorTreinos && (assigned.length ? <details className="personal-student-workouts"><summary>{assigned.length} {assigned.length === 1 ? 'treino vinculado' : 'treinos vinculados'}</summary>{workoutList(assigned)}</details> : <p className="personal-empty">Nenhum treino deste personal para o aluno.</p>)}
             </li>
@@ -467,6 +467,91 @@ html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-rout
 
 @media(max-width:767px) {
 html:is(.light,.dark) body [data-admin-route="/admin/personais"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .personals-workspace.personals-workspace .personal-dialog { position:fixed!important; inset:0!important; margin:auto!important; box-sizing:border-box!important; width:calc(100vw - 24px)!important; max-width:calc(100vw - 24px)!important; height:fit-content!important; max-height:calc(100dvh - 24px)!important; overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior:contain!important; }
+}
+html body :is(#personals-refined,[data-personals-refined]) .personals-hero{min-height:130px!important;padding:22px 26px!important;border-radius:16px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-banner-title{display:block!important;margin:5px 0 8px!important;font-size:28px!important;line-height:1.15!important;font-weight:650!important;letter-spacing:-.035em!important;color:var(--personal-ink)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-banner-title span{display:inline!important;color:var(--personal-brand)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stats{gap:0!important;margin:0!important;padding:18px 0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat+.personals-stat{border-left:1px solid var(--personal-border)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat>div{padding:4px 20px!important;display:flex!important;align-items:center!important;gap:12px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-management{border:1px solid var(--personal-border)!important;border-radius:16px!important;background:var(--personal-surface)!important;overflow:visible!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-management-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:18px 20px 0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-management-heading h2{font-size:15px!important;font-weight:650!important;color:var(--personal-ink)!important;margin:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-management-heading>span{font-size:11px!important;color:var(--personal-muted)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-toolbar{padding:16px 20px!important;margin:0!important;border:0!important;background:transparent!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table-card{border:0!important;border-radius:0 0 16px 16px!important;box-shadow:none!important;overflow:hidden!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-col-name{width:56%!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-col-number{width:14%!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-col-action{width:16%!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table th{padding:11px 20px!important;font-size:11px!important;color:var(--personal-muted)!important;font-weight:500!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td{padding:12px 20px!important;height:auto!important;font-size:12px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-person{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-card-name{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:3px 7px!important;min-width:0!important;flex:1!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-card-name strong{font-size:13px!important;overflow-wrap:anywhere!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-role{font-size:10px!important;color:var(--personal-muted)!important;border:1px solid var(--personal-border)!important;border-radius:6px!important;padding:1px 5px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-email{display:block!important;flex-basis:100%!important;font-size:11px!important;color:var(--personal-muted)!important;overflow-wrap:anywhere!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table .personal-table-avatar{width:32px!important;height:32px!important;min-width:32px!important;flex:0 0 32px!important;border-radius:50%!important;font-size:11px!important;aspect-ratio:1!important}
+html body :is(#personals-refined,[data-personals-refined]) [data-admin-view]{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;color:var(--personal-ink)!important}
+html body :is(#personals-refined,[data-personals-refined]) [data-admin-view] svg{color:var(--personal-brand)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-button{border-radius:11px!important;box-shadow:none!important;transform:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-sort-trigger{border-radius:11px!important;box-shadow:none!important;transform:none!important;color:var(--personal-ink)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-sort-trigger strong{color:inherit!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-button:not(:disabled):hover{background:color-mix(in srgb,var(--personal-brand) 7%,var(--personal-surface))!important;border-color:color-mix(in srgb,var(--personal-brand) 40%,var(--personal-border))!important;box-shadow:none!important;transform:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-pagination{padding:14px 20px!important;gap:12px!important;border-top:1px solid var(--personal-border)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-pagination nav{display:flex!important;gap:5px!important;flex-wrap:wrap!important;justify-content:center!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-page[aria-current="page"]{background:var(--personal-brand)!important;color:var(--personal-surface)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-dialog{position:fixed!important;inset:0!important;margin:auto!important;width:calc(100% - 32px)!important;max-width:560px!important;height:fit-content!important;max-height:calc(100dvh - 32px)!important;padding:24px!important;border:1px solid var(--personal-border)!important;border-radius:18px!important;overflow:auto!important;transform:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-dialog-heading{padding:0 0 18px!important;margin:0!important;border-bottom:1px solid var(--personal-border)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-dialog-heading h2{font-size:20px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-profile{display:flex!important;align-items:center!important;gap:12px!important;padding:18px 0!important;margin:0!important;background:transparent!important;border:0!important;border-bottom:1px solid var(--personal-border)!important;border-radius:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-profile>div{min-width:0!important;flex:1!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-profile h3{font-size:15px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-profile p{font-size:11px!important;overflow-wrap:anywhere!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-detail-counts{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:16px 0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-detail-counts>div{padding:12px!important;border-radius:12px!important;font-size:11px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-tabs{gap:8px!important;margin:0 0 16px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-tabs button{min-height:44px!important;flex:1!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-status{display:inline-flex!important;align-items:center!important;gap:5px!important;white-space:nowrap!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-student-top>div{min-width:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-student-top p{overflow-wrap:anywhere!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-dialog>footer{border-top:1px solid var(--personal-border)!important;margin-top:18px!important;padding-top:16px!important}
+@media(max-width:767px){
+html body :is(#personals-refined,[data-personals-refined]) .personals-hero{min-height:150px!important;padding:20px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-banner-title{font-size:25px!important;max-width:100%!important;white-space:normal!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat>div{padding:4px 10px!important;gap:7px!important;align-items:flex-start!important;flex-direction:column!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat p:first-child{font-size:21px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-stat p:last-child{font-size:10px!important;line-height:1.4!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-management-heading{padding:16px 14px 0!important;flex-wrap:wrap!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-toolbar{padding:14px!important;display:flex!important;flex-direction:column!important;gap:10px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-toolbar>div{width:100%!important;min-width:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-sort-trigger{width:100%!important;min-height:44px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table{display:block!important;min-width:0!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table thead{display:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table colgroup{display:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table tbody{display:grid!important;gap:12px!important;padding:0 14px 14px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table tbody tr{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important;padding:14px!important;margin:0!important;border:1px solid var(--personal-border)!important;border-radius:13px!important;grid-template-rows:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table tbody td{display:block!important;position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;grid-column:auto!important;grid-row:auto!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td::before{display:none!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-person{align-items:flex-start!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table .personal-table-avatar{width:34px!important;height:34px!important;min-width:34px!important;flex-basis:34px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-card-name{max-width:calc(100% - 44px)!important;white-space:normal!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-email{white-space:normal!important;word-break:break-word!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td[data-label="Alunos"]{display:flex!important;align-items:center!important;gap:8px!important;color:var(--personal-muted)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td[data-label="Treinos"]{display:flex!important;align-items:center!important;gap:8px!important;color:var(--personal-muted)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td small.personal-mobile-only{display:inline!important;margin-right:6px!important;font-size:11px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td svg.personal-mobile-only{display:block!important;color:var(--personal-brand)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table td:last-child button{width:100%!important;min-height:44px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-pagination{padding:14px!important;display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important}
+html body :is(#personals-refined,[data-personals-refined]) .personals-pagination button{min-width:36px!important;min-height:36px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-dialog{padding:18px!important;max-height:calc(100dvh - 24px)!important;width:calc(100% - 24px)!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-student-top{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-student-top>div{flex:1!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-student-top .personal-status{margin-left:54px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-workouts li{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-workouts li>div{min-width:0!important;flex:1!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-workouts strong{overflow-wrap:anywhere!important}
 }
 `}</style>
   </div>
