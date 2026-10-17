@@ -7,6 +7,8 @@ import { MessageResponse } from '@/components/ai-elements/message'
 import type { MysDataCard } from '@/lib/mys/data-cards'
 import { MysWelcomeWireframe } from './mys-welcome-wireframe'
 import s from './mys.module.css'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { NotificationBell } from '@/components/layout/notification-bell'
 
 type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
 const prompts = {
@@ -90,7 +92,10 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
     <header className={s.header}>
       <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
+      <div className={s.headerActions}>
+        {admin && <div className={s.headerTools}><NotificationBell/><ThemeToggle/></div>}
       <button className={s.newChat} disabled={loading} aria-label="Nova conversa" title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={18} aria-hidden="true"/><span>Nova conversa</span></button>
+      </div>
     </header>
     <div className={`${s.chatPanel} ${messages.length ? '' : s.emptyPanel}`}>
       {Boolean(messages.length) && <div className={s.contextBar}><span><span className={s.dot}/>{admin ? 'Administração' : 'Espaço do personal'}</span><span className={s.connectionState}><Database size={12}/>{configured ? 'Consultas à ShapeOS habilitadas' : 'Aguardando conexão'}</span></div>}
