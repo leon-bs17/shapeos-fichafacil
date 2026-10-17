@@ -493,7 +493,7 @@ export default function AdminAprovacoesPage() {
 
                   <div>
                     <span data-approval-status={personal.status_conta} className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
-                      {personal.status_conta === 'ATIVO' ? <CheckCircle2 size={14} strokeWidth={1.8} aria-hidden="true"/> : <span className="approval-status-dot" aria-hidden="true"/>}
+                      {personal.status_conta === 'ATIVO' ? <CheckCircle2 size={14} strokeWidth={1.8} aria-hidden="true"/> : personal.status_conta === 'PENDENTE' ? <Clock3 size={14} strokeWidth={1.8} aria-hidden="true"/> : <Ban size={14} strokeWidth={1.8} aria-hidden="true"/>}
                       {status.label}
                     </span>
                   </div>
@@ -637,7 +637,7 @@ export default function AdminAprovacoesPage() {
         :global(.dark .approvals-workspace [data-approval-status="ATIVO"]) { border-color:#006958!important; background:#032b24!important; color:#00efdf!important; }
         :global(.approvals-workspace [data-approval-review]) { height:38px!important; border-radius:11px!important; }
         :global(.approvals-workspace [data-approvals-pagination] button:first-child),
-        :global(.approvals-workspace [data-approvals-pagination] button:last-child) { display:none; }
+        :global(.approvals-workspace [data-approvals-pagination] > button[aria-label="Última página"]) { display:none; }
         :global(.approvals-workspace [data-approvals-pagination] [aria-current]) { color:var(--approval-accent)!important; background:transparent!important; border:1px solid var(--approval-accent); }
         :global(.approvals-workspace button:focus-visible),
         :global(.approvals-workspace select:focus-visible) { outline:2px solid var(--approval-accent); outline-offset:3px; }
@@ -1186,6 +1186,32 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading h2){font-size:20px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-person){grid-template-columns:48px minmax(0,1fr)!important;gap:10px 12px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-status){grid-column:2;justify-self:start;}
+}
+
+/* Restore the table identity and keep each numbered page visible. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]){display:flex!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:wrap!important;gap:7px!important;width:auto!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] .approval-page-item){display:inline-flex!important;align-items:center!important;gap:7px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){display:inline-grid!important;place-items:center!important;visibility:visible!important;opacity:1;width:36px!important;min-width:36px!important;height:36px!important;padding:0!important;border:1px solid var(--approval-refined-line)!important;border-radius:10px!important;background:transparent!important;color:var(--approval-refined-muted)!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-label="Primeira página"]){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-label="Última página"]){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-current="page"]){background:var(--approval-refined-brand)!important;border-color:var(--approval-refined-brand)!important;color:#fff!important;font-weight:650!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-current="page"]){color:#002a26!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button:disabled){opacity:.35!important;cursor:not-allowed!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){padding:14px 12px!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px 13px 0 0!important;background:color-mix(in srgb,var(--approval-refined-brand) 4%,var(--approval-refined-bg))!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:14px 12px!important;min-height:76px!important;border-bottom:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:40px!important;height:40px!important;min-width:40px!important;font-size:12px!important;background:linear-gradient(145deg,#6f86b6,#4f678f)!important;color:#fff!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-name){font-size:13px!important;font-weight:600!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]>div:first-child>div:last-child>p:not(.approval-person-name)){font-size:11px!important;font-weight:400!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status]){min-height:30px!important;gap:6px!important;padding:6px 10px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:16px 12px!important;border-top:0!important;}
+@media(any-hover:hover){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button:not([aria-current="page"]):hover:enabled){background:color-mix(in srgb,var(--approval-refined-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--approval-refined-brand) 40%,transparent)!important;}
+}
+@media(max-width:767px){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:16px!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){flex-direction:column!important;justify-content:center!important;text-align:center!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]){width:100%!important;justify-content:center!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){height:44px!important;width:44px!important;min-width:44px!important;}
 }
 `}</style>
     </div>
