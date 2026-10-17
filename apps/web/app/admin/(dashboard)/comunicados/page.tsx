@@ -406,6 +406,44 @@ html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-not
 }
 
 @media(min-width:768px){html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-new-shortcut{display:none!important;}}
+
+/* Compact published notices and centered read panel. */
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table-wrap{border:1px solid var(--notice-border)!important;border-radius:13px!important;overflow-x:auto!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table col:nth-child(1){width:35%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table col:nth-child(2){width:16%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table col:nth-child(3){width:15%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table col:nth-child(4){width:20%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table col:nth-child(5){width:14%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table th{padding:12px 10px!important;font-size:9px!important;letter-spacing:.04em!important;background:transparent!important;color:var(--notice-muted)!important;white-space:normal!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table td{padding:12px 10px!important;font-size:11px!important;height:64px!important;border-bottom:0!important;border-top:1px solid var(--notice-border)!important;overflow-wrap:anywhere!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-title-cell strong{font-size:12px!important;font-weight:600!important;color:var(--notice-text)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-title-cell p{font-size:11px!important;line-height:1.5!important;color:var(--notice-muted)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table .notice-view{min-width:60px!important;width:100%!important;min-height:34px!important;height:34px!important;padding:0 6px!important;gap:5px!important;font-size:11px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-audience,.notice-state{font-size:10px!important;padding:5px 8px!important;white-space:nowrap!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-list-summary{font-size:11px!important;padding-top:14px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal{position:fixed!important;inset:0!important;margin:auto!important;width:min(520px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;height:fit-content!important;min-height:0!important;max-height:calc(100dvh - 32px)!important;overflow-y:auto!important;overflow-x:hidden!important;padding:24px!important;border:1px solid var(--notice-border)!important;border-radius:18px!important;background:var(--notice-surface)!important;box-shadow:none!important;transform:none!important;translate:none!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal:not([open]){display:none!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal[open]{display:block!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal::backdrop{background:rgba(0,0,0,.48)!important;backdrop-filter:blur(3px)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-heading{padding:0 0 18px!important;border-bottom:1px solid var(--notice-border)!important;gap:12px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-heading h2{font-size:21px!important;line-height:1.3!important;font-weight:650!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-close{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-body{padding:18px 0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-title{display:flex!important;align-items:center!important;gap:12px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-title svg{width:24px!important;height:24px!important;flex-shrink:0!important;color:var(--notice-brand)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-title h3{font-size:16px!important;line-height:1.5!important;font-weight:600!important;color:var(--notice-text)!important;overflow-wrap:anywhere!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-tags{display:flex!important;gap:8px!important;margin-top:12px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-date{font-size:11px!important;color:var(--notice-muted)!important;margin-top:10px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-detail-message{margin-top:16px!important;padding:16px 0 0!important;border:0!important;border-top:1px solid var(--notice-border)!important;border-radius:0!important;background:transparent!important;font-size:13px!important;line-height:1.7!important;color:var(--notice-text)!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal>.notice-modal-footer{display:flex!important;flex-wrap:wrap!important;gap:8px!important;justify-content:flex-end!important;padding:16px 0 0!important;border-top:1px solid var(--notice-border)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-footer .notice-command{min-height:44px!important;font-size:11px!important;padding:0 12px!important;}
+@media(max-width:767px){html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table-wrap{overflow:visible!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table td{height:auto!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table .notice-view{min-height:44px!important;height:44px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-heading h2{font-size:19px!important;}
+}
 `}</style>
   </div>
 }
