@@ -196,7 +196,6 @@ export default function ControlPage() {
  const [message, setMessage] = useState('')
  const configNoteRef = useRef<HTMLTextAreaElement>(null)
  useEffect(() => {
-  if (tab !== 'Configurações') return
   const field = configNoteRef.current
   if (!field) return
   const resize = () => { field.style.height = 'auto'; field.style.height = `${Math.max(130, field.scrollHeight + 2)}px` }
@@ -222,6 +221,11 @@ export default function ControlPage() {
    if (users.error || bonds.error || workouts.error) throw new Error(users.error?.message || bonds.error?.message || workouts.error?.message)
    return { users: users.data as User[], bonds: bonds.data as Bond[], workouts: workouts.data as Workout[], config: config.data, ready: !config.error, configError: config.error?.message }
  } })
+ useEffect(() => {
+  if (!data?.config) return
+  setOpen(data.config.cadastro_aberto)
+  setMessage(data.config.mensagem_publica ?? '')
+ }, [data?.config?.cadastro_aberto, data?.config?.mensagem_publica])
  useEffect(() => {
   if (!selected) return
   const dialog = manageDialog.current
@@ -271,14 +275,17 @@ export default function ControlPage() {
  function sortAccounts(key: 'nome' | 'tipo') { setSortAsc(sortKey === key ? !sortAsc : true); setSortKey(key); setPage(1) }
  const toggleChecked = (id: string) => setCheckedIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id])
  const allVisibleChecked = visibleUsers.length > 0 && visibleUsers.every(u => checkedIds.includes(u.id))
- return <div className="control-center min-w-0 space-y-6">
-  <header className="control-heading"><div className="control-heading-copy"><p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-primary"><Shield size={15}/> Administração global</p><h1 className="control-title font-semibold tracking-tight">Central de <span className="control-title-accent">controle</span></h1><p className="mt-2 text-sm text-muted-foreground">Contas, relações e treinos. Cada mudança fica registrada.</p></div><div className="control-heading-art"><ControlGlobe/></div></header><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><Download className="mr-2 inline" size={16}/><span className="control-export-label">Exportar dados carregados</span></button></div>
+ return <div data-control-refined className="control-center min-w-0 space-y-6">
+  <header className="control-heading"><div className="control-heading-copy"><p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-primary"><Shield size={15}/> Administração global</p><h1 className="control-title font-semibold tracking-tight">Central de <span className="control-title-accent">controle</span></h1><p className="mt-2 text-sm text-muted-foreground">Contas, relações e treinos. Cada mudança fica registrada.</p></div><div className="control-heading-art"><ControlGlobe/></div></header>
   {isLoading && <p role="status">Carregando a plataforma…</p>}
   {error && <p role="alert" className="rounded-xl border border-destructive p-4">{error.message}</p>}
   {data && !data.ready && <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-400/5 p-4 text-sm"><strong>Configuração do banco necessária.</strong><p className="mt-1">Os controles aguardam a migração 0013_admin_control_center.sql no Supabase. As consultas continuam disponíveis.</p><p className="mt-1 text-muted-foreground">{data.configError}</p></div>}
   {feedback && <p role="status" className="rounded-xl border border-primary/40 p-4 text-sm">{feedback}</p>}
   <div className="control-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">{metrics.map(({label, value, icon: Icon}) => <div key={label} className="control-metric flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card/60 p-4 sm:gap-4 sm:p-5"><span data-admin-metric-icon aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={27} strokeWidth={1.6}/></span><div className="min-w-0"><p className="text-xs text-muted-foreground sm:text-sm">{label}</p><p className="mt-1 text-2xl font-semibold tabular-nums">{value ?? '—'}</p></div></div>)}</div>
-  <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos', 'Configurações'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setPage(1); if (t === 'Configurações' && data?.config) { setOpen(data.config.cadastro_aberto); setMessage(data.config.mensagem_publica ?? '') } }}>{t}</button>)}</nav>
+  <div className="control-body">
+   <section className="control-main-panel" aria-label="Gestão da plataforma">
+    <div className="control-panel-heading"><h2>{tab}</h2><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><Download className="mr-2 inline" size={16}/><span className="control-export-label">Exportar dados carregados</span></button></div></div>
+  <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setPage(1);  }}>{t}</button>)}</nav>
   {tab !== 'Configurações' && <div className="control-toolbar flex flex-col gap-3 lg:flex-row lg:items-center">
    <label data-admin-search className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input className={`${input} min-h-11 pl-10`} aria-label="Buscar registros" placeholder={tab === 'Vínculos' ? 'Buscar aluno ou personal' : tab === 'Treinos' ? 'Buscar treino, aluno ou personal' : 'Buscar por nome, e-mail ou título'} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}/></label>
    {tab === 'Contas' && <div className="control-filter-group grid grid-cols-2 gap-3 lg:w-auto">
@@ -289,7 +296,7 @@ export default function ControlPage() {
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
    {checkedIds.length > 0 && <div className="control-selection-bar flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="control-selection-buttons flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
    <div className="account-table overflow-hidden rounded-xl border border-border bg-card/30"><table className="w-full text-left text-sm"><colgroup><col className="control-col-selection"/><col className="control-col-user"/><col className="control-col-email"/><col className="control-col-profile"/><col className="control-col-status"/><col className="control-col-action"/></colgroup><thead className="bg-card text-xs text-muted-foreground"><tr><th scope="col" className="selection-cell w-14 px-5 py-4"><input type="checkbox" aria-label="Selecionar contas desta página" checked={allVisibleChecked} onChange={() => setCheckedIds(ids => allVisibleChecked ? ids.filter(id => !visibleUsers.some(u => u.id === id)) : [...new Set([...ids, ...visibleUsers.map(u => u.id)])])}/></th><th scope="col" aria-sort={sortKey === 'nome' ? sortAsc ? 'ascending' : 'descending' : 'none'} className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('nome')}>Usuário<ChevronsUpDown size={13}/></button></th><th scope="col" className="email-heading px-5 py-4 font-medium">E-mail</th><th scope="col" className="px-5 py-4 font-medium"><button className="inline-flex items-center gap-2" onClick={() => sortAccounts('tipo')}>Perfil<ChevronsUpDown size={13}/></button></th><th scope="col" className="px-5 py-4 font-medium">Status</th><th scope="col" className="px-5 py-4 font-medium">Controle</th></tr></thead><tbody>{visibleUsers.map(u => <tr key={u.id} className="border-t border-border">
-    <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium" title={u.nome}>{u.nome}</p></div></div></td>
+    <td className="selection-cell px-5 py-4"><input type="checkbox" aria-label={`Selecionar ${u.nome}`} checked={checkedIds.includes(u.id)} onChange={() => toggleChecked(u.id)}/></td><td className="user-cell px-5 py-4"><div className="flex min-w-0 items-center gap-3"><span aria-hidden="true" className={`avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${u.tipo === 'ADMIN' ? 'bg-primary/15 text-primary' : u.tipo === 'ALUNO' ? 'bg-info/15 text-info' : 'personal-avatar'}`}>{initials(u.nome)}</span><div className="min-w-0"><p className="font-medium" title={u.nome}>{u.nome}</p><span className="control-user-email">{u.email}</span></div></div></td>
     <td className="email-cell px-5 py-4" title={u.email}>{u.email}</td>
     <td className="profile-cell px-5 py-4"><span className={`inline-flex rounded-md border px-2.5 py-1 text-[11px] font-semibold ${u.tipo === 'ADMIN' ? 'border-primary/25 bg-primary/10 text-primary' : u.tipo === 'ALUNO' ? 'border-info/25 bg-info/10 text-info' : 'personal-badge'}`}>{u.tipo}</span></td>
     <td className="status-cell px-5 py-4"><span data-account-status={u.status_conta} className="account-status">{u.status_conta === 'ATIVO' ? <CircleCheck size={15} aria-hidden="true"/> : u.status_conta === 'PENDENTE' ? <Clock3 size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{u.status_conta === 'ATIVO' ? 'Ativo' : u.status_conta === 'PENDENTE' ? 'Pendente' : u.status_conta === 'BLOQUEADO' ? 'Bloqueado' : u.status_conta}</span></td>
@@ -378,13 +385,15 @@ export default function ControlPage() {
     <p className="workout-editor-note"><Info size={18} aria-hidden="true"/><span>A transferência exige vínculo ativo com o aluno. Séries e histórico são preservados.</span></p>
     <footer className="workout-editor-footer"><button type="button" disabled={busy} onClick={() => setWorkout(null)}>Cancelar</button><button type="submit" disabled={busy} className="workout-editor-save">{busy ? 'Salvando…' : 'Salvar alterações'}</button></footer>
    </form>}</div>}
-  {tab === 'Configurações' && <form className="control-config" aria-labelledby="control-config-title" aria-busy={busy} onSubmit={e => { e.preventDefault(); void act('CONFIGURAR',null,{cadastro_aberto:open,mensagem_publica:message}) }}>
-   <header className="config-heading"><span className="config-icon" aria-hidden="true"><Users size={28} strokeWidth={1.75}/></span><div><h2 id="control-config-title">Controle de cadastros</h2><p>Defina se novos usuários podem criar uma conta.</p></div></header>
+  </section>
+  <form className="control-config" aria-labelledby="control-config-title" aria-busy={busy} onSubmit={e => { e.preventDefault(); void act('CONFIGURAR',null,{cadastro_aberto:open,mensagem_publica:message}) }}>
+   <header className="config-heading"><span className="config-icon" aria-hidden="true"><Users size={28} strokeWidth={1.75}/></span><div><h2 id="control-config-title">Configurações</h2><p>Defina se novos usuários podem criar uma conta.</p></div></header>
    <div className="config-registration"><div><label htmlFor="config-registration-switch">Permitir novas contas</label><p>Novos cadastros ficam disponíveis enquanto esta opção estiver ativa.</p></div><div className="config-state"><input id="config-registration-switch" type="checkbox" role="switch" checked={open} disabled={!data?.ready || busy} onChange={e => setOpen(e.target.checked)}/><span className="config-badge" data-open={open}>{open ? 'Cadastros abertos' : 'Cadastros bloqueados'}</span></div></div>
    <p className="config-notice"><ShieldCheck size={28} strokeWidth={1.75} aria-hidden="true"/><span>Ao desativar, novos cadastros serão bloqueados.<br/>As contas existentes continuam disponíveis.</span></p>
    <div className="config-note"><label htmlFor="config-admin-note">Nota administrativa</label><p id="config-note-help">Adicione uma observação sobre esta configuração.</p><textarea ref={configNoteRef} id="config-admin-note" aria-describedby="config-note-help config-note-count" maxLength={500} rows={4} placeholder="Escreva uma nota..." disabled={!data?.ready || busy} value={message} onChange={e => setMessage(e.target.value)}/><span id="config-note-count">{message.length}/500</span></div>
-   <footer><button type="submit" disabled={!data?.ready || busy}><Check size={20} strokeWidth={1.75} aria-hidden="true"/>{busy ? 'Salvando…' : 'Salvar configuração'}</button></footer>
-  </form>}
+   <footer><button type="submit" disabled={!data?.ready || busy}>{busy ? 'Salvando…' : 'Salvar configuração'}</button></footer>
+  </form>
+  </div>
  <style jsx>{`
 
   .control-center { --primary: 172.12 79.19% 33.92%; --info: 200 90% 34%; --success: 163 87% 30%; }
@@ -1173,6 +1182,87 @@ export default function ControlPage() {
 @media(max-width:767px) {
 :global(html:is(.light,.dark) body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"])[data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .control-center.control-center .account-pagination) { align-items:center!important; justify-content:center!important; text-align:center!important; }
 :global(html:is(.light,.dark) body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"])[data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .control-center.control-center .account-pagination nav) { width:100%!important; display:flex!important; flex-wrap:wrap!important; justify-content:center!important; align-items:center!important; }
+}
+
+/* Approved compact Central: existing banner and controls, persistent config. */
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined])){display:grid!important;gap:20px!important;min-width:0;--control-refined-surface:#fcfdf9;--control-refined-line:#d7ded3;}
+:global(html.dark body [data-control-refined]){--control-refined-surface:#091c18;--control-refined-line:#1c4037;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) > *){margin-top:0!important;margin-bottom:0!important;min-width:0;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading){min-height:140px!important;padding:24px 28px!important;border-radius:13px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-copy){max-width:68%;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-title){font-size:32px!important;line-height:1.2!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-copy>p:first-child){font-size:9px!important;padding:0!important;border:0!important;background:transparent!important;margin:0 0 8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-copy>p:last-child){font-size:13px!important;line-height:1.6!important;margin-top:8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-art){width:300px!important;right:8px!important;opacity:.45!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metrics){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric){border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:8px 16px!important;min-height:72px!important;gap:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric:not(:last-child)){border-right:1px solid var(--control-refined-line)!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric>div){display:flex;flex-direction:column-reverse;min-width:0;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric>div>p:last-child){font-size:24px!important;line-height:1.2!important;margin:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric>div>p:first-child){font-size:12px!important;margin-top:4px;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-body){display:grid!important;grid-template-columns:minmax(0,1fr) 300px!important;gap:16px!important;align-items:start!important;order:2;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-main-panel){display:grid;gap:14px;padding:18px;min-width:0;border:1px solid var(--control-refined-line);border-radius:13px;background:var(--control-refined-surface);}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading){display:flex;align-items:center;justify-content:space-between;gap:12px;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading h2){font-size:16px;font-weight:650;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading .control-export-row){margin:0!important;min-width:0;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading .control-export){min-height:36px!important;padding:8px 12px!important;font-size:11px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-tabs){margin:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-tabs button){min-height:40px!important;padding:8px 14px!important;font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config){width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:18px!important;gap:18px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-heading){gap:0!important;padding-bottom:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-icon){display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config h2){font-size:16px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config p){font-size:12px!important;line-height:1.6!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config label){font-size:13px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-registration){gap:12px!important;align-items:flex-start!important;flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-state){flex-direction:row!important;align-items:center!important;gap:10px!important;flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-notice){padding:12px!important;gap:10px!important;font-size:11px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-notice svg){width:18px!important;height:18px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-notice span){padding:0!important;border:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config textarea){font-size:13px!important;padding:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config footer){padding-top:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config footer button){width:100%!important;min-height:44px!important;font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-user-email){display:none;}
+@media(min-width:768px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table){overflow-x:auto!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table table){table-layout:fixed!important;min-width:0!important;width:100%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-selection){width:30px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-user){width:auto!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-email){width:0!important;display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-profile){width:90px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-status){width:90px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-col-action){width:90px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .email-cell){display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .email-heading){display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table td){padding:12px 8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table th){padding:10px 8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .user-cell p){font-size:12px!important;white-space:normal!important;overflow-wrap:anywhere!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-user-email){display:block;font-size:10px;line-height:1.5;margin-top:3px;overflow-wrap:anywhere;color:var(--shapeos-muted);}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .avatar){height:32px!important;width:32px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .profile-cell>span){white-space:nowrap;font-size:10px!important;padding:4px 6px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .account-status){font-size:10px!important;gap:5px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-manage-trigger){min-width:70px!important;padding:0 8px!important;font-size:11px!important;}
+}
+@media(min-width:768px) and (max-width:1279px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-body){grid-template-columns:minmax(0,1fr) 260px!important;gap:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-main-panel){padding:12px;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar){flex-direction:column!important;align-items:stretch!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-group){width:100%!important;}
+}
+@media(max-width:767px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined])){gap:16px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-body){grid-template-columns:minmax(0,1fr)!important;gap:16px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading){min-height:150px!important;padding:22px 18px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-copy){max-width:100%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-title){font-size:28px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-heading-art){right:-130px!important;opacity:.16!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metrics){grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric){padding:8px 12px!important;gap:10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-metric:nth-child(2)){border-right:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-main-panel){padding:14px;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading){flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading .control-export){min-height:44px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config){padding:18px!important;}
 }
 `}</style>
  </div>
