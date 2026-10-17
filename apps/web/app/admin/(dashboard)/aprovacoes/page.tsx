@@ -1213,6 +1213,24 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]){justify-content:center!important;gap:6px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
 }
+
+/* Refined finish, retaining classic columns, status and numbered navigation. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-table]){border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){padding:13px 18px!important;background:color-mix(in srgb,var(--approval-refined-muted) 4%,var(--approval-refined-bg))!important;font-size:10px!important;letter-spacing:.07em!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:12px 18px!important;min-height:72px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:38px!important;height:38px!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]>div:first-child){gap:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-name){font-size:13px!important;font-weight:600!important;line-height:1.5!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]>p){font-size:12px!important;font-weight:400!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status]){min-height:30px!important;padding:6px 10px!important;font-size:11px!important;font-weight:600!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){min-width:76px!important;height:36px!important;min-height:36px!important;padding:0 12px!important;font-size:12px!important;font-weight:500!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:16px 18px!important;font-size:11px!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;font-size:12px!important;}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){width:100%!important;height:44px!important;min-height:44px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:16px 12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
+}
 `}</style>
     </div>
   )
