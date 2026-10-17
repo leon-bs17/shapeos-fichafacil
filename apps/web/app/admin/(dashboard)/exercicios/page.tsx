@@ -144,10 +144,10 @@ function ExerciciosConteudo() {
   const grupos = [...new Set(exercicios?.map((e) => e.grupo_muscular) ?? [])].sort()
 
   return (
-    <div className="exercises-workspace space-y-5">
+    <div className="exercises-workspace space-y-5" data-exercises-refined>
       <header className="exercises-hero">
         <div className="exercises-hero-copy"><p className="eyebrow">Biblioteca</p>
-          <h1>Biblioteca de <span>exercícios</span></h1>
+          <h2 className="exercises-banner-title">Biblioteca de <span>exercícios</span></h2>
           <p className="exercises-subtitle">
             Biblioteca global de exercícios da plataforma.
           </p>
@@ -179,6 +179,7 @@ function ExerciciosConteudo() {
         </Card>
       </div>
 
+      <section className="exercises-management"><header className="exercises-management-heading"><h2>Exercícios cadastrados</h2><span>{filtrados?.length ?? 0} exercícios</span></header>
       <div className="exercises-toolbar">
         <div data-admin-search className="exercises-search relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -231,7 +232,7 @@ function ExerciciosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <><div className="exercise-list-heading"><h2>Exercícios cadastrados</h2><span>{filtrados?.length ?? 0} exercícios</span></div>
+        <>
         <div className="exercise-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {filtrados?.map((e) => (
             <Card key={e.id} className="exercise-card group">
@@ -267,6 +268,7 @@ function ExerciciosConteudo() {
         </div></>
       )}
 
+      </section>
       <Modal admin open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
@@ -524,6 +526,55 @@ html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-rou
 }
 html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-card-actions>.exercise-delete:focus-visible { outline-color:var(--exercise-danger)!important; }
 @media(max-width:767px) { html:is(.light,.dark) body [data-admin-route="/admin/exercicios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .exercises-workspace.exercises-workspace .exercise-wireframe { right:-120px!important; } }
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-hero{min-height:130px!important;padding:22px 26px!important;border-radius:16px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-banner-title{display:block!important;margin:5px 0 8px!important;font-size:28px!important;font-weight:650!important;line-height:1.15!important;letter-spacing:-.035em!important;color:var(--exercise-ink)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-banner-title span{display:inline!important;color:var(--exercise-brand)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .eyebrow{margin-bottom:6px!important;padding:4px 10px!important;font-size:9px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-subtitle{font-size:12px!important;margin-top:8px!important;line-height:1.5!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-stats{gap:0!important;margin:0!important;padding:18px 0!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat+.exercise-stat{border-left:1px solid var(--exercise-border)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat>div{display:flex!important;align-items:center!important;gap:12px!important;padding:4px 20px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat p:first-child{font-size:24px!important;line-height:1.2!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management{border:1px solid var(--exercise-border)!important;border-radius:16px!important;background:var(--exercise-surface)!important;padding:20px!important;min-width:0!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management-heading{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;margin-bottom:16px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management-heading h2{font-size:15px!important;font-weight:650!important;color:var(--exercise-ink)!important;margin:0!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management-heading>span{font-size:11px!important;color:var(--exercise-muted)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:12px!important;margin:0 0 14px!important;padding:0!important;border:0!important;background:transparent!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-create{height:44px!important;min-height:44px!important;padding:0 16px!important;border:1px solid var(--exercise-border)!important;border-radius:13px!important;background:transparent!important;color:var(--exercise-ink)!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;box-shadow:none!important;transform:none!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-create svg{color:var(--exercise-brand)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-search input{height:44px!important;min-height:44px!important;border-radius:13px!important;box-shadow:none!important;transform:none!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-filters{gap:7px!important;margin:0 0 18px!important;padding:0 0 16px!important;border-bottom:1px solid var(--exercise-border)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-filters button{min-height:36px!important;border:1px solid var(--exercise-border)!important;border-radius:10px!important;background:transparent!important;color:var(--exercise-ink)!important;padding:6px 11px!important;font-size:11px!important;box-shadow:none!important;transform:none!important;transition:background-color 150ms ease,border-color 150ms ease!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-filters button[aria-pressed="true"]{background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important;color:var(--exercise-brand)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card{border:1px solid var(--exercise-border)!important;border-radius:13px!important;box-shadow:none!important;transform:none!important;background:var(--exercise-surface)!important;min-width:0!important;transition:none!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card>div{padding:14px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-visual-row{min-height:100px!important;padding-right:0!important;gap:12px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-name{font-size:13px!important;font-weight:600!important;line-height:1.5!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions{margin-top:12px!important;padding-top:12px!important;gap:8px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions>.exercise-delete{color:var(--exercise-danger)!important;border-color:color-mix(in srgb,var(--exercise-danger) 40%,transparent)!important;background:transparent!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions>.exercise-delete svg{color:var(--exercise-danger)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions>.exercise-delete:hover:enabled{color:var(--exercise-danger)!important;background:color-mix(in srgb,var(--exercise-danger) 7%,transparent)!important;border-color:color-mix(in srgb,var(--exercise-danger) 40%,transparent)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-create:hover{background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important;color:var(--exercise-ink)!important;box-shadow:none!important;transform:none!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-filters button:hover{background:color-mix(in srgb,var(--exercise-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--exercise-brand) 40%,transparent)!important;box-shadow:none!important;transform:none!important}
+@media(min-width:768px) and (max-width:1199px){html body :is(#exercises-refined,[data-exercises-refined]) .exercise-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:767px){html body :is(#exercises-refined,[data-exercises-refined]) .exercises-hero{min-height:150px!important;padding:20px!important;flex-direction:row!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-hero-copy{max-width:100%!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-banner-title{font-size:25px!important;white-space:normal!important;max-width:100%!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-subtitle{font-size:11px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat>div{padding:4px 10px!important;flex-direction:column!important;align-items:flex-start!important;gap:7px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat p:first-child{font-size:21px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-stat p:last-child{font-size:10px!important;line-height:1.4!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management{padding:14px!important;border-radius:13px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-management-heading{flex-wrap:wrap!important;margin-bottom:14px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-toolbar{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-create{width:100%!important;height:44px!important;min-height:44px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercises-filters button{min-height:44px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-grid{grid-template-columns:minmax(0,1fr)!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions{grid-template-columns:minmax(0,1fr) 44px 44px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-card-actions>button{height:44px!important;min-height:44px!important}
+html body :is(#exercises-refined,[data-exercises-refined]) .exercise-wireframe{right:-80px!important;width:240px!important;opacity:.12!important}}
 `}</style>
     </div>
   )
