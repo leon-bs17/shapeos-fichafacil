@@ -771,6 +771,11 @@ html.dark .control-compact-identity p { color:#a3becd; }
  .control-compact-icon { display:none; }
 }
 .admin-approval-global-search { display:none!important; }
+
+/* One avatar geometry across every Admin detail dialog. */
+html body :is(#admin-dialog-avatar-standard,[data-admin-route]):is(#admin-dialog-avatar-standard,[data-admin-route]):is(#admin-dialog-avatar-standard,[data-admin-route]) dialog :is(.users-avatar,.approval-profile-avatar,.control-manage-avatar,.personal-table-avatar,.avatar,[data-admin-avatar]){
+display:grid!important;place-items:center!important;box-sizing:border-box!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1 / 1!important;border-radius:50%!important;padding:0!important;font-size:14px!important;line-height:1!important;align-self:center!important;transform:none!important;scale:none!important;
+}
 `}</style>
     </div>
   )
