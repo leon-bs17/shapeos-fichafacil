@@ -490,7 +490,7 @@ html body :is(#personals-refined,[data-personals-refined]) .personals-table td{p
 html body :is(#personals-refined,[data-personals-refined]) .personal-person{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
 html body :is(#personals-refined,[data-personals-refined]) .personal-card-name{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:3px 7px!important;min-width:0!important;flex:1!important}
 html body :is(#personals-refined,[data-personals-refined]) .personal-card-name strong{font-size:13px!important;overflow-wrap:anywhere!important}
-html body :is(#personals-refined,[data-personals-refined]) .personal-role{font-size:10px!important;color:var(--personal-muted)!important;border:1px solid var(--personal-border)!important;border-radius:6px!important;padding:1px 5px!important}
+html body :is(#personals-refined,[data-personals-refined]) .personal-role{display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;white-space:nowrap!important;padding:2px 7px!important;border:1px solid var(--personal-border)!important;border-radius:6px!important;font-size:10px!important;line-height:1.5!important;font-weight:400!important;color:var(--personal-muted)!important;background:color-mix(in srgb,var(--personal-muted) 8%,transparent)!important;}
 html body :is(#personals-refined,[data-personals-refined]) .personal-email{display:block!important;flex-basis:100%!important;font-size:11px!important;color:var(--personal-muted)!important;overflow-wrap:anywhere!important}
 html body :is(#personals-refined,[data-personals-refined]) .personals-table .personal-table-avatar{width:32px!important;height:32px!important;min-width:32px!important;flex:0 0 32px!important;border-radius:50%!important;font-size:11px!important;aspect-ratio:1!important}
 html body :is(#personals-refined,[data-personals-refined]) [data-admin-view]{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;color:var(--personal-ink)!important}
@@ -553,6 +553,7 @@ html body :is(#personals-refined,[data-personals-refined]) .personal-workouts li
 html body :is(#personals-refined,[data-personals-refined]) .personal-workouts li>div{min-width:0!important;flex:1!important}
 html body :is(#personals-refined,[data-personals-refined]) .personal-workouts strong{overflow-wrap:anywhere!important}
 }
+@media(max-width:767px){html body :is(#personals-refined,[data-personals-refined]) .personal-role{font-size:9px!important;padding:1px 6px!important;}}
 `}</style>
   </div>
 }
