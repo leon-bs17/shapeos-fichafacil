@@ -217,7 +217,7 @@ export default function AdminPersonaisPage() {
           <colgroup><col className="personal-col-name"/><col className="personal-col-number"/><col className="personal-col-number"/><col className="personal-col-action"/></colgroup>
           <thead><tr>{['Personal','Alunos','Treinos','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
           <tbody>{rows.map(personal => <tr key={personal.id}>
-            <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><div className="personal-card-name"><strong>{personal.nome}</strong><small className="personal-role">Personal</small><span className="personal-email">{personal.email}</span></div></div></td>
+            <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><div className="personal-card-name"><strong>{personal.nome}</strong><small className="personal-role"><UserCheck size={12} aria-hidden="true"/>PERSONAL</small><span className="personal-email">{personal.email}</span></div></div></td>
             <td data-label="Alunos"><Users className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Alunos</small><span className="personal-count-number">{personal.total_alunos}</span></span></td><td data-label="Treinos"><Dumbbell className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Treinos</small><span className="personal-count-number">{personal.total_treinos}</span></span></td>
             <td data-label="Ações"><button type="button" data-admin-view className="personal-button" aria-label={'Ver alunos e treinos de ' + personal.nome} onClick={() => openDetails(personal.id)}><Eye size={15}/>Ver</button></td>
           </tr>)}</tbody>
@@ -573,6 +573,8 @@ html body :is(#personals-refined,[data-personals-refined]) .personal-student-wor
 html body :is(#personals-refined,[data-personals-refined]) .personal-student-workouts>.personal-workouts{margin-top:10px!important;}
 @media(prefers-reduced-motion:reduce){html body :is(#personals-refined,[data-personals-refined]) .personal-student-workouts summary,html body :is(#personals-refined,[data-personals-refined]) .personal-student-workouts .personal-workouts-chevron{transition:none!important;}}
 
+html body :is(#personals-refined,[data-personals-refined]) .personal-role{gap:6px!important;padding:3px 7px!important;border:0!important;border-radius:999px!important;font-size:9px!important;font-weight:500!important;line-height:1.5!important;color:hsl(var(--success))!important;background:hsl(var(--success) / .1)!important;}
+html body :is(#personals-refined,[data-personals-refined]) .personal-role svg{width:12px!important;height:12px!important;flex-shrink:0!important;}
 `}</style>
   </div>
 }
