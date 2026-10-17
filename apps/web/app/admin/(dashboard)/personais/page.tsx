@@ -218,7 +218,7 @@ export default function AdminPersonaisPage() {
           <thead><tr>{['Personal','Alunos','Treinos','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
           <tbody>{rows.map(personal => <tr key={personal.id}>
             <td data-label="Personal"><div className="personal-person"><span className="personal-table-avatar" aria-hidden="true">{initials(personal.nome)}</span><div className="personal-card-name"><strong>{personal.nome}</strong><small className="personal-role">Personal</small><span className="personal-email">{personal.email}</span></div></div></td>
-            <td data-label="Alunos"><Users className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Alunos</small>{personal.total_alunos}</span></td><td data-label="Treinos"><Dumbbell className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Treinos</small>{personal.total_treinos}</span></td>
+            <td data-label="Alunos"><Users className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Alunos</small><span className="personal-count-number">{personal.total_alunos}</span></span></td><td data-label="Treinos"><Dumbbell className="personal-mobile-only" size={18}/><span><small className="personal-mobile-only">Treinos</small><span className="personal-count-number">{personal.total_treinos}</span></span></td>
             <td data-label="Ações"><button type="button" data-admin-view className="personal-button" aria-label={'Ver alunos e treinos de ' + personal.nome} onClick={() => openDetails(personal.id)}><Eye size={15}/>Ver</button></td>
           </tr>)}</tbody>
         </table>
@@ -554,6 +554,7 @@ html body :is(#personals-refined,[data-personals-refined]) .personal-workouts li
 html body :is(#personals-refined,[data-personals-refined]) .personal-workouts strong{overflow-wrap:anywhere!important}
 }
 @media(max-width:767px){html body :is(#personals-refined,[data-personals-refined]) .personal-role{font-size:9px!important;padding:1px 6px!important;}}
+html body :is(#personals-refined,[data-personals-refined]) .personal-count-number{font-family:Arial,Helvetica,sans-serif!important;font-size:12px!important;font-weight:400!important;font-style:normal!important;font-variant-numeric:lining-nums tabular-nums!important;font-feature-settings:"lnum" 1,"tnum" 1!important;letter-spacing:normal!important;line-height:1.5!important;}
 `}</style>
   </div>
 }
