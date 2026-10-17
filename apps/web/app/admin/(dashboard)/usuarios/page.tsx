@@ -778,6 +778,26 @@ html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-re
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details .users-profile-card>.users-avatar{
 display:grid!important;place-items:center!important;box-sizing:border-box!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1 / 1!important;border-radius:50%!important;padding:0!important;line-height:1!important;align-self:center!important;transform:none!important;scale:none!important;
 }
+
+/* Mobile cards use content height and independent metadata rows. */
+@media(max-width:767px){
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody{display:grid!important;gap:12px!important;width:100%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table thead{display:none!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody tr{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important;grid-template-rows:none!important;padding:14px!important;margin:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody tr>td{display:block!important;position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;grid-column:auto!important;grid-row:auto!important;align-self:stretch!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody tr>td:before{position:static!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Nome"]>div{display:flex!important;align-items:flex-start!important;gap:10px!important;width:100%!important;min-width:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-card-identity{flex:1 1 0%!important;min-width:0!important;max-width:calc(100% - 44px)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-name-profile{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:6px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-email{white-space:normal!important;word-break:break-word!important;overflow-wrap:anywhere!important;max-width:100%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Status"]{position:static!important;text-align:left!important;order:2!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Data do cadastro"]{order:1!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Ações"]{order:3!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-avatar{flex:0 0 34px!important;width:34px!important;height:34px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-filter-toolbar button{min-height:44px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody tr>td:last-child button{width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;margin:0!important;}
+}
 `}</style>
     </div>
   )
