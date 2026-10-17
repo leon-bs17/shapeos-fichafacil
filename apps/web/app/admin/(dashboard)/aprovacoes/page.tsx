@@ -584,9 +584,11 @@ export default function AdminAprovacoesPage() {
           </header>
           <section className="approval-profile-person" aria-label="Cadastro do personal">
             <div className="approval-profile-avatar">{iniciais(personalSelecionado.nome, personalSelecionado.email)}</div>
-            <div><h3>{personalSelecionado.nome?.trim() || 'Personal sem nome'}</h3>
-              <span className={`approval-profile-status ${statusVisual(personalSelecionado.status_conta).className}`} data-profile-status={personalSelecionado.status_conta}>{statusVisual(personalSelecionado.status_conta).label}</span>
-            </div>
+            <div className="approval-profile-identity"><h3>{personalSelecionado.nome?.trim() || 'Personal sem nome'}</h3><p className="approval-profile-role">Personal</p></div>
+            <span className={`approval-profile-status ${statusVisual(personalSelecionado.status_conta).className}`} data-profile-status={personalSelecionado.status_conta}>
+              {personalSelecionado.status_conta === 'ATIVO' ? <CheckCircle2 size={14} aria-hidden="true"/> : personalSelecionado.status_conta === 'PENDENTE' ? <Clock3 size={14} aria-hidden="true"/> : <Ban size={14} aria-hidden="true"/>}
+              {statusVisual(personalSelecionado.status_conta).label}
+            </span>
           </section>
           <dl className="approval-profile-data">
             <div><Mail size={22} strokeWidth={1.7} /><div><dt>E-mail</dt><dd>{personalSelecionado.email}</dd></div></div>
@@ -1154,6 +1156,36 @@ export default function AdminAprovacoesPage() {
 }
 :global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] [data-admin-view] svg) {
  color:#00e9df!important;
+}
+
+/* Compact registration dialog, centered in the viewport in both themes. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog){position:fixed!important;inset:0!important;margin:auto!important;box-sizing:border-box!important;width:min(520px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;height:fit-content!important;max-height:calc(100dvh - 32px)!important;min-height:0!important;padding:24px!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;transform:none!important;translate:none!important;border:1px solid var(--approval-refined-line)!important;border-radius:18px!important;background:var(--approval-refined-bg)!important;color:var(--approval-refined-ink)!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog:not([open])){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog[open]){display:block!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog::backdrop){background:rgba(0,0,0,.48)!important;backdrop-filter:blur(3px);}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading){display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:14px!important;padding-bottom:18px!important;border-bottom:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading p){font-size:10px!important;letter-spacing:.08em!important;color:var(--approval-refined-muted)!important;margin:0 0 6px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading h2){font-size:22px!important;line-height:1.3!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-close){width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;display:grid!important;place-items:center!important;padding:0!important;flex-shrink:0!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-person){display:grid!important;grid-template-columns:48px minmax(0,1fr) auto!important;align-items:center!important;gap:14px!important;margin:0!important;padding:18px 0!important;border:0!important;border-bottom:1px solid var(--approval-refined-line)!important;border-radius:0!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-avatar){width:48px!important;height:48px!important;min-width:48px!important;font-size:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-identity){min-width:0!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-person h3){font-size:16px!important;line-height:1.4!important;color:var(--approval-refined-ink)!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-role){font-size:12px!important;line-height:1.5!important;margin-top:3px!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-status){display:inline-flex!important;align-items:center!important;gap:6px!important;margin:0!important;padding:6px 9px!important;font-size:11px!important;white-space:nowrap!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data){margin:0!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data>div){display:flex!important;align-items:flex-start!important;gap:14px!important;padding:16px 0!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data>div+div){border-top:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data svg){width:20px!important;height:20px!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data dt){font-size:11px!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-data dd){font-size:14px!important;line-height:1.6!important;overflow-wrap:anywhere!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-footer){padding-top:16px!important;border-top:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog button){min-height:44px;border-radius:13px!important;box-shadow:none!important;}
+@media(max-width:420px){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-dialog){width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading h2){font-size:20px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-person){grid-template-columns:48px minmax(0,1fr)!important;gap:10px 12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-status){grid-column:2;justify-self:start;}
 }
 `}</style>
     </div>
