@@ -237,10 +237,10 @@ export default function AdminAuditoriaPage() {
     observer.observe(html, { attributes: true, attributeFilter: ['class'] })
     return () => { observer.disconnect(); cancelAnimationFrame(frame); restore() }
   }, [])
-  return <div className="audit-workspace">
+  return <div className="audit-workspace" data-audit-refined>
     <header className="audit-hero">
       <div className="audit-hero-copy"><p className="eyebrow">Rastreabilidade</p>
-        <h1>Histórico <span>administrativo</span></h1>
+        <h2 className="audit-banner-title">Histórico <span>administrativo</span></h2>
         <p>Acompanhe decisões de acesso e alterações realizadas no painel.</p>
       </div>
       <AuditWireframe />
@@ -250,7 +250,7 @@ export default function AdminAuditoriaPage() {
       <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Users size={25} /></span><div><p><span className="audit-desktop-copy">Administradores</span><span className="audit-mobile-copy">Admins</span></p><strong>{isLoading || error ? '—' : admins}</strong></div></div>
       <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Clock3 size={25} /></span><div><p>Último registro</p><strong>{!error && latest ? new Date(latest.criado_em).toLocaleDateString('pt-BR', { ...dateOptions, day: '2-digit', month: 'short' }) : '—'}</strong></div></div>
     </section>
-    <section className="audit-filters" aria-label="Busca e filtros de auditoria">
+    <section className="audit-management"><header className="audit-management-heading"><h2>Registros de auditoria</h2><span>{total} {total === 1 ? 'registro' : 'registros'}</span></header><section className="audit-filters" aria-label="Busca e filtros de auditoria">
       <div className="audit-toolbar"><div data-admin-search className="audit-search"><Search size={19} aria-hidden="true" />
         <Input value={busca} onChange={event => setBusca(event.target.value)} placeholder="Buscar na auditoria" aria-label="Buscar administrador, usuário ou ação" />
       </div>
@@ -266,7 +266,7 @@ export default function AdminAuditoriaPage() {
       isLoading ? <div className="audit-loading" role="status" aria-label="Carregando registros de auditoria">{[0,1,2].map(i => <div key={i} className="skeleton" />)}</div> :
       !total ? <section className="audit-message"><Clock3 size={32}/><h2>{data?.eventos.length ? 'Nenhum registro encontrado' : 'Nenhuma ação registrada'}</h2><p>{data?.eventos.length ? 'Tente ajustar a busca ou os filtros.' : 'As decisões administrativas aparecerão aqui.'}</p></section> :
       <section className="audit-table-card">
-        <div className="audit-table-heading"><h2>Registros de auditoria</h2><span>{total} {total === 1 ? 'registro' : 'registros'}</span></div>
+        
         <div className="audit-table-wrap"><table className="audit-table">
           <caption className="sr-only">Registros de decisões administrativas</caption>
           <colgroup><col className="audit-col-action"/><col className="audit-col-person"/><col className="audit-col-person"/><col className="audit-col-date"/><col className="audit-col-view"/></colgroup>
@@ -292,6 +292,7 @@ export default function AdminAuditoriaPage() {
         </nav></footer>
       </section>}
     {!isLoading && !error && <p className="audit-scope">Resumo dos até 200 registros mais recentes carregados.</p>}
+    </section>
     <dialog ref={dialogRef} className="audit-dialog" aria-labelledby={titleId} onCancel={event => { event.preventDefault(); setSelected(null) }} onClick={event => {
       if (event.target !== event.currentTarget) return
       const rect = event.currentTarget.getBoundingClientRect()
@@ -632,6 +633,84 @@ html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-rout
 html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .audit-workspace.audit-workspace .audit-pagination .audit-button,html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .audit-workspace.audit-workspace .audit-pagination .audit-current { width:44px!important;min-width:44px!important;height:44px!important;border-radius:13px!important; }
 html:is(.light,.dark) body [data-admin-route="/admin/auditoria"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .audit-workspace.audit-workspace .audit-scope { font-size:10px!important;line-height:1.5!important;text-align:center!important;margin:0!important; }
 }
+html body :is(#audit-refined,[data-audit-refined]) .audit-hero{min-height:130px!important;padding:22px 26px!important;border-radius:16px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-banner-title{display:block!important;margin:5px 0 8px!important;font-size:28px!important;font-weight:650!important;line-height:1.15!important;letter-spacing:-.035em!important;color:var(--audit-text)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-banner-title span{display:inline!important;color:var(--audit-brand)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-hero-copy>p:last-child{font-size:12px!important;margin-top:8px!important;line-height:1.5!important}
+html body :is(#audit-refined,[data-audit-refined]) .eyebrow{font-size:9px!important;padding:4px 10px!important;margin-bottom:6px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stats{gap:0!important;margin:0!important;padding:4px 0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:4px 20px!important;gap:12px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat+.audit-stat{border-left:1px solid var(--audit-border)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat>div{display:flex!important;flex-direction:column!important;gap:3px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat strong{order:0!important;font-size:24px!important;line-height:1.2!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat p{order:1!important;font-size:11px!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management{border:1px solid var(--audit-border)!important;border-radius:16px!important;background:var(--audit-surface)!important;padding:20px!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-bottom:16px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management-heading h2{margin:0!important;font-size:15px!important;font-weight:650!important;color:var(--audit-text)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management-heading>span{font-size:11px!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-filters{padding:0!important;margin:0 0 16px!important;border:0!important;background:transparent!important;box-shadow:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table-card{border:1px solid var(--audit-border)!important;border-radius:16px!important;overflow:hidden!important;box-shadow:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table-wrap{min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-action{width:24%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-person{width:23%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-date{width:20%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-view{width:10%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table th{padding:11px 14px!important;font-size:11px!important;font-weight:500!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td{padding:12px 14px!important;font-size:12px!important;vertical-align:middle!important;height:auto!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-event{gap:8px!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-event strong{font-size:11px!important;line-height:1.5!important;overflow-wrap:anywhere!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-person{gap:8px!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-person>span:last-child{font-size:12px!important;overflow-wrap:anywhere!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-avatar{width:32px!important;height:32px!important;min-width:32px!important;flex:0 0 32px!important;border-radius:50%!important;font-size:10px!important;aspect-ratio:1!important}
+html body :is(#audit-refined,[data-audit-refined]) [data-admin-view]{color:var(--audit-text)!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important}
+html body :is(#audit-refined,[data-audit-refined]) [data-admin-view] svg{color:var(--audit-brand)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-button{border-radius:13px!important;box-shadow:none!important;transform:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-pagination{padding:14px 16px!important;gap:12px!important;border-top:1px solid var(--audit-border)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-pagination nav{display:flex!important;align-items:center!important;gap:6px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-scope{margin:12px 0 0!important;text-align:center!important;font-size:10px!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog{position:fixed!important;inset:0!important;margin:auto!important;width:calc(100% - 32px)!important;max-width:640px!important;height:fit-content!important;max-height:calc(100dvh - 32px)!important;padding:24px!important;border:1px solid var(--audit-border)!important;border-radius:18px!important;overflow:auto!important;transform:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog-heading{padding:0 0 18px!important;margin:0!important;border-bottom:1px solid var(--audit-border)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog-heading h2{font-size:20px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog-body{padding:18px 0!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-summary{padding:0 0 16px!important;border:0!important;border-radius:0!important;background:transparent!important;gap:10px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-summary h3{font-size:14px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-summary p{font-size:11px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-people{gap:12px!important;padding:16px 0!important;margin:0!important;border-top:1px solid var(--audit-border)!important;border-bottom:1px solid var(--audit-border)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-people>div{padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-people dd{overflow-wrap:anywhere!important;font-size:12px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-changes{margin-top:18px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-changes>h3{font-size:13px!important;margin-bottom:12px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer{margin:0!important;padding:16px 0 0!important;border-top:1px solid var(--audit-border)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-button:not(:disabled):hover{background:color-mix(in srgb,var(--audit-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--audit-brand) 40%,transparent)!important;box-shadow:none!important;transform:none!important}
+@media(max-width:767px){html body :is(#audit-refined,[data-audit-refined]) .audit-hero{min-height:150px!important;padding:20px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-banner-title{font-size:25px!important;white-space:normal!important;max-width:100%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat{padding:4px 10px!important;flex-direction:column!important;align-items:flex-start!important;gap:7px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat strong{font-size:21px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-stat p{font-size:10px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management{padding:14px!important;border-radius:13px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-management-heading{flex-wrap:wrap!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-toolbar>div{width:100%!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table{display:block!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table thead{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table colgroup{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table tbody{display:grid!important;gap:12px!important;padding:14px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table tbody tr{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:12px!important;height:auto!important;min-height:0!important;max-height:none!important;padding:14px!important;margin:0!important;border:1px solid var(--audit-border)!important;border-radius:13px!important;grid-template-rows:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table tbody td{display:block!important;position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;grid-column:auto!important;grid-row:auto!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Administrador"]::before{content:"Administrador"!important;display:block!important;font-size:10px!important;color:var(--audit-muted)!important;margin-bottom:5px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Usuário"]::before{content:"Usuário"!important;display:block!important;font-size:10px!important;color:var(--audit-muted)!important;margin-bottom:5px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Ação"]::before{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Data e hora"]::before{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Ações"]::before{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Data e hora"]{display:flex!important;align-items:center!important;gap:7px!important;font-size:11px!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td:last-child button{width:100%!important;min-height:44px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-pagination{display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;padding:14px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog{width:calc(100% - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-detail-people{grid-template-columns:minmax(0,1fr)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer button{min-height:44px!important}}
+html body :is(#audit-refined,[data-audit-refined]) .audit-select-trigger{height:44px!important;color:var(--audit-text)!important;font-size:12px!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-search input{height:44px!important;}
 `}</style>
   </div>
 }
