@@ -436,20 +436,24 @@ export default function AdminAprovacoesPage() {
           </Button>
         </section>
       ) : !cadastrosFiltrados.length ? (
-        <section className="rounded-[24px] border border-slate-200 bg-white px-6 py-12 text-center shadow-[0_10px_28px_rgba(15,23,42,0.035)] dark:border-white/10 dark:bg-card/70">
-          <Search className="mx-auto h-8 w-8 text-teal-500 dark:text-primary" strokeWidth={1.6} />
-          <h2 className="mt-4 text-lg font-black text-slate-950 dark:text-white">Nenhum cadastro encontrado</h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        <section className="approval-empty" aria-labelledby="approval-empty-title" role="status">
+          <Search aria-hidden="true" strokeWidth={1.7} />
+          <h2 id="approval-empty-title">
+            {buscaLocal.trim() || filtroPeriodo !== 'TODOS' ? 'Nenhum cadastro encontrado' : filtroStatus === 'PENDENTE' ? 'Nenhum cadastro pendente' : filtroStatus === 'ATIVO' ? 'Nenhum cadastro aprovado' : 'Nenhum cadastro encontrado'}
+          </h2>
+          <p>
             {buscaLocal.trim()
-              ? <>Nenhum resultado para <span className="font-bold text-slate-700 dark:text-slate-300">“{buscaLocal.trim()}”</span>. Ajuste a busca ou os filtros.</>
-              : 'Ajuste os filtros para visualizar outros profissionais.'}
+              ? <>Nenhum resultado para <strong>“{buscaLocal.trim()}”</strong>. Ajuste a busca ou os filtros.</>
+              : filtroPeriodo !== 'TODOS'
+                ? 'Não há cadastros para os filtros e o período selecionados.'
+                : filtroStatus === 'PENDENTE'
+                  ? 'Não há profissionais aguardando aprovação.'
+                  : filtroStatus === 'ATIVO'
+                    ? 'Não há profissionais aprovados no momento.'
+                    : 'Ajuste os filtros para visualizar outros profissionais.'}
           </p>
-          <button
-            type="button"
-            onClick={limparFiltros}
-            className="mt-4 text-sm font-bold text-cyan-700  dark:text-primary "
-          >
-            Limpar filtros
+          <button type="button" onClick={limparFiltros}>
+            {buscaLocal.trim() || filtroPeriodo !== 'TODOS' ? 'Limpar filtros' : 'Ver todos os cadastros'}
           </button>
         </section>
       ) : (
@@ -1272,6 +1276,20 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:36px!important;height:36px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-copy){gap:2px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){min-height:44px!important;height:44px!important;}
+}
+
+/* Compact, contextual empty results. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty){display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;min-height:180px!important;padding:24px 18px!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px!important;background:transparent!important;text-align:center!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty>svg){width:26px!important;height:26px!important;margin:0 0 4px!important;color:var(--approval-refined-brand)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty h2){margin:0!important;font-size:15px!important;line-height:1.5!important;font-weight:600!important;letter-spacing:normal!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty p){margin:0!important;max-width:440px!important;font-size:12px!important;line-height:1.6!important;color:var(--approval-refined-muted)!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty button){display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:36px!important;margin:6px 0 0!important;padding:8px 14px!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px!important;background:transparent!important;color:var(--approval-refined-ink)!important;font-size:12px!important;font-weight:500!important;box-shadow:none!important;transform:none!important;cursor:pointer!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group] button){height:44px!important;min-height:44px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty button:focus-visible){outline:2px solid var(--approval-refined-brand)!important;outline-offset:3px!important;}
+@media(any-hover:hover){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management .approval-empty button:hover:enabled){background:color-mix(in srgb,var(--approval-refined-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--approval-refined-brand) 40%,transparent)!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty){min-height:180px!important;padding:22px 14px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty button){min-height:44px!important;}
 }
 `}</style>
     </div>
