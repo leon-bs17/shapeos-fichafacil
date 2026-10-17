@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, ShieldCheck, Info, Download, Search, Users, UserRound, Link2, Dumbbell, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
+import { Shield, ShieldCheck, Info, Download, Search, Users, UserRound, Link2, Dumbbell, Eye, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
@@ -300,7 +300,7 @@ export default function ControlPage() {
     <td className="email-cell px-5 py-4" title={u.email}>{u.email}</td>
     <td className="profile-cell px-5 py-4"><span className={`inline-flex rounded-md border px-2.5 py-1 text-[11px] font-semibold ${u.tipo === 'ADMIN' ? 'border-primary/25 bg-primary/10 text-primary' : u.tipo === 'ALUNO' ? 'border-info/25 bg-info/10 text-info' : 'personal-badge'}`}>{u.tipo}</span></td>
     <td className="status-cell px-5 py-4"><span data-account-status={u.status_conta} className="account-status">{u.status_conta === 'ATIVO' ? <CircleCheck size={15} aria-hidden="true"/> : u.status_conta === 'PENDENTE' ? <Clock3 size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{u.status_conta === 'ATIVO' ? 'Ativo' : u.status_conta === 'PENDENTE' ? 'Pendente' : u.status_conta === 'BLOQUEADO' ? 'Bloqueado' : u.status_conta}</span></td>
-    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={`${button} control-manage-trigger`} aria-label={`Gerenciar ${u.nome}`} disabled={!data?.ready || busy} onClick={() => { setFeedback(''); setSelected({...u}) }}><Settings2 size={17}/>Gerenciar</button></div></td>
+    <td className="action-cell px-5 py-4"><div className="flex items-center justify-between gap-3"><button className={`${button} control-manage-trigger`} aria-label={`Ver detalhes de ${u.nome}`} disabled={!data?.ready || busy} onClick={() => { setFeedback(''); setSelected({...u}) }}><Eye size={15} aria-hidden="true"/>Ver</button></div></td>
    </tr>)}</tbody></table>
    {!isLoading && !error && filteredUsers.length === 0 && <div className="p-10 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground"/><p className="font-medium">Nenhuma conta encontrada</p><p className="mt-1 text-sm text-muted-foreground">Tente outro nome ou ajuste os filtros.</p>{(search || profileFilter || statusFilter) && <button className={`${button} mt-4`} onClick={() => { setSearch(''); setProfileFilter(''); setStatusFilter(''); setPage(1) }}>Limpar filtros</button>}</div>}
    <footer className="account-pagination flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground"><p aria-live="polite">{filteredUsers.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, filteredUsers.length)} de ${filteredUsers.length} contas` : '0 contas'}</p><nav aria-label="Paginação de contas" className="flex items-center gap-2"><button className={`${button} !px-3`} aria-label="Página anterior" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16}/></button>{Array.from({length: pageCount}, (_, i) => i + 1).filter(n => n === 1 || n === pageCount || Math.abs(n - currentPage) <= 1).map((n, i, pages) => <span key={n} className="flex items-center gap-2">{i > 0 && n - pages[i - 1] > 1 && <span>…</span>}<button aria-label={`Página ${n}`} aria-current={currentPage === n ? 'page' : undefined} className={`${button} !px-3 ${currentPage === n ? '!border-primary bg-primary/10 text-primary' : ''}`} onClick={() => setPage(n)}>{n}</button></span>)}<button className={`${button} !px-3`} aria-label="Próxima página" disabled={currentPage >= pageCount} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16}/></button></nav></footer>
@@ -1263,6 +1263,31 @@ export default function ControlPage() {
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading){flex-wrap:wrap;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-panel-heading .control-export){min-height:44px!important;}
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-config){padding:18px!important;}
+}
+
+/* Keep the compact sidebar copy readable at notebook widths. */
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-registration){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;align-items:start!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-registration>div:first-child){width:100%!important;min-width:0!important;max-width:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-registration label){display:block!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-registration p){width:100%!important;max-width:none!important;font-size:12px!important;line-height:1.6!important;word-break:normal!important;overflow-wrap:normal!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-state){width:100%!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-badge){font-size:11px!important;white-space:nowrap!important;padding:6px 10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .config-notice){background:transparent!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-tabs button){border-left:0!important;border-right:0!important;border-top:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .account-table .control-manage-trigger){min-width:70px!important;white-space:nowrap!important;gap:6px!important;}
+@media(min-width:768px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar){display:grid!important;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)!important;align-items:end!important;gap:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-filter-group){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:auto!important;min-width:0!important;gap:10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter){display:grid!important;grid-template-columns:minmax(0,1fr)!important;min-width:0!important;gap:6px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter-label){display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter-field){width:100%!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter-trigger){width:100%!important;min-width:0!important;height:48px!important;padding:0 10px!important;gap:6px!important;font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter-trigger>span){font-size:12px!important;white-space:normal!important;text-overflow:clip!important;overflow:visible!important;line-height:1.3!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar .control-filter-trigger>svg:first-child){display:none!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar [data-admin-search] input){font-size:12px!important;}
+}
+@media(min-width:768px) and (max-width:1279px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar){grid-template-columns:minmax(0,1fr)!important;}
 }
 `}</style>
  </div>
