@@ -308,7 +308,7 @@ function UsuariosConteudo() {
           </header>
           <section className="users-profile-card" aria-label="Perfil do usuário">
             <div className="users-avatar">{iniciaisUsuario(selected.nome)}</div>
-            <div className="users-profile-identity"><h3>{selected.nome}</h3><div className="users-profile-badges"><TipoBadge tipo={selected.tipo} /><StatusBadge status={selected.status_conta} hideActiveIcon /></div></div>
+            <div className="users-profile-identity"><h3>{selected.nome}</h3><div className="users-profile-badges"><TipoBadge tipo={selected.tipo} /><StatusBadge status={selected.status_conta} /></div></div>
           </section>
           <dl className="users-profile-data">
             <div><Mail size={22} strokeWidth={1.7} /><div><dt>E-mail</dt><dd>{selected.email}</dd></div></div>
