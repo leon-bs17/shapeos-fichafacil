@@ -1294,6 +1294,20 @@ export default function AdminAprovacoesPage() {
 
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management .approval-export),
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management .approval-export svg){color:var(--approval-refined-brand)!important;-webkit-text-fill-color:var(--approval-refined-brand)!important;}
+
+/* Shared selector foregrounds across the two management pages. */
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger>span){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger>svg){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option:not([aria-selected="true"])){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option:not([aria-selected="true"])>span){color:#162623!important;-webkit-text-fill-color:#162623!important;}
+:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option[aria-selected="true"]),:global(html.light body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option[aria-selected="true"]>span){color:#129b89!important;-webkit-text-fill-color:#129b89!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger>span){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger>svg){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option:not([aria-selected="true"])){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option:not([aria-selected="true"])>span){color:#f5faf9!important;-webkit-text-fill-color:#f5faf9!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option[aria-selected="true"]),:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-option[aria-selected="true"]>span){color:#00e9df!important;-webkit-text-fill-color:#00e9df!important;}
 `}</style>
     </div>
   )
