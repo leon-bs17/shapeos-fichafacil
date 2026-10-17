@@ -1134,6 +1134,27 @@ export default function AdminAprovacoesPage() {
   color:#f5faf9!important;
   -webkit-text-fill-color:#f5faf9!important;
 }
+
+/* Dark table text follows the supplied reference across every column. */
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]),
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]>span) {
+ color:#a3becd!important;
+ -webkit-text-fill-color:#a3becd!important;
+}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]>p),
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]>div:first-child>div:last-child>p:not(.approval-person-name)),
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]>span) {
+ color:#a3becd!important;
+ -webkit-text-fill-color:#a3becd!important;
+}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] .approval-person-name),
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] [data-admin-view]) {
+ color:#f5faf9!important;
+ -webkit-text-fill-color:#f5faf9!important;
+}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] [data-admin-view] svg) {
+ color:#00e9df!important;
+}
 `}</style>
     </div>
   )
