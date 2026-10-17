@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Check, ChevronDown, ChevronUp, Clock3, BarChart3, CalendarDays, Download, Dumbbell, FileText, GraduationCap, RefreshCw, UserCheck, Users } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Clock3, BarChart3, CalendarDays, Download, Dumbbell, FileCheck2, FileText, GraduationCap, RefreshCw, UserCheck, Users } from 'lucide-react'
 type Usuario = {
   id: string
   nome: string
@@ -161,16 +161,18 @@ export default function AdminRelatoriosPage() {
           {Array.from({length:14},(_,i)=><ellipse key={'o'+i} cx="265" cy="160" rx="202" ry={25+i*6} transform="rotate(-28 265 160)" />)}
         </g></svg>
       </section>
-      <section className="toolbar" aria-label="Período e exportação">
-        <span>Período</span><ReportPeriod value={dias} onChange={setDias} />
-        <span className="date-range"><CalendarDays size={17} />{dataLabel(inicio)} – {dataLabel(fim)}</span>
-        <button className="update" disabled={isFetching} onClick={()=>refetch()}><RefreshCw size={16} className={isFetching?'animate-spin':''} />Atualizar</button>
-        <button className="export" onClick={exportarResumo}><Download size={16} /><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
-      </section>
       <div className="metrics">{grupos.map(g=>{
         const atual=contar(g.datas,inicio,fim), anterior=contar(g.datas,inicioAnterior,inicio)
         return <section className="metric" key={g.label}><span data-admin-metric-icon aria-hidden="true"><g.Icon size={24} strokeWidth={1.75} /></span><div><p>{g.label}</p><strong>{g.valor}</strong><span className="metric-note">{atual} no período · {variacao(atual,anterior)}</span></div></section>
       })}</div>
+      <section className="reports-analysis" aria-labelledby="reports-analysis-title">
+        <h2 id="reports-analysis-title" className="reports-analysis-title"><BarChart3 size={19} aria-hidden="true"/>Visão dos resultados</h2>
+      <section className="toolbar" aria-label="Período e exportação">
+        <ReportPeriod value={dias} onChange={setDias} />
+        <span className="date-range"><CalendarDays size={17} />{dataLabel(inicio)} – {dataLabel(fim)}</span>
+        <button className="update" disabled={isFetching} onClick={()=>refetch()}><RefreshCw size={16} className={isFetching?'animate-spin':''} />Atualizar</button>
+        <button className="export" onClick={exportarResumo}><FileCheck2 size={16} aria-hidden="true"/><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
+      </section>
       <div className="charts">
         <section className="panel evolution"><h2><BarChart3 size={19} />Evolução dos cadastros</h2><p className="chart-note">Total acumulado de usuários cadastrados</p>
           <svg className="line-chart desktop-chart" viewBox="0 0 760 250" role="img" aria-label={`Cadastros acumulados: ${pontos[0].valor} no início e ${pontos[6].valor} no final do período`}>
@@ -194,6 +196,7 @@ export default function AdminRelatoriosPage() {
       <section className="panel summary"><h2><FileText size={19} />Resumo do período</h2><div className="table-scroll"><table><thead><tr><th>Indicador</th><th>Atual</th><th>Período anterior</th><th>Variação</th></tr></thead><tbody>{resumo.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.atual}</td><td>{r.anterior}</td><td><span className={r.atual<r.anterior?'change down':'change'}>{variacao(r.atual,r.anterior)}</span></td></tr>)}</tbody></table></div>
         <div className="mobile-summary">{resumo.map(r=><article key={r.label}><h3>{r.label}</h3><dl><div><dt>Atual</dt><dd>{r.atual}</dd></div><div><dt>Anterior</dt><dd>{r.anterior}</dd></div><div><dt>Variação</dt><dd className={r.atual<r.anterior?'negative':''}>{variacao(r.atual,r.anterior)}</dd></div></dl></article>)}</div>
         <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
+      </section>
       </section>
       <style jsx>{`
         .reports-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:16px; padding-bottom:24px; }
@@ -433,6 +436,31 @@ export default function AdminRelatoriosPage() {
 :global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .donut){width:112px!important;height:112px!important;padding:19px!important;}
 :global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer){justify-content:center!important;text-align:center!important;}
 :global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .summary-footer button){min-height:44px!important;}
+}
+
+/* Approved unified analytical workspace. */
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric>div){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:3px!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric strong){grid-row:1!important;margin:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric p){grid-row:2!important;margin:0!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .metric-note){grid-row:3!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis){display:grid!important;gap:16px!important;padding:18px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:var(--surface)!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis-title){display:flex!important;align-items:center!important;gap:10px!important;font-size:15px!important;font-weight:600!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis-title svg){color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .toolbar){padding:0 0 14px!important;border:0!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .panel){padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .charts){align-items:stretch!important;gap:20px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .profile){padding-left:20px!important;border-left:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .profile-body){min-height:220px!important;margin-top:12px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .summary){padding-top:16px!important;border-top:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .table-scroll){border:0!important;border-radius:0!important;margin-top:10px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis th){background:transparent!important;padding:10px 12px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis td){padding:10px 12px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .summary-footer){padding-top:12px!important;border-top:1px solid var(--border)!important;margin-top:0!important;}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis){padding:14px!important;gap:14px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .toolbar){grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .charts){gap:16px!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .profile){padding:16px 0 0!important;border-left:0!important;border-top:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/relatorios"] :is(#reports-refined,[data-reports-refined]) .reports-analysis .profile-body){min-height:170px!important;}
 }
 `}</style>
     </div>
