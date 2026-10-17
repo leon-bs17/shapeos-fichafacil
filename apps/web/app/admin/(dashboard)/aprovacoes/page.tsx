@@ -1291,6 +1291,9 @@ export default function AdminAprovacoesPage() {
 @media(max-width:767px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty){min-height:180px!important;padding:22px 14px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-empty button){min-height:44px!important;}
 }
+
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management .approval-export),
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management .approval-export svg){color:var(--approval-refined-brand)!important;-webkit-text-fill-color:var(--approval-refined-brand)!important;}
 `}</style>
     </div>
   )
