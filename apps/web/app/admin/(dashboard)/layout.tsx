@@ -53,6 +53,7 @@ const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const central = pathname === '/admin' || pathname === '/admin/controle'
   useEffect(() => {
     if (pathname !== '/admin/auditoria' && pathname !== '/admin/usuarios') return
     const html = document.documentElement
@@ -213,7 +214,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="admin-mobile-bar">
         <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
         <Logo size="sm"/>
-        {pathname !== '/admin/mys' && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
+        {pathname !== '/admin/mys' && !central && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
       </div>
       <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
         onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
@@ -223,11 +224,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          {pathname !== '/admin/mys' && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          {pathname !== '/admin/mys' && !central && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
           </div>}
+
+          {central && <header className="control-compact-top">
+            <div className="control-compact-identity">
+              <span className="control-compact-icon" aria-hidden="true"><LayoutGrid size={22} strokeWidth={1.75}/></span>
+              <div><h1>Central de controle</h1><p>Acompanhe a plataforma e gerencie sua operação.</p></div>
+            </div>
+            <div className="control-compact-tools"><NotificationBell/><ThemeToggle/></div>
+          </header>}
 
           {pathname === '/admin/aprovacoes' ? (
             <div className="mb-6 flex items-center gap-3">
@@ -730,6 +739,31 @@ html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route
 html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] [data-admin-metric-icon][data-metric-tone="warning"] { --metric-icon-color:#ffd52d; }
 html.dark body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] [data-admin-metric-icon][data-metric-tone="danger"] { --metric-icon-color:#ff8f9b; }
 html:is(.light,.dark) body [data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] [data-admin-metric-icon] svg { width:24px!important;height:24px!important;min-width:24px!important;stroke-width:1.75!important;color:var(--metric-icon-color)!important;flex-shrink:0!important; }
+
+/* Central and Mys share a compact title-and-tools hierarchy. */
+.control-compact-top { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:64px; padding:0 0 12px; margin-bottom:20px; border-bottom:1px solid #d7ded3; }
+html.dark .control-compact-top { border-bottom-color:#1c4037; }
+.control-compact-identity { display:flex; align-items:center; gap:10px; min-width:0; }
+.control-compact-icon { display:grid; place-items:center; flex:0 0 36px; width:36px; height:36px; border:1px solid #d7ded3; border-radius:11px; color:#129b89; }
+html.dark .control-compact-icon { color:#00e9df; border-color:#1c4037; }
+.control-compact-identity h1 { margin:0; font-size:20px; line-height:1.3; font-weight:650; letter-spacing:-.03em; color:#162623; }
+.control-compact-identity p { margin:3px 0 0; font-size:11px; line-height:1.4; color:#5f6f68; }
+html.dark .control-compact-identity h1 { color:#f5faf9; }
+html.dark .control-compact-identity p { color:#a3becd; }
+.control-compact-tools { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.control-compact-tools [data-shapeos-theme-inline] { margin-left:6px; }
+.control-compact-tools [data-shapeos-theme-inline]::before { display:none; }
+@media(min-width:768px) {
+ .control-compact-tools>button,.control-compact-tools [data-shapeos-theme-inline],.control-compact-tools [data-shapeos-theme-inline] button { width:36px; height:36px; min-width:36px; min-height:36px; flex-basis:36px; }
+}
+@media(max-width:767px) {
+ .control-compact-top { gap:10px; margin-bottom:16px; }
+ .control-compact-identity h1 { font-size:18px; }
+ .control-compact-identity p { font-size:10px; max-width:240px; }
+ .control-compact-tools { gap:2px; }
+ .control-compact-tools [data-shapeos-theme-inline] { margin-left:0; }
+ .control-compact-icon { display:none; }
+}
 `}</style>
     </div>
   )
