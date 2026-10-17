@@ -493,7 +493,7 @@ export default function AdminAprovacoesPage() {
 
                   <div>
                     <span data-approval-status={personal.status_conta} className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
-                      <span className="approval-status-dot" aria-hidden="true"/>
+                      {personal.status_conta === 'ATIVO' ? <CheckCircle2 size={14} strokeWidth={1.8} aria-hidden="true"/> : <span className="approval-status-dot" aria-hidden="true"/>}
                       {status.label}
                     </span>
                   </div>
