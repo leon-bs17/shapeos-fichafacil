@@ -90,8 +90,8 @@ export default function AdminSistemaPage() {
   const icons = [LockKeyhole, Database, Dumbbell, FileText, Bell]
   const hora = (v: string) => new Date(v).toLocaleTimeString('pt-BR', {timeZone:'America/Fortaleza'})
   return (
-    <div className="system-workspace">
-      <section className="hero"><div className="hero-copy"><p className="eyebrow">Operação</p><h1>Sistema e <span>serviços</span></h1><p>Acompanhe os diagnósticos dos serviços usados pelo painel administrativo.</p></div>
+    <div data-system-refined className="system-workspace">
+      <section className="hero"><div className="hero-copy"><p className="eyebrow">Operação</p><h2 className="system-banner-title">Sistema e <span>serviços</span></h2><p>Acompanhe os diagnósticos dos serviços usados pelo painel administrativo.</p></div>
         <svg className="wireframe" viewBox="0 0 520 300" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth=".7">
           {Array.from({length:12},(_,i)=><g key={'grid'+i} opacity=".25"><path d={`M ${i*46-90} 300 l 430 -245 M ${i*46} 45 l 430 245`}/></g>)}
           {[{x:230,y:80,w:70,h:100},{x:310,y:55,w:85,h:110},{x:150,y:115,w:76,h:85},{x:280,y:155,w:70,h:90},{x:380,y:132,w:70,h:82},{x:218,y:205,w:60,h:70}].map((c,i)=><g key={i}>
@@ -100,6 +100,7 @@ export default function AdminSistemaPage() {
           </g>)}
         </g></svg>
       </section>
+      <section className="system-diagnostics" aria-labelledby="system-diagnostics-title"><h2 id="system-diagnostics-title" className="system-diagnostics-title">Diagnóstico dos serviços</h2>
       {error ? <div className="error" role="alert">Leitura do diagnóstico indisponível. <button type="button" disabled={isFetching} onClick={()=>refetch()}>{isFetching ? 'Verificando...' : 'Tentar novamente'}</button></div> : isLoading || !data ? <div className="h-64 rounded-3xl skeleton" role="status" aria-label="Verificando serviços"/> : <>
         <section className={data.saudavel?'status-bar':'status-bar failure'} aria-live="polite">
           <div className="status-copy">{data.saudavel?<CheckCircle2 size={43} strokeWidth={1.6}/>:<XCircle size={43} strokeWidth={1.6}/>}<div><h2>{data.saudavel?'Serviços operacionais':'Há serviços com falha'}</h2><p>Última verificação: {hora(data.verificadoEm)}</p></div></div>
@@ -112,6 +113,7 @@ export default function AdminSistemaPage() {
         </section>})}<section className="service scope"><Info size={29} strokeWidth={1.6}/><h3>Escopo do diagnóstico</h3><p>Consulta de sessão e leitura dos dados administrativos.</p></section></div>
         <section className="validation"><div className="validation-intro"><div className="validation-icon"><ListChecks size={30}/></div><div><h2>O que esta tela verifica</h2><p>Disponibilidade de acesso aos serviços usados pelo painel administrativo.</p></div></div><ul>{['Sessão administrativa','Leitura das tabelas principais','Disponibilidade da auditoria','Consulta de notificações'].map(label=><li key={label}><CheckCircle2 size={18}/>{label}</li>)}</ul></section>
       </>}
+      </section>
       <style jsx>{`
         .system-workspace { --surface:#fcfdf9; --border:#d7ded3; --text:#162623; --muted:#5f6f68; --accent:#129b89; display:grid; gap:18px; padding-bottom:24px; min-width:0; }
         :global(.dark) .system-workspace { --surface:#071b17; --border:#1a4439; --text:#f5f9f7; --muted:#a6c2cc; --accent:#00e9df; }
@@ -167,7 +169,56 @@ export default function AdminSistemaPage() {
           :global(html:is(.light,.dark) [data-admin-route="/admin/sistema"] [data-admin-content] .system-workspace.system-workspace .validation-intro) { min-width:0; gap:14px; }
         }
 
-      `}</style>
+      
+/* Refined system diagnostics, preserving all live checks. */
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined])){display:grid!important;gap:18px!important;--surface:#fcfdf9;--border:#d7ded3;--text:#162623;--muted:#5f6f68;--accent:#129b89;}
+:global(html.dark body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined])){--surface:#091c18;--border:#1c4037;--text:#f5faf9;--muted:#a3becd;--accent:#00e9df;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .hero){min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-banner-title){display:block!important;font-size:28px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:-.035em!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-banner-title span){display:inline!important;color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .eyebrow){font-size:9px!important;border:0!important;padding:0!important;border-radius:0!important;margin-bottom:8px!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .hero-copy>p:last-child){font-size:13px!important;margin-top:8px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .wireframe){width:340px!important;height:200px!important;right:0!important;top:50%!important;transform:translateY(-50%)!important;opacity:.35!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-diagnostics){display:grid!important;gap:16px!important;padding:18px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:var(--surface)!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-diagnostics-title){font-size:15px!important;font-weight:600!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-bar){padding:0 0 16px!important;border:0!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;background:transparent!important;gap:14px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-copy){gap:12px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-copy>svg){width:34px!important;height:34px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-copy h2){font-size:14px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-copy p){font-size:11px!important;margin-top:4px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .latency){padding:7px 10px!important;font-size:10px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .verify){height:40px!important;min-height:40px!important;padding:0 12px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .services){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service){padding:16px!important;border-radius:13px!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service header){margin-bottom:12px!important;gap:8px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service header>svg,.scope>svg){width:24px!important;height:24px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service h3){font-size:13px!important;font-weight:600!important;margin-bottom:6px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service p){font-size:11px!important;line-height:1.6!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .badge){font-size:10px!important;padding:5px 9px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .service footer){font-size:10px!important;margin-top:12px!important;padding-top:10px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation){padding:16px 0 0!important;border:0!important;border-top:1px solid var(--border)!important;border-radius:0!important;background:transparent!important;gap:20px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation-intro){gap:12px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation-icon){width:40px!important;height:40px!important;border:0!important;background:color-mix(in srgb,var(--accent) 7%,transparent)!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation-icon svg){width:22px!important;height:22px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation h2){font-size:13px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation p,.validation li){font-size:10px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation ul){gap:12px!important;padding-left:20px!important;}
+@media(min-width:768px) and (max-width:1050px){:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .services){grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .hero){min-height:150px!important;padding:22px 18px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .hero-copy){max-width:100%!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-banner-title){font-size:26px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .wireframe){right:-180px!important;opacity:.15!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .system-diagnostics){padding:14px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .services){grid-template-columns:minmax(0,1fr)!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-bar){display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:12px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .status-copy){grid-column:1 / -1!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .verify){height:44px!important;min-height:44px!important;width:auto!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .latency){font-size:10px!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation){align-items:stretch!important;}
+:global(html body [data-admin-route="/admin/sistema"] :is(#system-refined,[data-system-refined]) .validation ul){padding:14px 0 0!important;grid-template-columns:1fr!important;}
+}
+`}</style>
     </div>
   )
 }
