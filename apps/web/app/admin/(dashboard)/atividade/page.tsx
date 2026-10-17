@@ -166,11 +166,10 @@ export default function AdminAtividadePage() {
         <section className="events">
           <div className="table-scroll">
             <table>
-              <thead><tr><th>Usuário / referência</th><th>Ação</th><th>Data e hora</th><th>Status</th><th>Detalhes</th></tr></thead>
+              <thead><tr><th>Usuário / referência</th><th>Data e hora</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>{eventos.slice(inicio,inicio+POR_PAGINA).map(e => (
                 <tr key={e.id}>
-                  <td><div className="identity"><span className="avatar">{iniciais(e.descricao)}</span><span title={e.descricao}><span>{e.descricao.split(' · ')[0]}</span><small className="event-profile">{e.tipo === 'admin' ? 'Administração' : /personal/i.test(e.titulo) ? 'Personal' : /aluno/i.test(e.titulo) ? 'Aluno' : /admin/i.test(e.titulo) ? 'Admin' : 'Usuário'}</small></span></div></td>
-                  <td><div className="action">{e.tipo === 'cadastro' ? <UserPlus size={19} /> : <ShieldCheck size={19} />}<span>{e.titulo.toLowerCase()}</span></div></td>
+                  <td><div className="identity"><span className="avatar">{iniciais(e.descricao)}</span><span title={e.descricao}><span>{e.descricao.split(' · ')[0]}</span><span className="action event-identity-action">{e.tipo === 'cadastro' ? <UserPlus size={14} /> : <ShieldCheck size={14} />}<span>{e.titulo.toLowerCase()}</span></span></span></div></td>
                   <td className="date">{formatarData(e.data)}</td>
                   <td><span className="status"><CircleCheck size={15} aria-hidden="true" />Registrado</span></td>
                   <td><button data-admin-view className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={16} aria-hidden="true" /><span>Ver</span></button></td>
@@ -610,6 +609,23 @@ export default function AdminAtividadePage() {
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-badge){grid-column:2!important;grid-row:2!important;justify-self:start!important;}
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-metadata){grid-template-columns:1fr!important;}
 :global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .details-footer button){width:100%!important;}
+}
+
+/* Group event reference and action while preserving compact mobile cards. */
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .event-identity-action){display:flex!important;align-items:center!important;gap:6px!important;margin-top:4px!important;font-size:11px!important;line-height:1.5!important;color:var(--muted)!important;font-weight:400!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .event-identity-action svg){width:14px!important;height:14px!important;flex-shrink:0!important;color:var(--accent)!important;}
+@media(min-width:768px){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events th:nth-child(1)){width:50%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events th:nth-child(2)){width:24%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events th:nth-child(3)){width:15%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events th:nth-child(4)){width:11%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events table){min-width:0!important;width:100%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(4)){text-align:center!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(1)){grid-column:1 / -1!important;grid-row:1!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(2)){grid-column:1 / -1!important;grid-row:2!important;padding-left:42px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(3)){grid-column:1 / -1!important;grid-row:3!important;padding-left:42px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(4)){grid-column:1 / -1!important;grid-row:4!important;padding-left:0!important;align-self:stretch!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events td:nth-child(4) .detail){width:100%!important;}
 }
 `}</style>
     </div>
