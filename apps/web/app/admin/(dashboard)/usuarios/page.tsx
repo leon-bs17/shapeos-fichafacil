@@ -261,17 +261,15 @@ function UsuariosConteudo() {
               <table className="users-table w-full text-sm">
                 <caption className="sr-only">Usuários da plataforma e ações de acesso</caption>
                 <thead><tr>
-                  {['Nome', 'E-mail', 'Tipo', 'Data do cadastro', 'Status', 'Ações'].map((label) => <th key={label} scope="col">{label}</th>)}
+                  {['Usuário', 'Data do cadastro', 'Status', 'Ações'].map((label) => <th key={label} scope="col">{label}</th>)}
                 </tr></thead>
                 <tbody>
                   {linhas?.map((u) => (
                     <tr key={u.id}>
                       <td data-label="Nome"><div className="flex items-center gap-3">
                         <div className="users-avatar">{iniciaisUsuario(u.nome)}</div>
-                        <div className="users-card-identity"><p className="font-semibold">{u.nome}</p><div className="users-mobile-role"><TipoBadge tipo={u.tipo} /></div></div>
+                        <div className="users-card-identity"><div className="users-name-profile"><p className="font-semibold">{u.nome}</p><TipoBadge tipo={u.tipo} /></div><span className="users-email">{u.email}</span></div>
                       </div></td>
-                      <td data-label="E-mail"><span className="users-email">{u.email}</span></td>
-                      <td data-label="Tipo"><TipoBadge tipo={u.tipo} /></td>
                       <td data-label="Data do cadastro"><span className="users-date">{formatarData(u.criado_em)}</span></td>
                       <td data-label="Status"><StatusBadge status={u.status_conta} /></td>
                       <td data-label="Ações"><button type="button" className="users-view" aria-label={`Ver detalhes de ${u.nome}`} onClick={() => {
@@ -755,6 +753,25 @@ html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-re
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-management{padding:14px!important;}
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-view{min-height:44px!important;height:44px!important;}
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
+}
+
+/* Group identity, profile and email in a single column. */
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-name-profile{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:6px 10px!important;min-width:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-name-profile p{font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-card-identity{min-width:0!important;flex-shrink:1!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-card-identity .users-email{display:block!important;margin-top:3px!important;font-size:11px!important;line-height:1.5!important;white-space:normal!important;overflow-wrap:anywhere!important;color:var(--users-muted)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-name-profile .users-type-badge{font-size:9px!important;padding:3px 7px!important;min-height:0!important;}
+@media(min-width:768px){html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table{width:100%!important;min-width:0!important;table-layout:fixed!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table th:nth-child(1){width:52%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table th:nth-child(2){width:22%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table th:nth-child(3){width:14%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table th:nth-child(4){width:12%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Nome"]>div{min-width:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Nome"]>div>.users-avatar{flex-shrink:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Ações"] .users-view{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:64px!important;gap:6px!important;}
+}
+@media(max-width:767px){html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Nome"]{grid-column:1 / -1!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Data do cadastro"],.users-table td[data-label="Status"],.users-table td[data-label="Ações"]{display:block!important;}
 }
 `}</style>
     </div>
