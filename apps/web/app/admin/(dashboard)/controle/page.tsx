@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, ShieldCheck, Info, Download, Search, Users, UserRound, Link2, Dumbbell, Eye, Pencil, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
+import { Shield, ShieldCheck, Info, FileCheck2, Search, Users, UserRound, Link2, Dumbbell, Eye, Pencil, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
@@ -284,7 +284,7 @@ export default function ControlPage() {
   <div className="control-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">{metrics.map(({label, value, icon: Icon}) => <div key={label} className="control-metric flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card/60 p-4 sm:gap-4 sm:p-5"><span data-admin-metric-icon aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={27} strokeWidth={1.6}/></span><div className="min-w-0"><p className="text-xs text-muted-foreground sm:text-sm">{label}</p><p className="mt-1 text-2xl font-semibold tabular-nums">{value ?? '—'}</p></div></div>)}</div>
   <div className="control-body">
    <section className="control-main-panel" aria-label="Gestão da plataforma">
-    <div className="control-panel-heading"><h2>{tab}</h2><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><Download className="mr-2 inline" size={16}/><span className="control-export-label">Exportar dados carregados</span></button></div></div>
+    <div className="control-panel-heading"><h2>{tab}</h2><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><FileCheck2 className="mr-2 inline" size={16} aria-hidden="true"/><span className="control-export-label">Exportar dados carregados</span></button></div></div>
   <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setPage(1);  }}>{t}</button>)}</nav>
   {tab !== 'Configurações' && <div className="control-toolbar flex flex-col gap-3 lg:flex-row lg:items-center">
    <label data-admin-search className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input className={`${input} min-h-11 pl-10`} aria-label="Buscar registros" placeholder={tab === 'Vínculos' ? 'Buscar aluno ou personal' : tab === 'Treinos' ? 'Buscar treino, aluno ou personal' : 'Buscar por nome, e-mail ou título'} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}/></label>
