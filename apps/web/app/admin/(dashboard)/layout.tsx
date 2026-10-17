@@ -213,7 +213,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="admin-mobile-bar">
         <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
         <Logo size="sm"/>
-        <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>
+        {pathname !== '/admin/mys' && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
       </div>
       <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
         onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
@@ -223,11 +223,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          {pathname !== '/admin/mys' && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
-          </div>
+          </div>}
 
           {pathname === '/admin/aprovacoes' ? (
             <div className="mb-6 flex items-center gap-3">
