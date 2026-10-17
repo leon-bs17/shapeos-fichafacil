@@ -24,7 +24,11 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
     html.setAttribute('data-shapeos-theme-changing', '')
     // Commit the transition lock before next-themes changes the palette.
     window.getComputedStyle(html).transitionDuration
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+    const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
+    html.classList.remove('light', 'dark')
+    html.classList.add(nextTheme)
+    html.style.colorScheme = nextTheme
+    setTheme(nextTheme)
     themeFrame.current = requestAnimationFrame(() => {
       themeFrame.current = requestAnimationFrame(() => {
         html.removeAttribute('data-shapeos-theme-changing')
@@ -43,6 +47,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
     >
       <button
         type="button"
+        data-shapeos-theme-switch
         className={s.button}
         disabled={!mounted}
         onClick={changeTheme}
