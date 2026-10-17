@@ -773,6 +773,11 @@ html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-re
 @media(max-width:767px){html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Nome"]{grid-column:1 / -1!important;}
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td[data-label="Data do cadastro"],.users-table td[data-label="Status"],.users-table td[data-label="Ações"]{display:block!important;}
 }
+
+/* Keep the profile avatar circular independently of legacy sizing and flex rules. */
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details .users-profile-card>.users-avatar{
+display:grid!important;place-items:center!important;box-sizing:border-box!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1 / 1!important;border-radius:50%!important;padding:0!important;line-height:1!important;align-self:center!important;transform:none!important;scale:none!important;
+}
 `}</style>
     </div>
   )
