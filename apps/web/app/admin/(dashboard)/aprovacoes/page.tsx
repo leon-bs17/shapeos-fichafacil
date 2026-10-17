@@ -455,8 +455,7 @@ export default function AdminAprovacoesPage() {
       ) : (
         <section data-approvals-table className="rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
           <div data-approvals-columns className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1.6fr)_180px_140px_235px] gap-4 rounded-t-[24px] border-b border-slate-100 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#536a9c] md:grid dark:border-white/10 dark:bg-white/[0.025] dark:text-slate-500">
-            <span>Nome</span>
-            <span>E-mail</span>
+            <span>Profissional</span>
             <span>Data do cadastro</span>
             <span>Status</span>
             <span className="text-center">Ações</span>
@@ -474,18 +473,16 @@ export default function AdminAprovacoesPage() {
                     <div data-approvals-avatar className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,#6f86b6,#4f678f)] text-[12px] font-semibold text-white shadow-[0_5px_12px_rgba(64,82,122,0.16)] ring-1 ring-[#5f74a3]/15 dark:bg-[linear-gradient(145deg,#5974a7,#344966)] dark:ring-white/10">
                       {iniciais(personal.nome, personal.email)}
                     </div>
-                    <div className="min-w-0">
-                      <p className="approval-person-name truncate text-[13px] font-semibold text-[#0d2148] dark:text-white">
-                        {personal.nome?.trim() || 'Personal sem nome'}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">Personal</p>
+                    <div className="approval-person-copy min-w-0">
+                      <div className="approval-person-title">
+                        <p className="approval-person-name text-[13px] font-semibold">
+                          {personal.nome?.trim() || 'Personal sem nome'}
+                        </p>
+                        <span className="approval-person-role">Personal</span>
+                      </div>
+                      <p className="approval-person-email">{personal.email}</p>
                     </div>
                   </div>
-
-                  <p className="flex min-w-0 items-center gap-1.5 truncate text-[12px] font-medium text-[#6076a3] dark:text-slate-400">
-                    <Mail className="h-3.5 w-3.5 shrink-0 md:hidden" strokeWidth={1.7} />
-                    {personal.email}
-                  </p>
 
                   <p className="text-[12px] font-medium text-[#6076a3] dark:text-slate-400">
                     {new Date(personal.criado_em).toLocaleDateString('pt-BR')}
@@ -1230,6 +1227,24 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){width:100%!important;height:44px!important;min-height:44px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:16px 12px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
+}
+
+/* Approved compact identity: name, role and email grouped together. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-copy){min-width:0!important;display:grid!important;gap:4px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-title){display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:6px 10px!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-role){display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;white-space:nowrap!important;padding:2px 7px!important;border:1px solid var(--approval-refined-line)!important;border-radius:6px!important;font-size:10px!important;line-height:1.5!important;font-weight:400!important;color:var(--approval-refined-muted)!important;background:color-mix(in srgb,var(--approval-refined-muted) 8%,transparent)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-email){font-size:12px!important;line-height:1.5!important;font-weight:400!important;color:var(--approval-refined-muted)!important;-webkit-text-fill-color:var(--approval-refined-muted)!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:40px!important;height:40px!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){background:transparent!important;}
+@media(min-width:768px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){grid-template-columns:minmax(0,1fr) 170px 128px 90px!important;gap:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){grid-template-columns:minmax(0,1fr) 170px 128px 90px!important;gap:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){min-height:76px!important;}
+}
+@media(min-width:768px) and (max-width:1050px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){grid-template-columns:minmax(0,1fr) 130px 110px 76px!important;gap:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){grid-template-columns:minmax(0,1fr) 130px 110px 76px!important;gap:12px!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-title){gap:5px 8px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-email){font-size:11px!important;}
 }
 `}</style>
     </div>
