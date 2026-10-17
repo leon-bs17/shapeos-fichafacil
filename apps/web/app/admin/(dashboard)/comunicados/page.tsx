@@ -444,6 +444,15 @@ html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-not
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-modal-heading h2{font-size:19px!important;}
 }
+
+/* Banner heading is flowing text; do not inherit flex section-heading rules. */
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy .notice-banner-title{display:block!important;width:auto!important;max-width:100%!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy .notice-banner-title>span{display:inline!important;position:static!important;white-space:normal!important;}
+@media(max-width:767px){
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy{width:100%!important;min-width:0!important;max-width:100%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy .notice-banner-title{font-size:26px!important;line-height:1.2!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy>p:last-child{max-width:100%!important;overflow-wrap:break-word!important;}
+}
 `}</style>
   </div>
 }
