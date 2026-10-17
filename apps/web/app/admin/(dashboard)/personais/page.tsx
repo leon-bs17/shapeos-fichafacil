@@ -575,6 +575,9 @@ html body :is(#personals-refined,[data-personals-refined]) .personal-student-wor
 
 html body :is(#personals-refined,[data-personals-refined]) .personal-role{gap:6px!important;padding:3px 7px!important;border:0!important;border-radius:999px!important;font-size:9px!important;font-weight:500!important;line-height:1.5!important;color:hsl(var(--success))!important;background:hsl(var(--success) / .1)!important;}
 html body :is(#personals-refined,[data-personals-refined]) .personal-role svg{width:12px!important;height:12px!important;flex-shrink:0!important;}
+html body :is(#personals-refined,[data-personals-refined]) .personals-table-card{border:1px solid var(--personal-border)!important;border-radius:16px!important;margin:0 20px 20px!important;overflow:hidden!important;}
+@media(max-width:767px){html body :is(#personals-refined,[data-personals-refined]) .personals-table-card{margin:0 14px 14px!important;border-radius:13px!important;}html body :is(#personals-refined,[data-personals-refined]) .personals-table tbody{padding-top:14px!important;}}
+
 `}</style>
   </div>
 }
