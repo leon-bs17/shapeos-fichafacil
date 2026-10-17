@@ -493,7 +493,7 @@ export default function AdminAprovacoesPage() {
 
                   <div>
                     <span data-approval-status={personal.status_conta} className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
-                      {personal.status_conta === 'ATIVO' ? <CheckCircle2 size={14} strokeWidth={1.8} aria-hidden="true"/> : <span className="approval-status-dot" aria-hidden="true"/>}
+                      {personal.status_conta === 'ATIVO' ? <CheckCircle2 size={14} strokeWidth={1.8} aria-hidden="true"/> : personal.status_conta === 'PENDENTE' ? <Clock3 size={14} strokeWidth={1.8} aria-hidden="true"/> : <Ban size={14} strokeWidth={1.8} aria-hidden="true"/>}
                       {status.label}
                     </span>
                   </div>
@@ -637,7 +637,7 @@ export default function AdminAprovacoesPage() {
         :global(.dark .approvals-workspace [data-approval-status="ATIVO"]) { border-color:#006958!important; background:#032b24!important; color:#00efdf!important; }
         :global(.approvals-workspace [data-approval-review]) { height:38px!important; border-radius:11px!important; }
         :global(.approvals-workspace [data-approvals-pagination] button:first-child),
-        :global(.approvals-workspace [data-approvals-pagination] button:last-child) { display:none; }
+        :global(.approvals-workspace [data-approvals-pagination] > button[aria-label="Última página"]) { display:none; }
         :global(.approvals-workspace [data-approvals-pagination] [aria-current]) { color:var(--approval-accent)!important; background:transparent!important; border:1px solid var(--approval-accent); }
         :global(.approvals-workspace button:focus-visible),
         :global(.approvals-workspace select:focus-visible) { outline:2px solid var(--approval-accent); outline-offset:3px; }
@@ -1186,6 +1186,32 @@ export default function AdminAprovacoesPage() {
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-heading h2){font-size:20px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-person){grid-template-columns:48px minmax(0,1fr)!important;gap:10px 12px!important;}
 :global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-profile-status){grid-column:2;justify-self:start;}
+}
+
+/* Original bordered table structure within the compact page. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-table]){border:1px solid var(--approval-refined-line)!important;border-radius:20px!important;background:var(--approval-refined-bg)!important;overflow:hidden!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){padding:16px 22px!important;border-radius:0!important;border-bottom:1px solid var(--approval-refined-line)!important;background:transparent!important;font-size:11px!important;letter-spacing:.08em!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:10px 22px!important;min-height:72px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-table]>div:nth-child(2)>[data-approvals-row]+[data-approvals-row]){border-top:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:44px!important;height:44px!important;font-size:14px!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-person-name){font-size:13px!important;font-weight:650!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status]){min-height:34px!important;padding:7px 13px!important;border:0!important;border-radius:999px!important;font-size:12px!important;gap:8px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){height:44px!important;min-height:44px!important;min-width:96px!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;padding:20px 22px!important;border-top:1px solid var(--approval-refined-line)!important;border-radius:0!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]){display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-page-item){display:inline-flex!important;align-items:center!important;gap:8px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){display:inline-grid!important;place-items:center!important;visibility:visible!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;border:1px solid var(--approval-refined-line)!important;border-radius:13px!important;background:transparent!important;color:var(--approval-refined-ink)!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]>button:is([aria-label="Primeira página"],[aria-label="Última página"])){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button:disabled){opacity:.35!important;cursor:not-allowed!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-current="page"]){background:var(--approval-refined-brand)!important;border-color:var(--approval-refined-brand)!important;color:#fff!important;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button[aria-current="page"]){color:#002a26!important;}
+@media(any-hover:hover){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management [data-approvals-pagination] button[aria-current="page"]:hover){background:var(--approval-refined-brand)!important;border-color:var(--approval-refined-brand)!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-table]){border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){flex-direction:column!important;justify-content:center!important;text-align:center!important;padding:18px 12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination]){justify-content:center!important;gap:6px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-pagination] button){width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
 }
 `}</style>
     </div>
