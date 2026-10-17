@@ -192,10 +192,10 @@ function UsuariosConteudo() {
   }
 
   return (
-    <div className="users-workspace space-y-5">
+    <div data-users-refined className="users-workspace space-y-5">
       <header className="users-hero">
         <div className="users-hero-copy"><p className="eyebrow">Contas</p>
-        <h1>Gestão de <span>usuários</span></h1>
+        <h2 className="users-banner-title">Gestão de <span>usuários</span></h2>
         <p className="users-subtitle">
           Aprove cadastros de Personal, bloqueie acessos e acompanhe o estado das contas.
         </p></div>
@@ -209,6 +209,7 @@ function UsuariosConteudo() {
         <ContadorCard titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
       </div>
 
+      <section className="users-management" aria-label="Contas cadastradas"><h2 className="users-management-title">Contas cadastradas</h2>
       <section className="users-filters" aria-label="Busca e filtros de usuários">
         <div className="users-filter-toolbar">
           <div data-admin-search className="users-filter-search">
@@ -295,6 +296,7 @@ function UsuariosConteudo() {
         </Card>
       )}
 
+      </section>
       <dialog ref={dialogRef} className="users-details" aria-labelledby="users-details-title"
         onCancel={(event) => { event.preventDefault(); closeDetails() }}
         onClick={(event) => { if (event.target === event.currentTarget) {
@@ -698,6 +700,61 @@ html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-rout
 html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace .users-type-badge svg { flex-shrink:0!important; }
 @media(min-width:768px) {
   html body [data-admin-route="/admin/usuarios"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .users-workspace .users-table th:nth-child(3) { width:132px!important; }
+}
+
+/* Compact users management, preserving table data and account actions. */
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) {display:grid!important;gap:18px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) >*{margin-top:0!important;margin-bottom:0!important;min-width:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-hero{min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-banner-title{display:block!important;font-size:28px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:-.035em!important;color:var(--users-title)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-banner-title span{display:inline!important;color:var(--users-accent)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .eyebrow{font-size:9px!important;border:0!important;padding:0!important;margin-bottom:8px!important;background:transparent!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-subtitle{font-size:13px!important;margin-top:8px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-wireframe{width:300px!important;opacity:.32!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat:not(:last-child){border-right:1px solid var(--users-border)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat>div{padding:10px 16px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat p:first-child{font-size:24px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat p:last-child{font-size:11px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-management{display:grid!important;gap:14px!important;padding:18px!important;border:1px solid var(--users-border)!important;border-radius:13px!important;background:var(--users-surface)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-management-title{font-size:15px!important;font-weight:600!important;color:var(--users-title)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-filters{padding:0!important;border:0!important;background:transparent!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-filter-search{height:44px!important;min-height:44px!important;border-radius:13px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table-card{border-radius:13px!important;box-shadow:none!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table th{font-size:10px!important;padding:12px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table td{font-size:12px!important;padding:10px 12px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-avatar{width:34px!important;height:34px!important;min-width:34px!important;font-size:11px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-view{height:34px!important;min-height:34px!important;border-radius:13px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-view svg{color:var(--users-accent)!important;stroke:var(--users-accent)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-pagination{padding:14px 16px!important;font-size:11px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-pagination nav button{border-radius:13px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details{position:fixed!important;inset:0!important;margin:auto!important;width:min(520px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;height:fit-content!important;max-height:calc(100dvh - 32px)!important;min-height:0!important;overflow-y:auto!important;padding:24px!important;border-radius:18px!important;border:1px solid var(--users-border)!important;background:var(--users-surface)!important;transform:none!important;box-shadow:none!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details:not([open]){display:none!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details[open]{display:block!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details-heading{padding-bottom:18px!important;border-bottom:1px solid var(--users-border)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details-heading h2{font-size:21px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-detail-label{font-size:10px!important;color:var(--users-muted)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-card{margin:0!important;padding:18px 0!important;border:0!important;border-bottom:1px solid var(--users-border)!important;border-radius:0!important;background:transparent!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-card .users-avatar{width:44px!important;height:44px!important;min-width:44px!important;font-size:14px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-identity h3{font-size:16px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-data{margin:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-data>div{padding:14px 0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-data dt{font-size:11px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-profile-data dd{font-size:13px!important;line-height:1.6!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-access-panel{padding:16px 0!important;margin:0!important;border:0!important;border-top:1px solid var(--users-border)!important;border-radius:0!important;background:transparent!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-access-copy h3{font-size:13px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-access-copy p{font-size:11px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-detail-actions button{min-height:44px!important;border-radius:13px!important;font-size:11px!important;}
+@media(max-width:767px){html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-hero{min-height:150px!important;padding:22px 18px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-hero-copy{max-width:100%!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-banner-title{font-size:26px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat:nth-child(2){border-right:0!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-stat:nth-child(n+3){border-top:1px solid var(--users-border)!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-management{padding:14px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-view{min-height:44px!important;height:44px!important;}
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-details{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:18px!important;}
 }
 `}</style>
     </div>
