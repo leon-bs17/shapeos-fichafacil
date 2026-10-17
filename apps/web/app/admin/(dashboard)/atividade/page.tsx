@@ -120,11 +120,11 @@ export default function AdminAtividadePage() {
   const inicio = (atual - 1) * POR_PAGINA
 
   return (
-    <div className="activity-workspace">
+    <div data-activity-refined className="activity-workspace">
       <section className="activity-hero">
         <div className="hero-copy">
           <p className="eyebrow"><Activity size={15} /> Monitoramento</p>
-          <h1>Atividade da <span>plataforma</span></h1>
+          <h2 className="activity-banner-title">Atividade da <span>plataforma</span></h2>
           <p>Acompanhe cadastros e ações recentes em um só lugar.</p>
         </div>
         <svg className="wireframe" viewBox="0 0 520 320" aria-hidden="true">
@@ -148,6 +148,8 @@ export default function AdminAtividadePage() {
         ))}
       </div>
 
+      <section className="activity-management" aria-label="Atividades recentes">
+      <h2 className="activity-management-title">Atividades recentes</h2>
       <section className="toolbar" aria-label="Busca e filtros de atividade">
         <label data-admin-search className="search"><Search size={19} />
           <input aria-label="Buscar usuário ou ação" placeholder="Buscar usuário ou ação..." value={busca} onChange={e => setBusca(e.target.value)} />
@@ -187,6 +189,7 @@ export default function AdminAtividadePage() {
           </footer>
         </section>
       )}
+      </section>
       <p className="scope-note">Resumo dos últimos cadastros e registros administrativos disponíveis.</p>
       <dialog ref={detailsRef} className="activity-details" aria-labelledby="activity-details-title"
         onCancel={(event) => { event.preventDefault(); setSelecionado(null) }}
@@ -510,6 +513,70 @@ export default function AdminAtividadePage() {
 :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .details-icon svg) { width:24px!important;height:24px!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .details-summary h3) { grid-column:2!important;grid-row:1!important;font-size:16px!important;line-height:1.35!important;word-break:normal!important;overflow-wrap:normal!important; }
 :global(html:is(.light,.dark) body [data-admin-route="/admin/atividade"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .activity-workspace.activity-workspace .details-badge) { grid-column:3!important;grid-row:1!important;align-self:center!important;justify-self:end!important;font-size:10px!important;padding:6px 8px!important;white-space:nowrap!important;margin:0!important; }
+}
+
+/* Compact activity page matching the management reference. */
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined])){display:grid!important;gap:18px!important;--surface:#fcfdf9;--border:#d7ded3;--muted:#5f6f68;--accent:#129b89;--text:#162623;}
+:global(html.dark body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined])){--surface:#091c18;--border:#1c4037;--muted:#a3becd;--accent:#00e9df;--text:#f5faf9;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-hero){min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-banner-title){font-size:28px!important;line-height:1.2!important;letter-spacing:-.035em!important;font-weight:700!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-banner-title span){color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .eyebrow){font-size:9px!important;margin-bottom:8px!important;border:0!important;padding:0!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .hero-copy>p:last-child){font-size:13px!important;margin-top:8px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .wireframe){width:330px!important;right:20px!important;opacity:.32!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metrics){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric){min-height:80px!important;padding:10px 18px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;gap:14px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric+.metric){border-left:1px solid var(--border)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric>div:last-child){display:flex!important;flex-direction:column-reverse!important;gap:3px!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric strong){font-size:24px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric p){font-size:12px!important;line-height:1.5!important;margin:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-management){display:grid!important;gap:14px!important;padding:18px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:var(--surface)!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-management-title){font-size:15px!important;font-weight:650!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .toolbar){display:flex!important;align-items:center!important;gap:10px!important;margin:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .search){flex:1!important;min-width:160px!important;height:44px!important;min-height:44px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .search input){font-size:12px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .segments){display:flex!important;gap:4px!important;border:0!important;overflow:visible!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .segments button){height:44px!important;min-height:44px!important;padding:0 12px!important;border:1px solid transparent!important;border-radius:13px!important;font-size:12px!important;color:var(--text)!important;white-space:nowrap!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .segments button[aria-pressed="true"]){background:color-mix(in srgb,var(--accent) 7%,transparent)!important;border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;color:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-period-trigger){height:44px!important;min-height:44px!important;border-radius:13px!important;font-size:12px!important;color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .refresh){width:44px!important;min-width:44px!important;height:44px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events){border:1px solid var(--border)!important;border-radius:13px!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) th){font-size:10px!important;padding:12px 16px!important;color:var(--muted)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) td){height:56px!important;padding:8px 16px!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .avatar){width:32px!important;height:32px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .identity){gap:10px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .identity>span:last-child){white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .identity>span:last-child>span){color:var(--text)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .date){color:var(--muted)!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .status){padding:6px 10px!important;font-size:10px!important;gap:6px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .detail){width:78px!important;min-width:78px!important;height:34px!important;min-height:34px!important;display:flex!important;gap:7px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:transparent!important;color:var(--text)!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .detail svg){color:var(--accent)!important;stroke:var(--accent)!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events>footer){padding:14px 16px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events nav button){width:36px!important;height:36px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .empty){padding:26px 16px!important;min-height:160px!important;border-radius:13px!important;font-size:12px!important;}
+@media(any-hover:hover){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-management button:hover:enabled){background:color-mix(in srgb,var(--accent) 7%,transparent)!important;border-color:color-mix(in srgb,var(--accent) 40%,transparent)!important;transform:none!important;box-shadow:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-management nav button[aria-current="page"]:hover){background:var(--accent)!important;border-color:var(--accent)!important;}
+}
+@media(min-width:768px) and (max-width:1199px){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .toolbar){flex-wrap:wrap!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .search){flex-basis:100%!important;}
+}
+@media(max-width:767px){:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-hero){min-height:150px!important;padding:22px 18px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .hero-copy){max-width:100%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-banner-title){font-size:26px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .wireframe){right:-170px!important;opacity:.15!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric){padding:10px 8px!important;gap:8px!important;flex-direction:column!important;align-items:flex-start!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric p){font-size:10px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .metric strong){font-size:22px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-management){padding:14px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .toolbar){display:grid!important;grid-template-columns:minmax(0,1fr) 44px!important;gap:10px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .search){grid-column:1 / -1!important;width:100%!important;min-width:0!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .segments){grid-column:1 / -1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .segments button){padding:0 6px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .activity-period-trigger){width:100%!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .detail){width:100%!important;min-height:44px!important;height:44px!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events>footer){flex-direction:column!important;justify-content:center!important;gap:12px!important;text-align:center!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events nav){justify-content:center!important;flex-wrap:wrap!important;}
+:global(html body [data-admin-route="/admin/atividade"] :is(#activity-refined,[data-activity-refined]) .events nav button){width:44px!important;height:44px!important;}
 }
 `}</style>
     </div>
