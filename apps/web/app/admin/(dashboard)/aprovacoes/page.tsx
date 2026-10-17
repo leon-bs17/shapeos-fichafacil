@@ -274,12 +274,12 @@ export default function AdminAprovacoesPage() {
   }
 
   return (
-    <div className="approvals-workspace space-y-5">
+    <div data-approvals-refined className="approvals-workspace space-y-5">
       <section data-approvals-hero className="relative isolate overflow-hidden">
         <header data-approvals-heading>
-          <p data-approval-hero-label className="eyebrow">Aprovações</p>
-          <h1>Novos <span>Personais</span></h1>
-          <p data-approval-hero-subtitle>Gerencie e aprove novos acessos à plataforma com controle, segurança e rastreabilidade.</p>
+          <p data-approval-hero-label className="eyebrow">Administração</p>
+          <h2 className="approval-banner-title">Aprovação de <span>cadastros</span></h2>
+          <p data-approval-hero-subtitle>Acompanhe os novos profissionais da plataforma.</p>
         </header>
         <svg data-approvals-wireframe viewBox="0 0 500 320" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeWidth="0.65">
@@ -320,6 +320,15 @@ export default function AdminAprovacoesPage() {
         </Card>
       </div>
 
+      <section className="approval-management" aria-label="Cadastros de profissionais">
+        <header className="approval-management-heading"><h2>Cadastros de profissionais</h2><button type="button" className="approval-export" disabled={!cadastros?.length} onClick={() => {
+          const url = URL.createObjectURL(new Blob([JSON.stringify({ exportado_em: new Date().toISOString(), cadastros }, null, 2)], { type: 'application/json' }))
+          const link = document.createElement('a')
+          link.href = url
+          link.download = 'shapeos-aprovacoes.json'
+          link.click()
+          URL.revokeObjectURL(url)
+        }}><FileCheck2 size={15} aria-hidden="true"/>Exportar dados carregados</button></header>
       <section data-approvals-filters className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:px-5 sm:py-5 dark:border-white/10 dark:bg-card/70 dark:shadow-xl dark:shadow-black/10">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
           <label data-admin-search className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-[18px] border border-slate-200 bg-white px-4 text-slate-500 shadow-[0_4px_14px_rgba(15,23,42,0.025)] transition   dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-400 ">
@@ -469,7 +478,7 @@ export default function AdminAprovacoesPage() {
                       <p className="truncate text-[13px] font-semibold text-[#0d2148] dark:text-white">
                         {personal.nome?.trim() || 'Personal sem nome'}
                       </p>
-                      <p className="mt-0.5 text-[11px] text-slate-400 md:hidden dark:text-slate-500">Personal</p>
+                      <p className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">Personal</p>
                     </div>
                   </div>
 
@@ -484,7 +493,7 @@ export default function AdminAprovacoesPage() {
 
                   <div>
                     <span data-approval-status={personal.status_conta} className={`inline-flex h-[31px] min-w-[87px] items-center justify-center rounded-full border px-3 text-[12px] font-semibold ${status.className}`}>
-                      {pendente ? <Clock3 className="h-4 w-4" /> : personal.status_conta === 'ATIVO' ? <CheckCircle2 className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
+                      <span className="approval-status-dot" aria-hidden="true"/>
                       {status.label}
                     </span>
                   </div>
@@ -492,13 +501,13 @@ export default function AdminAprovacoesPage() {
                   <div className="relative flex items-center justify-start gap-2 md:justify-end">
                     <button
                       type="button"
-                      data-admin-view={pendente ? undefined : true}
+                      data-admin-view
                       data-approval-review={pendente ? 'pending' : 'approved'}
                       onClick={() => setPersonalSelecionado(personal)}
                       className="inline-flex h-10 min-w-[116px] items-center justify-center gap-2 rounded-[14px] border border-cyan-100 bg-[linear-gradient(180deg,#f7fdfe,#eefbfc)] px-4 text-[12px] font-semibold text-[#0d2148] shadow-[0_3px_10px_rgba(14,165,188,0.035)] transition   dark:border-primary/15 dark:bg-primary/[0.05] dark:text-white "
                     >
-                      {pendente ? <Clock3 className="h-4 w-4" /> : <Eye className="h-4 w-4" strokeWidth={1.9} />}
-                      {pendente ? 'Revisar' : 'Ver'}
+                      <Eye className="h-4 w-4" strokeWidth={1.9} />
+                      Ver
                     </button>
 
 
@@ -557,6 +566,8 @@ export default function AdminAprovacoesPage() {
           </div>
         </section>
       )}
+
+      </section>
 
       <dialog ref={detailsRef} role="dialog" className="approval-profile-dialog"
         aria-labelledby="approval-profile-title"
@@ -1037,6 +1048,85 @@ export default function AdminAprovacoesPage() {
 /* Also support a mouse on devices whose primary pointer is touch. */
 @media(any-hover:hover) {
 :global(html:is(.light,.dark) body [data-admin-route="/admin/aprovacoes"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content] .approvals-workspace.approvals-workspace [data-approval-status-group] button:hover:not(:disabled)){ background:color-mix(in srgb,var(--shapeos-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--shapeos-brand) 40%,transparent)!important;color:var(--shapeos-brand)!important;cursor:pointer!important; }
+}
+
+/* Compact Approvals, preserving all review actions and responsive cards. */
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined])){display:grid!important;gap:18px!important;--approval-refined-bg:#fcfdf9;--approval-refined-line:#d7ded3;--approval-refined-ink:#162623;--approval-refined-muted:#5f6f68;--approval-refined-brand:#129b89;}
+:global(html.dark body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined])){--approval-refined-bg:#091c18;--approval-refined-line:#1c4037;--approval-refined-ink:#f5faf9;--approval-refined-muted:#a3becd;--approval-refined-brand:#00e9df;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined])>*){margin-top:0!important;margin-bottom:0!important;min-width:0;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-hero]){min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-heading]){max-width:65%!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-banner-title){font-size:28px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:-.035em!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-banner-title span){color:var(--approval-refined-brand);}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-hero-label]){font-size:9px!important;border:0!important;background:transparent!important;padding:0!important;margin-bottom:8px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-hero-subtitle]){font-size:13px!important;line-height:1.6!important;margin-top:8px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-wireframe]){width:300px!important;opacity:.35!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-summary]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-summary]>div){border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;min-height:0!important;height:auto!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-summary]>div:first-child){border-right:1px solid var(--approval-refined-line)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]){min-height:80px!important;height:auto!important;padding:10px 22px!important;gap:16px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>svg){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type){min-width:0;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type>p:first-child){font-size:13px!important;font-weight:600!important;line-height:1.4!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type>p:nth-child(2)){font-size:24px!important;line-height:1.2!important;margin:3px 0!important;color:var(--approval-refined-ink)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type>p:last-child){font-size:12px!important;line-height:1.5!important;color:var(--approval-refined-muted)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management){display:grid;gap:14px;padding:18px;border:1px solid var(--approval-refined-line);border-radius:13px;background:var(--approval-refined-bg);}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management-heading){display:flex;align-items:center;justify-content:space-between;gap:12px;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management-heading h2){font-size:15px;font-weight:650;color:var(--approval-refined-ink);}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-export){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:8px 12px;border:1px solid var(--approval-refined-line);border-radius:13px;background:transparent;color:var(--approval-refined-ink);font-size:11px;cursor:pointer;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-export:disabled){opacity:.45;cursor:not-allowed;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-filters]){padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-filters]>div:first-child){display:flex!important;flex-direction:row!important;align-items:center!important;gap:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-search]){min-width:180px!important;flex:1!important;height:44px!important;min-height:44px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-search] input){font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-search] kbd){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [aria-label="Filtros de cadastro"]){display:flex!important;flex-wrap:nowrap!important;gap:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group]){display:flex!important;gap:4px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group] button){min-height:40px!important;height:40px!important;padding:8px 14px!important;border:1px solid transparent!important;border-radius:13px!important;font-size:12px!important;box-shadow:none!important;white-space:nowrap;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group] button[aria-pressed="true"]){border-color:color-mix(in srgb,var(--approval-refined-brand) 40%,transparent)!important;background:color-mix(in srgb,var(--approval-refined-brand) 7%,transparent)!important;color:var(--approval-refined-brand)!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger){height:44px!important;min-height:44px!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-filters]>div:last-child){margin-top:10px!important;font-size:11px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-table]){border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){padding:10px 8px!important;gap:12px!important;border-radius:8px!important;font-size:10px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:12px 8px!important;gap:12px!important;min-height:64px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row] p){white-space:normal!important;text-overflow:clip!important;overflow:visible!important;overflow-wrap:anywhere!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-avatar]){width:32px!important;height:32px!important;font-size:10px!important;box-shadow:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status]){min-width:0!important;height:auto!important;min-height:26px!important;padding:5px 9px!important;font-size:11px!important;gap:6px!important;white-space:nowrap;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-status-dot){display:inline-block;width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){min-width:72px!important;height:36px!important;min-height:36px!important;padding:0 10px!important;font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:14px 8px!important;border-radius:0!important;background:transparent!important;}
+@media(min-width:768px){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) 120px 110px 80px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) 120px 110px 80px!important;}
+}
+@media(any-hover:hover){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management button:hover:enabled){background:color-mix(in srgb,var(--approval-refined-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--approval-refined-brand) 40%,transparent)!important;box-shadow:none!important;transform:none!important;}
+}
+@media(min-width:768px) and (max-width:1199px){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-filters]>div:first-child){flex-wrap:wrap!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-search]){flex-basis:100%!important;}
+}
+@media(max-width:767px){
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-hero]){min-height:150px!important;padding:22px 18px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-heading]){max-width:100%!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-banner-title){font-size:26px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-wireframe]){right:-150px!important;opacity:.16!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]){padding:12px!important;gap:10px!important;min-height:100px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type>p:first-child){font-size:12px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-mobile-summary]>div:last-of-type>p:last-child){font-size:11px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management){padding:14px;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-management-heading){flex-wrap:wrap;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-export){min-height:44px;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-filters]>div:first-child){flex-direction:column!important;align-items:stretch!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-search]){min-width:0!important;width:100%!important;flex:auto!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [aria-label="Filtros de cadastro"]){flex-direction:column!important;align-items:stretch!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group]){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-status-group] button){padding:8px!important;min-height:44px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) .approval-period-trigger){width:100%!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-columns]){display:none!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approvals-row]){padding:14px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-admin-view]){width:100%!important;height:44px!important;min-height:44px!important;}
+:global(html body [data-admin-route="/admin/aprovacoes"] :is(#approvals-refined,[data-approvals-refined]) [data-approval-footer]){padding:16px!important;border-radius:13px!important;}
 }
 `}</style>
     </div>
