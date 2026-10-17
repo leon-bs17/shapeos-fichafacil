@@ -30,7 +30,7 @@ export default function AdminComunicadosPage() {
   const [filtroStatus,setFiltroStatus] = useState('TODOS')
   const noticeMessageRef = useRef<HTMLTextAreaElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const open = modal !== null
+  const open = modal === 'view' || modal === 'delete'
 
   useEffect(() => {
     if (!open) return
@@ -45,7 +45,6 @@ export default function AdminComunicadosPage() {
     if (modal === 'create') document.getElementById('notice-title')?.focus()
   },[modal])
   useEffect(() => {
-    if (modal !== 'create') return
     const field = noticeMessageRef.current
     if (!field) return
     const resize = () => {
@@ -109,7 +108,7 @@ export default function AdminComunicadosPage() {
   const ativos = comunicados?.filter(item=>item.ativa).length??0
   const busy = salvando || busyId !== null
   const closeModal = () => { if(!busy) {setModal(null);setErro(null);setActionError(null)} }
-  function newNotice() { setErro(null);setActionError(null);setSuccess(null);setModal('create') }
+  function newNotice() { setErro(null);setActionError(null);setSuccess(null);document.getElementById('notice-title')?.focus();document.getElementById('notice-compose')?.scrollIntoView({behavior:'smooth',block:'nearest'}) }
   function viewNotice(item:Comunicado) {setSelectedId(item.id);setActionError(null);setModal('view')}
 
   async function publicar(event:FormEvent) {
@@ -151,8 +150,8 @@ export default function AdminComunicadosPage() {
     finally {setBusyId(null)}
   }
 
-  return <div className="notices-workspace">
-      <section className="hero"><div className="hero-copy"><p className="eyebrow">Comunicação</p><h1>Comunicados da <span>plataforma</span></h1><p>Publique avisos para alunos e personais e gerencie a comunicação da ShapeOS.</p></div>
+  return <div data-notices-refined className="notices-workspace">
+      <section className="hero"><div className="hero-copy"><p className="eyebrow">Comunicação</p><h2 className="notice-banner-title">Comunicados da <span>plataforma</span></h2><p>Publique avisos para alunos e personais e gerencie a comunicação da ShapeOS.</p></div>
         <svg className="wireframe" viewBox="0 0 500 300" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeWidth=".7">
             {Array.from({ length: 25 }, (_, row) => {
@@ -175,6 +174,7 @@ export default function AdminComunicadosPage() {
         </svg>
       </section>
 
+    <div className="notices-body">
     <section className="notice-panel">
       <header className="notice-panel-heading">
         <div className="notice-panel-title"><h2><FileText size={22} aria-hidden="true"/>Comunicados publicados</h2>{!!comunicados?.length&&<span className="notice-count">{ativos} {ativos===1?'ativo':'ativos'}</span>}</div>
@@ -203,19 +203,21 @@ export default function AdminComunicadosPage() {
       {!isLoading&&!erroConsulta&&!!comunicados?.length&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
     </section>
 
-    <dialog ref={dialogRef} className="notice-modal" aria-labelledby="notice-modal-title" onCancel={event=>{event.preventDefault();closeModal()}}
-      onClick={event=>{if(event.target!==event.currentTarget)return;const rect=event.currentTarget.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeModal()}}>
-      <header className="notice-modal-heading"><h2 id="notice-modal-title">{modal==='create'?'Novo comunicado':modal==='delete'?'Excluir comunicado':'Detalhes do comunicado'}</h2><button type="button" className="notice-command notice-close" aria-label="Fechar janela" disabled={busy} onClick={closeModal} autoFocus><X size={20}/></button></header>
-      {modal==='create'&&<form className="notice-create-form" onSubmit={publicar}>
+    <aside id="notice-compose" className="notice-compose" aria-labelledby="notice-compose-title"><h2 id="notice-compose-title">Novo comunicado</h2><form className="notice-create-form" onSubmit={publicar}>
         <div className="notice-modal-body">
           <label htmlFor="notice-title">Título</label><input id="notice-title" className="notice-field" value={titulo} disabled={salvando} onChange={event=>setTitulo(event.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" required/>
           <label htmlFor="notice-message">Mensagem</label><textarea ref={noticeMessageRef} id="notice-message" className="notice-field" value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." required/>
-          <fieldset><legend>Público</legend><div className="notice-audiences">{(['TODOS','PERSONAL','ALUNO'] as Publico[]).map(value=><button key={value} type="button" className="notice-command" aria-pressed={publico===value} disabled={salvando} onClick={()=>setPublico(value)}>{value==='TODOS'?<Users size={16}/>:value==='PERSONAL'?<UserRound size={16}/>:<GraduationCap size={16}/>} {publicoLabel(value)}</button>)}</div></fieldset>
+          <NoticeSelect label="Público" value={publico} onChange={value=>setPublico(value as Publico)} options={[{value:'TODOS',label:'Alunos e personais'},{value:'PERSONAL',label:'Personais'},{value:'ALUNO',label:'Alunos'}]}/>
           <p className="notice-helper"><Info size={15}/>O aviso será enviado ao público selecionado.</p>
           {erro&&<p className="notice-error" role="alert">{erro}</p>}
         </div>
-        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={closeModal}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}><Send size={16} aria-hidden="true"/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
-      </form>}
+        <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={()=>{setTitulo('');setMensagem('');setPublico('TODOS');setErro(null)}}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}><Send size={16} aria-hidden="true"/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
+      </form>
+</aside>
+    </div>
+    <dialog ref={dialogRef} className="notice-modal" aria-labelledby="notice-modal-title" onCancel={event=>{event.preventDefault();closeModal()}}
+      onClick={event=>{if(event.target!==event.currentTarget)return;const rect=event.currentTarget.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)closeModal()}}>
+      <header className="notice-modal-heading"><h2 id="notice-modal-title">{modal==='create'?'Novo comunicado':modal==='delete'?'Excluir comunicado':'Detalhes do comunicado'}</h2><button type="button" className="notice-command notice-close" aria-label="Fechar janela" disabled={busy} onClick={closeModal} autoFocus><X size={20}/></button></header>
       {modal==='view'&&selected&&<>
         <div className="notice-modal-body notice-detail"><div className="notice-detail-title"><Megaphone size={26}/><h3>{selected.titulo}</h3></div><div className="notice-detail-tags"><span className="notice-audience">{publicoLabel(selected.publico)}</span><span className="notice-state" data-active={selected.ativa}><i/>{selected.ativa?'Ativo':'Inativo'}</span></div><p className="notice-detail-date">Publicado em {dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p><div className="notice-detail-message">{selected.mensagem}</div>{actionError&&<p role="alert" className="notice-error">{actionError}</p>}</div>
         <footer className="notice-modal-footer"><button className="notice-command notice-danger" disabled={busy} onClick={()=>{setActionError(null);setModal('delete')}}><Trash2 size={16}/>Excluir</button><button className="notice-command" disabled={busy} onClick={()=>void alternar(selected)}><PauseCircle size={16}/>{busyId===selected.id?'Atualizando...':selected.ativa?'Desativar':'Reativar'}</button><button className="notice-command" disabled={busy} onClick={closeModal}>Fechar</button></footer>
@@ -359,6 +361,49 @@ html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-ro
 @media(hover:hover) and (pointer:fine) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view]:hover:enabled { background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important; border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important; } }
 @media(max-width:640px) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { height:44px!important; min-height:44px!important; } }
 @media(prefers-reduced-motion:reduce) { html:is(.light,.dark) body [data-admin-route="/admin/comunicados"][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route][data-admin-route] [data-admin-content][data-admin-content] [data-admin-view][data-admin-view] { transition:none!important; } }
+
+/* Refined communications workspace and persistent composer. */
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero{min-height:130px!important;padding:24px 28px!important;border-radius:13px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-banner-title{font-size:28px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:-.035em!important;color:var(--notice-text)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-banner-title span{color:var(--notice-brand)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .eyebrow{font-size:9px!important;padding:0!important;border:0!important;background:transparent!important;margin-bottom:8px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero-copy>p:last-child{font-size:13px!important;margin-top:8px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .wireframe{width:330px!important;opacity:.32!important;right:0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notices-body{display:grid!important;grid-template-columns:minmax(0,1.8fr) minmax(300px,1fr)!important;gap:16px!important;align-items:start!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-panel,.notice-compose{padding:18px!important;border:1px solid var(--notice-border)!important;border-radius:13px!important;background:var(--notice-surface)!important;min-width:0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-panel-heading{padding-bottom:14px!important;gap:10px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-panel h2,.notice-compose>h2{font-size:15px!important;font-weight:600!important;color:var(--notice-text)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-toolbar{grid-template-columns:minmax(0,1fr) minmax(125px,.5fr) minmax(120px,.5fr)!important;gap:10px!important;margin:14px 0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-command,.notice-select-trigger,.notice-search{min-height:44px!important;font-size:11px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-search input{font-size:11px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-empty{min-height:200px!important;padding:28px 16px!important;gap:10px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-empty h3{font-size:13px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-empty p{font-size:12px!important;line-height:1.6!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-empty svg{width:26px!important;height:26px!important;color:var(--notice-brand)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose>h2{padding-bottom:16px!important;border-bottom:1px solid var(--notice-border)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-modal-body{display:grid!important;gap:8px!important;padding:18px 0!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose label,.notice-compose legend{font-size:11px!important;color:var(--notice-text)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-field{width:100%!important;padding:10px 12px!important;font-size:12px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose input.notice-field{height:44px!important;min-height:44px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose textarea{min-height:150px!important;max-height:none!important;resize:none!important;overflow-y:hidden!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-helper{font-size:10px!important;line-height:1.6!important;color:var(--notice-muted)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-modal-footer{display:flex!important;justify-content:flex-end!important;gap:8px!important;padding:16px 0 0!important;border-top:1px solid var(--notice-border)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-publish,.notice-view svg{color:var(--notice-brand)!important;stroke:var(--notice-brand)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-table-wrap{overflow-x:auto!important;}
+@media(min-width:768px) and (max-width:1199px){html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-search{grid-column:1 / -1!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notices-body{grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr)!important;}
+}
+@media(max-width:767px){html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero{min-height:150px!important;padding:22px 18px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-banner-title{font-size:26px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero-copy{max-width:100%!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .wireframe{right:-170px!important;opacity:.15!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notices-body{grid-template-columns:minmax(0,1fr)!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-panel,.notice-compose{padding:14px!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-search{grid-column:1 / -1!important;}
+html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .notice-compose .notice-modal-footer{flex-wrap:wrap!important;}
+}
 `}</style>
   </div>
 }
