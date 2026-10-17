@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, ShieldCheck, Info, FileCheck2, Search, Users, UserRound, Link2, Dumbbell, Eye, Pencil, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
+import { Shield, ShieldCheck, Info, Download, FileCheck2, Search, Users, UserRound, Link2, Dumbbell, Eye, Pencil, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
