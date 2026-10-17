@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, ShieldCheck, Info, Download, Search, Users, UserRound, Link2, Dumbbell, Eye, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
+import { Shield, ShieldCheck, Info, Download, Search, Users, UserRound, Link2, Dumbbell, Eye, Pencil, Settings2, ChevronLeft, ChevronRight, ChevronsUpDown, CircleCheck, Clock3, ShieldX, GraduationCap, ChevronDown, Check, X, type LucideIcon } from 'lucide-react'
 type User = { id: string; nome: string; email: string; tipo: string; status_conta: string }
 type Workout = { id: string; titulo: string; aluno_id: string; personal_id: string; ativo: boolean }
 type Bond = { id: string; aluno_id: string; personal_id: string; status: string }
@@ -341,7 +341,7 @@ export default function ControlPage() {
     <form onSubmit={e => { e.preventDefault(); if(aluno && personal)void act('VINCULAR', aluno, {personal_id:personal}) }}>
      <ControlFilter label="Aluno" value={aluno} editing disabled={!data?.ready || busy} options={[{value:'',label:'Escolha o aluno',icon:GraduationCap},...(data?.users.filter(u => u.tipo === 'ALUNO' && u.status_conta === 'ATIVO') ?? []).map(u => ({value:u.id,label:u.nome,icon:GraduationCap}))]} onChange={setAluno}/>
      <ControlFilter label="Personal" value={personal} editing disabled={!data?.ready || busy} options={[{value:'',label:'Escolha o personal',icon:UserRound},...personals.map(u => ({value:u.id,label:u.nome,icon:UserRound}))]} onChange={setPersonal}/>
-     <button className="control-bond-create-action" disabled={!data?.ready || busy || !aluno || !personal}>Criar / reativar vínculo</button>
+     <button className="control-bond-create-action" disabled={!data?.ready || busy || !aluno || !personal}>Criar vínculo</button>
     </form>
    </section>
    <section className="control-bond-list" aria-labelledby="control-bond-list-title">
@@ -350,8 +350,8 @@ export default function ControlPage() {
      {visibleBonds.map(v => <tr key={v.id}>
       <td data-bond-person="aluno"><div className="control-bond-person"><span className="control-bond-avatar" aria-hidden="true">{initials(name(v.aluno_id))}</span><span><small>Aluno</small>{name(v.aluno_id)}</span></div></td>
       <td data-bond-person="personal"><div className="control-bond-person"><span className="control-bond-avatar" aria-hidden="true">{initials(name(v.personal_id))}</span><span><small>Personal responsável</small>{name(v.personal_id)}</span></div></td>
-      <td className="control-bond-status"><span className="account-status" data-account-status={v.status === 'ATIVO' ? 'ATIVO' : 'INATIVO'}>{v.status === 'ATIVO' ? <CircleCheck size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{v.status === 'ATIVO' ? 'Ativo' : v.status === 'INATIVO' ? 'Inativo' : v.status}</span></td>
-      <td className="control-bond-action"><button aria-label={`Desativar vínculo de ${name(v.aluno_id)} com ${name(v.personal_id)}`} disabled={!data?.ready || busy || v.status !== 'ATIVO'} onClick={() => void act('DESATIVAR_VINCULO',v.id,{})}>Desativar vínculo</button></td>
+      <td className="control-bond-status"><span className="account-status" data-account-status={v.status === 'ATIVO' ? 'ATIVO' : 'INATIVO'}><span className="control-state-dot" aria-hidden="true"/>{v.status === 'ATIVO' ? 'Ativo' : v.status === 'INATIVO' ? 'Inativo' : v.status}</span></td>
+      <td className="control-bond-action"><button aria-label={`Desativar vínculo de ${name(v.aluno_id)} com ${name(v.personal_id)}`} disabled={!data?.ready || busy || v.status !== 'ATIVO'} onClick={() => void act('DESATIVAR_VINCULO',v.id,{})}>Desativar</button></td>
      </tr>)}
     </tbody></table>
     {!isLoading && !error && !visibleBonds.length && <div className="control-bond-empty"><Link2 size={26} aria-hidden="true"/><p>{search.trim() ? 'Nenhum vínculo encontrado para esta busca.' : 'Nenhum vínculo cadastrado.'}</p></div>}
@@ -366,8 +366,8 @@ export default function ControlPage() {
       <td><div className="control-bond-person"><span className="control-workout-icon" aria-hidden="true"><Dumbbell size={18} strokeWidth={1.75}/></span><span><small>Treino</small>{t.titulo}</span></div></td>
       <td><div className="control-bond-person"><span className="control-bond-avatar" aria-hidden="true">{initials(name(t.aluno_id))}</span><span><small>Aluno</small>{name(t.aluno_id)}</span></div></td>
       <td><div className="control-bond-person"><span className="control-bond-avatar" aria-hidden="true">{initials(name(t.personal_id))}</span><span><small>Personal responsável</small>{name(t.personal_id)}</span></div></td>
-      <td className="control-bond-status"><span className="account-status" data-account-status={t.ativo ? 'ATIVO' : 'INATIVO'}>{t.ativo ? <CircleCheck size={15} aria-hidden="true"/> : <ShieldX size={15} aria-hidden="true"/>}{t.ativo ? 'Ativo' : 'Arquivado'}</span></td>
-      <td className="control-bond-action"><button className="control-workout-action" disabled={!data?.ready || busy} onClick={() => setWorkout({...t})} aria-label={`Editar ou transferir ${t.titulo}`}><Settings2 size={15} aria-hidden="true"/>Editar / transferir</button></td>
+      <td className="control-bond-status"><span className="account-status" data-account-status={t.ativo ? 'ATIVO' : 'INATIVO'}><span className="control-state-dot" aria-hidden="true"/>{t.ativo ? 'Ativo' : 'Arquivado'}</span></td>
+      <td className="control-bond-action"><button className="control-workout-action" disabled={!data?.ready || busy} onClick={() => setWorkout({...t})} aria-label={`Editar ou transferir ${t.titulo}`}><Pencil size={15} aria-hidden="true"/>Editar / transferir</button></td>
      </tr>)}</tbody>
     </table>
     {!isLoading && !error && !visibleWorkouts.length && <div className="control-bond-empty"><Dumbbell size={26} aria-hidden="true"/><p>{search.trim() ? 'Nenhum treino encontrado para esta busca.' : 'Nenhum treino cadastrado.'}</p></div>}
@@ -1288,6 +1288,83 @@ export default function ControlPage() {
 }
 @media(min-width:768px) and (max-width:1279px){
 :global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-toolbar){grid-template-columns:minmax(0,1fr)!important;}
+}
+
+/* Vínculos and Treinos follow the compact Central management panel. */
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bonds){display:grid!important;gap:16px!important;min-width:0;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create){padding:14px!important;border-radius:13px!important;background:transparent!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create h2){font-size:14px!important;line-height:1.4!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create>p){font-size:12px!important;margin-top:4px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create form){display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto!important;align-items:end!important;gap:12px!important;margin-top:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create .control-filter){display:grid!important;grid-template-columns:minmax(0,1fr)!important;min-width:0!important;gap:6px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create .control-filter-label){font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create .control-filter-field){width:100%!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create .control-filter-trigger){height:44px!important;min-height:44px!important;min-width:0!important;gap:6px!important;font-size:12px!important;padding:0 10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create .control-filter-trigger>span){min-width:0;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.4;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create-action){min-height:44px!important;padding:10px 14px!important;font-size:12px!important;white-space:nowrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list){border:0!important;border-radius:0!important;background:transparent!important;min-width:0;overflow:visible!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list>header){display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;padding:0 0 12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list>header h2){font-size:14px!important;line-height:1.4!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list>header p){font-size:11px!important;margin:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-person){gap:8px!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-avatar){width:30px!important;height:30px!important;font-size:10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-person>span:last-child){font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-action button){min-height:36px!important;padding:8px 10px!important;font-size:11px!important;gap:6px!important;border-radius:13px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-status .account-status){font-size:11px!important;gap:6px!important;white-space:nowrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-state-dot){display:inline-block;width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workout-icon){width:30px!important;height:30px!important;flex-shrink:0;border-radius:9px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workout-icon svg){width:16px!important;height:16px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workout-editor){padding:16px!important;gap:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-heading){gap:10px!important;padding-bottom:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-heading h2){font-size:14px!important;line-height:1.4!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-heading p){font-size:12px!important;line-height:1.5!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-student){padding:10px 12px!important;gap:8px!important;font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields){grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields>label){font-size:12px!important;gap:6px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields .control-filter){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:6px!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields .control-filter-label){font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields .control-filter-field){width:100%!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields input){height:44px!important;font-size:13px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields .control-filter-trigger){height:44px!important;min-height:44px!important;width:100%!important;font-size:13px!important;gap:8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields .control-filter-trigger>span){white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.4!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-status){padding:12px 0!important;border-left:0!important;border-right:0!important;border-radius:0!important;gap:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-status strong){font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-status p){font-size:12px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-note){padding:0!important;border:0!important;background:transparent!important;font-size:11px!important;line-height:1.6!important;gap:8px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer){padding-top:12px!important;gap:10px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer button){min-height:44px!important;padding:10px 14px!important;font-size:12px!important;}
+@media(min-width:768px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list table){display:table!important;width:100%!important;table-layout:fixed!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list th){padding:10px 8px!important;font-size:10px!important;white-space:normal!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list td){padding:12px 8px!important;min-width:0!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list col:nth-child(1)){width:29%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list col:nth-child(2)){width:29%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list col:nth-child(3)){width:17%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list col:nth-child(4)){width:25%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-list col:nth-child(1)){width:24%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-list col:nth-child(2)){width:21%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-list col:nth-child(3)){width:21%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-list col:nth-child(4)){width:13%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-list col:nth-child(5)){width:21%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-workouts .control-bond-action button){white-space:normal!important;text-align:center;justify-content:center;}
+}
+@media(min-width:768px) and (max-width:1279px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create form){grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create-action){grid-column:1/-1;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-person){flex-wrap:wrap;}
+}
+@media(max-width:767px){
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create){padding:14px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create form){grid-template-columns:minmax(0,1fr)!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-create-action){width:100%!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-list>header){align-items:flex-start!important;flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-action button){width:100%!important;min-height:44px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .control-bond-person small){display:block!important;font-size:11px!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-fields){grid-template-columns:minmax(0,1fr)!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-heading){align-items:flex-start!important;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-status){flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer){display:flex!important;flex-wrap:wrap;}
+:global(html body :is([data-admin-route="/admin"],[data-admin-route="/admin/controle"]) :is(#control-refined,[data-control-refined]) .workout-editor-footer button){flex:1;min-width:120px;}
 }
 `}</style>
  </div>
