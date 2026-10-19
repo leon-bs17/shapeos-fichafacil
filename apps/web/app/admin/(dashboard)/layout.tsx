@@ -923,11 +923,12 @@ html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin
 
 
 /* Indicators open the related filtered records without changing the metric grid. */
+html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]:disabled{cursor:default!important;opacity:.55;}
 html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]{--metric-action-brand:#129b89;appearance:none!important;font:inherit;color:inherit;text-align:left;cursor:pointer!important;min-height:44px;position:relative!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;transform:none!important;filter:none!important;transition:none!important;}
 html.dark body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]{--metric-action-brand:#00e9df;}
 html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]:is(:hover,[aria-pressed="true"]){background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;transform:none!important;}
 html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]:focus-visible{outline:2px solid var(--metric-action-brand)!important;outline-offset:2px!important;}
-html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) :is(#users-results,#approval-results,#activity-results,#control-results){scroll-margin-top:100px;}
+html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) :is(#users-results,#approval-results,#activity-results,#control-results,#personals-results,#exercises-results,#audit-results){scroll-margin-top:100px;}
 @media(prefers-reduced-motion:reduce){html body :is(#metric-actions,[data-admin-route]) :is(#metric-actions,[data-admin-content]) button[data-admin-metric-action]{transition:none!important;}}
 
 `}</style>
