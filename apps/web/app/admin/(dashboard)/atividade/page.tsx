@@ -138,11 +138,11 @@ export default function AdminAtividadePage() {
 
       <div className="metrics">
         {([
-          ['Cadastros 24h', data?.cadastros24h, UserPlus, 'cadastro', '24h'],
-          ['Cadastros 7 dias', data?.cadastros7d, Users, 'cadastro', '7dias'],
-          ['Ações administrativas', data?.acoesAdmin, FileText, 'admin', 'todos'],
-        ] as const).map(([label, value, Icon, kind, range]) => (
-          <button type="button" data-admin-metric-action aria-controls="activity-results" aria-pressed={!busca && filtro === kind && periodo === range} onClick={() => { setBusca(''); setFiltro(kind); setPeriodo(range); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#activity-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="metric" key={label}>
+          ['Cadastros 24h', data?.cadastros24h, UserPlus, 'cadastro', '24h', 'Mostrar cadastros das últimas 24 horas'],
+          ['Cadastros 7 dias', data?.cadastros7d, Users, 'cadastro', '7dias', 'Mostrar cadastros dos últimos 7 dias'],
+          ['Ações administrativas', data?.acoesAdmin, FileText, 'admin', 'todos', 'Mostrar ações administrativas'],
+        ] as const).map(([label, value, Icon, kind, range, tooltip]) => (
+          <button type="button" data-admin-metric-action data-shapeos-tooltip={tooltip} aria-controls="activity-results" aria-pressed={!busca && filtro === kind && periodo === range} onClick={() => { setBusca(''); setFiltro(kind); setPeriodo(range); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#activity-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="metric" key={label}>
             <div data-admin-metric-icon aria-hidden="true" className="metric-icon"><Icon size={27} strokeWidth={1.7} /></div>
             <div><p>{label}</p><strong>{isLoading ? '—' : value ?? 0}</strong></div>
           </button>
@@ -154,7 +154,7 @@ export default function AdminAtividadePage() {
       <section className="toolbar" aria-label="Busca e filtros de atividade">
         <label data-admin-search className="search"><Search size={19} />
           <input aria-label="Buscar usuário ou ação" placeholder="Buscar usuário ou ação..." value={busca} onChange={e => setBusca(e.target.value)} />
-          {busca && <button aria-label="Limpar busca" onClick={() => setBusca('')}><X size={16} /></button>}
+          {busca && <button aria-label="Limpar busca" data-shapeos-tooltip="Limpar busca" onClick={() => setBusca('')}><X size={16} /></button>}
         </label>
         <div className="segments" aria-label="Tipo de evento">
           {([['todos','Todos'],['cadastro','Cadastros'],['admin','Ações admin.']] as const).map(([value,label]) => <button key={value} aria-pressed={filtro === value} onClick={() => setFiltro(value)}>{label}</button>)}
@@ -182,9 +182,9 @@ export default function AdminAtividadePage() {
           <footer>
             <span aria-live="polite">{eventos.length ? inicio+1 : 0}–{Math.min(inicio+POR_PAGINA,eventos.length)} de {eventos.length} eventos</span>
             <nav aria-label="Paginação da atividade">
-              <button aria-label="Página anterior" disabled={atual===1} onClick={() => setPagina(atual-1)}><ChevronLeft size={17} /></button>
+              <button aria-label="Página anterior" data-shapeos-tooltip="Página anterior" disabled={atual===1} onClick={() => setPagina(atual-1)}><ChevronLeft size={17} /></button>
               {Array.from({length:paginas}, (_,i)=>i+1).map(n=><button key={n} aria-label={`Página ${n}`} aria-current={atual===n ? 'page' : undefined} onClick={()=>setPagina(n)}>{n}</button>)}
-              <button aria-label="Próxima página" disabled={atual===paginas} onClick={() => setPagina(atual+1)}><ChevronRight size={17} /></button>
+              <button aria-label="Próxima página" data-shapeos-tooltip="Próxima página" disabled={atual===paginas} onClick={() => setPagina(atual+1)}><ChevronRight size={17} /></button>
             </nav>
           </footer>
         </section>
@@ -201,7 +201,7 @@ export default function AdminAtividadePage() {
         {selecionado && <>
           <header className="details-heading">
             <div><h2 id="activity-details-title">Detalhes da atividade</h2><p>ATIVIDADE</p></div>
-            <button type="button" className="details-close" autoFocus aria-label="Fechar detalhes" onClick={() => setSelecionado(null)}><X size={22} /></button>
+            <button type="button" className="details-close" autoFocus aria-label="Fechar detalhes" data-shapeos-tooltip="Fechar detalhes" onClick={() => setSelecionado(null)}><X size={22} /></button>
           </header>
           <section className="details-summary" aria-label="Ação registrada">
             <div className="details-icon">{selecionado.tipo === 'cadastro' ? <UserPlus size={29} strokeWidth={1.7} /> : <ShieldCheck size={29} strokeWidth={1.7} />}</div>
