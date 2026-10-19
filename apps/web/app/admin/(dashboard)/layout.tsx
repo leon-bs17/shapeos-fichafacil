@@ -860,6 +860,16 @@ html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-sta
 html.dark body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]::before{background:#1c4037!important;}
 }
 
+
+/* Equal mobile spacing before and after the metric section. */
+@media(max-width:767px){
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) :has(>[data-admin-metric-group]){display:grid!important;row-gap:16px!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) :has(>[data-admin-metric-group])>[data-admin-metric-group],
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) :has(>[data-admin-metric-group])>:has(+[data-admin-metric-group]),
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) :has(>[data-admin-metric-group])>[data-admin-metric-group]+*{margin-top:0!important;margin-bottom:0!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-group]{margin-block:0!important;padding-block:8px!important;}
+}
+
 `}</style>
     </div>
   )
