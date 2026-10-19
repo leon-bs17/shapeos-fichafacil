@@ -65,6 +65,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         group.setAttribute('data-admin-metric-group', '')
         if (!observed.has(group)) { observer.observe(group); observed.add(group) }
         const items = Array.from(group.children).filter(item => item.querySelector('[data-admin-metric-icon]'))
+        group.setAttribute('data-admin-metric-count', String(items.length))
         items.forEach((item, index) => {
           item.setAttribute('data-admin-metric-item', '')
           const rect = item.getBoundingClientRect()
@@ -82,7 +83,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     schedule()
     return () => {
       cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect()
-      root.querySelectorAll('[data-admin-metric-group]').forEach(group => group.removeAttribute('data-admin-metric-group'))
+      root.querySelectorAll('[data-admin-metric-group]').forEach(group => { group.removeAttribute('data-admin-metric-group'); group.removeAttribute('data-admin-metric-count') })
       root.querySelectorAll('[data-admin-metric-item]').forEach(item => {
         item.removeAttribute('data-admin-metric-item'); item.removeAttribute('data-admin-metric-divider')
       })
@@ -835,6 +836,28 @@ html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-s
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;flex:0 0 44px!important;}
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{height:56px!important;}
 
+}
+
+
+@media(max-width:767px){
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-group]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 0!important;box-sizing:border-box!important;margin:0!important;padding:8px 0!important;min-height:0!important;align-items:stretch!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-group][data-admin-metric-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-group][data-admin-metric-count="1"]{grid-template-columns:minmax(0,1fr)!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]{position:relative!important;box-sizing:border-box!important;min-width:0!important;min-height:72px!important;height:auto!important;margin:0!important;padding:8px 12px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;align-content:center!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]:has(>[data-admin-metric-icon]),html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;text-align:left!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){padding:0!important;margin:0!important;width:100%!important;min-height:0!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;flex:0 0 30px!important;border-radius:9px!important;padding:0!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon] svg{width:18px!important;height:18px!important;min-width:18px!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item] :is(strong,.text-2xl,.text-3xl){font-size:20px!important;line-height:1.2!important;margin-top:2px!important;letter-spacing:-.025em!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item] :is(.text-xs,.text-sm){font-size:10px!important;line-height:1.4!important;letter-spacing:normal!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item] :is(p,strong){overflow-wrap:break-word!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]::before{content:""!important;display:none!important;position:absolute!important;left:0!important;top:50%!important;bottom:auto!important;width:1px!important;height:40px!important;max-height:calc(100% - 16px)!important;transform:translateY(-50%)!important;background:#d7ded3!important;border:0!important;pointer-events:none!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-divider="true"]::before{display:block!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-count="3"] [data-admin-metric-item]{padding:8px 6px!important;min-height:92px!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-count="3"] [data-admin-metric-item]:has(>[data-admin-metric-icon]),html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-count="3"] [data-admin-metric-item]>:has(>[data-admin-metric-icon]){flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;text-align:center!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-count="3"] [data-admin-metric-item] :is(p,strong){text-align:center!important;}
+html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-count="3"] [data-admin-metric-item] p{margin-top:2px!important;margin-bottom:0!important;}
+html.dark body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-item]::before{background:#1c4037!important;}
 }
 
 `}</style>
