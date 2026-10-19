@@ -880,6 +880,7 @@ html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wi
 }
 @media(max-width:359px){html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-globe,[data-approvals-wireframe],.activity-workspace .hero>.wireframe,.reports-workspace .hero>.wireframe,.notices-workspace .hero>.wireframe,.system-workspace .hero>.wireframe,.users-wireframe,.personal-wireframe,.exercise-wireframe,.audit-wireframe,.account-wireframe){right:-18px!important;width:62%!important;max-height:125px!important;opacity:.18!important;}}
 
+@media(max-width:767px){html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading{position:relative!important;overflow:hidden!important;isolation:isolate!important;}html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading-art{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;pointer-events:none!important;z-index:0!important;opacity:1!important;transform:none!important;}html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading-copy{position:relative!important;z-index:1!important;}}
 `}</style>
     </div>
   )
