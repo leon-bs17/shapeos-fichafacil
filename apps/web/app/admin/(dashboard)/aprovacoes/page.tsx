@@ -291,7 +291,7 @@ export default function AdminAprovacoesPage() {
           </g>
         </svg>
       </section>    <div data-approvals-summary className="grid gap-4 lg:grid-cols-2">
-        <button type="button" data-admin-metric-action aria-controls="approval-results" aria-pressed={!buscaLocal && filtroPeriodo === 'TODOS' && filtroStatus === 'PENDENTE'} onClick={() => { setBuscaLocal(''); setFiltroPeriodo('TODOS'); setFiltroStatus('PENDENTE'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#approval-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} data-approval-summary-card="pending" className="overflow-hidden rounded-2xl border-border bg-card shadow-none">
+        <button type="button" data-admin-metric-action data-shapeos-tooltip="Mostrar cadastros aguardando aprovação" aria-controls="approval-results" aria-pressed={!buscaLocal && filtroPeriodo === 'TODOS' && filtroStatus === 'PENDENTE'} onClick={() => { setBuscaLocal(''); setFiltroPeriodo('TODOS'); setFiltroStatus('PENDENTE'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#approval-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} data-approval-summary-card="pending" className="overflow-hidden rounded-2xl border-border bg-card shadow-none">
           <CardContent data-mobile-summary className="flex items-center gap-5 p-5 sm:p-6">
             <div data-admin-metric-icon data-metric-tone="warning" aria-hidden="true" data-pending-summary-icon className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
               <Clock3 className="h-7 w-7" strokeWidth={1.8} />
@@ -305,7 +305,7 @@ export default function AdminAprovacoesPage() {
           </CardContent>
         </button>
 
-        <button type="button" data-admin-metric-action aria-controls="approval-results" aria-pressed={!buscaLocal && filtroPeriodo === 'TODOS' && filtroStatus === 'ATIVO'} onClick={() => { setBuscaLocal(''); setFiltroPeriodo('TODOS'); setFiltroStatus('ATIVO'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#approval-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="overflow-hidden rounded-2xl border-teal-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-gradient-to-br dark:from-teal-950/55 dark:via-slate-950/90 dark:to-slate-900/90 dark:shadow-xl dark:shadow-black/10">
+        <button type="button" data-admin-metric-action data-shapeos-tooltip="Mostrar profissionais aprovados" aria-controls="approval-results" aria-pressed={!buscaLocal && filtroPeriodo === 'TODOS' && filtroStatus === 'ATIVO'} onClick={() => { setBuscaLocal(''); setFiltroPeriodo('TODOS'); setFiltroStatus('ATIVO'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#approval-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="overflow-hidden rounded-2xl border-teal-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-gradient-to-br dark:from-teal-950/55 dark:via-slate-950/90 dark:to-slate-900/90 dark:shadow-xl dark:shadow-black/10">
           <CardContent data-mobile-summary className="flex items-center gap-5 p-5 sm:p-6">
             <div data-admin-metric-icon aria-hidden="true" className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-teal-50 text-teal-600 ring-1 ring-teal-100 dark:bg-primary/10 dark:text-primary dark:ring-0">
               <Users className="h-7 w-7" strokeWidth={1.8} />
@@ -321,7 +321,7 @@ export default function AdminAprovacoesPage() {
       </div>
 
       <section className="approval-management" aria-label="Cadastros de profissionais">
-        <header className="approval-management-heading"><h2 id="approval-results" tabIndex={-1}>Cadastros de profissionais</h2><button type="button" className="approval-export" disabled={!cadastros?.length} onClick={() => {
+        <header className="approval-management-heading"><h2 id="approval-results" tabIndex={-1}>Cadastros de profissionais</h2><button type="button" className="approval-export" data-shapeos-tooltip="Exportar em JSON todos os cadastros carregados, sem aplicar os filtros da tabela." disabled={!cadastros?.length} onClick={() => {
           const url = URL.createObjectURL(new Blob([JSON.stringify({ exportado_em: new Date().toISOString(), cadastros }, null, 2)], { type: 'application/json' }))
           const link = document.createElement('a')
           link.href = url
@@ -540,6 +540,7 @@ export default function AdminAprovacoesPage() {
                 disabled={paginaAtual === 1}
                 className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Página anterior"
+                data-shapeos-tooltip="Página anterior"
               >
                 <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.8} />
               </button>
@@ -550,6 +551,7 @@ export default function AdminAprovacoesPage() {
                 disabled={paginaAtual === totalPaginas}
                 className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-400 transition  disabled:cursor-not-allowed disabled:opacity-35 dark:border-white/10 dark:bg-white/[0.025]"
                 aria-label="Próxima página"
+                data-shapeos-tooltip="Próxima página"
               >
                 <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.8} />
               </button>
@@ -581,7 +583,7 @@ export default function AdminAprovacoesPage() {
         {personalSelecionado && <>
           <header className="approval-profile-heading">
             <div><p>APROVAÇÕES</p><h2 id="approval-profile-title">Detalhes do cadastro</h2></div>
-            <button type="button" className="approval-profile-close" autoFocus disabled={acao.isPending} aria-label="Fechar detalhes" onClick={fecharDetalhes}><X size={20} /></button>
+            <button type="button" className="approval-profile-close" autoFocus disabled={acao.isPending} aria-label="Fechar detalhes" data-shapeos-tooltip="Fechar detalhes" onClick={fecharDetalhes}><X size={20} /></button>
           </header>
           <section className="approval-profile-person" aria-label="Cadastro do personal">
             <div className="approval-profile-avatar">{iniciais(personalSelecionado.nome, personalSelecionado.email)}</div>
