@@ -88,7 +88,7 @@ function AdminModal({ open, onClose, titulo, children, className }: {
         <h2 id={titleId} className="text-lg font-bold tracking-tight">{titulo}</h2>
         <button type="button" onClick={onClose} autoFocus
           className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted"
-          aria-label="Fechar"><X className="h-4 w-4" /></button>
+          aria-label="Fechar" data-shapeos-tooltip="Fechar janela"><X className="h-4 w-4" /></button>
       </div>
       {children}
     </>}
