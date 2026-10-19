@@ -203,13 +203,13 @@ function UsuariosConteudo() {
       </header>
 
       <div className="users-stats grid grid-cols-2 gap-3 xl:grid-cols-4">
-        <ContadorCard titulo="Total" valor={contadores.total} icone={<Users className="h-5 w-5" />} cor="primary" />
-        <ContadorCard titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-5 w-5" />} cor="success" />
-        <ContadorCard titulo="Aguardando aprovação" valor={contadores.pendentes} icone={<Clock3 className="h-5 w-5" />} cor="warning" />
-        <ContadorCard titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Total" valor={contadores.total} icone={<Users className="h-5 w-5" />} cor="primary" />
+        <ContadorCard ativo={!busca && filtroTipo === 'PERSONAL' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('PERSONAL'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-5 w-5" />} cor="success" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'PENDENTE'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('PENDENTE'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Aguardando aprovação" valor={contadores.pendentes} icone={<Clock3 className="h-5 w-5" />} cor="warning" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'BLOQUEADO'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('BLOQUEADO'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
       </div>
 
-      <section className="users-management" aria-label="Contas cadastradas"><h2 className="users-management-title">Contas cadastradas</h2>
+      <section className="users-management" aria-label="Contas cadastradas"><h2 id="users-results" tabIndex={-1} className="users-management-title">Contas cadastradas</h2>
       <section className="users-filters" aria-label="Busca e filtros de usuários">
         <div className="users-filter-toolbar">
           <div data-admin-search className="users-filter-search">
@@ -935,7 +935,7 @@ function StatusBadge({ status, hideActiveIcon = false }: { status: StatusConta; 
   )
 }
 
-function ContadorCard({ titulo, valor, icone, cor }: { titulo: string; valor: number; icone: React.ReactNode; cor: string }) {
+function ContadorCard({ titulo, valor, icone, cor, ativo, onClick }: { titulo: string; valor: number; icone: React.ReactNode; cor: string; ativo: boolean; onClick: () => void }) {
   const cores: Record<string, string> = {
     primary: 'bg-primary/10 text-primary',
     success: 'bg-success/10 text-success',
@@ -944,7 +944,7 @@ function ContadorCard({ titulo, valor, icone, cor }: { titulo: string; valor: nu
     danger: 'bg-destructive/10 text-destructive',
   }
   return (
-    <Card className="users-stat">
+    <button type="button" data-admin-metric-action aria-pressed={ativo} aria-controls="users-results" onClick={onClick} className="users-stat">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <div data-admin-metric-icon data-metric-tone={cor} aria-hidden="true" className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
@@ -956,7 +956,7 @@ function ContadorCard({ titulo, valor, icone, cor }: { titulo: string; valor: nu
           </div>
         </div>
       </CardContent>
-    </Card>
+    </button>
   )
 }
 
