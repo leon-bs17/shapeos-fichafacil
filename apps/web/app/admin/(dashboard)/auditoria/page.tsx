@@ -341,7 +341,6 @@ export default function AdminAuditoriaPage() {
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-trigger strong { font-weight:600; color:var(--audit-text); }
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-trigger svg, html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-button svg { flex-shrink:0; color:inherit; }
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-menu { position:absolute; z-index:40; right:0; top:calc(100% + 8px); width:280px; max-width:calc(100vw - 32px); max-height:min(380px,calc(100dvh - 24px)); overflow-y:auto; overscroll-behavior:contain; padding:6px; border:1px solid var(--audit-border); border-radius:13px; background:var(--audit-surface); color:var(--audit-text); box-shadow:0 8px 24px rgba(0,0,0,.12); outline:none; }
-      html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-menu[data-above="true"] { top:auto; bottom:calc(100% + 8px); }
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-option { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:44px; padding:9px 10px; border:1px solid transparent; border-radius:13px; font-size:13px; cursor:pointer; transition:background-color 150ms ease,border-color 150ms ease; }
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-option + .audit-select-option { margin-top:4px; }
       html:is(.light,.dark) [data-admin-route="/admin/auditoria"] [data-admin-content] .audit-workspace.audit-workspace .audit-select-option svg { flex-shrink:0; }
@@ -797,7 +796,6 @@ function AuditFilterSelect({ label: fieldLabel, value, onChange, options, trigge
   const listRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
-  const [above, setAbove] = useState(false)
   const [menuHeight, setMenuHeight] = useState(380)
   const selected = Math.max(0, options.findIndex((option) => option.value === value))
 
@@ -810,11 +808,12 @@ function AuditFilterSelect({ label: fieldLabel, value, onChange, options, trigge
       const rect = triggerRef.current?.getBoundingClientRect()
       if (rect) {
         const below = window.innerHeight - rect.bottom - 16
-        const above = rect.top - 16
-        const showAbove = below < Math.min(380, options.length * 48 + 12) && above > below
-        setAbove(showAbove)
-        setMenuHeight(Math.max(80, Math.min(380, showAbove ? above : below)))
+        setMenuHeight(Math.max(40, Math.min(380, below)))
       }
+    }
+    const trigger = triggerRef.current
+    if (trigger && window.innerHeight - trigger.getBoundingClientRect().bottom < Math.min(180, options.length * 48 + 28)) {
+      trigger.scrollIntoView({ block: 'center', behavior: 'auto' })
     }
     place()
     listRef.current?.focus({ preventScroll: true })
@@ -854,7 +853,7 @@ function AuditFilterSelect({ label: fieldLabel, value, onChange, options, trigge
       {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
     </button>
     {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="audit-select-menu"
-      data-above={above} style={{ maxHeight: menuHeight }} aria-label={`Opções de ${fieldLabel.toLowerCase()}`} aria-activedescendant={`${id}-${active}`}
+      style={{ maxHeight: menuHeight }} aria-label={`Opções de ${fieldLabel.toLowerCase()}`} aria-activedescendant={`${id}-${active}`}
       onKeyDown={(event) => {
         if (event.key === 'Escape') {
           event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus()
