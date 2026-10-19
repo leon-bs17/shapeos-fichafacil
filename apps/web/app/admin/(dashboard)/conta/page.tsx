@@ -234,6 +234,7 @@ html body :is(#account-refined,[data-account-refined]) .account-panel{padding:18
 html body :is(#account-refined,[data-account-refined]) .account-command{width:100%!important;min-height:44px!important}
 html body :is(#account-refined,[data-account-refined]) .account-form-footer{display:block!important}
 html body :is(#account-refined,[data-account-refined]) .account-success>div{min-width:0!important;flex-basis:calc(100% - 36px)!important}}
+html body :is(#account-refined,[data-account-refined]) .account-avatar{background:linear-gradient(145deg,#6f86b6,#4f678f)!important;color:#fff!important;}
 `}</style>
   </div>
 }
