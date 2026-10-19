@@ -171,7 +171,7 @@ export default function AdminRelatoriosPage() {
         <ReportPeriod value={dias} onChange={setDias} />
         <span className="date-range"><CalendarDays size={17} />{dataLabel(inicio)} – {dataLabel(fim)}</span>
         <button className="update" disabled={isFetching} onClick={()=>refetch()}><RefreshCw size={16} className={isFetching?'animate-spin':''} />Atualizar</button>
-        <button className="export" onClick={exportarResumo}><FileCheck2 size={16} aria-hidden="true"/><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
+        <button className="export" data-shapeos-tooltip="Exportar o resumo do período selecionado e os totais da base em CSV." onClick={exportarResumo}><FileCheck2 size={16} aria-hidden="true"/><span className="desktop-export-label">Exportar relatório</span><span className="mobile-export-label">Exportar CSV</span></button>
       </section>
       <div className="charts">
         <section className="panel evolution"><h2><BarChart3 size={19} />Evolução dos cadastros</h2><p className="chart-note">Total acumulado de usuários cadastrados</p>
@@ -195,7 +195,7 @@ export default function AdminRelatoriosPage() {
       </div>
       <section className="panel summary"><h2><FileText size={19} />Resumo do período</h2><div className="table-scroll"><table><thead><tr><th>Indicador</th><th>Atual</th><th>Período anterior</th><th>Variação</th></tr></thead><tbody>{resumo.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.atual}</td><td>{r.anterior}</td><td><span className={r.atual<r.anterior?'change down':'change'}>{variacao(r.atual,r.anterior)}</span></td></tr>)}</tbody></table></div>
         <div className="mobile-summary">{resumo.map(r=><article key={r.label}><h3>{r.label}</h3><dl><div><dt>Atual</dt><dd>{r.atual}</dd></div><div><dt>Anterior</dt><dd>{r.anterior}</dd></div><div><dt>Variação</dt><dd className={r.atual<r.anterior?'negative':''}>{variacao(r.atual,r.anterior)}</dd></div></dl></article>)}</div>
-        <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
+        <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button data-shapeos-tooltip="Exportar em CSV os usuários carregados, com perfil, status e data de cadastro." onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
       </section>
       </section>
       <style jsx>{`
