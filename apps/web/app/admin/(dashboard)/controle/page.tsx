@@ -258,8 +258,8 @@ export default function ControlPage() {
  }
  const personals = data?.users.filter(u => u.tipo === 'PERSONAL' && u.status_conta === 'ATIVO') ?? []
  const activeBondCount = data?.bonds.filter(v => v.status === 'ATIVO').length ?? 0
- const visibleBonds = data?.bonds.filter(v => `${name(v.aluno_id)} ${name(v.personal_id)}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR'))) ?? []
- const visibleWorkouts = data?.workouts.filter(t => `${t.titulo} ${name(t.aluno_id)} ${name(t.personal_id)}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR'))) ?? []
+ const visibleBonds = data?.bonds.filter(v => (!statusFilter || v.status === statusFilter) && `${name(v.aluno_id)} ${name(v.personal_id)}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR'))) ?? []
+ const visibleWorkouts = data?.workouts.filter(t => (!statusFilter || (statusFilter === 'ATIVO' ? t.ativo : !t.ativo)) && `${t.titulo} ${name(t.aluno_id)} ${name(t.personal_id)}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR'))) ?? []
  const filteredUsers = data?.users.filter(u => `${u.nome} ${u.email}`.toLowerCase().includes(search.trim().toLowerCase()) && (!profileFilter || u.tipo === profileFilter) && (!statusFilter || u.status_conta === statusFilter)).slice().sort((a, b) => (sortAsc ? 1 : -1) * a[sortKey].localeCompare(b[sortKey], 'pt-BR')) ?? []
  const pageSize = 4
  const pageCount = Math.max(1, Math.ceil(filteredUsers.length / pageSize))
@@ -267,10 +267,10 @@ export default function ControlPage() {
  const visibleUsers = filteredUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize)
  const initials = (nome: string) => nome.trim().split(/\s+/).filter(Boolean).map(part => part[0]).slice(0, 2).join('').toUpperCase() || '?'
  const metrics = [
-  { label: 'Contas', value: data?.users.length, icon: Users },
-  { label: 'Personais', value: data ? personals.length : undefined, icon: UserRound },
-  { label: 'Vínculos ativos', value: data?.bonds.filter(v => v.status === 'ATIVO').length, icon: Link2 },
-  { label: 'Treinos ativos', value: data?.workouts.filter(t => t.ativo).length, icon: Dumbbell },
+  { label: 'Contas', value: data?.users.length, icon: Users, target: 'Contas', profile: '', status: '' },
+  { label: 'Personais', value: data ? personals.length : undefined, icon: UserRound, target: 'Contas', profile: 'PERSONAL', status: 'ATIVO' },
+  { label: 'Vínculos ativos', value: data?.bonds.filter(v => v.status === 'ATIVO').length, icon: Link2, target: 'Vínculos', profile: '', status: 'ATIVO' },
+  { label: 'Treinos ativos', value: data?.workouts.filter(t => t.ativo).length, icon: Dumbbell, target: 'Treinos', profile: '', status: 'ATIVO' },
  ]
  function sortAccounts(key: 'nome' | 'tipo') { setSortAsc(sortKey === key ? !sortAsc : true); setSortKey(key); setPage(1) }
  const toggleChecked = (id: string) => setCheckedIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id])
@@ -281,17 +281,18 @@ export default function ControlPage() {
   {error && <p role="alert" className="rounded-xl border border-destructive p-4">{error.message}</p>}
   {data && !data.ready && <div role="alert" className="rounded-xl border border-amber-400/40 bg-amber-400/5 p-4 text-sm"><strong>Configuração do banco necessária.</strong><p className="mt-1">Os controles aguardam a migração 0013_admin_control_center.sql no Supabase. As consultas continuam disponíveis.</p><p className="mt-1 text-muted-foreground">{data.configError}</p></div>}
   {feedback && <p role="status" className="rounded-xl border border-primary/40 p-4 text-sm">{feedback}</p>}
-  <div className="control-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">{metrics.map(({label, value, icon: Icon}) => <div key={label} className="control-metric flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card/60 p-4 sm:gap-4 sm:p-5"><span data-admin-metric-icon aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={27} strokeWidth={1.6}/></span><div className="min-w-0"><p className="text-xs text-muted-foreground sm:text-sm">{label}</p><p className="mt-1 text-2xl font-semibold tabular-nums">{value ?? '—'}</p></div></div>)}</div>
+  <div className="control-metrics grid grid-cols-2 gap-3 lg:grid-cols-4">{metrics.map(({label, value, icon: Icon, target, profile, status}) => <button type="button" data-admin-metric-action aria-controls="control-results" aria-pressed={!search && tab === target && profileFilter === profile && statusFilter === status} onClick={() => { setTab(target); setSearch(''); setProfileFilter(profile); setStatusFilter(status); setPage(1); setCheckedIds([]); requestAnimationFrame(() => { const heading = document.getElementById('control-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} key={label} className="control-metric flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card/60 p-4 sm:gap-4 sm:p-5"><span data-admin-metric-icon aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={27} strokeWidth={1.6}/></span><div className="min-w-0"><p className="text-xs text-muted-foreground sm:text-sm">{label}</p><p className="mt-1 text-2xl font-semibold tabular-nums">{value ?? '—'}</p></div></button>)}</div>
   <div className="control-body">
    <section className="control-main-panel" aria-label="Gestão da plataforma">
-    <div className="control-panel-heading"><h2>{tab}</h2><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><FileCheck2 className="mr-2 inline" size={16} aria-hidden="true"/><span className="control-export-label">Exportar dados carregados</span></button></div></div>
-  <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setPage(1);  }}>{t}</button>)}</nav>
+    <div className="control-panel-heading"><h2 id="control-results" tabIndex={-1}>{tab}</h2><div className="control-export-row"><button className={`${button} control-export`} disabled={!data} onClick={() => exportData()}><FileCheck2 className="mr-2 inline" size={16} aria-hidden="true"/><span className="control-export-label">Exportar dados carregados</span></button></div></div>
+  <nav className="control-tabs flex gap-1 overflow-x-auto border-b border-border" aria-label="Módulos da central">{['Contas', 'Vínculos', 'Treinos'].map(t => <button key={t} className={`shrink-0 border-b-2 px-4 py-3 text-sm transition-colors sm:px-6 ${tab === t ? 'border-primary font-semibold text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`} aria-pressed={tab === t} onClick={() => { setTab(t); setSearch(''); setProfileFilter(''); setStatusFilter(''); setCheckedIds([]); setPage(1);  }}>{t}</button>)}</nav>
   {tab !== 'Configurações' && <div className="control-toolbar flex flex-col gap-3 lg:flex-row lg:items-center">
    <label data-admin-search className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input className={`${input} min-h-11 pl-10`} aria-label="Buscar registros" placeholder={tab === 'Vínculos' ? 'Buscar aluno ou personal' : tab === 'Treinos' ? 'Buscar treino, aluno ou personal' : 'Buscar por nome, e-mail ou título'} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}/></label>
    {tab === 'Contas' && <div className="control-filter-group grid grid-cols-2 gap-3 lg:w-auto">
     <ControlFilter label="Perfil" value={profileFilter} options={profileOptions} onChange={value => { setProfileFilter(value); setPage(1) }}/>
     <ControlFilter label="Status" value={statusFilter} options={statusOptions} onChange={value => { setStatusFilter(value); setPage(1) }}/>
    </div>}
+   {tab !== 'Contas' && <ControlFilter label="Status" value={statusFilter} options={tab === 'Vínculos' ? [{ value: '', label: 'Todos os vínculos', icon: Link2 }, { value: 'ATIVO', label: 'Ativos', icon: CircleCheck }] : [{ value: '', label: 'Todos os treinos', icon: Dumbbell }, { value: 'ATIVO', label: 'Ativos', icon: CircleCheck }, { value: 'ARQUIVADO', label: 'Arquivados', icon: Clock3 }]} onChange={value => { setStatusFilter(value); setPage(1) }}/>}
   </div>}
   {tab === 'Contas' && <section aria-label="Contas da plataforma" className="space-y-4">
    {checkedIds.length > 0 && <div className="control-selection-bar flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-2 text-sm"><span>{checkedIds.length} conta(s) selecionada(s)</span><div className="control-selection-buttons flex gap-2"><button className={`${button} control-selection-action`} onClick={() => exportData(checkedIds)}>Exportar seleção</button><button className={`${button} control-selection-action`} onClick={() => setCheckedIds([])}>Limpar seleção</button></div></div>}
