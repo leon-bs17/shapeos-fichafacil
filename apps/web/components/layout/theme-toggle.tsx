@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { usePathname } from 'next/navigation'
 import { SunMoon } from 'lucide-react'
 import s from './theme-toggle.module.css'
 
 export function ThemeToggle({ floating = false }: { floating?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme()
+  const pathname = usePathname()
+  const admin = pathname === '/admin' || pathname?.startsWith('/admin/')
   const [mounted, setMounted] = useState(false)
   const themeFrame = useRef(0)
 
@@ -48,6 +51,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
       <button
         type="button"
         data-shapeos-theme-switch
+        data-shapeos-tooltip={admin && mounted ? action : undefined}
         className={s.button}
         disabled={!mounted}
         onClick={changeTheme}
@@ -55,7 +59,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
       >
         {mounted && <Icon size={20} strokeWidth={1.8} aria-hidden="true" />}
       </button>
-      <span className={s.tooltip} aria-hidden="true">{action}</span>
+      {!admin && <span className={s.tooltip} aria-hidden="true">{action}</span>}
     </div>
   )
 }
