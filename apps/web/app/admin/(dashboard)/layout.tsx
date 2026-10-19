@@ -915,6 +915,12 @@ html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-
 }
 @media(prefers-reduced-motion:reduce){html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row{transition:none!important;}}
 
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row.admin-menu-logout{--menu-logout-color:#b42336;color:var(--menu-logout-color)!important;border-radius:13px!important;}
+html.dark body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row.admin-menu-logout{--menu-logout-color:#ff8f9b;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row.admin-menu-logout:not(:disabled):hover{color:var(--menu-logout-color)!important;background:color-mix(in srgb,var(--menu-logout-color) 7%,transparent)!important;border:1px solid color-mix(in srgb,var(--menu-logout-color) 40%,transparent)!important;box-shadow:none!important;transform:none!important;filter:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row.admin-menu-logout .shapeos-menu-icon{color:inherit!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row.admin-menu-logout:focus-visible{outline:2px solid var(--menu-logout-color)!important;outline-offset:2px!important;}
+
 `}</style>
     </div>
   )
