@@ -160,7 +160,7 @@ export default function AdminAtividadePage() {
           {([['todos','Todos'],['cadastro','Cadastros'],['admin','Ações admin.']] as const).map(([value,label]) => <button key={value} aria-pressed={filtro === value} onClick={() => setFiltro(value)}>{label}</button>)}
         </div>
         <ActivityPeriod value={periodo} onChange={setPeriodo} />
-        <button className="refresh" aria-label="Atualizar atividade" title="Atualizar atividade" onClick={() => refetch()} disabled={isFetching}><RefreshCw size={18} className={isFetching ? 'animate-spin' : ''} /></button>
+        <button className="refresh" aria-label="Atualizar atividade" data-shapeos-tooltip="Atualizar atividade" onClick={() => refetch()} disabled={isFetching}><RefreshCw size={18} className={isFetching ? 'animate-spin' : ''} /></button>
       </section>
 
       {error ? <div className="empty" role="alert">Não foi possível carregar a atividade. <button onClick={() => refetch()}>Tentar novamente</button></div> : isLoading ? <div className="empty" role="status">Carregando atividade...</div> : (
@@ -170,7 +170,7 @@ export default function AdminAtividadePage() {
               <thead><tr><th>Usuário / referência</th><th>Data e hora</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>{eventos.slice(inicio,inicio+POR_PAGINA).map(e => (
                 <tr key={e.id}>
-                  <td><div className="identity"><span className="avatar">{iniciais(e.descricao)}</span><span title={e.descricao}><span>{e.descricao.split(' · ')[0]}</span><span className="action event-identity-action">{e.tipo === 'cadastro' ? <UserPlus size={14} /> : <ShieldCheck size={14} />}<span>{e.titulo.toLowerCase()}</span></span></span></div></td>
+                  <td><div className="identity"><span className="avatar">{iniciais(e.descricao)}</span><span data-shapeos-tooltip={e.descricao}><span>{e.descricao.split(' · ')[0]}</span><span className="action event-identity-action">{e.tipo === 'cadastro' ? <UserPlus size={14} /> : <ShieldCheck size={14} />}<span>{e.titulo.toLowerCase()}</span></span></span></div></td>
                   <td className="date">{formatarData(e.data)}</td>
                   <td><span className="status"><CircleCheck size={15} aria-hidden="true" />Registrado</span></td>
                   <td><button data-admin-view className="detail" aria-label={`Ver detalhes: ${e.titulo}`} onClick={() => setSelecionado(e)}><Eye size={16} aria-hidden="true" /><span>Ver</span></button></td>
