@@ -223,9 +223,9 @@ export default function AdminPersonaisPage() {
           </tr>)}</tbody>
         </table>
         <footer className="personals-pagination"><span>{start + 1}–{Math.min(start + 5,total)} de {total} personais</span><nav aria-label="Paginação dos personais">
-          <button type="button" className="personal-button" aria-label="Página anterior" disabled={current === 1} onClick={() => setPagina(current - 1)}><ChevronLeft size={16}/></button>
+          <button type="button" className="personal-button" aria-label="Página anterior" data-shapeos-tooltip="Página anterior" disabled={current === 1} onClick={() => setPagina(current - 1)}><ChevronLeft size={16}/></button>
           {Array.from({length:pages},(_,i)=>i+1).map(n=><button type="button" key={n} className="personal-button personal-page" aria-current={current===n?'page':undefined} aria-label={`Página ${n}`} onClick={()=>setPagina(n)}>{n}</button>)}
-          <button type="button" className="personal-button" aria-label="Próxima página" disabled={current === pages} onClick={() => setPagina(current + 1)}><ChevronRight size={16}/></button>
+          <button type="button" className="personal-button" aria-label="Próxima página" data-shapeos-tooltip="Próxima página" disabled={current === pages} onClick={() => setPagina(current + 1)}><ChevronRight size={16}/></button>
         </nav></footer>
       </section>}
     </section>
@@ -234,7 +234,7 @@ export default function AdminPersonaisPage() {
       const rect = event.currentTarget.getBoundingClientRect()
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setSelectedId(null)
     }}>
-      {selected && <><header className="personal-dialog-heading"><div><p>Gestão de personais</p><h2 id={headingId}>Detalhes do personal</h2></div><button type="button" autoFocus className="personal-button" aria-label="Fechar detalhes" onClick={() => setSelectedId(null)}><X size={20}/></button></header>
+      {selected && <><header className="personal-dialog-heading"><div><p>Gestão de personais</p><h2 id={headingId}>Detalhes do personal</h2></div><button type="button" autoFocus className="personal-button" aria-label="Fechar detalhes" data-shapeos-tooltip="Fechar detalhes" onClick={() => setSelectedId(null)}><X size={20}/></button></header>
         <section className="personal-profile"><span className="personal-table-avatar" aria-hidden="true">{initials(selected.nome)}</span><div><h3>{selected.nome}</h3><p><Mail size={14}/>{selected.email}</p><p><Calendar size={14}/>Cadastro em {formatarData(selected.criado_em)}</p></div></section>
         <div className="personal-detail-counts"><div><Users size={18}/><span><strong>{selected.total_alunos}</strong> {selected.total_alunos === 1 ? 'aluno vinculado' : 'alunos vinculados'}</span></div><div><Dumbbell size={18}/><span><strong>{selected.total_treinos}</strong> {selected.total_treinos === 1 ? 'treino' : 'treinos'}</span></div></div>
         <div className="personal-tabs" role="group" aria-label="Informações do personal"><button type="button" className="personal-button" aria-pressed={tab === 'ALUNOS'} onClick={() => setTab('ALUNOS')}>Alunos</button><button type="button" className="personal-button" aria-pressed={tab === 'TREINOS'} onClick={() => setTab('TREINOS')}>Treinos</button></div>
