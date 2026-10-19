@@ -105,7 +105,7 @@ export default function AdminLoginPage() {
   const busy=carregando||limpandoSessao
   const title=avisoEnviado?'Verifique seu e-mail':modoEsqueci?'Recuperar senha':'Entrar no painel'
 
-  return <main className="admin-login">
+  return <main className="admin-login" data-admin-login-refined>
     <header className="admin-login-header">
       <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação" className="admin-login-logo"><Logo size="sm"/></Link>
       <div className="admin-login-header-tools"><Link href="/apresentacao" className="admin-login-back"><ArrowLeft size={15} aria-hidden="true"/><span>Conhecer a ShapeOS</span></Link><ThemeToggle/></div>
@@ -246,6 +246,53 @@ html:is(.light,.dark) body .admin-login.admin-login .admin-login-mobile-about { 
  html:is(.light,.dark) body .admin-login.admin-login .admin-login-wireframe { right:-80px; }
 }
 
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-header{max-width:1100px!important;padding:18px 28px!important;min-height:76px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-header-tools{gap:10px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-main{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;max-width:900px!important;gap:32px!important;padding:36px 28px!important;align-items:center!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro{padding:18px 28px 18px 0!important;min-height:0!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-eyebrow{display:block!important;padding:0!important;margin:0 0 10px!important;border:0!important;border-radius:0!important;background:transparent!important;min-height:0!important;font-size:9px!important;line-height:1.5!important;font-weight:650!important;letter-spacing:.1em!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) h1{font-size:30px!important;font-weight:700!important;line-height:1.2!important;letter-spacing:-.035em!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro-copy{font-size:13px!important;line-height:1.55!important;margin-top:10px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-wireframe{max-width:260px!important;margin-top:20px!important;opacity:.35!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card{padding:24px!important;border-radius:16px!important;box-shadow:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card-heading{padding-bottom:18px!important;border-bottom:1px solid var(--login-border)!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card-heading h2{font-size:20px!important;font-weight:650!important;line-height:1.3!important;letter-spacing:-.025em!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card-heading p{font-size:12px!important;line-height:1.5!important;margin-top:5px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-form{gap:16px!important;margin-top:20px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field-group label{font-size:11px!important;font-weight:500!important;margin-bottom:7px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field{height:44px!important;padding-left:12px!important;gap:9px!important;border-radius:13px!important;box-shadow:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field>svg{width:16px!important;height:16px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field input{font-size:13px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-visibility{width:42px!important;min-width:42px!important;height:42px!important;margin:0!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-submit{min-height:44px!important;padding:10px 14px!important;font-size:12px!important;border-radius:13px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-command{min-height:44px!important;font-size:12px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-text-action{margin-top:0!important;font-size:11px!important;min-height:40px!important;padding:6px 12px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-permission{margin-top:16px!important;padding-top:16px!important;gap:7px!important;font-size:10px!important;line-height:1.5!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-permission svg{width:14px!important;height:14px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-sent{font-size:12px!important;line-height:1.65!important;gap:14px!important;margin-top:18px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field:has(input:focus){border-color:var(--login-brand)!important;outline:none!important;box-shadow:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field:has(input:focus-visible){border-color:var(--login-brand)!important;outline:none!important;box-shadow:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field:not(:has(input:disabled)):hover{background:color-mix(in srgb,var(--login-brand) 7%,var(--login-surface))!important;border-color:color-mix(in srgb,var(--login-brand) 40%,var(--login-border))!important;box-shadow:none!important;transform:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-command:not(:disabled):hover{background:color-mix(in srgb,var(--login-brand) 7%,var(--login-surface))!important;border-color:color-mix(in srgb,var(--login-brand) 40%,var(--login-border))!important}
+@media(max-width:767px){html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-header{padding:14px 18px!important;min-height:64px!important;border-bottom:1px solid var(--login-border)!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-main{max-width:460px!important;grid-template-columns:minmax(0,1fr)!important;gap:16px!important;padding:20px 16px max(28px,env(safe-area-inset-bottom))!important;margin:0 auto!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro{position:relative!important;padding:20px!important;border:1px solid var(--login-border)!important;border-radius:16px!important;min-height:140px!important;overflow:hidden!important;background:var(--login-surface)!important;isolation:isolate!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro h1{font-size:26px!important;line-height:1.2!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro h1 br{display:none!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro h1 span{margin-left:5px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro-copy{font-size:12px!important;margin-top:8px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-wireframe{position:absolute!important;top:50%!important;right:-12px!important;width:54%!important;max-width:220px!important;max-height:135px!important;height:auto!important;margin:0!important;transform:translateY(-50%)!important;opacity:.22!important;z-index:0!important;mask-image:linear-gradient(to right,transparent,#000 38%)!important;-webkit-mask-image:linear-gradient(to right,transparent,#000 38%)!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-intro>:not(svg){position:relative!important;z-index:1!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card{padding:20px!important;border-radius:16px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-card-heading h2{font-size:20px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field{height:46px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-field input{font-size:16px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-visibility{width:44px!important;min-width:44px!important;height:44px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-submit{min-height:46px!important;font-size:13px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-text-action{min-height:44px!important;font-size:12px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-mobile-about{gap:4px!important;margin-top:16px!important;padding-top:14px!important;font-size:11px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-mobile-about a{min-height:44px!important;font-size:12px!important}
+html body :is(#admin-login-refined,[data-admin-login-refined]) .admin-login-permission{margin-top:10px!important;padding-top:0!important;border:0!important;font-size:10px!important}}
     `}</style>
   </main>
 }
