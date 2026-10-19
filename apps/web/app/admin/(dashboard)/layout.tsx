@@ -53,6 +53,40 @@ const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+
+  useEffect(() => {
+    const root = document.querySelector('[data-admin-content]')
+    if (!root) return
+    const groups = '.control-metrics,[data-approvals-summary],.activity-workspace .metrics,.reports-workspace .metrics,.users-stats,.personals-stats,.exercises-stats,.audit-stats'
+    let frame = 0
+    const observed = new Set<Element>()
+    const measure = () => {
+      root.querySelectorAll(groups).forEach(group => {
+        if (!observed.has(group)) { observer.observe(group); observed.add(group) }
+        const items = Array.from(group.children).filter(item => item.querySelector('[data-admin-metric-icon]'))
+        items.forEach((item, index) => {
+          item.setAttribute('data-admin-metric-item', '')
+          const rect = item.getBoundingClientRect()
+          const previous = items[index - 1]?.getBoundingClientRect()
+          const sameRow = previous && Math.abs(rect.top - previous.top) < 4
+          item.setAttribute('data-admin-metric-divider', sameRow ? 'true' : 'false')
+        })
+      })
+    }
+    const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(measure) }
+    const observer = new ResizeObserver(schedule)
+    observer.observe(root)
+    const mutations = new MutationObserver(schedule)
+    mutations.observe(root, { childList: true, subtree: true })
+    schedule()
+    return () => {
+      cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect()
+      root.querySelectorAll('[data-admin-metric-item]').forEach(item => {
+        item.removeAttribute('data-admin-metric-item'); item.removeAttribute('data-admin-metric-divider')
+      })
+    }
+  }, [pathname])
+
   const central = pathname === '/admin' || pathname === '/admin/controle'
   const approvals = pathname === '/admin/aprovacoes'
   const activity = pathname === '/admin/atividade'
@@ -780,6 +814,13 @@ html.dark .control-compact-identity p { color:#a3becd; }
 html body :is(#admin-dialog-avatar-standard,[data-admin-route]):is(#admin-dialog-avatar-standard,[data-admin-route]):is(#admin-dialog-avatar-standard,[data-admin-route]) dialog :is(.users-avatar,.approval-profile-avatar,.control-manage-avatar,.personal-table-avatar,.avatar,[data-admin-avatar]){
 display:grid!important;place-items:center!important;box-sizing:border-box!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1 / 1!important;border-radius:50%!important;padding:0!important;font-size:14px!important;line-height:1!important;align-self:center!important;transform:none!important;scale:none!important;
 }
+
+/* Fixed-height metric separators; actual row starts are measured on resize. */
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]{position:relative!important;border-left:0!important;border-right:0!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{content:""!important;position:absolute!important;left:0!important;top:50%!important;bottom:auto!important;width:1px!important;height:48px!important;max-height:calc(100% - 8px)!important;transform:translateY(-50%)!important;background:#d7ded3!important;border:0!important;box-shadow:none!important;pointer-events:none!important;display:none!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-divider="true"]::before{display:block!important;}
+html.dark body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{background:#1c4037!important;}
+
 `}</style>
     </div>
   )
