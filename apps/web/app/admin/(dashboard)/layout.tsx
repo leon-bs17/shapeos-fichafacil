@@ -870,6 +870,7 @@ html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-sta
 html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-standard,[data-admin-content]) [data-admin-metric-group]{margin-block:0!important;padding-block:8px!important;}
 }
 
+html body :is(#banner-eyebrow-standard,[data-admin-route="/admin/exercicios"],[data-admin-route="/admin/conta"]) :is(#banner-eyebrow-standard,[data-admin-content]) :is(.exercises-hero,.account-hero) .eyebrow{display:block!important;width:auto!important;min-height:0!important;padding:0!important;margin:0 0 8px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:9px!important;line-height:1.5!important;font-weight:650!important;letter-spacing:.1em!important;}
 `}</style>
     </div>
   )
