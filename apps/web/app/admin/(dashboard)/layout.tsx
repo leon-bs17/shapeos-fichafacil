@@ -881,6 +881,40 @@ html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wi
 @media(max-width:359px){html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-globe,[data-approvals-wireframe],.activity-workspace .hero>.wireframe,.reports-workspace .hero>.wireframe,.notices-workspace .hero>.wireframe,.system-workspace .hero>.wireframe,.users-wireframe,.personal-wireframe,.exercise-wireframe,.audit-wireframe,.account-wireframe){right:-18px!important;width:62%!important;max-height:125px!important;opacity:.18!important;}}
 
 @media(max-width:767px){html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading{position:relative!important;overflow:hidden!important;isolation:isolate!important;}html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading-art{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;pointer-events:none!important;z-index:0!important;opacity:1!important;transform:none!important;}html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) .control-heading-copy{position:relative!important;z-index:1!important;}}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-header{min-height:72px!important;padding:16px!important;gap:10px!important;border-bottom:1px solid var(--admin-menu-border)!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-identity{gap:9px!important;padding:16px 20px 8px!important;font-size:12px!important;font-weight:600!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-nav{padding:12px!important;scrollbar-width:thin!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-nav section+section{margin-top:18px!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-group{color:var(--admin-menu-muted)!important;font-size:9px!important;font-weight:600!important;letter-spacing:.09em!important;padding:0 10px!important;margin-bottom:7px!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row{display:flex!important;align-items:center!important;gap:10px!important;min-height:40px!important;padding:9px 10px!important;border:1px solid transparent!important;border-radius:13px!important;font-size:12px!important;font-weight:400!important;line-height:1.4!important;color:var(--admin-menu-text)!important;background:transparent!important;box-shadow:none!important;transform:none!important;filter:none!important;transition:background-color 150ms ease,border-color 150ms ease!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row+.admin-menu-row{margin-top:3px!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .shapeos-menu-icon{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;stroke-width:1.75!important;color:inherit!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row[aria-current="page"]{background:color-mix(in srgb,var(--admin-menu-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--admin-menu-brand) 40%,transparent)!important;color:var(--admin-menu-brand)!important;font-weight:600!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row:not(.admin-menu-logout):not(:disabled):hover{background:color-mix(in srgb,var(--admin-menu-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--admin-menu-brand) 40%,transparent)!important;box-shadow:none!important;transform:none!important;filter:none!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-footer{padding:10px 12px!important;border-top:1px solid var(--admin-menu-border)!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-profile{padding:14px 20px!important;gap:10px!important;align-items:center!important;border-top:1px solid var(--admin-menu-border)!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-avatar{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;min-height:36px!important;max-height:36px!important;flex:0 0 36px!important;aspect-ratio:1!important;border-radius:50%!important;padding:0!important;background:linear-gradient(145deg,#6f86b6,#4f678f)!important;color:#fff!important;font-size:12px!important;font-weight:700!important;line-height:1!important;box-shadow:none!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-profile p{font-size:11px!important;font-weight:600!important;line-height:1.4!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-profile .admin-menu-label>span{font-size:10px!important;margin-top:3px!important;line-height:1.4!important}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-toggle{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;border-radius:10px!important;box-shadow:none!important;transform:none!important}
+@media(min-width:1024px){
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-header{min-height:96px!important;flex-direction:column!important;padding:14px 8px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-identity{justify-content:center!important;padding:12px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-nav{padding:12px 10px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-row{justify-content:center!important;padding:9px!important;min-height:40px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-profile{justify-content:center!important;padding:14px 8px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation[data-collapsed="true"] .admin-menu-footer{padding:10px!important;}
+}
+@media(max-width:1023px){
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-row{min-height:44px!important;padding:11px 10px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-header{min-height:68px!important;padding:14px 16px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-toggle{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-nav{padding:10px 12px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-nav section+section{margin-top:14px!important;}
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation.admin-mobile-menu .admin-menu-profile{padding-bottom:max(14px,env(safe-area-inset-bottom))!important;}
+}
+@media(prefers-reduced-motion:reduce){html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-row{transition:none!important;}}
+
 `}</style>
     </div>
   )
