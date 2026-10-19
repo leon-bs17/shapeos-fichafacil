@@ -102,12 +102,12 @@ export default function ContaAdminPage() {
         <form onSubmit={handleSubmit} className="account-form">
           <div className="account-form-field"><label htmlFor="conta-nova-senha">Nova senha</label>
             <div className="account-password"><input ref={novaSenhaRef} id="conta-nova-senha" type={mostrarSenha?'text':'password'} placeholder="Digite a nova senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-describedby="account-password-help" aria-invalid={!!erro}/>
-              <button type="button" className="account-visibility" aria-label={mostrarSenha?'Ocultar nova senha':'Mostrar nova senha'} aria-pressed={mostrarSenha} aria-controls="conta-nova-senha" disabled={carregando} onClick={()=>setMostrarSenha(!mostrarSenha)}>{mostrarSenha?<EyeOff size={18}/>:<Eye size={18}/>}</button>
+              <button type="button" className="account-visibility" aria-label={mostrarSenha?'Ocultar nova senha':'Mostrar nova senha'} data-shapeos-tooltip={mostrarSenha?'Ocultar nova senha':'Mostrar nova senha'} aria-pressed={mostrarSenha} aria-controls="conta-nova-senha" disabled={carregando} onClick={()=>setMostrarSenha(!mostrarSenha)}>{mostrarSenha?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div><p id="account-password-help">Use pelo menos 8 caracteres, com letras e números.</p>
           </div>
           <div className="account-form-field"><label htmlFor="conta-confirmar">Confirmar nova senha</label>
             <div className="account-password"><input id="conta-confirmar" type={mostrarConfirmar?'text':'password'} placeholder="Repita a nova senha" value={confirmar} onChange={event=>setConfirmar(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-invalid={!!erro}/>
-              <button type="button" className="account-visibility" aria-label={mostrarConfirmar?'Ocultar confirmação da senha':'Mostrar confirmação da senha'} aria-pressed={mostrarConfirmar} aria-controls="conta-confirmar" disabled={carregando} onClick={()=>setMostrarConfirmar(!mostrarConfirmar)}>{mostrarConfirmar?<EyeOff size={18}/>:<Eye size={18}/>}</button>
+              <button type="button" className="account-visibility" aria-label={mostrarConfirmar?'Ocultar confirmação da senha':'Mostrar confirmação da senha'} data-shapeos-tooltip={mostrarConfirmar?'Ocultar confirmação da senha':'Mostrar confirmação da senha'} aria-pressed={mostrarConfirmar} aria-controls="conta-confirmar" disabled={carregando} onClick={()=>setMostrarConfirmar(!mostrarConfirmar)}>{mostrarConfirmar?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div>
           </div>
           {erro&&<p className="account-error" role="alert">{erro}</p>}
