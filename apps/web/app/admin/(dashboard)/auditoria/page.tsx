@@ -733,6 +733,18 @@ html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="U
 html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Data e hora"]{display:flex!important;gap:7px!important;align-items:center!important}
 html body :is(#audit-refined,[data-audit-refined]) .audit-table time{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:4px 8px!important;font-size:11px!important}
 html body :is(#audit-refined,[data-audit-refined]) .audit-table .audit-date-time{display:inline!important;margin:0!important;font-size:11px!important}}
+
+/* Keep expanded audit data and the footer in the same scrolling flow. */
+html body :is(#audit-refined,[data-audit-refined]) dialog.audit-dialog[open]{display:block!important;box-sizing:border-box!important;height:auto!important;max-height:calc(100dvh - 32px)!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-gutter:stable!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>.audit-dialog-heading{position:static!important;inset:auto!important;transform:none!important;width:100%!important;float:none!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>.audit-dialog-body{display:block!important;position:static!important;flex:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;contain:none!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog .audit-full-record{display:block!important;position:static!important;height:auto!important;max-height:none!important;overflow:visible!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog .audit-record-scroll{display:block!important;position:static!important;height:auto!important;max-height:none!important;overflow:visible!important;contain:none!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>.audit-dialog-body:after{content:"";display:block;clear:both;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer{display:flex!important;position:static!important;inset:auto!important;float:none!important;transform:none!important;flex:none!important;clear:both!important;justify-content:flex-end!important;width:100%!important;box-sizing:border-box!important;margin:0!important;padding-top:16px!important;background:var(--audit-surface)!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer .audit-button{position:static!important;inset:auto!important;float:none!important;transform:none!important;min-height:44px!important;}
+@media(max-width:767px){html body :is(#audit-refined,[data-audit-refined]) dialog.audit-dialog[open]{max-height:calc(100dvh - 24px)!important;}html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer .audit-button{width:100%!important;}}
+
 `}</style>
   </div>
 }
