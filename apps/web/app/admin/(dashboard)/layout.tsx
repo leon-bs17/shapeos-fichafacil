@@ -871,6 +871,15 @@ html body :is(#metric-mobile-standard,[data-admin-route]) :is(#metric-mobile-sta
 }
 
 html body :is(#banner-eyebrow-standard,[data-admin-route="/admin/exercicios"],[data-admin-route="/admin/conta"],[data-admin-route="/admin/auditoria"]) :is(#banner-eyebrow-standard,[data-admin-content]) :is(.exercises-hero,.account-hero,.audit-hero) .eyebrow{display:block!important;width:auto!important;min-height:0!important;padding:0!important;margin:0 0 8px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:9px!important;line-height:1.5!important;font-weight:650!important;letter-spacing:.1em!important;}
+
+/* Mobile banner art stays visible without obscuring the copy. */
+@media(max-width:767px){
+html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-globe,[data-approvals-wireframe],.activity-workspace .hero>.wireframe,.reports-workspace .hero>.wireframe,.notices-workspace .hero>.wireframe,.system-workspace .hero>.wireframe,.users-wireframe,.personal-wireframe,.exercise-wireframe,.audit-wireframe,.account-wireframe){display:block!important;position:absolute!important;inset:auto!important;left:auto!important;right:-12px!important;top:50%!important;bottom:auto!important;width:58%!important;min-width:0!important;max-width:220px!important;height:auto!important;max-height:140px!important;object-fit:contain!important;transform:translateY(-50%)!important;opacity:.24!important;pointer-events:none!important;z-index:0!important;mask-image:linear-gradient(to right,transparent 0%,#000 38%,#000 100%)!important;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 38%,#000 100%)!important;}
+html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-banner,.control-hero,[data-approvals-hero],.activity-workspace .hero,.reports-workspace .hero,.notices-workspace .hero,.system-workspace .hero,.users-hero,.personals-hero,.exercises-hero,.audit-hero,.account-hero){position:relative!important;overflow:hidden!important;isolation:isolate!important;}
+html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-hero-copy,.control-banner-copy,[data-approvals-hero]>div,.hero-copy,.users-hero-copy,.personals-hero-copy,.exercises-hero-copy,.audit-hero-copy,.account-hero-copy){position:relative!important;z-index:1!important;}
+}
+@media(max-width:359px){html body :is(#mobile-banner-wireframe,[data-admin-route]) :is(#mobile-banner-wireframe,[data-admin-content]) :is(.control-globe,[data-approvals-wireframe],.activity-workspace .hero>.wireframe,.reports-workspace .hero>.wireframe,.notices-workspace .hero>.wireframe,.system-workspace .hero>.wireframe,.users-wireframe,.personal-wireframe,.exercise-wireframe,.audit-wireframe,.account-wireframe){right:-18px!important;width:62%!important;max-height:125px!important;opacity:.18!important;}}
+
 `}</style>
     </div>
   )
