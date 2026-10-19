@@ -798,6 +798,9 @@ html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-re
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-filter-toolbar button{min-height:44px!important;}
 html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table tbody tr>td:last-child button{width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;margin:0!important;}
 }
+html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-avatar{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;min-height:32px!important;max-height:32px!important;flex:0 0 32px!important;aspect-ratio:1!important;border-radius:50%!important;padding:0!important;border:0!important;background:linear-gradient(145deg,#6f86b6,#4f678f)!important;color:#fff!important;font-size:11px!important;font-weight:700!important;line-height:1!important;box-shadow:none!important;transform:none!important;}
+@media(max-width:767px){html body [data-admin-route="/admin/usuarios"] :is(#users-refined,[data-users-refined]) .users-table .users-avatar{width:34px!important;height:34px!important;min-width:34px!important;max-width:34px!important;min-height:34px!important;max-height:34px!important;flex-basis:34px!important;}}
+
 `}</style>
     </div>
   )
