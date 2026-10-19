@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { UserCheck, Search, Users, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check, Eye, X, Calendar, Dumbbell, Mail, CheckCircle2 } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatarData } from '@/lib/utils'
 
@@ -183,27 +183,27 @@ export default function AdminPersonaisPage() {
       </header>
 
       <div className="personals-stats grid grid-cols-3 gap-3">
-        <Card className="personals-stat">
+        <button type="button" data-admin-metric-action aria-controls="personals-results" aria-label="Mostrar todos os personais" title="Mostrar todos os personais" aria-pressed={!busca && ordem === 'NOME'} onClick={() => { setBusca(''); setOrdem('NOME'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#personals-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="personals-stat">
           <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><UserCheck size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : personais?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Personais cadastrados</p>
           </div></CardContent>
-        </Card>
-        <Card className="personals-stat">
+        </button>
+        <button type="button" data-admin-metric-action aria-controls="personals-results" aria-label="Ordenar personais por quantidade de alunos" title="Ordenar personais por quantidade de alunos" aria-pressed={!busca && ordem === 'ALUNOS'} onClick={() => { setBusca(''); setOrdem('ALUNOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#personals-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="personals-stat">
           <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><Users size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : new Set((personais ?? []).flatMap(p => p.alunos.map(a => a.id))).size}</p>
             <p className="text-xs text-muted-foreground">Total de alunos</p>
           </div></CardContent>
-        </Card>
-        <Card className="personals-stat">
+        </button>
+        <button type="button" data-admin-metric-action aria-controls="personals-results" aria-label="Ordenar personais por quantidade de treinos" title="Ordenar personais por quantidade de treinos" aria-pressed={!busca && ordem === 'TREINOS'} onClick={() => { setBusca(''); setOrdem('TREINOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#personals-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="personals-stat">
           <CardContent className="p-4"><div data-admin-metric-icon aria-hidden="true" className="personals-stat-icon"><Dumbbell size={20} /></div><div>
             <p className="text-2xl font-bold">{isLoading || error ? '—' : personais?.reduce((acc, p) => acc + p.total_treinos, 0) ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de treinos</p>
           </div></CardContent>
-        </Card>
+        </button>
       </div>
 
-    <section className="personals-management"><header className="personals-management-heading"><h2>Personais cadastrados</h2><span>{total} {total === 1 ? 'personal' : 'personais'}</span></header><section className="personals-toolbar" aria-label="Busca e ordenação de personais">
+    <section className="personals-management"><header className="personals-management-heading"><h2 id="personals-results" tabIndex={-1}>Personais cadastrados</h2><span>{total} {total === 1 ? 'personal' : 'personais'}</span></header><section className="personals-toolbar" aria-label="Busca e ordenação de personais">
       <div data-admin-search className="personals-search"><Search size={19} aria-hidden="true"/>
         <Input aria-label="Buscar personal por nome ou e-mail" placeholder="Buscar nome ou e-mail" value={busca} onChange={event => setBusca(event.target.value)} />
       </div><PersonalSort label="Ordenar" value={ordem} onChange={setOrdem} options={SORT_OPTIONS} />
