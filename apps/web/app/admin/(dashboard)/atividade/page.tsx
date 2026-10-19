@@ -8,7 +8,7 @@ import { Check, ChevronDown, ChevronUp, Activity, CircleCheck, CalendarDays, Che
 type Usuario = { id: string; nome: string; email: string; tipo: string; criado_em: string }
 type Auditoria = { id: string; acao: string; detalhes: Record<string, unknown>; criado_em: string }
 type Evento = { id: string; tipo: 'cadastro' | 'admin'; titulo: string; descricao: string; data: string }
-type Periodo = 'todos' | 'hoje' | '7dias'
+type Periodo = 'todos' | 'hoje' | '24h' | '7dias'
 type Filtro = 'todos' | 'cadastro' | 'admin'
 const POR_PAGINA = 6
 const texto = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
@@ -81,7 +81,7 @@ export default function AdminAtividadePage() {
           descricao: String(a.detalhes?.nome ?? a.detalhes?.email ?? 'Ação administrativa registrada'),
           data: a.criado_em,
         })),
-      ].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()).slice(0, 40)
+      ].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
 
       const agora = Date.now()
       const umDia = 24 * 60 * 60 * 1000
@@ -112,6 +112,7 @@ export default function AdminAtividadePage() {
   const eventos = useMemo(() => (data?.eventos ?? []).filter(e => {
     if (filtro !== 'todos' && e.tipo !== filtro) return false
     if (periodo === 'hoje' && new Date(e.data).toLocaleDateString('pt-BR', { timeZone:'America/Fortaleza' }) !== new Date().toLocaleDateString('pt-BR', { timeZone:'America/Fortaleza' })) return false
+    if (periodo === '24h' && Date.now() - new Date(e.data).getTime() > 86400000) return false
     if (periodo === '7dias' && Date.now() - new Date(e.data).getTime() > 7*86400000) return false
     return texto(e.descricao + ' ' + e.titulo).includes(texto(busca.trim()))
   }), [data, busca, filtro, periodo])
@@ -137,19 +138,19 @@ export default function AdminAtividadePage() {
 
       <div className="metrics">
         {([
-          ['Cadastros 24h', data?.cadastros24h, UserPlus],
-          ['Cadastros 7 dias', data?.cadastros7d, Users],
-          ['Ações administrativas', data?.acoesAdmin, FileText],
-        ] as const).map(([label, value, Icon]) => (
-          <section className="metric" key={label}>
+          ['Cadastros 24h', data?.cadastros24h, UserPlus, 'cadastro', '24h'],
+          ['Cadastros 7 dias', data?.cadastros7d, Users, 'cadastro', '7dias'],
+          ['Ações administrativas', data?.acoesAdmin, FileText, 'admin', 'todos'],
+        ] as const).map(([label, value, Icon, kind, range]) => (
+          <button type="button" data-admin-metric-action aria-controls="activity-results" aria-pressed={!busca && filtro === kind && periodo === range} onClick={() => { setBusca(''); setFiltro(kind); setPeriodo(range); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#activity-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="metric" key={label}>
             <div data-admin-metric-icon aria-hidden="true" className="metric-icon"><Icon size={27} strokeWidth={1.7} /></div>
             <div><p>{label}</p><strong>{isLoading ? '—' : value ?? 0}</strong></div>
-          </section>
+          </button>
         ))}
       </div>
 
       <section className="activity-management" aria-label="Atividades recentes">
-      <h2 className="activity-management-title">Atividades recentes</h2>
+      <h2 id="activity-results" tabIndex={-1} className="activity-management-title">Atividades recentes</h2>
       <section className="toolbar" aria-label="Busca e filtros de atividade">
         <label data-admin-search className="search"><Search size={19} />
           <input aria-label="Buscar usuário ou ação" placeholder="Buscar usuário ou ação..." value={busca} onChange={e => setBusca(e.target.value)} />
@@ -652,6 +653,7 @@ function ActivityPeriod({ value, onChange }: { value: Periodo; onChange: (value:
   const options = [
     { value: 'todos' as const, label: 'Todo período', Icon: CalendarDays },
     { value: 'hoje' as const, label: 'Hoje', Icon: CalendarDays },
+    { value: '24h' as const, label: 'Últimas 24 horas', Icon: Clock3 },
     { value: '7dias' as const, label: 'Últimos 7 dias', Icon: Clock3 },
   ]
   const id = useId()
