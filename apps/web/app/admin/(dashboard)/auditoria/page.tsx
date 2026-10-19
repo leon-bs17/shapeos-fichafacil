@@ -149,6 +149,7 @@ function DetailFields({ details }: { details: Record<string, unknown> }) {
 export default function AdminAuditoriaPage() {
   const [busca, setBusca] = useState('')
   const [acao, setAcao] = useState('TODOS')
+  const [adminId, setAdminId] = useState('TODOS')
   const [periodo, setPeriodo] = useState('TODOS')
   const [pagina, setPagina] = useState(1)
   const [selected, setSelected] = useState<Auditoria | null>(null)
@@ -193,21 +194,30 @@ export default function AdminAuditoriaPage() {
     const cutoff = periodo === 'TODOS' ? null : today - (days - 1) * 86_400_000
     return (data?.eventos ?? []).filter(evento => {
       if (acao !== 'TODOS' && evento.acao !== acao) return false
+      if (adminId !== 'TODOS' && evento.admin_id !== adminId) return false
       if (cutoff !== null && new Date(evento.criado_em).getTime() < cutoff) return false
       const admin = nomes.get(evento.admin_id)
       const alvo = evento.usuario_id ? nomes.get(evento.usuario_id) : null
       return !term || [admin?.nome, admin?.email, alvo?.nome, alvo?.email, evento.detalhes?.nome, configFor(evento).label]
         .some(value => typeof value === 'string' && value.toLocaleLowerCase('pt-BR').includes(term))
     })
-  }, [busca, acao, periodo, data?.eventos, nomes])
+  }, [busca, acao, periodo, adminId, data?.eventos, nomes])
   const total = filtrados.length
   const pages = Math.max(1, Math.ceil(total / 5))
   const current = Math.min(pagina, pages)
   const start = (current - 1) * 5
   const rows = filtrados.slice(start, start + 5)
   const latest = data?.eventos[0]
-  const admins = new Set((data?.eventos ?? []).map(evento => evento.admin_id)).size
-  useEffect(() => { setPagina(1) }, [busca, acao, periodo])
+  const adminOptions: UserFilterOption[] = [
+    { value: 'TODOS', label: 'Todos os administradores' },
+    ...Array.from(new Set((data?.eventos ?? []).map(evento => evento.admin_id))).map(id => {
+      const admin = nomes.get(id)
+      const sameName = (data?.usuarios ?? []).filter(user => user.nome === admin?.nome).length > 1
+      return { value: id, label: admin ? admin.nome + (sameName ? ' · ' + admin.email : '') : 'Administrador · ' + id.slice(0, 8) }
+    }).sort((a, b) => a.label.localeCompare(b.label, 'pt-BR')),
+  ]
+  const admins = adminOptions.length - 1
+  useEffect(() => { setPagina(1) }, [busca, acao, periodo, adminId])
   useEffect(() => {
     if (!selected) return
     const dialog = dialogRef.current
@@ -246,20 +256,22 @@ export default function AdminAuditoriaPage() {
       <AuditWireframe />
     </header>
     <section className="audit-stats" aria-label="Resumo dos registros carregados">
-      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><ClipboardList size={25} /></span><div><p>Registros</p><strong>{isLoading || error ? '—' : data?.eventos.length ?? 0}</strong></div></div>
-      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Users size={25} /></span><div><p><span className="audit-desktop-copy">Administradores</span><span className="audit-mobile-copy">Admins</span></p><strong>{isLoading || error ? '—' : admins}</strong></div></div>
-      <div className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Clock3 size={25} /></span><div><p>Último registro</p><strong>{!error && latest ? new Date(latest.criado_em).toLocaleDateString('pt-BR', { ...dateOptions, day: '2-digit', month: 'short' }) : '—'}</strong></div></div>
+      <button type="button" data-admin-metric-action aria-controls="audit-results" aria-label="Mostrar todos os registros de auditoria" title="Mostrar todos os registros de auditoria" onClick={() => { setBusca(''); setAcao('TODOS'); setPeriodo('TODOS'); setAdminId('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.getElementById('audit-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><ClipboardList size={25} /></span><div><p>Registros</p><strong>{isLoading || error ? '—' : data?.eventos.length ?? 0}</strong></div></button>
+      <button type="button" data-admin-metric-action aria-label="Escolher administrador para filtrar os registros" title="Escolher administrador para filtrar os registros" onClick={() => { requestAnimationFrame(() => { const trigger = document.getElementById('audit-admin-trigger'); trigger?.scrollIntoView({ block: 'center', behavior: 'auto' }); trigger?.focus({ preventScroll: true }); trigger?.click() }) }} className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Users size={25} /></span><div><p><span className="audit-desktop-copy">Administradores</span><span className="audit-mobile-copy">Admins</span></p><strong>{isLoading || error ? '—' : admins}</strong></div></button>
+      <button type="button" data-admin-metric-action aria-label="Abrir o registro de auditoria mais recente" title="Abrir o registro de auditoria mais recente" disabled={!latest || Boolean(error)} onClick={() => { if (latest) setSelected(latest) }} className="audit-stat"><span data-admin-metric-icon aria-hidden="true" className="audit-stat-icon"><Clock3 size={25} /></span><div><p>Último registro</p><strong>{!error && latest ? new Date(latest.criado_em).toLocaleDateString('pt-BR', { ...dateOptions, day: '2-digit', month: 'short' }) : '—'}</strong></div></button>
     </section>
-    <section className="audit-management"><header className="audit-management-heading"><h2>Registros de auditoria</h2><span>{total} {total === 1 ? 'registro' : 'registros'}</span></header><section className="audit-filters" aria-label="Busca e filtros de auditoria">
+    <section className="audit-management"><header className="audit-management-heading"><h2 id="audit-results" tabIndex={-1}>Registros de auditoria</h2><span>{total} {total === 1 ? 'registro' : 'registros'}</span></header><section className="audit-filters" aria-label="Busca e filtros de auditoria">
       <div className="audit-toolbar"><div data-admin-search className="audit-search"><Search size={19} aria-hidden="true" />
         <Input value={busca} onChange={event => setBusca(event.target.value)} placeholder="Buscar na auditoria" aria-label="Buscar administrador, usuário ou ação" />
       </div>
+      <AuditFilterSelect triggerId="audit-admin-trigger" label="Administrador" value={adminId} onChange={setAdminId} options={adminOptions} />
       <AuditFilterSelect label="Ação" value={acao} onChange={setAcao} options={ACTION_OPTIONS} />
       <AuditFilterSelect label="Período" value={periodo} onChange={setPeriodo} options={PERIOD_OPTIONS} /></div>
-      {(acao !== 'TODOS' || periodo !== 'TODOS') && <div className="audit-active-filters"><span>Filtros ativos:</span>
+      {(acao !== 'TODOS' || periodo !== 'TODOS' || adminId !== 'TODOS') && <div className="audit-active-filters"><span>Filtros ativos:</span>
+        {adminId !== 'TODOS' && <button type="button" onClick={() => setAdminId('TODOS')} aria-label="Remover filtro de administrador">{adminOptions.find(option => option.value === adminId)?.label}<X size={14}/></button>}
         {acao !== 'TODOS' && <button type="button" onClick={() => setAcao('TODOS')} aria-label="Remover filtro de ação">{ACTION_OPTIONS.find(option => option.value === acao)?.label}<X size={14}/></button>}
         {periodo !== 'TODOS' && <button type="button" onClick={() => setPeriodo('TODOS')} aria-label="Remover filtro de período">{PERIOD_OPTIONS.find(option => option.value === periodo)?.label}<X size={14}/></button>}
-        <button type="button" className="audit-clear" onClick={() => { setAcao('TODOS'); setPeriodo('TODOS') }}>Limpar filtros</button>
+        <button type="button" className="audit-clear" onClick={() => { setAcao('TODOS'); setPeriodo('TODOS'); setAdminId('TODOS') }}>Limpar filtros</button>
       </div>}
     </section>
     {error ? <section className="audit-message" role="alert"><p>Não foi possível carregar os registros de auditoria.</p><button type="button" disabled={isFetching} className="audit-button" onClick={() => refetch()}>{isFetching ? 'Carregando...' : 'Tentar novamente'}</button></section> :
@@ -745,11 +757,24 @@ html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer{display:
 html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer .audit-button{position:static!important;inset:auto!important;float:none!important;transform:none!important;min-height:44px!important;}
 @media(max-width:767px){html body :is(#audit-refined,[data-audit-refined]) dialog.audit-dialog[open]{max-height:calc(100dvh - 24px)!important;}html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer .audit-button{width:100%!important;}}
 
+
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-toolbar{grid-template-columns:minmax(180px,1fr) repeat(3,minmax(0,180px))!important;}
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-toolbar>div{min-width:0!important;}
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-select-trigger strong{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;}
+@media(max-width:1100px){
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-search{grid-column:1/-1!important;}
+}
+@media(max-width:767px){
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-select:has(#audit-admin-trigger){grid-column:1/-1!important;}
+}
+
 `}</style>
   </div>
 }
-function AuditFilterSelect({ label: fieldLabel, value, onChange, options }: {
-  label: string; value: string; onChange: (value: string) => void; options: UserFilterOption[]
+function AuditFilterSelect({ label: fieldLabel, value, onChange, options, triggerId }: {
+  label: string; value: string; onChange: (value: string) => void; options: UserFilterOption[]; triggerId?: string
 }) {
   const id = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -801,7 +826,7 @@ function AuditFilterSelect({ label: fieldLabel, value, onChange, options }: {
   return <div ref={rootRef} className="audit-select" onBlur={(event) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
   }}>
-    <button ref={triggerRef} type="button" className="audit-select-trigger"
+    <button ref={triggerRef} id={triggerId} type="button" className="audit-select-trigger"
       aria-label={`Filtrar por ${fieldLabel.toLowerCase()}: ${options[selected].label}`}
       aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
       onClick={() => { setActive(selected); setOpen(!open) }}
