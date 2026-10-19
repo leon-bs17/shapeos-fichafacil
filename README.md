@@ -1,113 +1,108 @@
-# 🚀 ShapeOS - Ficha Técnica
+# ShapeOS
 
-O **ShapeOS** é um sistema desenvolvido para conectar personal trainers e alunos, otimizando o acompanhamento de treinos com fichas dinâmicas e rotativas semanais para potencializar os resultados de quem busca o desenvolvimento físico.
+Plataforma para personal trainers, alunos e administradores: fichas, treino guiado, histórico, agenda, avaliações físicas, notificações e assistente Mys.
 
----
+Produção: https://shapeos-fichafacil.vercel.app
 
-## 🎯 Objetivo e Descrição da Proposta
+## Tecnologias
 
-Facilitar a gestão e prescrição de treinos por parte dos personal trainers, oferecendo uma rotina de exercícios atualizada semanalmente. O sistema busca garantir que os alunos executem treinos estruturados, acompanhem sua evolução física e mantenham a consistência necessária para alcançar suas metas de performance. O aplicativo funciona num modelo B2B2C, onde o Personal Trainer se cadastra e convida seus alunos para a plataforma.
+TypeScript, Next.js 15, React 19, Tailwind CSS 4, TanStack Query, PostgreSQL/Supabase Auth/RLS, pnpm 9.15.9, Turborepo e Playwright. O aplicativo móvel usa Expo/React Native. A integração DeepSeek é opcional.
 
----
+## Instalação
 
-## 🛠️ Tecnologias Utilizadas
+Requisitos: Node.js >=20, pnpm 9.15.9 e um projeto Supabase. Docker e Supabase CLI são necessários apenas para infraestrutura local.
 
-O projeto adota uma arquitetura de Monorepo utilizando ferramentas modernas:
-O projeto adota uma arquitetura de "Monorepo" (vários projetos juntos) utilizando ferramentas modernas:
-* **Linguagem Principal:** TypeScript
-* **Gerenciador de Pacotes:** pnpm e Turborepo
-* **Front-end Web:** Next.js (React) com Tailwind CSS v4
-* **Backend, Banco de Dados & Auth:** Supabase (abstraindo PostgreSQL)
-* **Testes E2E:** Playwright
-* **Front-end Web:** Next.js (React) com Tailwind CSS
-* **Banco de Dados & Login:** Supabase
-
----
-
-## ⚙️ Pré-requisitos de Ambiente
-## 👶 Como Rodar o Projeto (Guia para Iniciantes)
-
-Para executar o projeto localmente, sua máquina precisa ter instalados:
-* **Node.js**: Versão `>=20.0.0`
-* **pnpm**: Versão `9.x` (Gerenciador de pacotes oficial do projeto)
-* **Git**: Para clonamento do repositório
-* **Supabase CLI** *(Opcional)*: Caso precise rodar o banco de dados e os serviços do Supabase de forma totalmente local na sua máquina.
-
-> 💡 **Nota:** Se este é o seu primeiro contato com o projeto ou com desenvolvimento, siga o passo a passo detalhado abaixo.
-
----
-### 📍 Passo 1: Instalar os programas básicos (Pré-requisitos)
-Antes de tudo, o seu computador precisa ter três coisas instaladas:
-1. **Node.js**: É o motor que faz o projeto rodar. Acesse [nodejs.org](https://nodejs.org/) e baixe a versão **LTS** (Recomendada para a maioria dos usuários). Instale normalmente (só ir clicando em "Avançar" / "Next").
-2. **Git**: Usado para baixar o código do projeto. Acesse [git-scm.com](https://git-scm.com/downloads) e instale.
-3. **Editor de Código (Recomendado)**: Baixe o [Visual Studio Code (VS Code)](https://code.visualstudio.com/) para conseguir visualizar os arquivos e digitar os comandos com facilidade.
-
-## 🚀 Como Rodar a Aplicação Localmente (Passo a Passo)
-### 📍 Passo 2: Instalar o gerenciador "pnpm"
-Com o Node.js instalado, você precisará de uma ferramenta chamada `pnpm`.
-1. Abra o **Terminal** do seu computador (pode pesquisar por "Prompt de Comando" ou "cmd" no menu Iniciar, ou abrir o terminal dentro do VS Code).
-2. Digite o seguinte comando e aperte **Enter**:
-```bash
-npm install -g pnpm
-```
-
-Siga as instruções abaixo para configurar e executar a aplicação no seu ambiente de desenvolvimento:
-
-**1. Clone o repositório**
-### 📍 Passo 3: Baixar o código do projeto
-Ainda no Terminal, escolha uma pasta onde deseja salvar o projeto e digite o comando abaixo, apertando **Enter**:
 ```bash
 git clone https://github.com/leon-bs17/shapeos-fichafacil.git
-```
-Digite o comando abaixo para adentrar na pasta, apertando **Enter**:
-```bash
 cd shapeos-fichafacil
+npm install -g pnpm@9.15.9
+pnpm install --frozen-lockfile
+cp apps/web/.env.example apps/web/.env.local
 ```
-*(O comando `cd` serve para entrar dentro da pasta que acabamos de baixar).*
 
-**2. Instale as dependências**
-O projeto utiliza o `pnpm` como gerenciador de pacotes. Na raiz do projeto (`shapeos-fichafacil`), execute:
-### 📍 Passo 4: Instalar os "pedaços" do projeto (Dependências)
-Agora que você está dentro da pasta do projeto, o sistema precisa baixar os arquivos complementares (dependências). Digite:
+Edite apps/web/.env.local:
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=SUA_CHAVE_PUBLICAVEL_OU_ANON
+```
+
+Nunca use service_role ou chaves secretas em NEXT_PUBLIC_. A Mys usa DEEPSEEK_API_KEY somente no servidor; DEEPSEEK_MODEL é opcional. CAPTCHA, OAuth e biometria são opcionais e não substituem o login por senha.
+
+Para um banco local novo, com Docker e Supabase CLI:
+
 ```bash
-pnpm install
+pnpm exec supabase start
+pnpm exec supabase db reset
 ```
-*Aguarde a barra de carregamento terminar. Pode levar 1 ou 2 minutos.*
 
-### 📍 Passo 5: Configurar as senhas (Variáveis de Ambiente)
-O projeto precisa se conectar ao banco de dados (Supabase). Para isso:
-1. Pelo terminal do VS Code, abra a pasta `shapeos-fichafacil` > `apps` > `web`.
-2. Lá dentro, você verá um arquivo chamado `.env.example`.
-3. **Faça uma cópia desse arquivo** e renomeie a cópia para `.env.local` (exatamente assim, com ponto no começo).
-4. Abra esse novo arquivo `.env.local` e coloque a URL e a Anon Key do seu banco de dados do Supabase.
-    * Acesse a plataforma [supabase.com](https://supabase.com/) e crie uma conta gratuita.
-    * Crie um novo projeto através do painel administrativo.
-    * Navegue até **Project Settings** > **API** e obtenha os valores da **Project URL** e da **Anon Key**.
+Configure o .env.local com a URL e chave locais exibidas pela CLI. O reset apaga e recria somente o banco local de desenvolvimento. Em projeto hospedado existente, revise e aplique apenas as migrações pendentes de supabase/migrations, sem reset de produção. A correção reexecutável de fichas está em 20261019142527_sprint3_atomic_workouts.sql.
 
-**3. Inicie o servidor de desenvolvimento**
-Volte para a pasta raiz do projeto (`shapeos-fichafacil`) e inicie a aplicação:
-### 📍 Passo 6: Rodar o site!
-Pronto! Volte para o Terminal (certifique-se de estar na pasta principal `shapeos-fichafacil`) e digite o comando para ligar o projeto:
 ```bash
-pnpm run dev
+pnpm dev:web
+# http://localhost:3000
+pnpm --filter @shapeos/web build
+pnpm --filter @shapeos/web start
 ```
-*(Para rodar apenas a versão web, você pode utilizar o comando `pnpm run dev:web`)*.
 
-1. **Aguarde a inicialização:** Espere o terminal concluir o processamento inicial.
-2. **Abra o navegador:** Utilize o navegador de sua preferência (Google Chrome, Edge, Safari, etc.).
-3. **Acesse o endereço:** Navegue para **`http://localhost:3000`** 
+O Personal precisa ser aprovado pelo administrador; o Aluno precisa de vínculo ativo com o Personal para receber fichas. O primeiro administrador é provisionado pelo responsável do banco, sem cadastro público de Admin.
 
-O projeto deve aparecer funcionando na sua tela!
+## Estrutura
 
----
+```text
+apps/web/app/              Páginas e back-end HTTP Next.js
+apps/web/app/api/          API REST própria
+apps/web/components/       Interface e treino guiado
+apps/web/lib/api/          Autorização, validação e respostas HTTP
+apps/web/services/         Integração do front com API e banco
+apps/mobile/              Aplicativo Expo/React Native
+packages/shared/          Tipos e validação de formulários
+supabase/migrations/       Tabelas, políticas e funções
+supabase/tests/            Testes SQL de integração
+tests/                    Testes de contratos e regras
+e2e/                      Testes Playwright
+docs/                     DER, API e demonstração
+```
 
-## 👥 Público-Alvo
+## Autenticação e perfis
 
-* **Personal Trainers:** Profissionais que buscam praticidade na criação, personalização e rotação semanal das fichas de treino dos seus alunos.
-* **Alunos e Praticantes de Atividade Física:** Pessoas que buscam desenvolvimento físico, hipertrofia ou condicionamento, e precisam de um acompanhamento estruturado para manter o foco na rotina.
+Aluno consulta suas fichas e registra treinos; Personal gerencia suas fichas e alunos vinculados; Admin acessa a administração. Middleware, endpoints e RLS verificam o perfil atual. O cliente não escolhe suas permissões. Supabase Auth armazena senhas com hash bcrypt; as tabelas de negócio não contêm senhas.
 
----
+## API REST própria
 
-## 🔗 Links Úteis
+Base: a origem da aplicação. Autenticação por cookie de sessão ou Authorization: Bearer <access_token>. Escritas com cookie exigem Origin igual à origem do site. As leituras respeitam o perfil; mutações de fichas exigem Personal ativo e proprietário.
 
-* Gestão do Projeto: [Trello](https://trello.com/b/F5UphKlA/shapeos-fichafácil)
+| Método | Endpoint | Ação |
+|---|---|---|
+| GET | /api/exercicios | Catálogo com filtros q e grupo |
+| GET | /api/treinos | Fichas autorizadas |
+| POST | /api/treinos | Criar ficha para aluno vinculado |
+| GET | /api/treinos/{id} | Consultar ficha |
+| PATCH | /api/treinos/{id} | Editar título/itens ou status ativo |
+| DELETE | /api/treinos/{id} | Excluir ficha |
+| POST | /api/treinos/{id}/duplicar | Copiar ficha e prescrições, inicialmente inativa |
+
+São quatro caminhos de recursos e sete operações HTTP usadas pelo front. Há ainda POST /api/mys e POST /api/admin/control. A rota de imagem de Aprovações e o callback de autenticação não são contados como API de negócio.
+
+As respostas usam JSON com data ou error. Criação/cópia retornam 201 e Location; exclusão retorna 204 sem corpo. Demais códigos: 200, 400, 401, 403, 404, 409, 413, 415, 500 e 503. Exemplos de requisições, campos e permissões: [docs/API.md](docs/API.md).
+
+## Banco e DER
+
+[DER atualizado](docs/DER.md): núcleo de usuários/vínculos/fichas/exercícios e extensões de execução, agenda, avaliações, administração, notificações e suporte. O banco de produção tem 15 tabelas públicas relacionadas; auth.users é gerenciada pelo Supabase e se relaciona com usuarios.id.
+
+## Testes e Sprint 3
+
+```bash
+node tests/sprint3-api.cjs
+node tests/mys-api.cjs
+node tests/mys-data.cjs
+pnpm --filter @shapeos/web typecheck
+pnpm --filter @shapeos/web build
+pnpm test:e2e
+```
+
+Testes de contrato usam dependências simuladas e não substituem integração real. supabase/tests/sprint3_workouts.sql testa criação, edição, cópia, preservação de prescrições, rollback e permissão do aluno; usa contas demonstrativas identificadas no arquivo e reverte os dados ao terminar. Para outro banco, ajuste os IDs para suas próprias contas de teste.
+
+O roteiro e a matriz de requisitos estão em [docs/SPRINT3.md](docs/SPRINT3.md). scripts/sprint3-smoke.mjs executa um teste HTTP autenticado com variáveis de ambiente, cria fichas temporárias para um aluno de teste e as remove ao final. Não versione credenciais nem sessões.
+
+Dois requisitos funcionais foram adicionados nesta correção: busca de fichas por título/aluno combinando status e exportação das fichas filtradas em JSON. A matriz identifica essas adições em relação ao código revisado, sem inventar participação individual nas Sprints anteriores.

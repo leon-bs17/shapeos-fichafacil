@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const vm = require('node:vm')
-const ts = require('../apps/web/node_modules/typescript')
+const ts = require('typescript')
 
 function load(file, imports, extra = {}) {
   const module = { exports: {} }

@@ -1,4 +1,4 @@
-const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('../apps/web/node_modules/typescript'),Module=require('node:module');
+const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript'),Module=require('node:module');
 function load(file){const m=new Module(file,module);m.filename=file;m.paths=module.paths;m._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText,file);return m.exports}
 const original=Module._load;Module._load=function(id,...args){if(id==='@/lib/supabase/client')return {createClient:()=>{throw Error('No network in unit tests')}};return original.call(this,id,...args)};
 const f=load('apps/web/services/fitness.ts'),csv=load('apps/web/lib/fitness-import.ts');

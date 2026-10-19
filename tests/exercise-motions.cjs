@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict')
 const fs=require('node:fs')
 const vm=require('node:vm')
-const ts=require('../apps/web/node_modules/typescript')
+const ts=require('typescript')
 const moduleFixture={exports:{}}
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('apps/web/lib/fitness/exercise-motions.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{module:moduleFixture,exports:moduleFixture.exports,Map,Math})
 const {exerciseMotions,findExerciseMotion}=moduleFixture.exports

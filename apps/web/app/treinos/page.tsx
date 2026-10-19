@@ -16,7 +16,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, GripVertical } from 'lucide-react'
+import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, GripVertical, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -31,6 +31,7 @@ import { formatarData } from '@/lib/utils'
 import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
 import { PrescriptionEditor } from '@/components/fitness/prescription-editor'
 import type { FichaResumo } from '@/services/treinos'
+import { filterWorkouts, exportWorkouts, type WorkoutStatus } from '@/lib/fitness/workout-tools'
 
 interface LinhaItem {
   exercicio_id: string
@@ -55,17 +56,31 @@ export default function TreinosPage() {
 }
 
 function TreinosConteudo() {
-  const { data: fichas, isLoading } = useFichas()
+  const { data: fichas, isLoading, error, refetch } = useFichas()
   const acoes = useAcoesFichas()
   const [modalAberto, setModalAberto] = useState(false)
   const [prescricao, setPrescricao] = useState<FichaResumo | null>(null)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
   const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
   const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
+  const [busca,setBusca]=useState('')
+  const [status,setStatus]=useState<WorkoutStatus>('TODAS')
+  const [exportMessage,setExportMessage]=useState('')
+  const filtradas=filterWorkouts(fichas??[],busca,status)
+  const actionError=acoes.duplicar.error??acoes.alternar.error??acoes.excluir.error
+  function exportar(){
+    try{
+      const blob=new Blob([exportWorkouts(filtradas)],{type:'application/json'})
+      const url=URL.createObjectURL(blob),link=document.createElement('a')
+      link.href=url;link.download=`shapeos-fichas-${new Date().toISOString().slice(0,10)}.json`
+      document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)
+      setExportMessage(`${filtradas.length} ficha(s) preparada(s) para download.`)
+    }catch{setExportMessage('Não foi possível preparar o arquivo. Tente novamente.')}
+  }
 
   return (
     <div className="space-y-8">
-      <header className="flex items-center justify-between animate-fade-in">
+      <header className="flex flex-wrap items-center justify-between gap-4 animate-fade-in">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Treinos</h1>
           <p className="text-muted-foreground text-sm">
@@ -77,27 +92,35 @@ function TreinosConteudo() {
         </Button>
       </header>
 
-      {isLoading ? (
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="min-w-0 flex-1 space-y-1.5"><Label htmlFor="buscar-fichas">Buscar fichas</Label><Input id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} className="h-10"/></div>
+        <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
+        <Button variant="outline" className="h-10" disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><Download size={15} className="mr-2"/>Exportar JSON</Button>
+      </div>
+      {exportMessage && <p role="status" className="text-sm text-muted-foreground">{exportMessage}</p>}
+      {actionError && <p role="alert" className="text-sm text-destructive">{actionError.message}</p>}
+      {error ? <div role="alert" className="rounded-xl border border-destructive/30 p-4 text-sm"><p>{error.message}</p><Button variant="outline" className="mt-3" onClick={()=>void refetch()}>Tentar novamente</Button></div> :
+      isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">
           {[0, 1].map((i) => (
             <div key={i} className="h-48 skeleton" />
           ))}
         </div>
-      ) : fichas?.length === 0 ? (
+      ) : filtradas.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-14 text-center">
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
               <Dumbbell className="h-7 w-7 text-primary" />
             </div>
-            <p className="font-semibold text-lg">Nenhuma ficha criada</p>
+            <p className="font-semibold text-lg">{fichas?.length ? 'Nenhuma ficha encontrada' : 'Nenhuma ficha criada'}</p>
             <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-              Clique em Nova Ficha para montar o treino de um aluno em segundos.
+              {fichas?.length ? 'Ajuste a busca ou o filtro de status para encontrar suas fichas.' : 'Clique em Nova Ficha para montar o treino de um aluno em segundos.'}
             </p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {fichas?.map((ficha, idx) => (
+          {filtradas.map((ficha, idx) => (
             <Card key={ficha.id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} hover:shadow-md transition-all duration-200`}>
               <CardContent className="p-5 space-y-4">
                 <div className="flex items-start justify-between gap-3">

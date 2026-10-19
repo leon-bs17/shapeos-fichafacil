@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { fitnessRequest } from '@/lib/api/client'
 import { GRUPOS_MUSCULARES, EQUIPAMENTOS } from '@shapeos/shared'
 import { validateExerciseUrl } from '@/lib/fitness/exercise-media'
 
@@ -11,27 +12,9 @@ export interface ExercicioBiblioteca {
   proprio: boolean
 }
 
-export async function listarExercicios(
-  supabase: SupabaseClient,
-  personalId: string
-): Promise<ExercicioBiblioteca[]> {
-  const { data, error } = await supabase
-    .from('exercicios')
-    .select('id, nome, grupo_muscular, video_url, equipamento, criado_por')
-    .order('nome')
-
-  if (error) throw error
-
-  return (data ?? []).map((e) => ({
-    id: e.id,
-    nome: e.nome,
-    grupo_muscular: e.grupo_muscular,
-    video_url: e.video_url,
-    equipamento: e.equipamento,
-    proprio: e.criado_por === personalId,
-  }))
+export async function listarExercicios(_supabase:SupabaseClient,_personalId:string):Promise<ExercicioBiblioteca[]> {
+  return fitnessRequest<ExercicioBiblioteca[]>('/api/exercicios')
 }
-
 export async function criarExercicio(
   supabase: SupabaseClient,
   personalId: string,
@@ -110,4 +93,3 @@ export async function excluirExercicio(
     throw error
   }
 }
-

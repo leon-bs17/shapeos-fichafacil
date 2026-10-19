@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const vm = require('node:vm')
-const ts = require('../apps/web/node_modules/typescript')
+const ts = require('typescript')
 const catalog = require('../apps/web/lib/fitness/exercise-media-catalog.json')
 const fixture = { exports: {} }
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('apps/web/lib/fitness/exercise-media.ts', 'utf8'), {

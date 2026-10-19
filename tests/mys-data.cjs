@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const vm = require('node:vm')
-const ts = require('../apps/web/node_modules/typescript')
+const ts = require('typescript')
 function load(file, imports, extra = {}) {
   const module = { exports:{} }
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'), { compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022} }).outputText, { module,exports:module.exports,require:name=>imports[name],console,Date,JSON,Object,Set,AbortSignal,...extra })
