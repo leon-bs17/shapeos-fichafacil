@@ -179,7 +179,7 @@ export default function AdminRelatoriosPage() {
             {[0,1,2,3,4].map(i=><g key={i}><line x1="45" x2="725" y1={205-i*43.75} y2={205-i*43.75} stroke="var(--border)" strokeDasharray="4 4" /><text x="33" y={209-i*43.75} textAnchor="end" fill="var(--muted)" fontSize="11">{Math.round(max*i/4)}</text></g>)}
             <polygon points={`45,205 ${linha} 725,205`} fill="var(--accent)" opacity=".07" />
             <polyline points={linha} fill="none" stroke="var(--accent)" strokeWidth="2" />
-            {pontos.map((p,i)=><g key={i}><circle cx={45+i*680/6} cy={205-p.valor/max*175} r="3" fill="var(--accent)" /><text x={45+i*680/6} y="233" textAnchor="middle" fill="var(--muted)" fontSize="10">{dataLabel(p.t).slice(0,5)}</text><title>{dataLabel(p.t)}: {p.valor} usuários</title></g>)}
+            {pontos.map((p,i)=><g key={i} data-shapeos-tooltip={`${dataLabel(p.t)}: ${p.valor} usuários`} aria-label={`${dataLabel(p.t)}: ${p.valor} usuários`}><circle cx={45+i*680/6} cy={205-p.valor/max*175} r="3" fill="var(--accent)" /><text x={45+i*680/6} y="233" textAnchor="middle" fill="var(--muted)" fontSize="10">{dataLabel(p.t).slice(0,5)}</text><desc>{dataLabel(p.t)}: {p.valor} usuários</desc></g>)}
           </svg>
           <svg className="mobile-chart" viewBox="0 0 360 210" role="img" aria-label={`Cadastros acumulados: ${pontos[0].valor} no início e ${pontos[6].valor} no final do período`}>
             {[0,1,2,3].map(i=><g key={i}><line x1="32" x2="340" y1={170-i*48} y2={170-i*48} stroke="var(--border)" strokeDasharray="4 4"/><text x="24" y={174-i*48} textAnchor="end" fill="var(--muted)" fontSize="12">{Math.round(max*i/3)}</text></g>)}
