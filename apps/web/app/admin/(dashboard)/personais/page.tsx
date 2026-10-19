@@ -578,6 +578,11 @@ html body :is(#personals-refined,[data-personals-refined]) .personal-role svg{wi
 html body :is(#personals-refined,[data-personals-refined]) .personals-table-card{border:1px solid var(--personal-border)!important;border-radius:16px!important;margin:0 20px 20px!important;overflow:hidden!important;}
 @media(max-width:767px){html body :is(#personals-refined,[data-personals-refined]) .personals-table-card{margin:0 14px 14px!important;border-radius:13px!important;}html body :is(#personals-refined,[data-personals-refined]) .personals-table tbody{padding-top:14px!important;}}
 
+html body :is(#personals-refined,[data-personals-refined]) .personals-banner-title{display:block!important;margin:0!important;font-size:28px!important;line-height:1.2!important;font-weight:700!important;letter-spacing:-.035em!important;color:var(--personal-ink)!important;}
+html body :is(#personals-refined,[data-personals-refined]) .eyebrow{font-size:9px!important;border:0!important;padding:0!important;margin:0 0 8px!important;background:transparent!important;min-height:0!important;}
+html body :is(#personals-refined,[data-personals-refined]) .personals-subtitle{font-size:13px!important;line-height:1.55!important;font-weight:400!important;margin-top:8px!important;color:var(--personal-muted)!important;}
+@media(max-width:767px){html body :is(#personals-refined,[data-personals-refined]) .personals-banner-title{font-size:26px!important;}}
+
 `}</style>
   </div>
 }
