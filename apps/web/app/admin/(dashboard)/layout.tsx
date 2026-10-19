@@ -817,6 +817,7 @@ html body :is(#admin-dialog-avatar-standard,[data-admin-route]):is(#admin-dialog
 display:grid!important;place-items:center!important;box-sizing:border-box!important;width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;aspect-ratio:1 / 1!important;border-radius:50%!important;padding:0!important;font-size:14px!important;line-height:1!important;align-self:center!important;transform:none!important;scale:none!important;
 }
 
+@media(min-width:768px){
 /* Fixed-height metric separators; actual row starts are measured on resize. */
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]{position:relative!important;border-left:0!important;border-right:0!important;}
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{content:""!important;position:absolute!important;left:0!important;top:50%!important;bottom:auto!important;width:1px!important;height:48px!important;max-height:calc(100% - 8px)!important;transform:translateY(-50%)!important;background:#d7ded3!important;border:0!important;box-shadow:none!important;pointer-events:none!important;display:none!important;}
@@ -833,11 +834,7 @@ html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-s
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){width:100%!important;padding:0!important;margin:0!important;min-height:64px!important;}
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;flex:0 0 44px!important;}
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{height:56px!important;}
-@media(max-width:767px){
-html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-group]{padding:16px 0!important;row-gap:16px!important;}
-html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]{padding:0 10px!important;min-height:80px!important;}
-html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]:has(>[data-admin-metric-icon]),html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:8px!important;}
-html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;flex:0 0 36px!important;}
+
 }
 
 `}</style>
