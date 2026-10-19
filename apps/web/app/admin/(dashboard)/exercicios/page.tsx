@@ -26,6 +26,7 @@ export default function AdminExerciciosPage() {
 function ExerciciosConteudo() {
   const [busca, setBusca] = useState('')
   const [filtroGrupo, setFiltroGrupo] = useState<string | null>(null)
+  const [comEquipamento, setComEquipamento] = useState(false)
   const [modalAberto, setModalAberto] = useState(false)
   const [novoNome, setNovoNome] = useState('')
   const [novaMedia, setNovaMedia] = useState('')
@@ -138,7 +139,7 @@ function ExerciciosConteudo() {
       e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
       e.grupo_muscular?.toLowerCase().includes(busca.toLowerCase())
     const matchesGrupo = !filtroGrupo || e.grupo_muscular === filtroGrupo
-    return matchesBusca && matchesGrupo
+    return matchesBusca && matchesGrupo && (!comEquipamento || Boolean(e.equipamento))
   })
 
   const grupos = [...new Set(exercicios?.map((e) => e.grupo_muscular) ?? [])].sort()
@@ -157,29 +158,29 @@ function ExerciciosConteudo() {
       </header>
 
       <div className="exercises-stats grid grid-cols-3 gap-3">
-        <Card className="exercise-stat">
+        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar todos os exercícios" title="Mostrar todos os exercícios" aria-pressed={!busca && !filtroGrupo && !comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(false); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><FileText size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{exercicios?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de exercícios</p>
           </div></CardContent>
-        </Card>
-        <Card className="exercise-stat">
+        </button>
+        <button type="button" data-admin-metric-action aria-controls="exercise-group-filters" aria-label="Escolher um grupo muscular" title="Escolher um grupo muscular" onClick={() => { requestAnimationFrame(() => { const group = document.getElementById('exercise-group-filters'); group?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true }); group?.scrollIntoView({ block: 'center', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Users size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{grupos.length}</p>
             <p className="text-xs text-muted-foreground">Grupos musculares</p>
           </div></CardContent>
-        </Card>
-        <Card className="exercise-stat">
+        </button>
+        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar exercícios com equipamento" title="Mostrar exercícios com equipamento" aria-pressed={comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(true); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Dumbbell size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">
               {exercicios?.filter((e) => e.equipamento).length ?? 0}
             </p>
             <p className="text-xs text-muted-foreground">Com equipamento</p>
           </div></CardContent>
-        </Card>
+        </button>
       </div>
 
-      <section className="exercises-management"><header className="exercises-management-heading"><h2>Exercícios cadastrados</h2><span>{filtrados?.length ?? 0} exercícios</span></header>
+      <section className="exercises-management"><header className="exercises-management-heading"><h2 id="exercises-results" tabIndex={-1}>Exercícios cadastrados</h2><span>{filtrados?.length ?? 0} exercícios</span></header>
       <div className="exercises-toolbar">
         <div data-admin-search className="exercises-search relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -196,7 +197,8 @@ function ExerciciosConteudo() {
         </button>
       </div>
 
-      <div className="exercises-filters flex flex-wrap gap-2" aria-label="Filtrar por grupo muscular">
+      {comEquipamento && <div className="exercises-filters flex flex-wrap gap-2" aria-label="Filtros ativos"><button type="button" aria-label="Remover filtro com equipamento" aria-pressed="true" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 text-xs" onClick={() => setComEquipamento(false)}>Com equipamento<X size={14} aria-hidden="true"/></button></div>}
+      <div id="exercise-group-filters" className="exercises-filters flex flex-wrap gap-2" aria-label="Filtrar por grupo muscular">
         <button
           aria-pressed={!filtroGrupo}
           onClick={() => setFiltroGrupo(null)}
