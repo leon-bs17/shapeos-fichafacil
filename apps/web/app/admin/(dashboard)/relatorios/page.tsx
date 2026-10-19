@@ -37,6 +37,10 @@ function variacao(atual: number, anterior: number) {
   const v = Math.round((atual - anterior) / anterior * 100)
   return (v > 0 ? '+' : '') + v + '%'
 }
+function ajudaVariacao(atual: number, anterior: number) {
+  if (!anterior) return atual ? 'Novo: há registros no período atual e nenhum no período anterior.' : 'Nenhum registro nos dois períodos comparados.'
+  return `Compara com o período anterior de igual duração: (${atual} − ${anterior}) ÷ ${anterior} × 100. Resultado arredondado.`
+}
 export default function AdminRelatoriosPage() {
 
   useEffect(() => {
@@ -163,7 +167,7 @@ export default function AdminRelatoriosPage() {
       </section>
       <div className="metrics">{grupos.map(g=>{
         const atual=contar(g.datas,inicio,fim), anterior=contar(g.datas,inicioAnterior,inicio)
-        return <section className="metric" key={g.label}><span data-admin-metric-icon aria-hidden="true"><g.Icon size={24} strokeWidth={1.75} /></span><div><p>{g.label}</p><strong>{g.valor}</strong><span className="metric-note">{atual} no período · {variacao(atual,anterior)}</span></div></section>
+        return <section className="metric" key={g.label}><span data-admin-metric-icon aria-hidden="true"><g.Icon size={24} strokeWidth={1.75} /></span><div><p>{g.label}</p><strong>{g.valor}</strong><span className="metric-note" data-shapeos-tooltip={ajudaVariacao(atual,anterior)}>{atual} no período · {variacao(atual,anterior)}</span></div></section>
       })}</div>
       <section className="reports-analysis" aria-labelledby="reports-analysis-title">
         <h2 id="reports-analysis-title" className="reports-analysis-title"><BarChart3 size={19} aria-hidden="true"/>Visão dos resultados</h2>
@@ -185,17 +189,17 @@ export default function AdminRelatoriosPage() {
             {[0,1,2,3].map(i=><g key={i}><line x1="32" x2="340" y1={170-i*48} y2={170-i*48} stroke="var(--border)" strokeDasharray="4 4"/><text x="24" y={174-i*48} textAnchor="end" fill="var(--muted)" fontSize="12">{Math.round(max*i/3)}</text></g>)}
             <polygon points={`32,170 ${pontos.map((p,i)=>`${32+i*308/6},${170-p.valor/max*144}`).join(' ')} 340,170`} fill="var(--accent)" opacity=".07"/>
             <polyline points={pontos.map((p,i)=>`${32+i*308/6},${170-p.valor/max*144}`).join(' ')} fill="none" stroke="var(--accent)" strokeWidth="2"/>
-            {pontos.map((p,i)=><g key={i}><circle cx={32+i*308/6} cy={170-p.valor/max*144} r="3" fill="var(--accent)"/>{i%3===0 && <text x={32+i*308/6} y="197" textAnchor="middle" fill="var(--muted)" fontSize="12">{dataLabel(p.t).slice(0,5)}</text>}</g>)}
+            {pontos.map((p,i)=><g key={i} data-shapeos-tooltip={`${dataLabel(p.t)}: ${p.valor} usuários`} aria-label={`${dataLabel(p.t)}: ${p.valor} usuários`}><circle cx={32+i*308/6} cy={170-p.valor/max*144} r="3" fill="var(--accent)"/>{i%3===0 && <text x={32+i*308/6} y="197" textAnchor="middle" fill="var(--muted)" fontSize="12">{dataLabel(p.t).slice(0,5)}</text>}</g>)}
           </svg>
         </section>
         <section className="panel profile"><h2><Users size={19} />Perfil dos usuários</h2><div className="profile-body">
-          <div className="donut" role="img" aria-label={perfil.map(p=>p.label+': '+p.valor).join(', ')} style={{background:data.totalUsuarios ? `conic-gradient(var(--accent) 0% ${alunoPct}%,#648caf ${alunoPct}% ${alunoPct+personalPct}%,#455965 ${alunoPct+personalPct}% 100%)`:'var(--border)'}}><div><strong>{data.totalUsuarios}</strong><span>usuários</span></div></div>
+          <div className="donut" data-shapeos-tooltip={perfil.map(p=>`${p.label}: ${p.valor} (${data.totalUsuarios?Math.round(p.valor/data.totalUsuarios*100):0}%)`).join(' · ')} role="img" aria-label={perfil.map(p=>p.label+': '+p.valor).join(', ')} style={{background:data.totalUsuarios ? `conic-gradient(var(--accent) 0% ${alunoPct}%,#648caf ${alunoPct}% ${alunoPct+personalPct}%,#455965 ${alunoPct+personalPct}% 100%)`:'var(--border)'}}><div><strong>{data.totalUsuarios}</strong><span>usuários</span></div></div>
           <ul>{perfil.filter(p=>p.valor>0).map(p=><li key={p.label}><span className="legend-dot" style={{background:p.cor}} /><div>{p.label}<strong>{p.valor}</strong></div><span>{data.totalUsuarios?Math.round(p.valor/data.totalUsuarios*100):0}%</span></li>)}</ul>
         </div></section>
       </div>
-      <section className="panel summary"><h2><FileText size={19} />Resumo do período</h2><div className="table-scroll"><table><thead><tr><th>Indicador</th><th>Atual</th><th>Período anterior</th><th>Variação</th></tr></thead><tbody>{resumo.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.atual}</td><td>{r.anterior}</td><td><span className={r.atual<r.anterior?'change down':'change'}>{variacao(r.atual,r.anterior)}</span></td></tr>)}</tbody></table></div>
-        <div className="mobile-summary">{resumo.map(r=><article key={r.label}><h3>{r.label}</h3><dl><div><dt>Atual</dt><dd>{r.atual}</dd></div><div><dt>Anterior</dt><dd>{r.anterior}</dd></div><div><dt>Variação</dt><dd className={r.atual<r.anterior?'negative':''}>{variacao(r.atual,r.anterior)}</dd></div></dl></article>)}</div>
-        <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total.</p><button data-shapeos-tooltip="Exportar em CSV os usuários carregados, com perfil, status e data de cadastro." onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
+      <section className="panel summary"><h2><FileText size={19} />Resumo do período</h2><div className="table-scroll"><table><thead><tr><th>Indicador</th><th>Atual</th><th>Período anterior</th><th>Variação</th></tr></thead><tbody>{resumo.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.atual}</td><td>{r.anterior}</td><td><span className={r.atual<r.anterior?'change down':'change'} data-shapeos-tooltip={ajudaVariacao(r.atual,r.anterior)}>{variacao(r.atual,r.anterior)}</span></td></tr>)}</tbody></table></div>
+        <div className="mobile-summary">{resumo.map(r=><article key={r.label}><h3>{r.label}</h3><dl><div><dt>Atual</dt><dd>{r.atual}</dd></div><div><dt>Anterior</dt><dd>{r.anterior}</dd></div><div><dt>Variação</dt><dd className={r.atual<r.anterior?'negative':''} data-shapeos-tooltip={ajudaVariacao(r.atual,r.anterior)}>{variacao(r.atual,r.anterior)}</dd></div></dl></article>)}</div>
+        <div className="summary-footer"><p>Comparação com os {dias} dias anteriores. Indicadores superiores mostram a base total. “Novo”: nenhum registro no período anterior.</p><button data-shapeos-tooltip="Exportar em CSV os usuários carregados, com perfil, status e data de cadastro." onClick={exportarUsuarios}><Download size={13} />Exportar usuários CSV</button></div>
       </section>
       </section>
       <style jsx>{`
