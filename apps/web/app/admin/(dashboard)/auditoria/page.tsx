@@ -770,6 +770,21 @@ html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-toolbar{grid
 html body :is(#audit-indicator-filters,[data-audit-refined]) .audit-select:has(#audit-admin-trigger){grid-column:1/-1!important;}
 }
 
+
+/* Keep search and filters aligned, with a single text line in each trigger. */
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-toolbar{align-items:start!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-toolbar>.audit-select{display:flex!important;align-items:stretch!important;height:44px!important;min-height:44px!important;margin:0!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-select-trigger{box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:space-between!important;height:44px!important;min-height:44px!important;max-height:44px!important;width:100%!important;margin:0!important;padding:0 12px!important;gap:8px!important;vertical-align:top!important;line-height:1.4!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-select-trigger>.audit-select-copy{display:flex!important;align-items:center!important;flex:1 1 auto!important;min-width:0!important;gap:4px!important;white-space:nowrap!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-select-label{display:block!important;flex:0 0 auto!important;white-space:nowrap!important;line-height:1.4!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-select-trigger strong{display:block!important;flex:1 1 auto!important;min-width:0!important;max-width:none!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important;line-height:1.4!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-select-trigger>svg{flex:0 0 16px!important;width:16px!important;height:16px!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-search{display:flex!important;align-items:center!important;box-sizing:border-box!important;height:44px!important;min-height:44px!important;max-height:44px!important;gap:10px!important;padding:0 14px!important;margin:0!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-search>svg{position:static!important;flex:0 0 19px!important;transform:none!important;margin:0!important;}
+html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-search input{box-sizing:border-box!important;flex:1 1 auto!important;min-width:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:100%!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+@media(min-width:1101px){html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-toolbar{grid-template-columns:minmax(220px,1fr) minmax(210px,230px) minmax(140px,180px) minmax(160px,180px)!important;}}
+@media(max-width:359px){html body :is(#audit-control-sizing,[data-admin-route]) :is(#audit-control-sizing,[data-audit-refined]) .audit-toolbar{grid-template-columns:minmax(0,1fr)!important;}}
+
 `}</style>
   </div>
 }
@@ -835,7 +850,7 @@ function AuditFilterSelect({ label: fieldLabel, value, onChange, options, trigge
           event.preventDefault(); setActive(selected); setOpen(true)
         }
       }}>
-      <span><span className={fieldLabel === 'Período' ? 'audit-period-prefix' : undefined}>{fieldLabel}: </span><strong>{options[selected].label}</strong></span>
+      <span className="audit-select-copy"><span className="audit-select-label">{fieldLabel}:</span><strong title={options[selected].label}>{fieldLabel === 'Administrador' && value === 'TODOS' ? 'Todos' : options[selected].label}</strong></span>
       {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
     </button>
     {open && <div ref={listRef} id={id} role="listbox" tabIndex={-1} className="audit-select-menu"
