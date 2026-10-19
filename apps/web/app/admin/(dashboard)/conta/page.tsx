@@ -19,9 +19,11 @@ export default function ContaAdminPage() {
   const [mostrarSenha,setMostrarSenha] = useState(false)
   const [mostrarConfirmar,setMostrarConfirmar] = useState(false)
   const [erro,setErro] = useState<string|null>(null)
+  const [erroCampo,setErroCampo] = useState<'senha'|'confirmar'|null>(null)
   const [ok,setOk] = useState(false)
   const [carregando,setCarregando] = useState(false)
   const novaSenhaRef = useRef<HTMLInputElement>(null)
+  const confirmarSenhaRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const html=document.documentElement
@@ -71,9 +73,11 @@ export default function ContaAdminPage() {
     event.preventDefault()
     if(carregando)return
     setErro(null)
+    setErroCampo(null)
     const problema=validarSenhaForte(senha)
-    if(problema){setErro(problema);return}
-    if(senha!==confirmar){setErro('As senhas não coincidem.');return}
+    if(problema){setErro(problema);setErroCampo('senha');novaSenhaRef.current?.focus();return}
+    if(!confirmar){setErro('Confirme a nova senha.');setErroCampo('confirmar');confirmarSenhaRef.current?.focus();return}
+    if(senha!==confirmar){setErro('As senhas não coincidem.');setErroCampo('confirmar');confirmarSenhaRef.current?.focus();return}
     setCarregando(true)
     try {
       const {error}=await createClient().auth.updateUser({password:senha})
@@ -99,18 +103,18 @@ export default function ContaAdminPage() {
       <section className="account-panel account-security" aria-labelledby="account-security-title">
         <header className="account-panel-heading"><KeyRound size={24} aria-hidden="true"/><div><h2 id="account-security-title">Segurança da conta</h2><p>Atualize sua senha de acesso.</p></div></header>
         {ok?<div className="account-success" role="status"><CheckCircle2 size={24} aria-hidden="true"/><div><h3>Senha alterada com sucesso!</h3><p>Sua nova senha já pode ser usada para acessar a conta.</p></div><button type="button" className="account-command" onClick={()=>{setOk(false);requestAnimationFrame(()=>novaSenhaRef.current?.focus())}}>Alterar novamente</button></div>:
-        <form onSubmit={handleSubmit} className="account-form">
+        <form onSubmit={handleSubmit} className="account-form" noValidate>
           <div className="account-form-field"><label htmlFor="conta-nova-senha">Nova senha</label>
-            <div className="account-password"><input ref={novaSenhaRef} id="conta-nova-senha" type={mostrarSenha?'text':'password'} placeholder="Digite a nova senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-describedby="account-password-help" aria-invalid={!!erro}/>
+            <div className="account-password"><input ref={novaSenhaRef} id="conta-nova-senha" type={mostrarSenha?'text':'password'} placeholder="Digite a nova senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-describedby={erro ? 'account-password-help account-password-error' : 'account-password-help'} aria-invalid={erroCampo === 'senha'}/>
               <button type="button" className="account-visibility" aria-label={mostrarSenha?'Ocultar nova senha':'Mostrar nova senha'} data-shapeos-tooltip={mostrarSenha?'Ocultar nova senha':'Mostrar nova senha'} aria-pressed={mostrarSenha} aria-controls="conta-nova-senha" disabled={carregando} onClick={()=>setMostrarSenha(!mostrarSenha)}>{mostrarSenha?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div><p id="account-password-help">Use pelo menos 8 caracteres, com letras e números.</p>
           </div>
           <div className="account-form-field"><label htmlFor="conta-confirmar">Confirmar nova senha</label>
-            <div className="account-password"><input id="conta-confirmar" type={mostrarConfirmar?'text':'password'} placeholder="Repita a nova senha" value={confirmar} onChange={event=>setConfirmar(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-invalid={!!erro}/>
+            <div className="account-password"><input ref={confirmarSenhaRef} id="conta-confirmar" type={mostrarConfirmar?'text':'password'} placeholder="Repita a nova senha" value={confirmar} onChange={event=>setConfirmar(event.target.value)} autoComplete="new-password" required disabled={carregando} aria-describedby={erro ? 'account-password-error' : undefined} aria-invalid={erroCampo === 'confirmar'}/>
               <button type="button" className="account-visibility" aria-label={mostrarConfirmar?'Ocultar confirmação da senha':'Mostrar confirmação da senha'} data-shapeos-tooltip={mostrarConfirmar?'Ocultar confirmação da senha':'Mostrar confirmação da senha'} aria-pressed={mostrarConfirmar} aria-controls="conta-confirmar" disabled={carregando} onClick={()=>setMostrarConfirmar(!mostrarConfirmar)}>{mostrarConfirmar?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div>
           </div>
-          {erro&&<p className="account-error" role="alert">{erro}</p>}
+          {erro&&<p id="account-password-error" className="account-error" role="alert">{erro}</p>}
           <div className="account-form-footer"><button type="submit" className="account-command" disabled={carregando}>{carregando&&<Loader2 className="account-spinner" size={16} aria-hidden="true"/>}{carregando?'Salvando...':'Salvar nova senha'}</button></div>
         </form>}
       </section>
