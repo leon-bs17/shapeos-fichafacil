@@ -219,7 +219,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const Icon=item.icone
     const active=item.href==='/admin'?pathname===item.href:pathname.startsWith(item.href)
     return <Link key={item.href} href={item.href} aria-current={active?'page':undefined}
-      aria-label={item.label} title={!mobile&&collapsed?item.label:undefined}
+      aria-label={item.label} data-shapeos-tooltip={!mobile&&collapsed?item.label:undefined}
       className="admin-menu-row" onClick={()=>setMobileOpen(false)}>
       <Icon className="shapeos-menu-icon" size={18} strokeWidth={1.75} aria-hidden="true"/>
       <span className="admin-menu-label">{item.label}</span>
@@ -245,11 +245,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}</div></section>
       </nav>
       <div className="admin-menu-footer">
-        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" title={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
-        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} title={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
+        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" data-shapeos-tooltip={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
+        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} data-shapeos-tooltip={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
         {signOutError&&<p className="admin-menu-error" role="alert">{signOutError}</p>}
       </div>
-      {user&&<div className="admin-menu-profile" title={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
+      {user&&<div className="admin-menu-profile" data-shapeos-tooltip={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
     </>
   }
 
