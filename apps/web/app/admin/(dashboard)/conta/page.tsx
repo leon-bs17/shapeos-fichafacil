@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { CheckCircle2, Eye, EyeOff, KeyRound, Loader2, UserRound } from 'lucide-react'
+import { CheckCircle2, Eye, EyeOff, KeyRound, Loader2, UserRound, Shield } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 
 type Account = { nome:string|null; email:string|null }
@@ -92,7 +92,7 @@ export default function ContaAdminPage() {
       <section className="account-panel" aria-labelledby="account-data-title">
         <header className="account-panel-heading"><UserRound size={24} aria-hidden="true"/><div><h2 id="account-data-title">Dados da conta</h2><p>Informações da sua conta de administrador.</p></div></header>
         {isLoading?<div className="account-loading" role="status">Carregando dados da conta...</div>:profileError?<div className="account-profile-error"><p role="alert">Não foi possível carregar os dados da conta.</p><button type="button" className="account-command" onClick={()=>void refetch()}>Tentar novamente</button></div>:<>
-          <div className="account-identity"><span className="account-avatar" aria-hidden="true">{initials}</span><div><h3>{nome}</h3><span className="account-role">Administrador</span></div></div>
+          <div className="account-identity"><span className="account-avatar" aria-hidden="true">{initials}</span><div><h3>{nome}</h3><span className="account-role"><Shield size={12} aria-hidden="true"/>Administrador</span></div></div>
           <dl className="account-data"><div><dt>Nome</dt><dd>{user?.nome||'Não informado'}</dd></div><div><dt>E-mail</dt><dd>{user?.email||'Não informado'}</dd></div></dl>
         </>}
       </section>
@@ -235,6 +235,8 @@ html body :is(#account-refined,[data-account-refined]) .account-command{width:10
 html body :is(#account-refined,[data-account-refined]) .account-form-footer{display:block!important}
 html body :is(#account-refined,[data-account-refined]) .account-success>div{min-width:0!important;flex-basis:calc(100% - 36px)!important}}
 html body :is(#account-refined,[data-account-refined]) .account-avatar{background:linear-gradient(145deg,#6f86b6,#4f678f)!important;color:#fff!important;}
+html body :is(#account-refined,[data-account-refined]) .account-role{display:inline-flex!important;align-items:center!important;gap:5px!important;border:0!important;border-radius:999px!important;padding:3px 7px!important;background:hsl(var(--info) / .1)!important;color:hsl(var(--info))!important;font-size:10px!important;font-weight:500!important;line-height:1.5!important;}
+html body :is(#account-refined,[data-account-refined]) .account-role svg{width:12px!important;height:12px!important;flex-shrink:0!important;color:inherit!important;}
 `}</style>
   </div>
 }
