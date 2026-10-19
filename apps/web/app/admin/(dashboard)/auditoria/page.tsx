@@ -296,9 +296,9 @@ export default function AdminAuditoriaPage() {
           })}</tbody>
         </table></div>
         <footer className="audit-pagination"><span>{start + 1}–{Math.min(start + 5, total)} de {total} registros</span><nav aria-label="Paginação da auditoria">
-          <button type="button" className="audit-button" aria-label="Página anterior" disabled={current === 1} onClick={() => setPagina(current - 1)}><ChevronLeft size={16}/></button>
+          <button type="button" className="audit-button" aria-label="Página anterior" data-shapeos-tooltip="Página anterior" disabled={current === 1} onClick={() => setPagina(current - 1)}><ChevronLeft size={16}/></button>
           <span className="audit-current" aria-current="page">{current}</span>
-          <button type="button" className="audit-button" aria-label="Próxima página" disabled={current === pages} onClick={() => setPagina(current + 1)}><ChevronRight size={16}/></button>
+          <button type="button" className="audit-button" aria-label="Próxima página" data-shapeos-tooltip="Próxima página" disabled={current === pages} onClick={() => setPagina(current + 1)}><ChevronRight size={16}/></button>
         </nav></footer>
       </section>}
     {!isLoading && !error && <p className="audit-scope">Resumo dos até 200 registros mais recentes carregados.</p>}
@@ -308,7 +308,7 @@ export default function AdminAuditoriaPage() {
       const rect = event.currentTarget.getBoundingClientRect()
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setSelected(null)
     }}>
-      {selected && <><header className="audit-dialog-heading"><div><p>Auditoria</p><h2 id={titleId}>Detalhes do registro</h2></div><button type="button" autoFocus className="audit-button" aria-label="Fechar detalhes" onClick={() => setSelected(null)}><X size={20}/></button></header>
+      {selected && <><header className="audit-dialog-heading"><div><p>Auditoria</p><h2 id={titleId}>Detalhes do registro</h2></div><button type="button" autoFocus className="audit-button" aria-label="Fechar detalhes" data-shapeos-tooltip="Fechar detalhes" onClick={() => setSelected(null)}><X size={20}/></button></header>
         <div className="audit-dialog-body" tabIndex={0} role="region" aria-label="Conteúdo do registro"><div className="audit-detail-summary"><ShieldCheck size={26}/><div><h3>{configFor(selected).label}</h3><p>{dateLabel(selected.criado_em)} às {timeLabel(selected.criado_em)}</p></div></div>
         <dl className="audit-detail-people"><div><dt>Administrador</dt><dd>{nomes.get(selected.admin_id)?.nome ?? 'Administrador'}</dd>{nomes.get(selected.admin_id)?.email && <dd className="audit-detail-email">{nomes.get(selected.admin_id)?.email}</dd>}</div>
           <div><dt>Usuário</dt><dd>{targetName(selected)}</dd>{selected.usuario_id && nomes.get(selected.usuario_id)?.email && <dd className="audit-detail-email">{nomes.get(selected.usuario_id)?.email}</dd>}</div></dl>
