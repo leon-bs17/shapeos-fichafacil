@@ -158,19 +158,19 @@ function ExerciciosConteudo() {
       </header>
 
       <div className="exercises-stats grid grid-cols-3 gap-3">
-        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar todos os exercícios" title="Mostrar todos os exercícios" aria-pressed={!busca && !filtroGrupo && !comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(false); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
+        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar todos os exercícios" data-shapeos-tooltip="Mostrar todos os exercícios" aria-pressed={!busca && !filtroGrupo && !comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(false); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><FileText size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{exercicios?.length ?? 0}</p>
             <p className="text-xs text-muted-foreground">Total de exercícios</p>
           </div></CardContent>
         </button>
-        <button type="button" data-admin-metric-action aria-controls="exercise-group-filters" aria-label="Escolher um grupo muscular" title="Escolher um grupo muscular" onClick={() => { requestAnimationFrame(() => { const group = document.getElementById('exercise-group-filters'); group?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true }); group?.scrollIntoView({ block: 'center', behavior: 'auto' }) }) }} className="exercise-stat">
+        <button type="button" data-admin-metric-action aria-controls="exercise-group-filters" aria-label="Escolher um grupo muscular" data-shapeos-tooltip="Escolher um grupo muscular" onClick={() => { requestAnimationFrame(() => { const group = document.getElementById('exercise-group-filters'); group?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true }); group?.scrollIntoView({ block: 'center', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Users size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">{grupos.length}</p>
             <p className="text-xs text-muted-foreground">Grupos musculares</p>
           </div></CardContent>
         </button>
-        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar exercícios com equipamento" title="Mostrar exercícios com equipamento" aria-pressed={comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(true); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
+        <button type="button" data-admin-metric-action aria-controls="exercises-results" aria-label="Mostrar exercícios com equipamento" data-shapeos-tooltip="Mostrar exercícios com equipamento" aria-pressed={comEquipamento} onClick={() => { setBusca(''); setFiltroGrupo(null); setComEquipamento(true); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('#exercises-results'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} className="exercise-stat">
           <CardContent className="p-4"><span data-admin-metric-icon aria-hidden="true" className="exercise-stat-icon"><Dumbbell size={25} strokeWidth={1.7}/></span><div className="exercise-stat-copy">
             <p className="text-2xl font-bold">
               {exercicios?.filter((e) => e.equipamento).length ?? 0}
@@ -252,14 +252,14 @@ function ExerciciosConteudo() {
                 <div className="exercise-card-actions">
                   <ExercisePreview name={e.nome} exerciseId={e.id} videoUrl={e.video_url}/>
                   <button type="button" onClick={() => { setEditandoMedia(e); setMediaUrl(e.video_url ?? ''); salvarMedia.reset() }}
-                    className="exercise-edit p-2 rounded-lg text-muted-foreground hover:bg-muted" aria-label={`Editar demonstração de ${e.nome}`} title="Editar demonstração">
+                    className="exercise-edit p-2 rounded-lg text-muted-foreground hover:bg-muted" aria-label={`Editar demonstração de ${e.nome}`} data-shapeos-tooltip="Editar demonstração">
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => excluirExercicio.mutate(e.id)}
                     className="exercise-delete p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
                     aria-label={`Excluir ${e.nome}`}
-                    title="Excluir"
+                    data-shapeos-tooltip="Excluir"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
