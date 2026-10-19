@@ -115,7 +115,7 @@ export default function AdminComunicadosPage() {
     event.preventDefault()
     if(salvando) return
     setErro(null)
-    if(titulo.trim().length<3||mensagem.trim().length<5) {setErro('Informe um título com pelo menos 3 caracteres e uma mensagem com pelo menos 5.');return}
+    if(titulo.trim().length<3||mensagem.trim().length<5) {setErro('Informe um título com pelo menos 3 caracteres e uma mensagem com pelo menos 5.'); if (titulo.trim().length < 3) document.getElementById('notice-title')?.focus(); else noticeMessageRef.current?.focus(); return}
     setSalvando(true)
     try {
       const supabase=createClient()
@@ -193,7 +193,7 @@ export default function AdminComunicadosPage() {
         <colgroup><col style={{width:'44%'}}/><col style={{width:'15%'}}/><col style={{width:'13%'}}/><col style={{width:'18%'}}/><col style={{width:'10%'}}/></colgroup>
         <thead><tr><th scope="col">Comunicado</th><th scope="col">Público</th><th scope="col">Status</th><th scope="col">Publicado em</th><th scope="col" className="notice-action-cell">Ações</th></tr></thead>
         <tbody>{filtered.map(item=><tr key={item.id}>
-          <td data-label="Comunicado" className="notice-title-cell"><strong>{item.titulo}</strong><p>{item.mensagem}</p></td>
+          <td data-label="Comunicado" className="notice-title-cell"><strong>{item.titulo}</strong><p data-shapeos-tooltip={item.mensagem}>{item.mensagem}</p></td>
           <td data-label="Público"><span className="notice-audience">{publicoLabel(item.publico)}</span></td>
           <td data-label="Status"><span className="notice-state" data-active={item.ativa}><i/>{item.ativa?'Ativo':'Inativo'}</span></td>
           <td data-label="Publicado em"><time dateTime={item.criado_em}>{dateLabel(item.criado_em)}<small>{timeLabel(item.criado_em)}</small></time></td>
@@ -203,13 +203,14 @@ export default function AdminComunicadosPage() {
       {!isLoading&&!erroConsulta&&!!comunicados?.length&&<div className="notice-list-summary">{filtered.length} {filtered.length===1?'comunicado':'comunicados'}{filtered.length!==(comunicados?.length??0)?' de '+(comunicados?.length??0):''}</div>}
     </section>
 
-    <aside id="notice-compose" className="notice-compose" aria-labelledby="notice-compose-title"><h2 id="notice-compose-title">Novo comunicado</h2><form className="notice-create-form" onSubmit={publicar}>
+    <aside id="notice-compose" className="notice-compose" aria-labelledby="notice-compose-title"><h2 id="notice-compose-title">Novo comunicado</h2><form className="notice-create-form" onSubmit={publicar} noValidate>
         <div className="notice-modal-body">
           <label htmlFor="notice-title">Título</label><input id="notice-title" className="notice-field" value={titulo} disabled={salvando} onChange={event=>setTitulo(event.target.value)} maxLength={120} placeholder="Ex.: Manutenção programada" required/>
-          <label htmlFor="notice-message">Mensagem</label><textarea ref={noticeMessageRef} id="notice-message" className="notice-field" value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." required/>
-          <NoticeSelect label="Público" value={publico} onChange={value=>setPublico(value as Publico)} options={[{value:'TODOS',label:'Alunos e personais'},{value:'PERSONAL',label:'Personais'},{value:'ALUNO',label:'Alunos'}]}/>
-          <p className="notice-helper"><Info size={15}/>O aviso será enviado ao público selecionado.</p>
-          {erro&&<p className="notice-error" role="alert">{erro}</p>}
+          <label htmlFor="notice-message">Mensagem</label><textarea ref={noticeMessageRef} id="notice-message" className="notice-field" data-shapeos-tooltip="Mensagem de 5 a 1.500 caracteres. O campo cresce conforme você digita." aria-describedby={erro ? 'notice-message-help notice-compose-error' : 'notice-message-help'} aria-invalid={Boolean(erro) && mensagem.trim().length < 5} value={mensagem} disabled={salvando} onChange={event=>setMensagem(event.target.value)} maxLength={1500} rows={6} placeholder="Escreva o comunicado..." minLength={5} required/>
+          <p id="notice-message-help" className="notice-message-meta"><span>De 5 a 1.500 caracteres. O campo se ajusta ao texto.</span><span>{mensagem.length}/1.500</span></p>
+          <NoticeSelect label="Público" value={publico} tooltip={publico === 'TODOS' ? 'Comunicado destinado a alunos e personais.' : publico === 'PERSONAL' ? 'Comunicado destinado somente a personais.' : 'Comunicado destinado somente a alunos.'} onChange={value=>setPublico(value as Publico)} options={[{value:'TODOS',label:'Alunos e personais'},{value:'PERSONAL',label:'Personais'},{value:'ALUNO',label:'Alunos'}]}/>
+          <p className="notice-helper"><Info size={15}/>{publico === 'TODOS' ? 'Alunos e personais verão este comunicado.' : publico === 'PERSONAL' ? 'Somente personais verão este comunicado.' : 'Somente alunos verão este comunicado.'}</p>
+          {erro&&<p id="notice-compose-error" className="notice-error" role="alert">{erro}</p>}
         </div>
         <footer className="notice-modal-footer"><button type="button" className="notice-command" disabled={salvando} onClick={()=>{setTitulo('');setMensagem('');setPublico('TODOS');setErro(null)}}>Cancelar</button><button type="submit" className="notice-command notice-publish" disabled={salvando}><Send size={16} aria-hidden="true"/>{salvando?'Publicando...':'Publicar comunicado'}</button></footer>
       </form>
@@ -453,11 +454,20 @@ html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-not
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy .notice-banner-title{font-size:26px!important;line-height:1.2!important;}
 html body [data-admin-route="/admin/comunicados"] :is(#notices-refined,[data-notices-refined]) .hero .hero-copy>p:last-child{max-width:100%!important;overflow-wrap:break-word!important;}
 }
+
+html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) #notice-message{box-sizing:border-box!important;border:1px solid var(--notice-border)!important;border-radius:13px!important;background:var(--notice-surface)!important;color:var(--notice-text)!important;box-shadow:none!important;outline:none!important;transform:none!important;filter:none!important;transition:background-color 150ms ease,border-color 150ms ease!important;}
+html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) #notice-message:not(:disabled):hover{background:color-mix(in srgb,var(--notice-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--notice-brand) 40%,transparent)!important;}
+html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) #notice-message:is(:focus,:focus-visible){border-color:var(--notice-brand)!important;box-shadow:none!important;outline:none!important;}
+html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) .notice-message-meta{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:12px!important;font-size:10px!important;line-height:1.5!important;color:var(--notice-muted)!important;}
+html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) .notice-message-meta>span:last-child{flex-shrink:0!important;font-variant-numeric:tabular-nums!important;white-space:nowrap!important;}
+@media(max-width:767px){html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) #notice-message{font-size:16px!important;}}
+@media(prefers-reduced-motion:reduce){html body :is(#notice-message-standard,[data-admin-route]) :is(#notice-message-standard,[data-notices-refined]) #notice-message{transition:none!important;}}
+
 `}</style>
   </div>
 }
-function NoticeSelect({ label: fieldLabel, value, onChange, options }: {
-  label: string; value: string; onChange: (value: string) => void; options: NoticeOption[]
+function NoticeSelect({ label: fieldLabel, value, onChange, options, tooltip }: {
+  label: string; value: string; onChange: (value: string) => void; options: NoticeOption[]; tooltip?: string
 }) {
   const id = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -498,7 +508,7 @@ function NoticeSelect({ label: fieldLabel, value, onChange, options }: {
   return <div ref={rootRef} className="notice-select" onBlur={(event) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false)
   }}>
-    <button ref={triggerRef} type="button" className="notice-select-trigger"
+    <button ref={triggerRef} type="button" className="notice-select-trigger" data-shapeos-tooltip={tooltip}
       aria-label={`Filtrar por ${fieldLabel.toLowerCase()}: ${options[selected].label}`}
       aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? id : undefined}
       onClick={() => { setActive(selected); setOpen(!open) }}
