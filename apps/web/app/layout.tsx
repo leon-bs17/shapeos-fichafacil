@@ -4,6 +4,7 @@ import { ThemeProvider } from 'next-themes'
 import { QueryProvider } from '@/providers/query-provider'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { RegisterSw } from '@/components/pwa/register-sw'
+import { AdminTooltipProvider } from '@/components/ui/admin-tooltip-provider'
 import './globals.css'
 import './admin-light-approvals.css'
 import './admin-light-approvals-visibility.css'
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               {children}
             </div>
           </QueryProvider>
+          <AdminTooltipProvider />
           <ThemeToggle floating />
           <RegisterSw />
         </ThemeProvider>
