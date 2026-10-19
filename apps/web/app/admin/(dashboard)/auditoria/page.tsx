@@ -269,18 +269,16 @@ export default function AdminAuditoriaPage() {
         
         <div className="audit-table-wrap"><table className="audit-table">
           <caption className="sr-only">Registros de decisões administrativas</caption>
-          <colgroup><col className="audit-col-action"/><col className="audit-col-person"/><col className="audit-col-person"/><col className="audit-col-date"/><col className="audit-col-view"/></colgroup>
-          <thead><tr>{['Ação','Administrador','Usuário','Data e hora','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
+          <colgroup><col className="audit-col-action"/><col className="audit-col-person"/><col className="audit-col-date"/><col className="audit-col-view"/></colgroup>
+          <thead><tr>{['Registro','Usuário','Data e hora','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
           <tbody>{rows.map(evento => {
             const config = configFor(evento)
-            const Icon = config.icon
             const admin = nomes.get(evento.admin_id)?.nome ?? 'Administrador'
             const target = targetName(evento)
             return <tr key={evento.id}>
-              <td data-label="Ação"><div className="audit-event"><span className={'audit-event-icon ' + config.classe}><Icon size={18}/></span><strong>{config.label}</strong></div></td>
-              <td data-label="Administrador"><div className="audit-person"><span className="audit-avatar" aria-hidden="true">{initials(admin)}</span><span>{admin}</span></div></td>
-              <td data-label="Usuário"><div className="audit-person"><span className="audit-avatar" aria-hidden="true">{initials(target)}</span><span>{target}</span></div></td>
-              <td data-label="Data e hora"><CalendarDays className="audit-mobile-copy audit-date-icon" size={15} aria-hidden="true"/><time dateTime={evento.criado_em}>{dateLabel(evento.criado_em)}<span className="audit-date-time"><span className="audit-desktop-copy">, </span><span className="audit-mobile-copy"> · </span>{timeLabel(evento.criado_em)}</span></time></td>
+              <td data-label="Registro"><div className="audit-record-identity"><span className="audit-avatar" aria-hidden="true">{initials(admin)}</span><div className="audit-record-copy"><div className="audit-record-title"><strong>{config.label}</strong><span className="audit-admin-role"><ShieldCheck size={12} aria-hidden="true"/>ADMIN</span></div><span className="audit-record-admin"><span className="sr-only">Administrador: </span>{admin}</span></div></div></td>
+              <td data-label="Usuário"><span className="audit-target-name">{target}</span></td>
+              <td data-label="Data e hora"><CalendarDays className="audit-mobile-copy audit-date-icon" size={15} aria-hidden="true"/><time dateTime={evento.criado_em}>{dateLabel(evento.criado_em)}<span className="audit-date-time">{timeLabel(evento.criado_em)}</span></time></td>
               <td data-label="Ações"><button type="button" data-admin-view className="audit-button" aria-label={'Ver detalhes de ' + config.label} onClick={() => setSelected(evento)}><Eye size={15}/>Ver</button></td>
             </tr>
           })}</tbody>
@@ -711,6 +709,30 @@ html body :is(#audit-refined,[data-audit-refined]) .audit-detail-people{grid-tem
 html body :is(#audit-refined,[data-audit-refined]) .audit-dialog>footer button{min-height:44px!important}}
 html body :is(#audit-refined,[data-audit-refined]) .audit-select-trigger{height:44px!important;color:var(--audit-text)!important;font-size:12px!important;}
 html body :is(#audit-refined,[data-audit-refined]) .audit-search input{height:44px!important;}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-action{width:43%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-person{width:25%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-date{width:20%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-col-view{width:12%!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table tbody td{padding:14px 16px!important;vertical-align:middle!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table th{padding:12px 16px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-identity{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-copy{display:grid!important;gap:4px!important;min-width:0!important;flex:1!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-title{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px 8px!important;min-width:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-title strong{font-size:13px!important;font-weight:600!important;line-height:1.5!important;color:var(--audit-text)!important;overflow-wrap:anywhere!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-admin{display:block!important;font-size:11px!important;line-height:1.5!important;color:var(--audit-muted)!important;overflow-wrap:anywhere!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-admin-role{display:inline-flex!important;align-items:center!important;gap:5px!important;flex-shrink:0!important;white-space:nowrap!important;font-size:9px!important;font-weight:500!important;line-height:1.5!important;padding:3px 7px!important;border-radius:999px!important;background:color-mix(in srgb,var(--audit-muted) 10%,transparent)!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-admin-role svg{width:12px!important;height:12px!important;flex-shrink:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-target-name{display:block!important;font-size:12px!important;font-weight:500!important;line-height:1.5!important;overflow-wrap:anywhere!important;color:var(--audit-text)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table time{display:block!important;font-size:12px!important;line-height:1.5!important;color:var(--audit-muted)!important;white-space:normal!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table .audit-date-time{display:block!important;margin-top:2px!important;font-size:11px!important;line-height:1.5!important;color:var(--audit-muted)!important}
+@media(max-width:767px){html body :is(#audit-refined,[data-audit-refined]) .audit-table tbody td{padding:0!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-identity{align-items:flex-start!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-record-copy{max-width:calc(100% - 42px)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Registro"]::before{display:none!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Usuário"]::before{content:"Usuário"!important;display:block!important;margin-bottom:4px!important;font-size:10px!important;color:var(--audit-muted)!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table td[data-label="Data e hora"]{display:flex!important;gap:7px!important;align-items:center!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table time{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:4px 8px!important;font-size:11px!important}
+html body :is(#audit-refined,[data-audit-refined]) .audit-table .audit-date-time{display:inline!important;margin:0!important;font-size:11px!important}}
 `}</style>
   </div>
 }
