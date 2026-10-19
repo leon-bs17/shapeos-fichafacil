@@ -62,6 +62,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const observed = new Set<Element>()
     const measure = () => {
       root.querySelectorAll(groups).forEach(group => {
+        group.setAttribute('data-admin-metric-group', '')
         if (!observed.has(group)) { observer.observe(group); observed.add(group) }
         const items = Array.from(group.children).filter(item => item.querySelector('[data-admin-metric-icon]'))
         items.forEach((item, index) => {
@@ -81,6 +82,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     schedule()
     return () => {
       cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect()
+      root.querySelectorAll('[data-admin-metric-group]').forEach(group => group.removeAttribute('data-admin-metric-group'))
       root.querySelectorAll('[data-admin-metric-item]').forEach(item => {
         item.removeAttribute('data-admin-metric-item'); item.removeAttribute('data-admin-metric-divider')
       })
@@ -820,6 +822,23 @@ html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-s
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{content:""!important;position:absolute!important;left:0!important;top:50%!important;bottom:auto!important;width:1px!important;height:48px!important;max-height:calc(100% - 8px)!important;transform:translateY(-50%)!important;background:#d7ded3!important;border:0!important;box-shadow:none!important;pointer-events:none!important;display:none!important;}
 html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-divider="true"]::before{display:block!important;}
 html.dark body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{background:#1c4037!important;}
+
+
+/* Uniform metric section rhythm, independent of the number of columns. */
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) :has(>[data-admin-metric-group]){display:grid!important;row-gap:20px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) :has(>[data-admin-metric-group])>*{margin-top:0!important;margin-bottom:0!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-group]{box-sizing:border-box!important;margin:0!important;padding:20px 0!important;min-height:104px!important;column-gap:0!important;row-gap:16px!important;align-items:stretch!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]{box-sizing:border-box!important;min-height:64px!important;margin:0!important;padding:0 20px!important;align-content:center!important;align-items:center!important;border-top:0!important;border-bottom:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]:has(>[data-admin-metric-icon]),html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){display:flex!important;flex-direction:row!important;align-items:center!important;gap:12px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){width:100%!important;padding:0!important;margin:0!important;min-height:64px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;flex:0 0 44px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]::before{height:56px!important;}
+@media(max-width:767px){
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-group]{padding:16px 0!important;row-gap:16px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]{padding:0 10px!important;min-height:80px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]:has(>[data-admin-metric-icon]),html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item]>:has(>[data-admin-metric-icon]){flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:8px!important;}
+html body :is(#metric-divider-standard,[data-admin-route]) :is(#metric-divider-standard,[data-admin-content]) [data-admin-metric-item] [data-admin-metric-icon]{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;flex:0 0 36px!important;}
+}
 
 `}</style>
     </div>
