@@ -203,10 +203,10 @@ function UsuariosConteudo() {
       </header>
 
       <div className="users-stats grid grid-cols-2 gap-3 xl:grid-cols-4">
-        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Total" valor={contadores.total} icone={<Users className="h-5 w-5" />} cor="primary" />
-        <ContadorCard ativo={!busca && filtroTipo === 'PERSONAL' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('PERSONAL'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-5 w-5" />} cor="success" />
-        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'PENDENTE'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('PENDENTE'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Aguardando aprovação" valor={contadores.pendentes} icone={<Clock3 className="h-5 w-5" />} cor="warning" />
-        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'BLOQUEADO'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('BLOQUEADO'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} tooltip="Mostrar todos os usuários" titulo="Total" valor={contadores.total} icone={<Users className="h-5 w-5" />} cor="primary" />
+        <ContadorCard ativo={!busca && filtroTipo === 'PERSONAL' && filtroStatus === 'TODOS'} onClick={() => { setBusca(''); setFiltroTipo('PERSONAL'); setFiltroStatus('TODOS'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} tooltip="Mostrar usuários com perfil Personal" titulo="Personais" valor={contadores.personals} icone={<UserCheck className="h-5 w-5" />} cor="success" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'PENDENTE'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('PENDENTE'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} tooltip="Mostrar usuários aguardando aprovação" titulo="Aguardando aprovação" valor={contadores.pendentes} icone={<Clock3 className="h-5 w-5" />} cor="warning" />
+        <ContadorCard ativo={!busca && filtroTipo === 'TODOS' && filtroStatus === 'BLOQUEADO'} onClick={() => { setBusca(''); setFiltroTipo('TODOS'); setFiltroStatus('BLOQUEADO'); setPagina(1); requestAnimationFrame(() => { const heading = document.querySelector<HTMLElement>('.users-management-title'); heading?.focus({ preventScroll: true }); heading?.scrollIntoView({ block: 'start', behavior: 'auto' }) }) }} tooltip="Mostrar usuários bloqueados" titulo="Bloqueados" valor={contadores.bloqueados} icone={<Ban className="h-5 w-5" />} cor="danger" />
       </div>
 
       <section className="users-management" aria-label="Contas cadastradas"><h2 id="users-results" tabIndex={-1} className="users-management-title">Contas cadastradas</h2>
@@ -285,9 +285,9 @@ function UsuariosConteudo() {
             <div className="users-pagination">
               <span>{inicio + 1}–{Math.min(inicio + 5, total)} de {total} usuários</span>
               <nav aria-label="Paginação de usuários">
-                <button type="button" aria-label="Página anterior" disabled={paginaAtual === 1} onClick={() => setPagina(paginaAtual - 1)}><ChevronLeft size={16} /></button>
+                <button type="button" aria-label="Página anterior" data-shapeos-tooltip="Página anterior" disabled={paginaAtual === 1} onClick={() => setPagina(paginaAtual - 1)}><ChevronLeft size={16} /></button>
                 {Array.from({ length: totalPaginas }, (_, index) => index + 1).map(n => <button type="button" key={n} aria-current={n === paginaAtual ? 'page' : undefined} aria-label={`Página ${n}`} onClick={() => setPagina(n)}>{n}</button>)}
-                <button type="button" aria-label="Próxima página" disabled={paginaAtual === totalPaginas} onClick={() => setPagina(paginaAtual + 1)}><ChevronRight size={16} /></button>
+                <button type="button" aria-label="Próxima página" data-shapeos-tooltip="Próxima página" disabled={paginaAtual === totalPaginas} onClick={() => setPagina(paginaAtual + 1)}><ChevronRight size={16} /></button>
               </nav>
             </div>
           </CardContent>
@@ -304,7 +304,7 @@ function UsuariosConteudo() {
         {selected && <div>
           <header className="users-details-heading">
             <div><p className="users-detail-label">Gestão de usuários</p><h2 id="users-details-title">Detalhes do usuário</h2></div>
-            <button type="button" className="users-view" aria-label="Fechar detalhes" disabled={acaoMutation.isPending} onClick={closeDetails}><X size={18} /></button>
+            <button type="button" className="users-view" aria-label="Fechar detalhes" data-shapeos-tooltip="Fechar detalhes" disabled={acaoMutation.isPending} onClick={closeDetails}><X size={18} /></button>
           </header>
           <section className="users-profile-card" aria-label="Perfil do usuário">
             <div className="users-avatar">{iniciaisUsuario(selected.nome)}</div>
@@ -935,7 +935,7 @@ function StatusBadge({ status, hideActiveIcon = false }: { status: StatusConta; 
   )
 }
 
-function ContadorCard({ titulo, valor, icone, cor, ativo, onClick }: { titulo: string; valor: number; icone: React.ReactNode; cor: string; ativo: boolean; onClick: () => void }) {
+function ContadorCard({ titulo, tooltip, valor, icone, cor, ativo, onClick }: { titulo: string; tooltip: string; valor: number; icone: React.ReactNode; cor: string; ativo: boolean; onClick: () => void }) {
   const cores: Record<string, string> = {
     primary: 'bg-primary/10 text-primary',
     success: 'bg-success/10 text-success',
@@ -944,7 +944,7 @@ function ContadorCard({ titulo, valor, icone, cor, ativo, onClick }: { titulo: s
     danger: 'bg-destructive/10 text-destructive',
   }
   return (
-    <button type="button" data-admin-metric-action aria-pressed={ativo} aria-controls="users-results" onClick={onClick} className="users-stat">
+    <button type="button" data-admin-metric-action data-shapeos-tooltip={tooltip} aria-pressed={ativo} aria-controls="users-results" onClick={onClick} className="users-stat">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <div data-admin-metric-icon data-metric-tone={cor} aria-hidden="true" className={`flex h-10 w-10 items-center justify-center rounded-xl ${cores[cor]}`}>
