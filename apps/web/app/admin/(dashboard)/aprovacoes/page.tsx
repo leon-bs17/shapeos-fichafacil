@@ -351,14 +351,14 @@ export default function AdminAprovacoesPage() {
                   buscaRef.current?.focus()
                 }}
                 aria-label="Limpar busca"
-                title="Limpar busca"
+                data-shapeos-tooltip="Limpar busca"
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-slate-400 transition    "
               >
                 <X className="h-4 w-4" strokeWidth={1.9} />
               </button>
             ) : null}
 
-            <kbd title={`Focar a pesquisa (${atalhoBusca})`} aria-label={`Atalho para focar a pesquisa: ${atalhoBusca}`} className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
+            <kbd data-shapeos-tooltip={`Focar a pesquisa (${atalhoBusca})`} aria-label={`Atalho para focar a pesquisa: ${atalhoBusca}`} className="hidden shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:flex dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-400">
               {atalhoBusca}
             </kbd>
           </label>
