@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { loginSchema } from '@shapeos/shared'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, LockKeyhole, Mail, Shield } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, Shield } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
@@ -124,17 +124,16 @@ export default function AdminLoginPage() {
           <div className="admin-login-field-group"><label htmlFor="admin-email">E-mail administrativo</label>
             <div className="admin-login-field"><Mail size={18} aria-hidden="true"/><input ref={emailRef} id="admin-email" name="email" type="email" placeholder="admin@shapeos.com" value={email} onChange={event=>setEmail(event.target.value)} autoComplete="username" required disabled={busy}/></div>
           </div>
-          {!modoEsqueci&&<div className="admin-login-field-group"><label htmlFor="admin-senha">Senha</label>
-            <div className="admin-login-field"><LockKeyhole size={18} aria-hidden="true"/><input id="admin-senha" name="password" type={mostrarSenha?'text':'password'} placeholder="Digite sua senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="current-password" required disabled={busy}/>
+          {!modoEsqueci&&<div className="admin-login-field-group"><div className="admin-login-password-label"><label htmlFor="admin-senha">Senha</label><button type="button" className="admin-login-text-action" disabled={busy} onClick={()=>{setModoEsqueci(true);setMostrarSenha(false);setSenha('');setErro(null);requestAnimationFrame(()=>emailRef.current?.focus())}}>Esqueci minha senha</button></div>
+            <div className="admin-login-field"><Lock size={18} aria-hidden="true"/><input id="admin-senha" name="password" type={mostrarSenha?'text':'password'} placeholder="Digite sua senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="current-password" required disabled={busy}/>
               <button type="button" className="admin-login-visibility" aria-label={mostrarSenha?'Ocultar senha':'Mostrar senha'} aria-pressed={mostrarSenha} aria-controls="admin-senha" disabled={busy} onClick={()=>setMostrarSenha(!mostrarSenha)}>{mostrarSenha?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div>
           </div>}
           {erro&&<p className="admin-login-error" role="alert">{erro}</p>}
           <button type="submit" className="admin-login-submit" disabled={busy}>
-            {busy?<><Loader2 size={17} className="admin-login-spinner" aria-hidden="true"/>{limpandoSessao?'Preparando acesso...':modoEsqueci?'Enviando...':'Entrando...'}</>:modoEsqueci?'Enviar link de redefinição':<>Entrar no painel<ArrowRight size={17} aria-hidden="true"/></>}
+            {busy?<><Loader2 size={17} className="admin-login-spinner" aria-hidden="true"/>{limpandoSessao?'Preparando acesso...':modoEsqueci?'Enviando...':'Entrando...'}</>:modoEsqueci?'Enviar link de redefinição':<><Lock size={17} aria-hidden="true"/>Entrar no painel<ArrowRight size={18} aria-hidden="true"/></>}
           </button>
-          {modoEsqueci?<button type="button" className="admin-login-text-action" disabled={busy} onClick={voltarLogin}>Voltar ao login</button>:
-          <button type="button" className="admin-login-text-action" disabled={busy} onClick={()=>{setModoEsqueci(true);setMostrarSenha(false);setSenha('');setErro(null);requestAnimationFrame(()=>emailRef.current?.focus())}}>Esqueci minha senha</button>}
+          {modoEsqueci&&<button type="button" className="admin-login-text-action" disabled={busy} onClick={voltarLogin}>Voltar ao login</button>}
         </form>}
         <div className="admin-login-mobile-about"><p>Ainda não conhece a plataforma?</p><Link href="/apresentacao">Conhecer o ShapeOS <ArrowRight size={16} aria-hidden="true"/></Link></div>
         <footer className="admin-login-permission"><Shield size={16} aria-hidden="true"/><p>Acesso exclusivo para administradores.</p></footer>
@@ -143,7 +142,7 @@ export default function AdminLoginPage() {
     <style jsx global>{`
 
 .admin-login { --login-bg:#f7f8f2; --login-surface:#fcfdf9; --login-border:#d7ded3; --login-text:#162623; --login-muted:#5f6f68; --login-brand:#129b89; --login-on-brand:#ffffff; min-height:100svh; display:flex; flex-direction:column; background:var(--login-bg)!important; color:var(--login-text)!important; font-family:'Sora',sans-serif; }
-html.dark .admin-login { --login-bg:#041512; --login-surface:#091c18; --login-border:#1c4037; --login-text:#f5faf9; --login-muted:#a3becd; --login-brand:#00e9df; --login-on-brand:#002a26; }
+html.dark .admin-login { --login-bg:#041512; --login-surface:#091c18; --login-border:#1c4037; --login-text:#f5faf9; --login-muted:#a3becd; --login-brand:#00e9df; --login-on-brand:#041512; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-header { display:flex; justify-content:space-between; align-items:center; gap:20px; width:100%; max-width:1100px; margin:0 auto; padding:24px 32px; border-bottom:1px solid var(--login-border); }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-logo { display:inline-flex; min-width:0; }
 html:is(.light,.dark) body .admin-login.admin-login .admin-login-header-tools { display:flex; align-items:center; gap:16px; flex-shrink:0; }
@@ -384,6 +383,27 @@ html body :is(#admin-login-dimensions,[data-admin-login-refined]).admin-login .a
 html body :is(#admin-login-dimensions,[data-admin-login-refined]).admin-login .admin-login-field-group label{margin-bottom:7px!important}
 html body :is(#admin-login-dimensions,[data-admin-login-refined]).admin-login .admin-login-permission{margin-top:12px!important;margin-bottom:18px!important}
 html body :is(#admin-login-dimensions,[data-admin-login-refined]).admin-login .admin-login-mobile-about{margin-top:12px!important;padding-top:12px!important}
+}
+
+/* Form appearance shared with the Personal/Aluno login. */
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-field{padding-right:14px!important;background:transparent!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-field input[type="email"]{padding-right:0!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-visibility{margin-right:-12px!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-bottom:9px!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label label{margin-bottom:0!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label .admin-login-text-action{font-size:11px!important;font-weight:500!important;line-height:1.5!important;margin:0!important;padding:0!important;min-height:0!important;width:auto!important;border:0!important;background:transparent!important;text-decoration:none!important;box-shadow:none!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label .admin-login-text-action:hover{text-decoration:underline!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-submit{border-color:var(--login-brand)!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-permission svg{color:var(--login-brand)!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-error{margin:0!important;padding:12px!important;border:1px solid color-mix(in srgb,#b42336 30%,transparent)!important;border-radius:13px!important;background:color-mix(in srgb,#b42336 7%,transparent)!important;font-size:12px!important;line-height:1.6!important;overflow-wrap:anywhere!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label .admin-login-text-action:disabled{opacity:.6!important}
+html.dark body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-error{border-color:color-mix(in srgb,#ff8f9b 30%,transparent)!important;background:color-mix(in srgb,#ff8f9b 7%,transparent)!important}
+@media(hover:hover) and (pointer:fine){html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-submit:not(:disabled):hover{background:color-mix(in srgb,var(--login-brand) 93%,var(--login-surface))!important;border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important}
+html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-field:not(:focus-within):not(:has(input:disabled)):hover{background:color-mix(in srgb,var(--login-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--login-brand) 40%,transparent)!important}
+}
+@media(min-width:768px) and (max-height:800px){html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label{margin-bottom:6px!important}
+}
+@media(max-width:767px) and (max-height:800px){html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label{margin-bottom:7px!important}
 }
     `}</style>
   </main>
