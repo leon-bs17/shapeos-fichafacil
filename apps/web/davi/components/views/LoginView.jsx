@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, ArrowLeft, Fingerprint, CheckCircle2, UserRound, UsersRound, Eye, EyeOff } from "lucide-react";
+import { Lock, Mail, ShieldCheck, ArrowRight, ArrowLeft, Fingerprint, CheckCircle2, UserRound, UsersRound, Eye, EyeOff } from "lucide-react";
 import Logo from "@/davi/components/Logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
@@ -37,7 +37,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
 
 
   return (
-    <main className="login-refined" data-testid="login-view">
+    <main id="main-content" className="login-refined" data-testid="login-view">
       <div className="login-frame">
         <header className="login-top">
           <a href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></a>
@@ -48,19 +48,24 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           </nav>
         </header>
         <div className="login-center">
-          <section className="login-card" aria-labelledby="login-title">
-            <header className="login-heading">
-              <svg className="login-wireframe" viewBox="0 0 160 130" fill="none" aria-hidden="true">
+          <aside className="login-intro" aria-labelledby="login-intro-title">
+            <p className="login-eyebrow">Personais e alunos</p>
+            <h2 id="login-intro-title">Seu treino.<br/><span>Seu espaço.</span></h2>
+            <p className="login-intro-description">Planeje, acompanhe e evolua com a ShapeOS.</p>
+              <svg className="login-orbit" viewBox="0 0 160 130" fill="none" aria-hidden="true">
                 <g stroke="currentColor" strokeWidth="1">
-                  <circle cx="80" cy="65" r="39"/><circle cx="80" cy="65" r="30"/><circle cx="80" cy="65" r="20"/>
+                  <ellipse cx="80" cy="65" rx="72" ry="40" transform="rotate(-24 80 65)"/><ellipse cx="80" cy="65" rx="72" ry="40" transform="rotate(24 80 65)"/><circle cx="80" cy="65" r="39"/><circle cx="80" cy="65" r="30"/><circle cx="80" cy="65" r="20"/>
                   <path d="M53 18a54 54 0 0 1 65 70M42 100a54 54 0 0 0 69 8M29 56h12m78 0h12M29 74h12m78 0h12"/>
                   <rect x="19" y="45" width="10" height="40" rx="2"/><rect x="10" y="51" width="9" height="28" rx="2"/>
                   <rect x="131" y="45" width="10" height="40" rx="2"/><rect x="141" y="51" width="9" height="28" rx="2"/>
                   <path d="M74 55a14 14 0 1 0 12 0m-6-6v14" strokeLinecap="round"/>
                 </g>
               </svg>
-              <h1 id="login-title">Bem-vindo à ShapeOS</h1>
-              <p>Acesse seus treinos ou gerencie seus alunos.</p>
+          </aside>
+          <section className="login-card" aria-labelledby="login-title">
+            <header className="login-heading">
+              <h1 id="login-title">Entrar na ShapeOS</h1>
+              <p>Acesse sua conta para continuar.</p>
             </header>
             <div className="login-body">
               <div className="login-roles" data-testid="role-tabs" role="group" aria-label="Perfil de acesso">
@@ -79,8 +84,8 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 <div className="login-form-row">
                   <div className="login-password-label"><label htmlFor="login-password">Senha</label><a href="/recuperar-senha" data-testid="forgot-password-link">Esqueci minha senha</a></div>
                   <div className="login-field">
-                    <KeyRound size={18} aria-hidden="true"/>
-                    <input id="login-password" autoComplete="current-password" data-testid="login-password-input" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" aria-describedby={error ? "login-error" : undefined}/>
+                    <Lock size={18} aria-hidden="true"/>
+                    <input id="login-password" autoComplete="current-password" data-testid="login-password-input" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Digite sua senha" aria-describedby={error ? "login-error" : undefined}/>
                     <button type="button" className="login-eye" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} aria-hidden="true"/> : <Eye size={18} aria-hidden="true"/>}</button>
                   </div>
                 </div>
@@ -91,7 +96,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 <p data-testid="biometric-status" role="status">{bioState === "scanning" ? "Confirme sua identidade no aparelho." : bioState === "success" ? "Identidade confirmada" : "Primeiro acesso? Entre com e-mail e senha para cadastrar a biometria."}</p>
                 {bioError && <p className="login-error" role="alert">{bioError}</p>}
               </div>}
-              <p className="login-secure"><ShieldCheck size={16} aria-hidden="true"/>Acesso seguro</p>
+              <p className="login-secure"><ShieldCheck size={16} aria-hidden="true"/>Acesso para Personais e Alunos</p>
               <footer className="login-register"><p>Ainda não tem conta?</p><div><a href="/cadastro">Criar conta de Personal</a><span aria-hidden="true">·</span><a href="/cadastro/aluno">Criar conta de Aluno</a></div></footer>
             </div>
           </section>
@@ -101,18 +106,23 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         .login-refined { --login-bg:#f7f8f2;--login-panel:#fcfdf9;--login-line:#d7ded3;--login-ink:#162623;--login-muted:#5f6f68;--login-brand:#129b89;--login-button-ink:#fff;--login-error:#b42336;min-height:100svh;background:var(--login-bg);color:var(--login-ink);font-family:'Sora',sans-serif; }
         :global(.dark) .login-refined { --login-bg:#041512;--login-panel:#091c18;--login-line:#1c4037;--login-ink:#f5faf9;--login-muted:#a3becd;--login-brand:#00e9df;--login-button-ink:#041512;--login-error:#ff8f9b; }
         .login-refined * { box-sizing:border-box; }
-        .login-frame { min-height:100svh;max-width:800px;margin:0 auto;padding:24px 28px;display:flex;flex-direction:column; }
-        .login-top { display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;max-width:580px;margin:0 auto; }
+        .login-frame { min-height:100svh;max-width:1216px;margin:0 auto;padding:24px 28px;display:flex;flex-direction:column; }
+        .login-top { display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;margin:0 auto;padding-bottom:22px;border-bottom:1px solid var(--login-line); }
         .login-top>a { text-decoration:none;flex-shrink:0; }
         .login-top nav { display:flex;align-items:center;gap:12px; }
         .login-back { display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 6px;border:1px solid transparent;border-radius:13px;color:var(--login-muted);font-size:12px;text-decoration:none; }
-        .login-top-divider { height:20px;width:1px;background:var(--login-line); }
-        .login-center { flex:1;display:flex;align-items:center;justify-content:center;padding:42px 0; }
-        .login-card { width:100%;max-width:480px;min-width:0;border:1px solid var(--login-line);border-radius:20px;background:var(--login-panel);overflow:hidden; }
-        .login-heading { position:relative;isolation:isolate;padding:32px 32px 24px;background:radial-gradient(ellipse at 95% 0%,color-mix(in srgb,var(--login-brand) 9%,transparent),transparent 72%); }
+        .login-top-divider { display:none; }
+        .login-center { flex:1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);align-items:center;gap:40px;width:100%;max-width:960px;margin:0 auto;padding:52px 0; }
+        .login-intro { min-width:0;min-height:480px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;border-right:1px solid var(--login-line);padding:20px 40px 20px 0; }
+        .login-eyebrow { margin:0 0 16px;font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--login-brand); }
+        .login-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.2;letter-spacing:-.045em; }
+        .login-intro h2 span { color:var(--login-brand); }
+        .login-intro-description { margin:17px 0 0;max-width:280px;color:var(--login-muted);font-size:14px;line-height:1.8; }
+        .login-orbit { margin-top:32px;width:100%;max-width:290px;height:auto;color:var(--login-brand);opacity:.22;pointer-events:none; }
+        .login-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--login-line);border-radius:20px;background:var(--login-panel);overflow:hidden; }
+        .login-heading { position:relative;isolation:isolate;padding:32px 32px 24px;background:transparent; }
         .login-heading h1 { position:relative;margin:0;font-size:26px;line-height:1.3;font-weight:600;letter-spacing:-.045em; }
         .login-heading p { position:relative;margin:12px 0 0;max-width:330px;font-size:13px;line-height:1.7;color:var(--login-muted); }
-        .login-wireframe { position:absolute;right:10px;top:6px;width:125px;height:110px;color:var(--login-brand);opacity:.15;z-index:-1;pointer-events:none; }
         .login-body { margin:0 32px;padding:22px 0 25px;border-top:1px solid var(--login-line); }
         .login-roles { display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--login-line);border-radius:16px;margin-bottom:22px; }
         .login-refined button { font:inherit;cursor:pointer;box-shadow:none;transform:none;transition:background-color 150ms ease,border-color 150ms ease; }
@@ -144,16 +154,17 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         .login-error { margin:0 0 16px;padding:12px;border:1px solid color-mix(in srgb,var(--login-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--login-error) 7%,transparent);color:var(--login-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
         .login-biometric { display:none; }
         @media (hover:hover) { .login-back:hover,.login-roles button:not(:disabled):hover,.login-eye:not(:disabled):hover,.login-bio-button:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-field:not(:focus-within):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-submit:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 93%,var(--login-panel));border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } }
+        @media (min-width:768px) and (max-width:1023px) { .login-center { gap:28px; }.login-intro { padding-right:28px; }.login-intro h2 { font-size:32px; }.login-heading { padding:26px 24px 22px; }.login-heading h1 { font-size:24px; }.login-body { margin:0 24px; } }
         @media (max-width:767px) {
           .login-frame { padding:18px 20px; }
           .login-top { flex-wrap:wrap;gap:8px; }
           .login-top nav { margin-left:auto;gap:8px; }
           .login-back { font-size:11px;gap:6px; }
-          .login-center { padding:24px 0;align-items:flex-start; }
+          .login-center { display:flex;padding:24px 0;align-items:flex-start;justify-content:center; }
+          .login-intro { display:none; }
           .login-heading { padding:26px 22px 22px; }
           .login-heading h1 { font-size:23px; }
           .login-heading p { max-width:250px;font-size:12px; }
-          .login-wireframe { width:95px;right:4px;top:8px;opacity:.12; }
           .login-body { margin:0 22px;padding:20px 0 23px; }
           .login-field input { font-size:16px; }
           .login-biometric { display:grid;gap:9px;margin-top:14px; }
