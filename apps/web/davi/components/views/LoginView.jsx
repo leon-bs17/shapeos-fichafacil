@@ -52,14 +52,24 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
             <p className="login-eyebrow">Personais e alunos</p>
             <h2 id="login-intro-title">Seu treino.<br/><span>Seu espaço.</span></h2>
             <p className="login-intro-description">Planeje, acompanhe e evolua com a ShapeOS.</p>
-              <svg className="login-orbit" viewBox="0 0 160 130" fill="none" aria-hidden="true">
-                <g stroke="currentColor" strokeWidth="1">
-                  <ellipse cx="80" cy="65" rx="72" ry="40" transform="rotate(-24 80 65)"/><ellipse cx="80" cy="65" rx="72" ry="40" transform="rotate(24 80 65)"/><circle cx="80" cy="65" r="39"/><circle cx="80" cy="65" r="30"/><circle cx="80" cy="65" r="20"/>
-                  <path d="M53 18a54 54 0 0 1 65 70M42 100a54 54 0 0 0 69 8M29 56h12m78 0h12M29 74h12m78 0h12"/>
-                  <rect x="19" y="45" width="10" height="40" rx="2"/><rect x="10" y="51" width="9" height="28" rx="2"/>
-                  <rect x="131" y="45" width="10" height="40" rx="2"/><rect x="141" y="51" width="9" height="28" rx="2"/>
-                  <path d="M74 55a14 14 0 1 0 12 0m-6-6v14" strokeLinecap="round"/>
+              <svg className="login-orbit" viewBox="0 0 400 280" fill="none" aria-hidden="true" focusable="false">
+                <g stroke="currentColor" strokeWidth=".8" opacity=".4">
+                  <ellipse cx="195" cy="140" rx="160" ry="65" transform="rotate(-25 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="146" ry="87" transform="rotate(16 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="111" ry="100" transform="rotate(32 195 140)"/>
+                  <path d="M55 147L153 86L242 65L332 149L251 220L195 241L55 147Z M153 86L251 220M242 65L195 241M55 147L332 149" opacity=".3"/>
                 </g>
+                <g stroke="currentColor" strokeWidth="1.6" opacity=".55">
+                  <circle cx="195" cy="140" r="43"/>
+                  <rect x="111" y="116" width="12" height="48" rx="3"/>
+                  <rect x="101" y="124" width="10" height="32" rx="2"/>
+                  <path d="M123 133h29m-29 14h29"/>
+                  <rect x="267" y="116" width="12" height="48" rx="3"/>
+                  <rect x="279" y="124" width="10" height="32" rx="2"/>
+                  <path d="M238 133h29m-29 14h29"/>
+                  <path d="M186 122a22 22 0 1 0 18 0m-9-9v25" strokeLinecap="round"/>
+                </g>
+                {[{x:55,y:147},{x:242,y:65},{x:332,y:149},{x:195,y:241}].map((point,index)=><g key={index}><circle cx={point.x} cy={point.y} r="6" fill="var(--login-panel)" stroke="currentColor" strokeOpacity=".4"/><circle cx={point.x} cy={point.y} r="2.5" fill="currentColor" opacity=".6"/></g>)}
               </svg>
           </aside>
           <section className="login-card" aria-labelledby="login-title">
@@ -118,7 +128,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         .login-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.2;letter-spacing:-.045em; }
         .login-intro h2 span { color:var(--login-brand); }
         .login-intro-description { margin:17px 0 0;max-width:280px;color:var(--login-muted);font-size:14px;line-height:1.8; }
-        .login-orbit { margin-top:32px;width:100%;max-width:290px;height:auto;color:var(--login-brand);opacity:.22;pointer-events:none; }
+        .login-orbit { margin-top:20px;width:100%;max-width:260px;height:auto;color:var(--login-brand);opacity:.35;pointer-events:none; }
         .login-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--login-line);border-radius:20px;background:var(--login-panel);overflow:hidden; }
         .login-heading { position:relative;isolation:isolate;padding:32px 32px 24px;background:transparent; }
         .login-heading h1 { position:relative;margin:0;font-size:26px;line-height:1.3;font-weight:600;letter-spacing:-.045em; }
