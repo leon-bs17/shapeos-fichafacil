@@ -174,6 +174,42 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           .login-roles button:not(:disabled):active,.login-eye:not(:disabled):active,.login-bio-button:not(:disabled):active { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); }
         }
         @media (max-width:359px) { .login-frame { padding:16px 14px; }.login-heading { padding:24px 18px 20px; }.login-heading h1 { font-size:21px; }.login-body { margin:0 18px; }.login-register div { flex-direction:column; }.login-register span { display:none; } }
+
+        /* Compact spacing on shorter desktop viewports; content remains scrollable when needed. */
+        @media (min-width:768px) and (max-height:800px) {
+          .login-frame { padding-top:12px;padding-bottom:12px; }
+          .login-top { padding-bottom:8px; }
+          .login-center { padding:12px 0; }
+          .login-intro { min-height:380px;padding-top:12px;padding-bottom:12px; }
+          .login-eyebrow { margin-bottom:12px; }
+          .login-intro h2 { font-size:34px; }
+          .login-intro-description { margin-top:12px; }
+          .login-orbit { margin-top:18px;max-width:230px;max-height:185px; }
+          .login-heading { padding:18px 28px 14px; }
+          .login-heading h1 { font-size:24px; }
+          .login-heading p { margin-top:8px; }
+          .login-body { margin:0 28px;padding:14px 0 16px; }
+          .login-roles { margin-bottom:14px; }
+          form { gap:12px; }
+          .login-form-row { gap:6px; }
+          .login-secure { margin:12px 0; }
+          .login-register { padding-top:12px; }
+          .login-register p { margin-bottom:4px; }
+        }
+        @media (max-width:767px) and (max-height:800px) {
+          .login-frame { padding-top:12px;padding-bottom:12px; }
+          .login-top { padding-bottom:8px; }
+          .login-center { padding:16px 0; }
+          .login-heading { padding-top:20px;padding-bottom:16px; }
+          .login-heading p { margin-top:8px; }
+          .login-body { padding-top:16px;padding-bottom:18px; }
+          .login-roles { margin-bottom:16px; }
+          form { gap:14px; }
+          .login-form-row { gap:7px; }
+          .login-biometric { margin-top:12px;gap:7px; }
+          .login-secure { margin:12px 0; }
+          .login-register { padding-top:12px; }
+        }
         @media (prefers-reduced-motion:reduce) { .login-refined button,.login-field { transition:none; } }
       `}</style>
     </main>
