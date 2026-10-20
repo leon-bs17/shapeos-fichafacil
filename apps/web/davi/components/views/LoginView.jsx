@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from "react";
-import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Fingerprint, CheckCircle2 } from "lucide-react";
-import { AuthShell } from "@/components/auth/auth-shell";
+import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, ArrowLeft, Fingerprint, CheckCircle2, UserRound, UsersRound, Eye, EyeOff } from "lucide-react";
+import Logo from "@/davi/components/Logo";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export const LoginView = ({ onEnter, onBiometric, error }) => {
   const [role, setRole] = useState("personal"); // "personal" | "aluno"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [bioState, setBioState] = useState("idle"); // idle | scanning | success | error
   const [bioError, setBioError] = useState("");
@@ -33,243 +35,137 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
     }
   };
 
-  const activeTabStyle = (tab) => ({
-    fontFamily: "'Sora', sans-serif",
-    background: role === tab ? "var(--shapeos-brand)" : "transparent",
-    boxShadow: "none",
-  });
-
-  const tabClass = (tab) => `py-2.5 lg:py-2 rounded-xl text-sm lg:text-xs font-medium transition-all duration-300 ${
-    role === tab ? "text-[var(--shapeos-on-brand)]" : "text-muted-foreground hover:text-[var(--shapeos-text)]"
-  }`;
 
   return (
-    <AuthShell compact testId="login-view">
-        <div
-          className="rounded-xl p-6 sm:p-7"
-          style={{
-            background: "var(--shapeos-surface)",
-            border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
-            boxShadow: "none",
-          }}
-        >
-          <div className="mb-6 lg:mb-4">
-            <h1
-              className="text-3xl lg:text-2xl text-[var(--shapeos-text)] tracking-tight"
-              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
-            >
-              Bem-vindo à ShapeOS
-            </h1>
-            <p className="text-sm leading-relaxed text-muted-foreground mt-2" style={{ fontFamily: "'Sora', sans-serif" }}>
-              Entre para consultar seus treinos ou gerenciar seus alunos.
-            </p>
-          </div>
-
-          <div
-            className="grid grid-cols-2 gap-1 p-1 rounded-2xl mb-6 lg:mb-4"
-            style={{
-              background: "rgba(var(--shapeos-neutral-rgb),0.03)",
-              border: "1px solid rgba(var(--shapeos-neutral-rgb),0.06)",
-            }}
-            data-testid="role-tabs"
-          >
-            <button
-              type="button"
-              data-testid="role-tab-personal"
-              onClick={() => setRole("personal")}
-              className={tabClass("personal")}
-              style={activeTabStyle("personal")}
-            >
-              Personal
-            </button>
-            <button
-              type="button"
-              data-testid="role-tab-aluno"
-              onClick={() => setRole("aluno")}
-              className={tabClass("aluno")}
-              style={activeTabStyle("aluno")}
-            >
-              Aluno
-            </button>
-
-          </div>
-
-          {error && <p role="alert" className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
-          <form aria-busy={submitting} onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
-            <div>
-              <label htmlFor="login-email" className="text-sm text-foreground">E-mail</label>
-              <div className="mt-2 relative">
-                <Mail className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
-                <input
-                  id="login-email"
-                  autoComplete="email"
-                  data-testid="login-email-input"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="voce@shapeos.app"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none transition-all focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
-                  style={{
-                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
-                    border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
-                  }}
-                />
+    <main className="login-refined" data-testid="login-view">
+      <div className="login-frame">
+        <header className="login-top">
+          <a href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></a>
+          <nav aria-label="Opções de acesso">
+            <a className="login-back" href="/apresentacao"><ArrowLeft size={15} aria-hidden="true"/><span>Conhecer a ShapeOS</span></a>
+            <span className="login-top-divider" aria-hidden="true"/>
+            <ThemeToggle />
+          </nav>
+        </header>
+        <div className="login-center">
+          <section className="login-card" aria-labelledby="login-title">
+            <header className="login-heading">
+              <svg className="login-wireframe" viewBox="0 0 160 130" fill="none" aria-hidden="true">
+                <g stroke="currentColor" strokeWidth="1">
+                  <circle cx="80" cy="65" r="39"/><circle cx="80" cy="65" r="30"/><circle cx="80" cy="65" r="20"/>
+                  <path d="M53 18a54 54 0 0 1 65 70M42 100a54 54 0 0 0 69 8M29 56h12m78 0h12M29 74h12m78 0h12"/>
+                  <rect x="19" y="45" width="10" height="40" rx="2"/><rect x="10" y="51" width="9" height="28" rx="2"/>
+                  <rect x="131" y="45" width="10" height="40" rx="2"/><rect x="141" y="51" width="9" height="28" rx="2"/>
+                  <path d="M74 55a14 14 0 1 0 12 0m-6-6v14" strokeLinecap="round"/>
+                </g>
+              </svg>
+              <h1 id="login-title">Bem-vindo à ShapeOS</h1>
+              <p>Acesse seus treinos ou gerencie seus alunos.</p>
+            </header>
+            <div className="login-body">
+              <div className="login-roles" data-testid="role-tabs" role="group" aria-label="Perfil de acesso">
+                <button type="button" data-testid="role-tab-personal" aria-pressed={role === "personal"} onClick={() => setRole("personal")} disabled={submitting || bioState === "scanning"}><UserRound size={18} aria-hidden="true"/>Personal</button>
+                <button type="button" data-testid="role-tab-aluno" aria-pressed={role === "aluno"} onClick={() => setRole("aluno")} disabled={submitting || bioState === "scanning"}><UsersRound size={18} aria-hidden="true"/>Aluno</button>
               </div>
+              {error && <p id="login-error" role="alert" className="login-error">{error}</p>}
+              <form aria-busy={submitting} onSubmit={handleSubmit}>
+                <div className="login-form-row">
+                  <label htmlFor="login-email">E-mail</label>
+                  <div className="login-field">
+                    <Mail size={18} aria-hidden="true"/>
+                    <input id="login-email" autoComplete="email" data-testid="login-email-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@shapeos.app" aria-describedby={error ? "login-error" : undefined}/>
+                  </div>
+                </div>
+                <div className="login-form-row">
+                  <div className="login-password-label"><label htmlFor="login-password">Senha</label><a href="/recuperar-senha" data-testid="forgot-password-link">Esqueci minha senha</a></div>
+                  <div className="login-field">
+                    <KeyRound size={18} aria-hidden="true"/>
+                    <input id="login-password" autoComplete="current-password" data-testid="login-password-input" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" aria-describedby={error ? "login-error" : undefined}/>
+                    <button type="button" className="login-eye" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} aria-hidden="true"/> : <Eye size={18} aria-hidden="true"/>}</button>
+                  </div>
+                </div>
+                <button type="submit" disabled={submitting || bioState === "scanning"} data-testid="login-submit-button" className="login-submit"><Lock size={17} aria-hidden="true"/><span>{submitting ? "Entrando…" : "Entrar na ShapeOS"}</span><ArrowRight size={18} aria-hidden="true"/></button>
+              </form>
+              {onBiometric && <div className="login-biometric">
+                <button type="button" data-testid="biometric-login-button" onClick={handleBiometric} disabled={bioState === "scanning" || submitting} aria-label="Entrar com biometria" className="login-bio-button">{bioState === "success" ? <CheckCircle2 size={20} aria-hidden="true"/> : <Fingerprint size={20} aria-hidden="true"/>}<span>{bioState === "scanning" ? "Lendo digital..." : bioState === "success" ? "Identidade confirmada" : bioState === "error" ? "Tentar biometria novamente" : "Entrar com biometria"}</span></button>
+                <p data-testid="biometric-status" role="status">{bioState === "scanning" ? "Confirme sua identidade no aparelho." : bioState === "success" ? "Identidade confirmada" : "Primeiro acesso? Entre com e-mail e senha para cadastrar a biometria."}</p>
+                {bioError && <p className="login-error" role="alert">{bioError}</p>}
+              </div>}
+              <p className="login-secure"><ShieldCheck size={16} aria-hidden="true"/>Acesso seguro</p>
+              <footer className="login-register"><p>Ainda não tem conta?</p><div><a href="/cadastro">Criar conta de Personal</a><span aria-hidden="true">·</span><a href="/cadastro/aluno">Criar conta de Aluno</a></div></footer>
             </div>
-
-            <div>
-              <div className="flex items-center justify-between gap-3">
-                <label htmlFor="login-password" className="text-sm text-foreground">Senha</label>
-                <a
-                  href="/recuperar-senha"
-                  data-testid="forgot-password-link"
-                  className="text-[11px] font-medium text-[var(--shapeos-brand)] transition-colors hover:text-[var(--shapeos-brand-hover)] hover:underline"
-                >
-                  Esqueci minha senha
-                </a>
-              </div>
-              <div className="mt-2 relative">
-                <KeyRound className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
-                <input
-                  id="login-password"
-                  autoComplete="current-password"
-                  data-testid="login-password-input"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 lg:py-2.5 rounded-xl text-[var(--shapeos-text)] placeholder:text-muted-foreground outline-none transition-all focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
-                  style={{
-                    background: "rgba(var(--shapeos-neutral-rgb),0.03)",
-                    border: "1px solid rgba(var(--shapeos-neutral-rgb),0.08)",
-                  }}
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={submitting}
-              data-testid="login-submit-button"
-              className="group w-full flex items-center justify-center gap-2 py-4 lg:py-3 rounded-2xl text-[var(--shapeos-on-brand)] font-semibold text-base lg:text-sm transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
-              style={{
-                background: "var(--shapeos-brand)",
-                boxShadow: "none",
-                fontFamily: "'Sora', sans-serif",
-                letterSpacing: "0.02em",
-              }}
-            >
-              <Lock className="w-4 h-4" />
-              {submitting ? "Entrando…" : "Entrar na ShapeOS"}
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-          </form>
-
-          <div className="md:hidden flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ background: "rgba(var(--shapeos-neutral-rgb),0.08)" }} />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
-              ou entre com
-            </span>
-            <div className="flex-1 h-px" style={{ background: "rgba(var(--shapeos-neutral-rgb),0.08)" }} />
-          </div>
-
-          <div className="md:hidden flex flex-col items-center">
-            <button
-              type="button"
-              data-testid="biometric-login-button"
-              onClick={handleBiometric}
-              disabled={bioState === "scanning"}
-              aria-label="Entrar com biometria"
-              className="relative w-24 h-24 lg:w-16 lg:h-16 rounded-full flex items-center justify-center transition-all duration-300 group disabled:cursor-wait"
-              style={{
-                background:
-                  bioState === "success"
-                    ? "radial-gradient(circle, rgba(34,199,199,0.35), rgba(34,199,199,0.05))"
-                    : "radial-gradient(circle, rgba(34,199,199,0.15), rgba(34,199,199,0.02))",
-                border: `1px solid ${bioState === "success" ? "rgba(34,199,199,0.7)" : "rgba(34,199,199,0.35)"}`,
-                boxShadow:
-                  bioState === "success"
-                    ? "0 0 40px rgba(34,199,199,0.5), inset 0 0 20px rgba(34,199,199,0.2)"
-                    : bioState === "scanning"
-                      ? "0 0 30px rgba(34,199,199,0.35), inset 0 0 14px rgba(34,199,199,0.15)"
-                      : "0 0 20px rgba(34,199,199,0.2), inset 0 0 8px rgba(34,199,199,0.08)",
-              }}
-            >
-              {bioState === "scanning" && (
-                <>
-                  <span className="absolute inset-0 rounded-full border border-[var(--shapeos-brand)]/40 animate-ping-slow" />
-                  <span className="absolute inset-[-8px] rounded-full border border-[var(--shapeos-brand)]/20 animate-ping-slower" />
-                </>
-              )}
-
-              {bioState === "scanning" && (
-                <span
-                  aria-hidden
-                  className="absolute inset-4 rounded-full overflow-hidden"
-                  style={{ mask: "radial-gradient(circle, black 70%, transparent 71%)" }}
-                >
-                  <span className="bio-sweep" />
-                </span>
-              )}
-
-              {bioState === "success" ? (
-                <CheckCircle2 className="w-10 h-10 lg:w-7 lg:h-7 text-[var(--shapeos-brand)]" />
-              ) : (
-                <Fingerprint
-                  className={`w-10 h-10 lg:w-7 lg:h-7 transition-colors ${
-                    bioState === "scanning" ? "text-[var(--shapeos-brand-hover)]" : "text-[var(--shapeos-brand)] group-hover:text-[var(--shapeos-brand-hover)]"
-                  }`}
-                  strokeWidth={1.6}
-                />
-              )}
-            </button>
-
-            <p
-              data-testid="biometric-status"
-              className="mt-4 lg:mt-2 text-xs lg:text-[10px] tracking-widest uppercase text-center"
-              style={{
-                fontFamily: "'Sora', sans-serif",
-                color: bioState === "success" ? "var(--shapeos-brand)" : bioState === "scanning" ? "var(--shapeos-text)" : "#a1a1aa",
-                letterSpacing: "0.25em",
-              }}
-            >
-              {bioState === "idle" && "Toque para usar biometria"}
-              {bioState === "scanning" && "Lendo digital..."}
-              {bioState === "success" && "Identidade confirmada"}
-              {bioState === "error" && "Tentar novamente"}
-            </p>
-            {bioError ? (
-              <p
-                className="mt-2 text-center text-[11px] leading-relaxed text-red-300 max-w-[280px]"
-                style={{ fontFamily: "'Sora', sans-serif" }}
-              >
-                {bioError}
-              </p>
-            ) : (
-              <p
-                className="mt-2 text-center text-[10px] leading-relaxed text-muted-foreground max-w-[280px]"
-                style={{ fontFamily: "'Sora', sans-serif" }}
-              >
-                Primeiro acesso neste celular? Entre com e-mail e senha para cadastrar a biometria.
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center justify-center gap-2 pt-6 lg:pt-4 text-xs lg:text-[10px] text-muted-foreground">
-            <ShieldCheck className="w-3.5 h-3.5 text-[var(--shapeos-brand)]" />
-            Conexão criptografada · TLS 1.3 · WebAuthn
-          </div>
+          </section>
         </div>
-
-        <p className="text-center text-sm leading-relaxed text-muted-foreground mt-6" style={{ fontFamily: "'Sora', sans-serif" }}>
-          Novo por aqui?{' '}
-          <a href="/cadastro" className="text-[var(--shapeos-brand)] cursor-pointer hover:underline">Criar conta de Personal</a>
-          <span className="mx-2 text-muted-foreground">•</span>
-          <a href="/cadastro/aluno" className="text-[var(--shapeos-brand)] cursor-pointer hover:underline">Criar conta de Aluno</a>
-        </p>
-    </AuthShell>
+      </div>
+      <style jsx>{`
+        .login-refined { --login-bg:#f7f8f2;--login-panel:#fcfdf9;--login-line:#d7ded3;--login-ink:#162623;--login-muted:#5f6f68;--login-brand:#129b89;--login-button-ink:#fff;--login-error:#b42336;min-height:100svh;background:var(--login-bg);color:var(--login-ink);font-family:'Sora',sans-serif; }
+        :global(.dark) .login-refined { --login-bg:#041512;--login-panel:#091c18;--login-line:#1c4037;--login-ink:#f5faf9;--login-muted:#a3becd;--login-brand:#00e9df;--login-button-ink:#041512;--login-error:#ff8f9b; }
+        .login-refined * { box-sizing:border-box; }
+        .login-frame { min-height:100svh;max-width:800px;margin:0 auto;padding:24px 28px;display:flex;flex-direction:column; }
+        .login-top { display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;max-width:580px;margin:0 auto; }
+        .login-top>a { text-decoration:none;flex-shrink:0; }
+        .login-top nav { display:flex;align-items:center;gap:12px; }
+        .login-back { display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 6px;border:1px solid transparent;border-radius:13px;color:var(--login-muted);font-size:12px;text-decoration:none; }
+        .login-top-divider { height:20px;width:1px;background:var(--login-line); }
+        .login-center { flex:1;display:flex;align-items:center;justify-content:center;padding:42px 0; }
+        .login-card { width:100%;max-width:480px;min-width:0;border:1px solid var(--login-line);border-radius:20px;background:var(--login-panel);overflow:hidden; }
+        .login-heading { position:relative;isolation:isolate;padding:32px 32px 24px;background:radial-gradient(ellipse at 95% 0%,color-mix(in srgb,var(--login-brand) 9%,transparent),transparent 72%); }
+        .login-heading h1 { position:relative;margin:0;font-size:26px;line-height:1.3;font-weight:600;letter-spacing:-.045em; }
+        .login-heading p { position:relative;margin:12px 0 0;max-width:330px;font-size:13px;line-height:1.7;color:var(--login-muted); }
+        .login-wireframe { position:absolute;right:10px;top:6px;width:125px;height:110px;color:var(--login-brand);opacity:.15;z-index:-1;pointer-events:none; }
+        .login-body { margin:0 32px;padding:22px 0 25px;border-top:1px solid var(--login-line); }
+        .login-roles { display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--login-line);border-radius:16px;margin-bottom:22px; }
+        .login-refined button { font:inherit;cursor:pointer;box-shadow:none;transform:none;transition:background-color 150ms ease,border-color 150ms ease; }
+        .login-roles button { min-height:42px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid transparent;border-radius:13px;background:transparent;color:var(--login-muted);font-size:13px;font-weight:500; }
+        .login-roles button[aria-pressed="true"] { border-color:color-mix(in srgb,var(--login-brand) 40%,transparent);background:color-mix(in srgb,var(--login-brand) 7%,transparent);color:var(--login-brand); }
+        form { display:grid;gap:19px; }
+        .login-form-row { display:grid;gap:9px;min-width:0; }
+        label { font-size:13px;font-weight:500; }
+        .login-password-label { display:flex;justify-content:space-between;align-items:center;gap:12px; }
+        .login-password-label a { color:var(--login-brand);font-size:11px;font-weight:500;text-decoration:none;line-height:1.5; }
+        .login-field { display:flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:1px solid var(--login-line);border-radius:13px;background:transparent;color:var(--login-muted);transition:background-color 150ms ease,border-color 150ms ease; }
+        .login-field> :global(svg) { flex-shrink:0; }
+        .login-field input { width:100%;min-width:0;min-height:46px;border:0;padding:0;border-radius:0;background:transparent;color:var(--login-ink);outline:none;box-shadow:none;font:inherit;font-size:14px; }
+        .login-field input::placeholder { color:var(--login-muted);opacity:1; }
+        .login-field:focus-within { border-color:var(--login-brand); }
+        .login-eye { display:flex;align-items:center;justify-content:center;flex-shrink:0;width:44px;height:44px;margin-right:-12px;padding:0;border:1px solid transparent;border-radius:13px;background:transparent;color:var(--login-muted); }
+        .login-submit { display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;margin-top:1px;padding:10px 12px;width:100%;border:1px solid var(--login-brand);border-radius:13px;background:var(--login-brand);color:var(--login-button-ink);font-size:14px!important;font-weight:600!important; }
+        .login-submit:focus-visible { outline:2px solid var(--login-brand);outline-offset:3px; }
+        .login-refined button:disabled { cursor:wait;opacity:.6; }
+        .login-refined a:focus-visible,.login-roles button:focus-visible,.login-eye:focus-visible,.login-bio-button:focus-visible { outline:2px solid var(--login-brand);outline-offset:3px;border-radius:13px; }
+        .login-secure { display:flex;align-items:center;justify-content:center;gap:9px;margin:18px 0 22px;font-size:11px;color:var(--login-muted); }
+        .login-secure :global(svg) { color:var(--login-brand); }
+        .login-register { border-top:1px solid var(--login-line);padding-top:19px;text-align:center;font-size:11px;line-height:1.8; }
+        .login-register p { margin:0 0 6px;color:var(--login-muted); }
+        .login-register div { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:9px;row-gap:4px; }
+        .login-register a { color:var(--login-brand);text-decoration:none; }
+        .login-register span { color:var(--login-muted); }
+        .login-password-label a:hover,.login-register a:hover { text-decoration:underline;text-underline-offset:3px; }
+        .login-error { margin:0 0 16px;padding:12px;border:1px solid color-mix(in srgb,var(--login-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--login-error) 7%,transparent);color:var(--login-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
+        .login-biometric { display:none; }
+        @media (hover:hover) { .login-back:hover,.login-roles button:not(:disabled):hover,.login-eye:not(:disabled):hover,.login-bio-button:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-field:not(:focus-within):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-submit:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 93%,var(--login-panel));border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } }
+        @media (max-width:767px) {
+          .login-frame { padding:18px 20px; }
+          .login-top { flex-wrap:wrap;gap:8px; }
+          .login-top nav { margin-left:auto;gap:8px; }
+          .login-back { font-size:11px;gap:6px; }
+          .login-center { padding:24px 0;align-items:flex-start; }
+          .login-heading { padding:26px 22px 22px; }
+          .login-heading h1 { font-size:23px; }
+          .login-heading p { max-width:250px;font-size:12px; }
+          .login-wireframe { width:95px;right:4px;top:8px;opacity:.12; }
+          .login-body { margin:0 22px;padding:20px 0 23px; }
+          .login-field input { font-size:16px; }
+          .login-biometric { display:grid;gap:9px;margin-top:14px; }
+          .login-bio-button { display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;width:100%;border:1px solid var(--login-line);border-radius:13px;background:transparent;color:var(--login-brand);font-size:12px!important; }
+          .login-biometric>p:not(.login-error) { margin:0;text-align:center;color:var(--login-muted);font-size:10px;line-height:1.7; }
+          .login-biometric .login-error { margin:0; }
+          .login-roles button:not(:disabled):active,.login-eye:not(:disabled):active,.login-bio-button:not(:disabled):active { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); }
+        }
+        @media (max-width:359px) { .login-frame { padding:16px 14px; }.login-heading { padding:24px 18px 20px; }.login-heading h1 { font-size:21px; }.login-body { margin:0 18px; }.login-register div { flex-direction:column; }.login-register span { display:none; } }
+        @media (prefers-reduced-motion:reduce) { .login-refined button,.login-field { transition:none; } }
+      `}</style>
+    </main>
   );
 };
 
