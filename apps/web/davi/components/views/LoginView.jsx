@@ -5,10 +5,21 @@ import { Lock, Mail, ShieldCheck, ArrowRight, ArrowLeft, Fingerprint, CheckCircl
 import Logo from "@/davi/components/Logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
+function getLoginFieldErrors(form, withPassword = true) {
+  const errors = {};
+  const emailInput = form.elements.namedItem('email');
+  const passwordInput = form.elements.namedItem('password');
+  if (!emailInput?.value.trim()) errors.email = 'Informe seu e-mail.';
+  else if (emailInput.validity.typeMismatch) errors.email = 'Informe um e-mail válido, como nome@exemplo.com.';
+  if (withPassword && !passwordInput?.value) errors.password = 'Informe sua senha.';
+  return errors;
+}
+
 export const LoginView = ({ onEnter, onBiometric, error }) => {
   const [role, setRole] = useState("personal"); // "personal" | "aluno"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [bioState, setBioState] = useState("idle"); // idle | scanning | success | error
@@ -16,7 +27,13 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || bioState === "scanning") return;
+    const errors = getLoginFieldErrors(e.currentTarget);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) {
+      e.currentTarget.elements.namedItem(errors.email ? 'email' : 'password')?.focus();
+      return;
+    }
     setSubmitting(true);
     try { await onEnter(role, email, password); } finally { setSubmitting(false); }
   };
@@ -82,22 +99,24 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
                 <button type="button" data-testid="role-tab-personal" aria-pressed={role === "personal"} onClick={() => setRole("personal")} disabled={submitting || bioState === "scanning"}><UserRound size={18} aria-hidden="true"/>Personal</button>
                 <button type="button" data-testid="role-tab-aluno" aria-pressed={role === "aluno"} onClick={() => setRole("aluno")} disabled={submitting || bioState === "scanning"}><UsersRound size={18} aria-hidden="true"/>Aluno</button>
               </div>
-              {error && <p id="login-error" role="alert" className="login-error">{error}</p>}
-              <form aria-busy={submitting} onSubmit={handleSubmit}>
+              {error && !Object.values(fieldErrors).some(Boolean) && <p id="login-error" role="alert" className="login-error">{error}</p>}
+              <form noValidate aria-busy={submitting} onSubmit={handleSubmit}>
                 <div className="login-form-row">
                   <label htmlFor="login-email">E-mail</label>
                   <div className="login-field">
                     <Mail size={18} aria-hidden="true"/>
-                    <input id="login-email" autoComplete="email" data-testid="login-email-input" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@shapeos.app" aria-describedby={error ? "login-error" : undefined}/>
+                    <input id="login-email" name="email" autoComplete="email" data-testid="login-email-input" type="email" required value={email} onChange={(e) => { setEmail(e.target.value); setFieldErrors(current => ({ ...current, email: undefined })); }} placeholder="voce@shapeos.app" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? "login-email-error" : error && !Object.values(fieldErrors).some(Boolean) ? "login-error" : undefined}/>
                   </div>
+                  {fieldErrors.email && <p id="login-email-error" className="login-field-error" role="alert">{fieldErrors.email}</p>}
                 </div>
                 <div className="login-form-row">
                   <div className="login-password-label"><label htmlFor="login-password">Senha</label><a href="/recuperar-senha" data-testid="forgot-password-link">Esqueci minha senha</a></div>
                   <div className="login-field">
                     <Lock size={18} aria-hidden="true"/>
-                    <input id="login-password" autoComplete="current-password" data-testid="login-password-input" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Digite sua senha" aria-describedby={error ? "login-error" : undefined}/>
+                    <input id="login-password" name="password" autoComplete="current-password" data-testid="login-password-input" type={showPassword ? "text" : "password"} required value={password} onChange={(e) => { setPassword(e.target.value); setFieldErrors(current => ({ ...current, password: undefined })); }} placeholder="Digite sua senha" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? "login-password-error" : error && !Object.values(fieldErrors).some(Boolean) ? "login-error" : undefined}/>
                     <button type="button" className="login-eye" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} aria-hidden="true"/> : <Eye size={18} aria-hidden="true"/>}</button>
                   </div>
+                  {fieldErrors.password && <p id="login-password-error" className="login-field-error" role="alert">{fieldErrors.password}</p>}
                 </div>
                 <button type="submit" disabled={submitting || bioState === "scanning"} data-testid="login-submit-button" className="login-submit"><Lock size={17} aria-hidden="true"/><span>{submitting ? "Entrando…" : "Entrar na ShapeOS"}</span><ArrowRight size={18} aria-hidden="true"/></button>
               </form>
@@ -162,6 +181,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         .login-register span { color:var(--login-muted); }
         .login-password-label a:hover,.login-register a:hover { text-decoration:underline;text-underline-offset:3px; }
         .login-error { margin:0 0 16px;padding:12px;border:1px solid color-mix(in srgb,var(--login-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--login-error) 7%,transparent);color:var(--login-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
+        .login-field-error { margin:0;color:var(--login-error);font-size:12px;line-height:1.5;overflow-wrap:anywhere; }
         .login-biometric { display:none; }
         @media (hover:hover) { .login-roles button:not(:disabled):hover,.login-eye:not(:disabled):hover,.login-bio-button:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-field:not(:focus-within):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-submit:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 93%,var(--login-panel));border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } }
         @media (min-width:768px) and (max-width:1023px) { .login-center { gap:28px; }.login-intro { padding-right:28px; }.login-intro h2 { font-size:32px; }.login-heading { padding:26px 24px 22px; }.login-heading h1 { font-size:24px; }.login-body { margin:0 24px; } }
