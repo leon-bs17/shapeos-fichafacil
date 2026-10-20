@@ -9,11 +9,24 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, 
 import Logo from '@/davi/components/Logo'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
+type LoginFieldErrors = { email?: string; password?: string }
+
+function getLoginFieldErrors(form: HTMLFormElement, withPassword = true): LoginFieldErrors {
+  const errors: LoginFieldErrors = {};
+  const emailInput = form.elements.namedItem('email') as HTMLInputElement | null;
+  const passwordInput = form.elements.namedItem('password') as HTMLInputElement | null;
+  if (!emailInput?.value.trim()) errors.email = 'Informe seu e-mail.';
+  else if (emailInput.validity.typeMismatch) errors.email = 'Informe um e-mail válido, como nome@exemplo.com.';
+  if (withPassword && !passwordInput?.value) errors.password = 'Informe sua senha.';
+  return errors;
+}
+
 export default function AdminLoginPage() {
   const router=useRouter()
   const [email,setEmail]=useState('')
   const [senha,setSenha]=useState('')
   const [mostrarSenha,setMostrarSenha]=useState(false)
+  const [fieldErrors,setFieldErrors]=useState<LoginFieldErrors>({})
   const [erro,setErro]=useState<string|null>(null)
   const [carregando,setCarregando]=useState(false)
   const [limpandoSessao,setLimpandoSessao]=useState(true)
@@ -64,12 +77,20 @@ export default function AdminLoginPage() {
       html.removeAttribute('data-admin-login-keyboard')
     }
   },[])
-  function voltarLogin() {setAvisoEnviado(false);setModoEsqueci(false);setErro(null);requestAnimationFrame(()=>emailRef.current?.focus())}
-  async function enviarLinkRedefinicao(event:FormEvent) {
+  function validateFields(form: HTMLFormElement, withPassword: boolean) {
+    const errors = getLoginFieldErrors(form, withPassword)
+    setFieldErrors(errors)
+    if (!Object.keys(errors).length) return true
+    const input = form.elements.namedItem(errors.email ? 'email' : 'password') as HTMLInputElement | null
+    input?.focus()
+    return false
+  }
+  function voltarLogin() {setAvisoEnviado(false);setModoEsqueci(false);setErro(null);setFieldErrors({});requestAnimationFrame(()=>emailRef.current?.focus())}
+  async function enviarLinkRedefinicao(event:FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if(carregando||limpandoSessao)return
     setErro(null)
-    if(!email.trim().includes('@')) {setErro('Digite seu e-mail para receber o link.');return}
+    if(!validateFields(event.currentTarget,false))return
     setCarregando(true)
     try {
       const {error}=await createClient().auth.resetPasswordForEmail(email.trim(),{redirectTo:`${window.location.origin}/auth/callback?next=/admin/redefinir-senha`})
@@ -78,10 +99,11 @@ export default function AdminLoginPage() {
     }catch{setErro('Não foi possível enviar o e-mail. Tente novamente.')}
     finally{setCarregando(false)}
   }
-  async function handleSubmit(event:FormEvent) {
+  async function handleSubmit(event:FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if(carregando||limpandoSessao)return
     setErro(null)
+    if(!validateFields(event.currentTarget,true))return
     const parsed=loginSchema.safeParse({email,senha})
     if(!parsed.success){setErro(parsed.error.issues[0]?.message??'Dados inválidos.');return}
     setCarregando(true)
@@ -120,14 +142,16 @@ export default function AdminLoginPage() {
       <section className="admin-login-card" aria-labelledby="admin-login-title">
         <header className="admin-login-card-heading"><h2 id="admin-login-title">{title}</h2><p>{avisoEnviado?'Enviamos as instruções para redefinir sua senha.':modoEsqueci?'Receba um link para redefinir sua senha.':'Use sua conta de administrador.'}</p></header>
         {avisoEnviado?<div className="admin-login-sent"><CheckCircle2 size={32} aria-hidden="true"/><p>Enviamos um link de redefinição para <strong>{email.trim()}</strong>. Abra sua caixa de entrada e siga as instruções.</p><button type="button" className="admin-login-command" onClick={voltarLogin}>Voltar ao login</button></div>:
-        <form onSubmit={modoEsqueci?enviarLinkRedefinicao:handleSubmit} className="admin-login-form">
+        <form noValidate onSubmit={modoEsqueci?enviarLinkRedefinicao:handleSubmit} className="admin-login-form">
           <div className="admin-login-field-group"><label htmlFor="admin-email">E-mail administrativo</label>
-            <div className="admin-login-field"><Mail size={18} aria-hidden="true"/><input ref={emailRef} id="admin-email" name="email" type="email" placeholder="admin@shapeos.com" value={email} onChange={event=>setEmail(event.target.value)} autoComplete="username" required disabled={busy}/></div>
+            <div className="admin-login-field"><Mail size={18} aria-hidden="true"/><input ref={emailRef} id="admin-email" name="email" type="email" placeholder="admin@shapeos.com" value={email} onChange={event=>{setEmail(event.target.value);setFieldErrors(current=>({...current,email:undefined}))}} aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email?'admin-email-error':undefined} autoComplete="username" required disabled={busy}/></div>
+            {fieldErrors.email&&<p id="admin-email-error" className="admin-login-field-error" role="alert">{fieldErrors.email}</p>}
           </div>
-          {!modoEsqueci&&<div className="admin-login-field-group"><div className="admin-login-password-label"><label htmlFor="admin-senha">Senha</label><button type="button" className="admin-login-text-action" disabled={busy} onClick={()=>{setModoEsqueci(true);setMostrarSenha(false);setSenha('');setErro(null);requestAnimationFrame(()=>emailRef.current?.focus())}}>Esqueci minha senha</button></div>
-            <div className="admin-login-field"><Lock size={18} aria-hidden="true"/><input id="admin-senha" name="password" type={mostrarSenha?'text':'password'} placeholder="Digite sua senha" value={senha} onChange={event=>setSenha(event.target.value)} autoComplete="current-password" required disabled={busy}/>
+          {!modoEsqueci&&<div className="admin-login-field-group"><div className="admin-login-password-label"><label htmlFor="admin-senha">Senha</label><button type="button" className="admin-login-text-action" disabled={busy} onClick={()=>{setModoEsqueci(true);setMostrarSenha(false);setSenha('');setErro(null);setFieldErrors({});requestAnimationFrame(()=>emailRef.current?.focus())}}>Esqueci minha senha</button></div>
+            <div className="admin-login-field"><Lock size={18} aria-hidden="true"/><input id="admin-senha" name="password" type={mostrarSenha?'text':'password'} placeholder="Digite sua senha" value={senha} onChange={event=>{setSenha(event.target.value);setFieldErrors(current=>({...current,password:undefined}))}} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password?'admin-password-error':undefined} autoComplete="current-password" required disabled={busy}/>
               <button type="button" className="admin-login-visibility" aria-label={mostrarSenha?'Ocultar senha':'Mostrar senha'} aria-pressed={mostrarSenha} aria-controls="admin-senha" disabled={busy} onClick={()=>setMostrarSenha(!mostrarSenha)}>{mostrarSenha?<EyeOff size={18}/>:<Eye size={18}/>}</button>
             </div>
+            {fieldErrors.password&&<p id="admin-password-error" className="admin-login-field-error" role="alert">{fieldErrors.password}</p>}
           </div>}
           {erro&&<p className="admin-login-error" role="alert">{erro}</p>}
           <button type="submit" className="admin-login-submit" disabled={busy}>
@@ -405,6 +429,8 @@ html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login
 }
 @media(max-width:767px) and (max-height:800px){html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login .admin-login-password-label{margin-bottom:7px!important}
 }
+html body :is(#admin-login-field-validation,[data-admin-login-refined]).admin-login .admin-login-field-error{margin:7px 0 0!important;padding:0!important;border:0!important;background:transparent!important;color:#b42336!important;font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere!important}
+html.dark body :is(#admin-login-field-validation,[data-admin-login-refined]).admin-login .admin-login-field-error{color:#ff8f9b!important}
     `}</style>
   </main>
 }
