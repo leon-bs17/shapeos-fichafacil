@@ -132,24 +132,41 @@ export default function CadastroPage() {
             <h2 id="signup-intro-title">Seu trabalho.<br /><span>Mais organizado.</span></h2>
             <p className="signup-intro-description">Planeje, acompanhe e evolua com a ShapeOS.</p>
             <svg className="signup-orbit" viewBox="0 0 400 280" fill="none" aria-hidden="true" focusable="false">
-                <g stroke="currentColor" strokeWidth=".8" opacity=".4">
-                  <ellipse cx="195" cy="140" rx="160" ry="65" transform="rotate(-25 195 140)"/>
-                  <ellipse cx="195" cy="140" rx="146" ry="87" transform="rotate(16 195 140)"/>
-                  <ellipse cx="195" cy="140" rx="111" ry="100" transform="rotate(32 195 140)"/>
-                  <path d="M55 147L153 86L242 65L332 149L251 220L195 241L55 147Z M153 86L251 220M242 65L195 241M55 147L332 149" opacity=".3"/>
-                </g>
-                <g stroke="currentColor" strokeWidth="1.6" opacity=".55">
-                  <circle cx="195" cy="140" r="43"/>
-                  <rect x="111" y="116" width="12" height="48" rx="3"/>
-                  <rect x="101" y="124" width="10" height="32" rx="2"/>
-                  <path d="M123 133h29m-29 14h29"/>
-                  <rect x="267" y="116" width="12" height="48" rx="3"/>
-                  <rect x="279" y="124" width="10" height="32" rx="2"/>
-                  <path d="M238 133h29m-29 14h29"/>
-                  <path d="M186 122a22 22 0 1 0 18 0m-9-9v25" strokeLinecap="round"/>
-                </g>
-                {[{x:55,y:147},{x:242,y:65},{x:332,y:149},{x:195,y:241}].map((point,index)=><g key={index}><circle cx={point.x} cy={point.y} r="6" fill="var(--signup-panel)" stroke="currentColor" strokeOpacity=".4"/><circle cx={point.x} cy={point.y} r="2.5" fill="currentColor" opacity=".6"/></g>)}
-              </svg>
+              <g stroke="currentColor" strokeWidth=".8" opacity=".4">
+                <path d="M200 34 304 88v104l-104 54L96 192V88Z" />
+                <path d="m200 55 85 44v82l-85 44-85-44V99Zm0-21v21M96 88l19 11m189-11-19 11M96 192l19-11m189 11-19-11m-85 65v-21" />
+                <path d="m115 99 85 44 85-44m-85 44v82M96 140h208M200 34v212" strokeDasharray="3 6" opacity=".45" />
+                <ellipse cx="200" cy="143" rx="119" ry="40" transform="rotate(-23 200 143)" />
+              </g>
+              <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity=".9">
+                <circle cx="200" cy="141" r="40" />
+                <rect x="150" y="121" width="10" height="40" rx="3" />
+                <rect x="141" y="129" width="9" height="24" rx="2" />
+                <path d="M160 136h18m-18 10h18" />
+                <rect x="240" y="121" width="10" height="40" rx="3" />
+                <rect x="250" y="129" width="9" height="24" rx="2" />
+                <path d="M222 136h18m-18 10h18M193 125a18 18 0 1 0 14 0m-7-7v19" />
+              </g>
+              <g stroke="currentColor" strokeWidth=".8" opacity=".5">
+                <path d="m115 99-28-26m198 26 28-14m-28 96 22 28" />
+              </g>
+              <g stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="40" y="35" width="48" height="54" rx="7" fill="var(--signup-bg)" />
+                <rect x="52" y="31" width="24" height="9" rx="3" fill="var(--signup-bg)" />
+                <path d="m49 53 3 3 5-6m5 3h16m-29 14 3 3 5-6m5 3h16" opacity=".8" />
+                <rect x="312" y="58" width="49" height="47" rx="8" fill="var(--signup-bg)" />
+                <circle cx="332" cy="74" r="5" />
+                <path d="M322 92v-3a10 10 0 0 1 20 0v3m0-21a5 5 0 0 1 0 10m6 11v-3a12 12 0 0 0-3-8" opacity=".8" />
+                <rect x="303" y="205" width="46" height="39" rx="7" fill="var(--signup-bg)" />
+                <path d="M303 217h46m-33-16v8m20-8v8m-22 17h4m6 0h4m6 0h4m-24 8h4m6 0h4" opacity=".8" />
+              </g>
+              <g fill="currentColor">
+                <circle cx="200" cy="34" r="2.5" opacity=".7" />
+                <circle cx="96" cy="192" r="2.5" opacity=".7" />
+                <circle cx="304" cy="140" r="2.5" opacity=".7" />
+                <circle cx="200" cy="225" r="2" opacity=".6" />
+              </g>
+            </svg>
           </aside>
           <section className="signup-card" aria-labelledby="signup-title">
             <header className="signup-heading">
