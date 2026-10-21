@@ -121,9 +121,41 @@ export default function CadastroPage() {
           </nav>
         </header>
         <div className="signup-center">
+          <aside className="signup-intro" aria-labelledby="signup-intro-title">
+            <p className="signup-eyebrow">Personais</p>
+            <h2 id="signup-intro-title">Seu trabalho.<br /><span>Mais organizado.</span></h2>
+            <p className="signup-intro-description">Planeje, acompanhe e evolua com a ShapeOS.</p>
+            <svg className="signup-orbit" viewBox="0 0 320 290" fill="none" aria-hidden="true" focusable="false">
+              <g stroke="currentColor" strokeWidth=".8">
+                <circle cx="156" cy="145" r="123" strokeDasharray="2 3" opacity=".35" />
+                <circle cx="156" cy="145" r="92" opacity=".45" />
+                <circle cx="156" cy="145" r="48" opacity=".75" />
+              </g>
+              <g fill="currentColor">
+                <circle cx="189" cy="59" r="3" /><circle cx="240" cy="182" r="3" />
+                <circle cx="72" cy="108" r="3" /><circle cx="127" cy="232" r="3" />
+              </g>
+              <g stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                <path d="M139 139h34m-34 12h34" />
+                <rect x="130" y="129" width="9" height="32" rx="3" />
+                <rect x="121" y="135" width="9" height="20" rx="3" />
+                <rect x="173" y="129" width="9" height="32" rx="3" />
+                <rect x="182" y="135" width="9" height="20" rx="3" />
+              </g>
+              <g fill="var(--signup-bg)" stroke="currentColor" strokeWidth="1" strokeOpacity=".45">
+                <circle cx="71" cy="56" r="21" /><circle cx="274" cy="111" r="21" />
+                <circle cx="72" cy="237" r="21" /><circle cx="247" cy="244" r="21" />
+              </g>
+              <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity=".8">
+                <rect x="63" y="49" width="16" height="15" rx="2" /><path d="M67 47v4m8-4v4m-12 4h16m-11 4h2" />
+                <rect x="265" y="112" width="4" height="7" rx="1" /><rect x="272" y="106" width="4" height="13" rx="1" /><rect x="279" y="101" width="4" height="18" rx="1" />
+                <circle cx="72" cy="232" r="4" /><path d="M64 246v-3a8 8 0 0 1 16 0v3m-20-1v-2m24 2v-2" />
+                <rect x="240" y="236" width="14" height="18" rx="2" /><path d="M244 234h6v4h-6zm0 9h6m-6 4h6m-6 3h4" />
+              </g>
+            </svg>
+          </aside>
           <section className="signup-card" aria-labelledby="signup-title">
             <header className="signup-heading">
-              <p className="signup-eyebrow">Personais</p>
               <h1 id="signup-title">Criar conta de Personal</h1>
               <p className="signup-description">Gerencie alunos, fichas e treinos em um só lugar.</p>
             </header>
@@ -189,7 +221,13 @@ export default function CadastroPage() {
         .signup-top { display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--signup-line); }
         .signup-top nav { display:flex;align-items:center;gap:12px; }
         .signup-back { display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;color:var(--signup-muted);font-size:12px;text-decoration:none; }
-        .signup-center { display:flex;flex:1;align-items:center;justify-content:center;padding:32px 0; }
+        .signup-center { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);flex:1;align-items:center;gap:40px;width:100%;max-width:960px;margin:0 auto;padding:32px 0; }
+        .signup-intro { min-width:0;min-height:520px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-right:1px solid var(--signup-line);padding:20px 40px 20px 0; }
+        .signup-intro .signup-eyebrow { margin-bottom:16px;color:var(--signup-brand);letter-spacing:.2em; }
+        .signup-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.25;letter-spacing:-.045em; }
+        .signup-intro h2 span { color:var(--signup-brand); }
+        .signup-intro-description { margin:17px 0 0;max-width:280px;font-size:14px;line-height:1.8;color:var(--signup-muted); }
+        .signup-orbit { width:100%;max-width:290px;height:auto;margin-top:28px;color:var(--signup-brand);pointer-events:none; }
         .signup-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--signup-line);border-radius:20px;background:var(--signup-panel); }
         .signup-heading { padding:28px 32px 20px; }
         .signup-eyebrow { margin:0 0 12px;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:var(--signup-muted); }
@@ -227,12 +265,21 @@ export default function CadastroPage() {
           .signup-field:not([data-disabled="true"]):not(:focus-within):hover,.signup-eye:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
           .signup-submit:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 93%,var(--signup-panel));border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
         }
+        @media (min-width:768px) and (max-width:1023px) {
+          .signup-center { gap:28px; }
+          .signup-intro { padding-right:28px; }
+          .signup-intro h2 { font-size:32px; }
+          .signup-heading { padding-left:24px;padding-right:24px; }
+          .signup-heading h1 { font-size:24px; }
+          .signup-body { margin-left:24px;margin-right:24px; }
+        }
         @media (max-width:767px) {
           .signup-frame { padding:18px 20px; }
           .signup-top { flex-wrap:wrap;gap:8px; }
           .signup-top nav { margin-left:auto;gap:8px; }
           .signup-back { font-size:11px;gap:6px; }
-          .signup-center { align-items:flex-start;padding:24px 0; }
+          .signup-center { display:flex;align-items:flex-start;justify-content:center;padding:24px 0; }
+          .signup-intro { display:none; }
           .signup-heading { padding:24px 22px 18px; }
           .signup-heading h1 { font-size:23px; }
           .signup-description { font-size:12px; }
@@ -245,6 +292,11 @@ export default function CadastroPage() {
           .signup-heading { padding:22px 14px 16px; }
           .signup-heading h1 { font-size:21px; }
           .signup-body { margin:0 14px; }
+        }
+        @media (min-width:768px) and (max-height:800px) {
+          .signup-intro { min-height:440px;padding-top:12px;padding-bottom:12px; }
+          .signup-intro h2 { font-size:34px; }
+          .signup-orbit { max-width:250px;max-height:225px;margin-top:18px; }
         }
         @media (max-height:800px) {
           .signup-frame { padding-top:12px;padding-bottom:12px; }
