@@ -245,8 +245,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}</div></section>
       </nav>
       <div className="admin-menu-footer">
-        <Link href="/" className="admin-menu-row" aria-label="Voltar ao app" data-shapeos-tooltip={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
-        <button type="button" className="admin-menu-row admin-menu-logout" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} data-shapeos-tooltip={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
+        <Link href="/" className="admin-menu-row admin-menu-footer-action" aria-label="Voltar ao app" data-shapeos-tooltip={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
+        <button type="button" className="admin-menu-row admin-menu-logout admin-menu-footer-action" onClick={()=>void sair()} disabled={signingOut} aria-label={signingOut?'Saindo':'Sair'} data-shapeos-tooltip={compact?'Sair':undefined}><LogOut size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">{signingOut?'Saindo...':'Sair'}</span></button>
         {signOutError&&<p className="admin-menu-error" role="alert">{signOutError}</p>}
       </div>
       {user&&<div className="admin-menu-profile" data-shapeos-tooltip={compact?user.nome:undefined}><span className="admin-menu-avatar" aria-hidden="true">{initials}</span><div className="admin-menu-label"><p>{user.nome}</p><span>Administrador</span></div></div>}
@@ -964,6 +964,13 @@ html body :is(#admin-detail-standard,[data-admin-route]):is(#admin-detail-standa
 html body :is(#admin-detail-standard,[data-admin-route]):is(#admin-detail-standard,[data-admin-route]) :is(.approval-profile-dialog,.activity-details,.users-details,.personal-dialog,.audit-dialog,.notice-modal:has(.notice-detail)) :is(.approval-profile-heading,.details-heading,.users-details-heading,.personal-dialog-heading,.audit-dialog-heading)>div{display:flex!important;flex-direction:column!important;min-width:0!important;}
 html body :is(#admin-detail-standard,[data-admin-route]):is(#admin-detail-standard,[data-admin-route]) :is(.approval-profile-dialog,.activity-details,.users-details,.personal-dialog,.audit-dialog,.notice-modal:has(.notice-detail)) :is(.approval-profile-heading,.details-heading,.users-details-heading,.personal-dialog-heading,.audit-dialog-heading)>div>p{order:-1!important;}
 @media(hover:hover) and (pointer:fine){html body :is(#admin-detail-standard,[data-admin-route]):is(#admin-detail-standard,[data-admin-route]) :is(.approval-profile-dialog,.activity-details,.users-details,.personal-dialog,.audit-dialog,.notice-modal:has(.notice-detail)) :is(.approval-profile-close,.details-close,.users-details-heading>button,.personal-dialog-heading>button,.audit-dialog-heading>button,.notice-close):not(:disabled):hover{background:color-mix(in srgb,var(--detail-brand) 7%,transparent)!important;border-color:color-mix(in srgb,var(--detail-brand) 40%,transparent)!important;color:var(--detail-muted)!important;}}
+
+
+/* Footer actions stay visually static for mouse and touch; keyboard focus stays visible. */
+html body :is(#admin-menu-refined,[data-admin-route]) .shapeos-navigation .admin-menu-footer .admin-menu-row.admin-menu-footer-action:is(:hover,:active){
+  background:transparent!important;border-color:transparent!important;
+  box-shadow:none!important;transform:none!important;filter:none!important;transition:none!important;
+}
 
 `}</style>
     </div>
