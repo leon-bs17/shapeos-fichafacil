@@ -1,34 +1,36 @@
 'use client'
 
-import { AuthShell } from '@/components/auth/auth-shell'
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { loginSchema } from '@shapeos/shared'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useTheme } from 'next-themes'
+import Logo from '@/davi/components/Logo'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, User } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff, Info, ShieldCheck, Shield } from 'lucide-react'
 
 export default function CadastroAlunoPage() {
+  const { resolvedTheme } = useTheme()
+  const [captchaCompacto, setCaptchaCompacto] = useState(false)
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
+  const [captchaVersion, setCaptchaVersion] = useState(0)
   const [erro, setErro] = useState<string | null>(null)
   const [concluido, setConcluido] = useState(false)
   const [carregando, setCarregando] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width:399px)')
+    const update = () => setCaptchaCompacto(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+  useEffect(() => { setCaptchaToken('') }, [resolvedTheme, captchaCompacto])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -78,10 +80,13 @@ export default function CadastroAlunoPage() {
                 : 'Não foi possível criar a conta de Aluno. Tente novamente.'
         )
         setCaptchaToken('')
+        setCaptchaVersion(current => current + 1)
         return
       }
 
       if (!data.user) {
+        setCaptchaToken('')
+        setCaptchaVersion(current => current + 1)
         setErro('Não foi possível criar a conta de Aluno. Tente novamente.')
         return
       }
@@ -105,145 +110,217 @@ export default function CadastroAlunoPage() {
 
       setConcluido(true)
     } catch {
+      setCaptchaToken('')
+      setCaptchaVersion(current => current + 1)
       setErro('Não foi possível conectar ao serviço de cadastro. Tente novamente.')
     } finally {
       setCarregando(false)
     }
   }
 
+
   return (
-    <AuthShell>
-        <Card className="w-full border-border bg-card shadow-none">
-          <CardHeader className="text-center pb-6">
-
-            <CardTitle className="text-2xl font-bold tracking-tight">Criar conta de Aluno</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Acesse seus treinos, histórico e evolução no ShapeOS
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-5">
-            {concluido ? (
-              <div className="space-y-4 text-center py-4">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/10">
-                  <CheckCircle2 className="h-7 w-7 text-success" />
-                </div>
-                <div className="space-y-2">
-                  <p className="font-medium text-lg">Conta de Aluno criada!</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    A conta <span className="font-medium text-foreground">{email}</span> já foi criada. Você pode entrar normalmente com seu e-mail e senha.
-                  </p>
-                </div>
-                <Link href="/login">
-                  <Button className="w-full h-11 rounded-xl">Ir para o login</Button>
-                </Link>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="rounded-xl bg-primary/5 border border-primary/10 px-4 py-3 text-center text-xs text-muted-foreground">
-                  Este cadastro cria uma conta de Aluno ativa. Seu Personal poderá vincular sua conta e atribuir fichas depois.
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome completo</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
-                    <Input
-                      id="nome"
-                      placeholder="Seu nome completo"
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
-                      required
-                      className="h-11 pl-10 pr-4"
-                      disabled={carregando}
-                      autoComplete="name"
-                    />
+    <main className="student-signup" data-testid="student-signup">
+      <div className="signup-frame">
+        <header className="signup-top">
+          <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
+          <nav aria-label="Opções de acesso">
+            <a className="signup-back" href="/apresentacao"><ArrowLeft size={15} aria-hidden="true" /><span>Conhecer a ShapeOS</span></a>
+            <ThemeToggle />
+          </nav>
+        </header>
+        <div className="signup-center">
+          <aside className="signup-intro" aria-labelledby="signup-intro-title">
+            <p className="signup-eyebrow">Alunos</p>
+            <h2 id="signup-intro-title">Seu treino.<br /><span>Sua evolução.</span></h2>
+            <p className="signup-intro-description">Acompanhe seus treinos e evolua com a ShapeOS.</p>
+            <svg className="signup-orbit" viewBox="0 0 400 280" fill="none" aria-hidden="true" focusable="false">
+                <g stroke="currentColor" strokeWidth=".8" opacity=".4">
+                  <ellipse cx="195" cy="140" rx="160" ry="65" transform="rotate(-25 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="146" ry="87" transform="rotate(16 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="111" ry="100" transform="rotate(32 195 140)"/>
+                  <path d="M55 147L153 86L242 65L332 149L251 220L195 241L55 147Z M153 86L251 220M242 65L195 241M55 147L332 149" opacity=".3"/>
+                </g>
+                <g stroke="currentColor" strokeWidth="1.6" opacity=".55">
+                  <circle cx="195" cy="140" r="43"/>
+                  <rect x="111" y="116" width="12" height="48" rx="3"/>
+                  <rect x="101" y="124" width="10" height="32" rx="2"/>
+                  <path d="M123 133h29m-29 14h29"/>
+                  <rect x="267" y="116" width="12" height="48" rx="3"/>
+                  <rect x="279" y="124" width="10" height="32" rx="2"/>
+                  <path d="M238 133h29m-29 14h29"/>
+                  <path d="M186 122a22 22 0 1 0 18 0m-9-9v25" strokeLinecap="round"/>
+                </g>
+                {[{x:55,y:147},{x:242,y:65},{x:332,y:149},{x:195,y:241}].map((point,index)=><g key={index}><circle cx={point.x} cy={point.y} r="6" fill="var(--signup-panel)" stroke="currentColor" strokeOpacity=".4"/><circle cx={point.x} cy={point.y} r="2.5" fill="currentColor" opacity=".6"/></g>)}
+              </svg>
+          </aside>
+          <section className="signup-card" aria-labelledby="signup-title">
+            <header className="signup-heading">
+              <h1 id="signup-title">Criar conta de Aluno</h1>
+              <p className="signup-description">Acesse seus treinos, histórico e evolução.</p>
+            </header>
+            <div className="signup-body">
+              {concluido ? (
+                <div className="signup-success" role="status">
+                  <div className="signup-success-icon">
+                    <CheckCircle2 size={26} aria-hidden="true" />
                   </div>
+                  <h2>Conta de Aluno criada!</h2>
+                  <p>A conta <strong>{email}</strong> já foi criada. Você pode entrar normalmente com seu e-mail e senha.</p>
+                  <a href="/login" className="signup-submit">Ir para o login<ArrowRight size={18} aria-hidden="true" /></a>
                 </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="voce@exemplo.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      autoComplete="email"
-                      required
-                      className="h-11 pl-10 pr-4"
-                      disabled={carregando}
-                    />
+              ) : (
+                <form onSubmit={handleSubmit} aria-busy={carregando}>
+                  <div className="signup-notice"><Info size={16} aria-hidden="true" /><p>Sua conta de Aluno será criada ativa. Seu Personal poderá vincular sua conta e atribuir fichas depois.</p></div>
+                  <div className="signup-row">
+                    <label htmlFor="nome">Nome completo</label>
+                    <div className="signup-field" data-disabled={carregando}>
+                      <User size={18} aria-hidden="true" />
+                      <input id="nome" name="nome" placeholder="Seu nome completo" value={nome} onChange={(e) => setNome(e.target.value)} required disabled={carregando} autoComplete="name" />
+                    </div>
                   </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="senha" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Senha</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/60" aria-hidden="true" />
-                    <Input
-                      id="senha"
-                      type={mostrarSenha ? 'text' : 'password'}
-                      placeholder="Mínimo 6 caracteres"
-                      value={senha}
-                      onChange={(e) => setSenha(e.target.value)}
-                      autoComplete="new-password"
-                      required
-                      className="h-11 pl-10 pr-12"
-                      disabled={carregando}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setMostrarSenha((valor) => !valor)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors"
-                      aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
-                    >
-                      {mostrarSenha ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
+                  <div className="signup-row">
+                    <label htmlFor="email">E-mail</label>
+                    <div className="signup-field" data-disabled={carregando}>
+                      <Mail size={18} aria-hidden="true" />
+                      <input id="email" name="email" type="email" placeholder="voce@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={carregando} />
+                    </div>
                   </div>
-                </div>
-
-                <Captcha onToken={setCaptchaToken} />
-
-                {erro ? (
-                  <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
-                    <p className="text-sm text-destructive" role="alert">{erro}</p>
+                  <div className="signup-row">
+                    <label htmlFor="senha">Senha</label>
+                    <div className="signup-field" data-disabled={carregando}>
+                      <Lock size={18} aria-hidden="true" />
+                      <input id="senha" name="senha" type={mostrarSenha ? 'text' : 'password'} placeholder="Mínimo de 6 caracteres" value={senha} onChange={(e) => setSenha(e.target.value)} autoComplete="new-password" required disabled={carregando} />
+                      <button type="button" className="signup-eye" onClick={() => setMostrarSenha(!mostrarSenha)} disabled={carregando} aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'} aria-pressed={mostrarSenha} aria-controls="senha">
+                        {mostrarSenha ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                      </button>
+                    </div>
                   </div>
-                ) : null}
-
-                <Button type="submit" className="w-full h-11 font-medium rounded-xl" disabled={carregando || (captchaAtivo() && !captchaToken)}>
-                  {carregando ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Criando conta...
-                    </>
-                  ) : (
-                    <>
-                      Criar conta de Aluno
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
+                  {captchaAtivo() && (
+                    <div className="signup-verification">
+                      <Captcha key={captchaVersion} onToken={setCaptchaToken} theme={resolvedTheme === 'dark' ? 'dark' : 'light'} size={captchaCompacto ? 'compact' : 'flexible'} appearance="interaction-only" />
+                      <p className="signup-verification-status" role="status" aria-live="polite" aria-atomic="true">
+                        {captchaToken ? <ShieldCheck size={19} aria-hidden="true" /> : <Shield size={19} aria-hidden="true" />}
+                        <span>{captchaToken ? 'Verificação de segurança concluída' : 'Verificando segurança...'}</span>
+                      </p>
+                    </div>
                   )}
-                </Button>
-
-                <div className="grid grid-cols-2 gap-3 text-center text-sm">
-                  <Link href="/login" className="text-primary font-medium hover:underline">Já tenho conta</Link>
-                  <Link href="/cadastro" className="text-primary font-medium hover:underline">Sou Personal</Link>
-                </div>
-              </form>
-            )}
-          </CardContent>
-
-          <CardFooter className="flex flex-col space-y-3 pt-4">
-            <p className="text-center text-xs text-muted-foreground/70">
-              Ao criar a conta, você concorda com nossos{' '}
-              <Link href="/termos" className="text-primary hover:underline">Termos de uso</Link>
-              {' '}e{' '}
-              <Link href="/privacidade" className="text-primary hover:underline">Política de privacidade</Link>
-            </p>
-          </CardFooter>
-        </Card>
-    </AuthShell>
+                  {erro && <p className="signup-error" role="alert">{erro}</p>}
+                  <button type="submit" className="signup-submit" disabled={carregando || (captchaAtivo() && !captchaToken)}>
+                    {carregando ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /><span>Criando conta...</span></> : <><span>Criar conta de Aluno</span><ArrowRight size={18} aria-hidden="true" /></>}
+                  </button>
+                  <p className="signup-login">Já tem conta? <Link href="/login">Entrar</Link></p>
+                  <p className="signup-personal"><Link href="/cadastro">Sou Personal</Link></p>
+                </form>
+              )}
+              <footer className="signup-terms">Ao criar a conta, você concorda com nossos <Link href="/termos">Termos de uso</Link> e <Link href="/privacidade">Política de privacidade</Link>.</footer>
+            </div>
+          </section>
+        </div>
+      </div>
+      <style jsx>{`
+        .student-signup { --signup-bg:#f7f8f2;--signup-panel:#fcfdf9;--signup-line:#d7ded3;--signup-ink:#162623;--signup-muted:#5f6f68;--signup-brand:#129b89;--signup-onbrand:#fff;--signup-error:#b42336;min-height:100svh;background:var(--signup-bg);color:var(--signup-ink);font-family:'Sora',sans-serif; }
+        :global(.dark) .student-signup { --signup-bg:#041512;--signup-panel:#091c18;--signup-line:#1c4037;--signup-ink:#f5faf9;--signup-muted:#a3becd;--signup-brand:#00e9df;--signup-onbrand:#041512;--signup-error:#ff8f9b; }
+        .student-signup * { box-sizing:border-box; }
+        .signup-frame { min-height:100svh;max-width:1216px;margin:0 auto;padding:24px 28px;display:flex;flex-direction:column; }
+        .signup-top { display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--signup-line); }
+        .signup-top nav { display:flex;align-items:center;gap:12px; }
+        .signup-back { display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;color:var(--signup-muted);font-size:12px;text-decoration:none; }
+        .signup-center { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);flex:1;align-items:center;gap:40px;width:100%;max-width:960px;margin:0 auto;padding:32px 0; }
+        .signup-intro { min-width:0;min-height:520px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-right:1px solid var(--signup-line);padding:20px 40px 20px 0; }
+        .signup-intro .signup-eyebrow { margin-bottom:16px;color:var(--signup-brand);letter-spacing:.2em; }
+        .signup-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.25;letter-spacing:-.045em; }
+        .signup-intro h2 span { color:var(--signup-brand); }
+        .signup-intro-description { margin:17px 0 0;max-width:280px;font-size:14px;line-height:1.8;color:var(--signup-muted); }
+        .signup-orbit { margin-top:20px;width:100%;max-width:260px;height:auto;color:var(--signup-brand);opacity:.35;pointer-events:none; }
+        .signup-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--signup-line);border-radius:20px;background:var(--signup-panel); }
+        .signup-heading { padding:28px 32px 20px; }
+        .signup-eyebrow { margin:0 0 12px;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:var(--signup-muted); }
+        .signup-heading h1 { margin:0;font-size:26px;font-weight:600;line-height:1.3;letter-spacing:-.045em; }
+        .signup-description { margin:10px 0 0;font-size:13px;line-height:1.7;color:var(--signup-muted); }
+        .signup-body { margin:0 32px;padding-bottom:24px; }
+        form { display:grid;gap:18px; }
+        .signup-notice { display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--signup-line);border-radius:13px;background:color-mix(in srgb,var(--signup-brand) 3%,transparent);color:var(--signup-muted); }
+        .signup-notice :global(svg) { flex-shrink:0;margin-top:2px; }
+        .signup-notice p { margin:0;font-size:11px;line-height:1.65; }
+        .signup-row { display:grid;gap:8px;min-width:0; }
+        label { font-size:13px;font-weight:500; }
+        .signup-field { display:flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:1px solid var(--signup-line);border-radius:13px;color:var(--signup-muted);background:transparent;transition:background-color 150ms ease,border-color 150ms ease; }
+        .signup-field :global(svg) { flex-shrink:0; }
+        .signup-field input { width:100%;min-width:0;min-height:46px;border:0;border-radius:0;padding:0;background:transparent;color:var(--signup-ink);font:inherit;font-size:14px;outline:none;box-shadow:none; }
+        .signup-field input::placeholder { color:var(--signup-muted);opacity:1; }
+        .signup-field:focus-within { border-color:var(--signup-brand); }
+        .signup-field[data-disabled="true"] { opacity:.6; }
+        .student-signup button { font:inherit;cursor:pointer;box-shadow:none;transform:none;transition:background-color 150ms ease,border-color 150ms ease; }
+        .signup-eye { width:44px;height:44px;margin-right:-12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;border:1px solid transparent;border-radius:13px;color:var(--signup-muted);background:transparent; }
+        .signup-submit { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--signup-brand);border-radius:13px;background:var(--signup-brand);color:var(--signup-onbrand);font-size:14px!important;font-weight:600!important;text-decoration:none; }
+        .student-signup button:disabled { cursor:not-allowed;opacity:.6; }
+        .signup-login { display:flex;align-items:center;justify-content:center;gap:5px;border-top:1px solid var(--signup-line);padding-top:18px;margin:0;color:var(--signup-muted);font-size:12px;line-height:1.7; }
+        .signup-login :global(a),.signup-personal :global(a),.signup-terms :global(a) { color:var(--signup-brand);text-decoration:none; }
+        .signup-login :global(a:hover),.signup-personal :global(a:hover),.signup-terms :global(a:hover) { text-decoration:underline;text-underline-offset:3px; }
+        .signup-personal { margin:0;text-align:center;font-size:12px;line-height:1.7; }
+        .signup-terms { margin-top:18px;text-align:center;font-size:10px;line-height:1.8;color:var(--signup-muted);overflow-wrap:anywhere; }
+        .signup-verification { display:grid;gap:0;min-width:0; }
+        .signup-verification-status { display:flex;align-items:center;gap:10px;margin:0;min-height:24px;color:var(--signup-muted);font-size:12px;line-height:1.6; }
+        .signup-verification-status :global(svg) { flex-shrink:0;color:var(--signup-brand); }
+        .signup-error { margin:0;padding:12px;border:1px solid color-mix(in srgb,var(--signup-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--signup-error) 7%,transparent);color:var(--signup-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
+        .signup-success { display:grid;gap:16px;padding-top:6px;text-align:center; }
+        .signup-success-icon { display:flex;align-items:center;justify-content:center;width:52px;height:52px;margin:auto;border:1px solid var(--signup-line);border-radius:50%;color:var(--signup-brand); }
+        .signup-success h2 { margin:0;font-size:18px;font-weight:600; }
+        .signup-success p { margin:0;font-size:13px;line-height:1.8;color:var(--signup-muted);overflow-wrap:anywhere; }
+        .signup-success strong { color:var(--signup-ink);font-weight:500; }
+        .student-signup :global(a:focus-visible),button:focus-visible { outline:2px solid var(--signup-brand);outline-offset:3px;border-radius:13px; }
+        @media (hover:hover) {
+          .signup-field:not([data-disabled="true"]):not(:focus-within):hover,.signup-eye:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
+          .signup-submit:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 93%,var(--signup-panel));border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
+        }
+        @media (min-width:768px) and (max-width:1023px) {
+          .signup-center { gap:28px; }
+          .signup-intro { padding-right:28px; }
+          .signup-intro h2 { font-size:32px; }
+          .signup-heading { padding-left:24px;padding-right:24px; }
+          .signup-heading h1 { font-size:24px; }
+          .signup-body { margin-left:24px;margin-right:24px; }
+        }
+        @media (max-width:767px) {
+          .signup-frame { padding:18px 20px; }
+          .signup-top { flex-wrap:wrap;gap:8px; }
+          .signup-top nav { margin-left:auto;gap:8px; }
+          .signup-back { font-size:11px;gap:6px; }
+          .signup-center { display:flex;align-items:flex-start;justify-content:center;padding:24px 0; }
+          .signup-intro { display:none; }
+          .signup-heading { padding:24px 22px 18px; }
+          .signup-heading h1 { font-size:23px; }
+          .signup-description { font-size:12px; }
+          .signup-body { margin:0 22px;padding-bottom:22px; }
+          .signup-field input { font-size:16px; }
+          .signup-eye:not(:disabled):active { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
+        }
+        @media (max-width:359px) {
+          .signup-frame { padding:14px; }
+          .signup-heading { padding:22px 14px 16px; }
+          .signup-heading h1 { font-size:21px; }
+          .signup-body { margin:0 14px; }
+        }
+        @media (min-width:768px) and (max-height:800px) {
+          .signup-intro { min-height:440px;padding-top:12px;padding-bottom:12px; }
+          .signup-intro h2 { font-size:34px; }
+          .signup-orbit { margin-top:18px;max-width:230px;max-height:185px; }
+        }
+        @media (max-height:800px) {
+          .signup-frame { padding-top:12px;padding-bottom:12px; }
+          .signup-top { padding-bottom:8px; }
+          .signup-center { padding:16px 0; }
+          .signup-heading { padding-top:20px;padding-bottom:16px; }
+          .signup-eyebrow { margin-bottom:8px; }
+          .signup-description { margin-top:8px; }
+          form { gap:14px; }
+          .signup-row { gap:6px; }
+          .signup-terms { margin-top:12px; }
+          .signup-body { padding-bottom:18px; }
+        }
+        @media (prefers-reduced-motion:reduce) { .student-signup button,.signup-field { transition:none; } }
+      `}</style>
+    </main>
   )
 }
