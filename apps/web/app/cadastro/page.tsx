@@ -111,12 +111,12 @@ export default function CadastroPage() {
 
 
   return (
-    <main id="main-content" className="personal-signup" data-testid="personal-signup">
+    <main className="personal-signup" data-testid="personal-signup">
       <div className="signup-frame">
         <header className="signup-top">
           <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
           <nav aria-label="Opções de acesso">
-            <Link className="signup-back" href="/apresentacao"><ArrowLeft size={15} aria-hidden="true" /><span>Conhecer a ShapeOS</span></Link>
+            <a className="signup-back" href="/apresentacao"><ArrowLeft size={15} aria-hidden="true" /><span>Conhecer a ShapeOS</span></a>
             <ThemeToggle />
           </nav>
         </header>
@@ -139,7 +139,7 @@ export default function CadastroPage() {
                   ) : (
                     <p>Enviamos uma confirmação para <strong>{email}</strong>. Depois de confirmar o e-mail, seu cadastro ficará aguardando aprovação do administrador.</p>
                   )}
-                  <Link href="/login" className="signup-submit">Voltar ao login<ArrowRight size={18} aria-hidden="true" /></Link>
+                  <a href="/login" className="signup-submit">Voltar ao login<ArrowRight size={18} aria-hidden="true" /></a>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} aria-busy={carregando}>
