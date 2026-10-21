@@ -431,6 +431,19 @@ html body :is(#admin-login-form-standard,[data-admin-login-refined]).admin-login
 }
 html body :is(#admin-login-field-validation,[data-admin-login-refined]).admin-login .admin-login-field-error{margin:7px 0 0!important;padding:0!important;border:0!important;background:transparent!important;color:#b42336!important;font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere!important}
 html.dark body :is(#admin-login-field-validation,[data-admin-login-refined]).admin-login .admin-login-field-error{color:#ff8f9b!important}
+
+        /* Keep browser autofill paint aligned with the surrounding field and theme. */
+        html body :is(#admin-login-autofill,[data-admin-login-refined]).admin-login .admin-login-field { --autofill-surface:var(--login-surface); }
+        html body :is(#admin-login-autofill,[data-admin-login-refined]).admin-login .admin-login-field input:is(:-webkit-autofill,:autofill) {
+          -webkit-text-fill-color:var(--login-text)!important;
+          caret-color:var(--login-text)!important;
+          -webkit-box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          transition:none!important;
+        }
+        @media (hover:hover) and (pointer:fine) {
+          html body :is(#admin-login-autofill,[data-admin-login-refined]).admin-login .admin-login-field:not(:has(input:disabled)):hover { --autofill-surface:color-mix(in srgb,var(--login-brand) 7%,var(--login-surface)); }
+        }
     `}</style>
   </main>
 }
