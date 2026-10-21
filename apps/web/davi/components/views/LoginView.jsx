@@ -241,6 +241,19 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           .login-register { padding-top:12px; }
         }
         @media (prefers-reduced-motion:reduce) { .login-refined button,.login-field { transition:none; } }
+
+        /* Keep browser autofill paint aligned with the surrounding field and theme. */
+        .login-field { --autofill-surface:var(--login-panel); }
+        .login-field input:is(:-webkit-autofill,:autofill) {
+          -webkit-text-fill-color:var(--login-ink)!important;
+          caret-color:var(--login-ink)!important;
+          -webkit-box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          transition:none!important;
+        }
+        @media (hover:hover) and (pointer:fine) {
+          .login-field:not(:has(input:disabled)):not(:focus-within):hover { --autofill-surface:color-mix(in srgb,var(--login-brand) 7%,var(--login-panel)); }
+        }
       `}</style>
     </main>
   );
