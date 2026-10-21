@@ -363,6 +363,19 @@ export default function CadastroPage() {
           .signup-login,.signup-links :global(.signup-switch) { font-size:11px; }
         }
         @media (prefers-reduced-motion:reduce) { .personal-signup button,.signup-field { transition:none; } }
+
+        /* Keep browser autofill paint aligned with the surrounding field and theme. */
+        .signup-field { --autofill-surface:var(--signup-panel); }
+        .signup-field input:is(:-webkit-autofill,:autofill) {
+          -webkit-text-fill-color:var(--signup-ink)!important;
+          caret-color:var(--signup-ink)!important;
+          -webkit-box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          box-shadow:0 0 0 1000px var(--autofill-surface) inset!important;
+          transition:none!important;
+        }
+        @media (hover:hover) and (pointer:fine) {
+          .signup-field:not([data-disabled="true"]):not(:focus-within):hover { --autofill-surface:color-mix(in srgb,var(--signup-brand) 7%,var(--signup-panel)); }
+        }
       `}</style>
     </main>
   )
