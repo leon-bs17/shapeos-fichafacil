@@ -293,7 +293,7 @@ export default function CadastroPage() {
         .signup-success strong { color:var(--signup-ink);font-weight:500; }
         .personal-signup :global(a:focus-visible),button:focus-visible { outline:2px solid var(--signup-brand);outline-offset:3px;border-radius:13px; }
         @media (hover:hover) {
-          .signup-field:not([data-disabled="true"]):not(:focus-within):hover,.signup-eye:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
+          .signup-field:not([data-disabled="true"]):not(:focus-within):hover { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
           .signup-submit:not(:disabled):hover { background:color-mix(in srgb,var(--signup-brand) 93%,var(--signup-panel));border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
         }
         @media (min-width:768px) and (max-width:1023px) {
@@ -316,7 +316,6 @@ export default function CadastroPage() {
           .signup-description { font-size:12px; }
           .signup-body { margin:0 22px;padding-bottom:18px; }
           .signup-field input { font-size:16px; }
-          .signup-eye:not(:disabled):active { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
         }
         @media (max-width:359px) {
           .signup-frame { padding:14px; }
