@@ -212,7 +212,7 @@ export default function CadastroPage() {
                   </button>
                   <nav className="signup-links" aria-label="Opções de cadastro">
                     <p className="signup-login">Já tem conta? <Link href="/login">Entrar</Link></p>
-                    <Link href="/cadastro/aluno" className="signup-switch">Sou Aluno</Link>
+                    <span className="signup-switch-group"><span aria-hidden="true">·</span><Link href="/cadastro/aluno" className="signup-switch">Sou Aluno</Link></span>
                   </nav>
                 </form>
               )}
@@ -258,8 +258,9 @@ export default function CadastroPage() {
         .signup-eye { width:44px;height:44px;margin-right:-12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;border:1px solid transparent;border-radius:13px;color:var(--signup-muted);background:transparent; }
         .signup-submit { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--signup-brand);border-radius:13px;background:var(--signup-brand);color:var(--signup-onbrand);font-size:14px!important;font-weight:600!important;text-decoration:none; }
         .personal-signup button:disabled { cursor:not-allowed;opacity:.6; }
-        .signup-links { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;border-top:1px solid var(--signup-line);padding-top:12px; }
+        .signup-links { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;border-top:1px solid var(--signup-line);padding-top:12px; }
         .signup-login { display:flex;align-items:center;gap:5px;margin:0;color:var(--signup-muted);font-size:12px;line-height:1.7; }
+        .signup-switch-group { display:inline-flex;align-items:center;gap:10px;color:var(--signup-muted); }
         .signup-links :global(.signup-switch) { font-size:12px;line-height:1.7;white-space:nowrap; }
         .signup-links :global(a),.signup-terms :global(a) { color:var(--signup-brand);text-decoration:none; }
         .signup-links :global(a:hover),.signup-terms :global(a:hover) { text-decoration:underline;text-underline-offset:3px; }
@@ -341,7 +342,8 @@ export default function CadastroPage() {
         }
         @media (max-width:359px) {
           .signup-heading h1 { font-size:21px; }
-          .signup-links { gap:4px 12px; }
+          .signup-links { gap:4px 8px; }
+          .signup-switch-group { gap:8px; }
           .signup-login,.signup-links :global(.signup-switch) { font-size:11px; }
         }
         @media (prefers-reduced-motion:reduce) { .personal-signup button,.signup-field { transition:none; } }
