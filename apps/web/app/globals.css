@@ -537,3 +537,12 @@ html:is(#shapeos-theme-lock,[data-shapeos-theme-changing]):is(#shapeos-theme-loc
 @media(max-width:767px) and (prefers-reduced-motion:reduce) {
  html body :is(#shapeos-admin-interactions,[data-admin-route],[data-admin-auth],.admin-login) :is(button:not([role="switch"]):not([data-shapeos-theme-switch]),[role="option"],summary,.admin-menu-row[href],input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),textarea,select,[data-admin-search],.account-password,.admin-login-field,form:has(>textarea#mys-message)):not(:disabled):not([aria-disabled="true"]):not([aria-current="page"]):not(:where([data-admin-search] input,.account-password input,.admin-login-field input,form:has(>textarea#mys-message) textarea)) { transition:none!important; }
 }
+
+/*
+ * Keep only the ShapeOS reveal control when a password input has its own
+ * accessible toggle. Fields using only the browser control retain it.
+ * Credential autofill controls are intentionally left available.
+ */
+input:has(~ button[aria-controls])::-ms-reveal {
+  display: none !important;
+}
