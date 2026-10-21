@@ -8,7 +8,7 @@ type Tip = { anchor: Element; text: string }
 type ManagedTitle = { text: string; addedLabel: boolean }
 
 /**
- * Admin-wide tooltip standard. Existing and future title attributes are adapted
+ * Shared dashboard tooltip standard. Existing and future title attributes are adapted
  * automatically; new components can also use data-shapeos-tooltip directly.
  * Keep an explicit accessible name on icon-only controls.
  */
@@ -20,7 +20,9 @@ export function AdminTooltipProvider() {
 
   useEffect(() => {
     setTip(null)
-    if (!(pathname === '/admin' || pathname?.startsWith('/admin/'))) return
+    const personalRoutes = ['/', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys']
+    const personal = personalRoutes.some(route => pathname === route || (route !== '/' && pathname?.startsWith(route + '/')))
+    if (!(personal || pathname === '/admin' || pathname?.startsWith('/admin/'))) return
 
     const managed = new Map<Element, ManagedTitle>()
     let active: Element | null = null
@@ -245,3 +247,4 @@ export function AdminTooltipProvider() {
     `}</style>
   </>
 }
+
