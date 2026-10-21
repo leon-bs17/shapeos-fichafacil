@@ -125,34 +125,25 @@ export default function CadastroPage() {
             <p className="signup-eyebrow">Personais</p>
             <h2 id="signup-intro-title">Seu trabalho.<br /><span>Mais organizado.</span></h2>
             <p className="signup-intro-description">Planeje, acompanhe e evolua com a ShapeOS.</p>
-            <svg className="signup-orbit" viewBox="0 0 320 290" fill="none" aria-hidden="true" focusable="false">
-              <g stroke="currentColor" strokeWidth=".8">
-                <circle cx="156" cy="145" r="123" strokeDasharray="2 3" opacity=".35" />
-                <circle cx="156" cy="145" r="92" opacity=".45" />
-                <circle cx="156" cy="145" r="48" opacity=".75" />
-              </g>
-              <g fill="currentColor">
-                <circle cx="189" cy="59" r="3" /><circle cx="240" cy="182" r="3" />
-                <circle cx="72" cy="108" r="3" /><circle cx="127" cy="232" r="3" />
-              </g>
-              <g stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                <path d="M139 139h34m-34 12h34" />
-                <rect x="130" y="129" width="9" height="32" rx="3" />
-                <rect x="121" y="135" width="9" height="20" rx="3" />
-                <rect x="173" y="129" width="9" height="32" rx="3" />
-                <rect x="182" y="135" width="9" height="20" rx="3" />
-              </g>
-              <g fill="var(--signup-bg)" stroke="currentColor" strokeWidth="1" strokeOpacity=".45">
-                <circle cx="71" cy="56" r="21" /><circle cx="274" cy="111" r="21" />
-                <circle cx="72" cy="237" r="21" /><circle cx="247" cy="244" r="21" />
-              </g>
-              <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity=".8">
-                <rect x="63" y="49" width="16" height="15" rx="2" /><path d="M67 47v4m8-4v4m-12 4h16m-11 4h2" />
-                <rect x="265" y="112" width="4" height="7" rx="1" /><rect x="272" y="106" width="4" height="13" rx="1" /><rect x="279" y="101" width="4" height="18" rx="1" />
-                <circle cx="72" cy="232" r="4" /><path d="M64 246v-3a8 8 0 0 1 16 0v3m-20-1v-2m24 2v-2" />
-                <rect x="240" y="236" width="14" height="18" rx="2" /><path d="M244 234h6v4h-6zm0 9h6m-6 4h6m-6 3h4" />
-              </g>
-            </svg>
+            <svg className="signup-orbit" viewBox="0 0 400 280" fill="none" aria-hidden="true" focusable="false">
+                <g stroke="currentColor" strokeWidth=".8" opacity=".4">
+                  <ellipse cx="195" cy="140" rx="160" ry="65" transform="rotate(-25 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="146" ry="87" transform="rotate(16 195 140)"/>
+                  <ellipse cx="195" cy="140" rx="111" ry="100" transform="rotate(32 195 140)"/>
+                  <path d="M55 147L153 86L242 65L332 149L251 220L195 241L55 147Z M153 86L251 220M242 65L195 241M55 147L332 149" opacity=".3"/>
+                </g>
+                <g stroke="currentColor" strokeWidth="1.6" opacity=".55">
+                  <circle cx="195" cy="140" r="43"/>
+                  <rect x="111" y="116" width="12" height="48" rx="3"/>
+                  <rect x="101" y="124" width="10" height="32" rx="2"/>
+                  <path d="M123 133h29m-29 14h29"/>
+                  <rect x="267" y="116" width="12" height="48" rx="3"/>
+                  <rect x="279" y="124" width="10" height="32" rx="2"/>
+                  <path d="M238 133h29m-29 14h29"/>
+                  <path d="M186 122a22 22 0 1 0 18 0m-9-9v25" strokeLinecap="round"/>
+                </g>
+                {[{x:55,y:147},{x:242,y:65},{x:332,y:149},{x:195,y:241}].map((point,index)=><g key={index}><circle cx={point.x} cy={point.y} r="6" fill="var(--signup-panel)" stroke="currentColor" strokeOpacity=".4"/><circle cx={point.x} cy={point.y} r="2.5" fill="currentColor" opacity=".6"/></g>)}
+              </svg>
           </aside>
           <section className="signup-card" aria-labelledby="signup-title">
             <header className="signup-heading">
@@ -227,7 +218,7 @@ export default function CadastroPage() {
         .signup-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.25;letter-spacing:-.045em; }
         .signup-intro h2 span { color:var(--signup-brand); }
         .signup-intro-description { margin:17px 0 0;max-width:280px;font-size:14px;line-height:1.8;color:var(--signup-muted); }
-        .signup-orbit { width:100%;max-width:290px;height:auto;margin-top:28px;color:var(--signup-brand);pointer-events:none; }
+        .signup-orbit { margin-top:20px;width:100%;max-width:260px;height:auto;color:var(--signup-brand);opacity:.35;pointer-events:none; }
         .signup-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--signup-line);border-radius:20px;background:var(--signup-panel); }
         .signup-heading { padding:28px 32px 20px; }
         .signup-eyebrow { margin:0 0 12px;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:var(--signup-muted); }
@@ -296,7 +287,7 @@ export default function CadastroPage() {
         @media (min-width:768px) and (max-height:800px) {
           .signup-intro { min-height:440px;padding-top:12px;padding-bottom:12px; }
           .signup-intro h2 { font-size:34px; }
-          .signup-orbit { max-width:250px;max-height:225px;margin-top:18px; }
+          .signup-orbit { margin-top:18px;max-width:230px;max-height:185px; }
         }
         @media (max-height:800px) {
           .signup-frame { padding-top:12px;padding-bottom:12px; }
