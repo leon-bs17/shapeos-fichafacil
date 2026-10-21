@@ -8,7 +8,7 @@ import Logo from '@/davi/components/Logo'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { Captcha, captchaAtivo } from '@/components/ui/captcha'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowLeft, ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff, Clock3, Info } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2, CheckCircle2, Mail, Lock, User, Eye, EyeOff, Clock3, Info, ShieldCheck, Shield } from 'lucide-react'
 
 type CadastroConcluido = 'APROVACAO' | 'EMAIL_E_APROVACAO' | null
 
@@ -20,6 +20,7 @@ export default function CadastroPage() {
   const [senha, setSenha] = useState('')
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
+  const [captchaVersion, setCaptchaVersion] = useState(0)
   const [erro, setErro] = useState<string | null>(null)
   const [concluido, setConcluido] = useState<CadastroConcluido>(null)
   const [carregando, setCarregando] = useState(false)
@@ -84,10 +85,13 @@ export default function CadastroPage() {
                 : 'Não foi possível criar a conta. Tente novamente.'
         )
         setCaptchaToken('')
+        setCaptchaVersion(current => current + 1)
         return
       }
 
       if (!data.user) {
+        setCaptchaToken('')
+        setCaptchaVersion(current => current + 1)
         setErro('Não foi possível criar a conta. Tente novamente.')
         return
       }
@@ -103,6 +107,8 @@ export default function CadastroPage() {
         setConcluido('EMAIL_E_APROVACAO')
       }
     } catch {
+      setCaptchaToken('')
+      setCaptchaVersion(current => current + 1)
       setErro('Não foi possível conectar ao serviço de cadastro. Tente novamente.')
     } finally {
       setCarregando(false)
@@ -191,7 +197,15 @@ export default function CadastroPage() {
                       </button>
                     </div>
                   </div>
-                  <Captcha onToken={setCaptchaToken} theme={resolvedTheme === 'dark' ? 'dark' : 'light'} size={captchaCompacto ? 'compact' : 'flexible'} />
+                  {captchaAtivo() && (
+                    <div className="signup-verification">
+                      <Captcha key={captchaVersion} onToken={setCaptchaToken} theme={resolvedTheme === 'dark' ? 'dark' : 'light'} size={captchaCompacto ? 'compact' : 'flexible'} appearance="interaction-only" />
+                      <p className="signup-verification-status" role="status" aria-live="polite" aria-atomic="true">
+                        {captchaToken ? <ShieldCheck size={19} aria-hidden="true" /> : <Shield size={19} aria-hidden="true" />}
+                        <span>{captchaToken ? 'Verificação de segurança concluída' : 'Verificando segurança...'}</span>
+                      </p>
+                    </div>
+                  )}
                   {erro && <p className="signup-error" role="alert">{erro}</p>}
                   <button type="submit" className="signup-submit" disabled={carregando || (captchaAtivo() && !captchaToken)}>
                     {carregando ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /><span>Criando conta...</span></> : <><span>Criar conta de Personal</span><ArrowRight size={18} aria-hidden="true" /></>}
@@ -245,6 +259,9 @@ export default function CadastroPage() {
         .signup-login :global(a),.signup-terms :global(a) { color:var(--signup-brand);text-decoration:none; }
         .signup-login :global(a:hover),.signup-terms :global(a:hover) { text-decoration:underline;text-underline-offset:3px; }
         .signup-terms { margin-top:18px;text-align:center;font-size:10px;line-height:1.8;color:var(--signup-muted);overflow-wrap:anywhere; }
+        .signup-verification { display:grid;gap:0;min-width:0; }
+        .signup-verification-status { display:flex;align-items:center;gap:10px;margin:0;min-height:24px;color:var(--signup-muted);font-size:12px;line-height:1.6; }
+        .signup-verification-status :global(svg) { flex-shrink:0;color:var(--signup-brand); }
         .signup-error { margin:0;padding:12px;border:1px solid color-mix(in srgb,var(--signup-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--signup-error) 7%,transparent);color:var(--signup-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
         .signup-success { display:grid;gap:16px;padding-top:6px;text-align:center; }
         .signup-success-icon { display:flex;align-items:center;justify-content:center;width:52px;height:52px;margin:auto;border:1px solid var(--signup-line);border-radius:50%;color:var(--signup-brand); }
