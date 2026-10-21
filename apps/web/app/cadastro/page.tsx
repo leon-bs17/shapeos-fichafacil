@@ -210,7 +210,10 @@ export default function CadastroPage() {
                   <button type="submit" className="signup-submit" disabled={carregando || (captchaAtivo() && !captchaToken)}>
                     {carregando ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /><span>Criando conta...</span></> : <><span>Criar conta de Personal</span><ArrowRight size={18} aria-hidden="true" /></>}
                   </button>
-                  <p className="signup-login">Já tem conta? <Link href="/login">Entrar</Link></p>
+                  <nav className="signup-links" aria-label="Opções de cadastro">
+                    <p className="signup-login">Já tem conta? <Link href="/login">Entrar</Link></p>
+                    <Link href="/cadastro/aluno" className="signup-switch">Sou Aluno</Link>
+                  </nav>
                 </form>
               )}
               <footer className="signup-terms">Ao criar a conta, você concorda com nossos <Link href="/termos">Termos de uso</Link> e <Link href="/privacidade">Política de privacidade</Link>.</footer>
@@ -222,24 +225,24 @@ export default function CadastroPage() {
         .personal-signup { --signup-bg:#f7f8f2;--signup-panel:#fcfdf9;--signup-line:#d7ded3;--signup-ink:#162623;--signup-muted:#5f6f68;--signup-brand:#129b89;--signup-onbrand:#fff;--signup-error:#b42336;min-height:100svh;background:var(--signup-bg);color:var(--signup-ink);font-family:'Sora',sans-serif; }
         :global(.dark) .personal-signup { --signup-bg:#041512;--signup-panel:#091c18;--signup-line:#1c4037;--signup-ink:#f5faf9;--signup-muted:#a3becd;--signup-brand:#00e9df;--signup-onbrand:#041512;--signup-error:#ff8f9b; }
         .personal-signup * { box-sizing:border-box; }
-        .signup-frame { min-height:100svh;max-width:1216px;margin:0 auto;padding:24px 28px;display:flex;flex-direction:column; }
-        .signup-top { display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--signup-line); }
+        .signup-frame { min-height:100svh;max-width:1216px;margin:0 auto;padding:20px 28px;display:flex;flex-direction:column; }
+        .signup-top { display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--signup-line); }
         .signup-top nav { display:flex;align-items:center;gap:12px; }
         .signup-back { display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;color:var(--signup-muted);font-size:12px;text-decoration:none; }
-        .signup-center { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);flex:1;align-items:center;gap:40px;width:100%;max-width:960px;margin:0 auto;padding:32px 0; }
-        .signup-intro { min-width:0;min-height:520px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-right:1px solid var(--signup-line);padding:20px 40px 20px 0; }
+        .signup-center { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);flex:1;align-items:center;gap:40px;width:100%;max-width:960px;margin:0 auto;padding:24px 0; }
+        .signup-intro { min-width:0;min-height:480px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-right:1px solid var(--signup-line);padding:20px 40px 20px 0; }
         .signup-intro .signup-eyebrow { margin-bottom:16px;color:var(--signup-brand);letter-spacing:.2em; }
         .signup-intro h2 { margin:0;font-size:38px;font-weight:600;line-height:1.25;letter-spacing:-.045em; }
         .signup-intro h2 span { color:var(--signup-brand); }
         .signup-intro-description { margin:17px 0 0;max-width:280px;font-size:14px;line-height:1.8;color:var(--signup-muted); }
         .signup-orbit { margin-top:20px;width:100%;max-width:260px;height:auto;color:var(--signup-brand);opacity:.35;pointer-events:none; }
         .signup-card { width:100%;max-width:500px;min-width:0;border:1px solid var(--signup-line);border-radius:20px;background:var(--signup-panel); }
-        .signup-heading { padding:28px 32px 20px; }
+        .signup-heading { padding:24px 28px 16px; }
         .signup-eyebrow { margin:0 0 12px;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:var(--signup-muted); }
         .signup-heading h1 { margin:0;font-size:26px;font-weight:600;line-height:1.3;letter-spacing:-.045em; }
         .signup-description { margin:10px 0 0;font-size:13px;line-height:1.7;color:var(--signup-muted); }
-        .signup-body { margin:0 32px;padding-bottom:24px; }
-        form { display:grid;gap:18px; }
+        .signup-body { margin:0 28px;padding-bottom:20px; }
+        form { display:grid;gap:14px; }
         .signup-notice { display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--signup-line);border-radius:13px;background:color-mix(in srgb,var(--signup-brand) 3%,transparent);color:var(--signup-muted); }
         .signup-notice :global(svg) { flex-shrink:0;margin-top:2px; }
         .signup-notice p { margin:0;font-size:11px;line-height:1.65; }
@@ -255,10 +258,12 @@ export default function CadastroPage() {
         .signup-eye { width:44px;height:44px;margin-right:-12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;border:1px solid transparent;border-radius:13px;color:var(--signup-muted);background:transparent; }
         .signup-submit { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--signup-brand);border-radius:13px;background:var(--signup-brand);color:var(--signup-onbrand);font-size:14px!important;font-weight:600!important;text-decoration:none; }
         .personal-signup button:disabled { cursor:not-allowed;opacity:.6; }
-        .signup-login { display:flex;align-items:center;justify-content:center;gap:5px;border-top:1px solid var(--signup-line);padding-top:18px;margin:0;color:var(--signup-muted);font-size:12px;line-height:1.7; }
-        .signup-login :global(a),.signup-terms :global(a) { color:var(--signup-brand);text-decoration:none; }
-        .signup-login :global(a:hover),.signup-terms :global(a:hover) { text-decoration:underline;text-underline-offset:3px; }
-        .signup-terms { margin-top:18px;text-align:center;font-size:10px;line-height:1.8;color:var(--signup-muted);overflow-wrap:anywhere; }
+        .signup-links { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;border-top:1px solid var(--signup-line);padding-top:12px; }
+        .signup-login { display:flex;align-items:center;gap:5px;margin:0;color:var(--signup-muted);font-size:12px;line-height:1.7; }
+        .signup-links :global(.signup-switch) { font-size:12px;line-height:1.7;white-space:nowrap; }
+        .signup-links :global(a),.signup-terms :global(a) { color:var(--signup-brand);text-decoration:none; }
+        .signup-links :global(a:hover),.signup-terms :global(a:hover) { text-decoration:underline;text-underline-offset:3px; }
+        .signup-terms { margin-top:12px;text-align:center;font-size:10px;line-height:1.6;color:var(--signup-muted);overflow-wrap:anywhere; }
         .signup-verification { display:grid;gap:0;min-width:0; }
         .signup-verification-status { display:flex;align-items:center;gap:10px;margin:0;min-height:24px;color:var(--signup-muted);font-size:12px;line-height:1.6; }
         .signup-verification-status :global(svg) { flex-shrink:0;color:var(--signup-brand); }
@@ -286,12 +291,12 @@ export default function CadastroPage() {
           .signup-top { flex-wrap:wrap;gap:8px; }
           .signup-top nav { margin-left:auto;gap:8px; }
           .signup-back { font-size:11px;gap:6px; }
-          .signup-center { display:flex;align-items:flex-start;justify-content:center;padding:24px 0; }
+          .signup-center { display:flex;align-items:flex-start;justify-content:center;padding:18px 0; }
           .signup-intro { display:none; }
-          .signup-heading { padding:24px 22px 18px; }
+          .signup-heading { padding:22px 22px 16px; }
           .signup-heading h1 { font-size:23px; }
           .signup-description { font-size:12px; }
-          .signup-body { margin:0 22px;padding-bottom:22px; }
+          .signup-body { margin:0 22px;padding-bottom:18px; }
           .signup-field input { font-size:16px; }
           .signup-eye:not(:disabled):active { background:color-mix(in srgb,var(--signup-brand) 7%,transparent);border-color:color-mix(in srgb,var(--signup-brand) 40%,transparent); }
         }
@@ -303,20 +308,41 @@ export default function CadastroPage() {
         }
         @media (min-width:768px) and (max-height:800px) {
           .signup-intro { min-height:440px;padding-top:12px;padding-bottom:12px; }
+          .signup-heading h1 { font-size:24px; }
           .signup-intro h2 { font-size:34px; }
           .signup-orbit { margin-top:18px;max-width:230px;max-height:185px; }
         }
         @media (max-height:800px) {
-          .signup-frame { padding-top:12px;padding-bottom:12px; }
-          .signup-top { padding-bottom:8px; }
-          .signup-center { padding:16px 0; }
-          .signup-heading { padding-top:20px;padding-bottom:16px; }
+          .signup-frame { padding-top:10px;padding-bottom:10px; }
+          .signup-top { padding-bottom:6px; }
+          .signup-center { padding:10px 0; }
+          .signup-heading { padding-top:16px;padding-bottom:12px; }
           .signup-eyebrow { margin-bottom:8px; }
           .signup-description { margin-top:8px; }
-          form { gap:14px; }
+          form { gap:12px; }
           .signup-row { gap:6px; }
-          .signup-terms { margin-top:12px; }
-          .signup-body { padding-bottom:18px; }
+          .signup-terms { margin-top:10px; }
+          .signup-body { padding-bottom:16px; }
+        }
+        @media (min-width:768px) and (max-height:700px) {
+          .signup-heading { padding-top:12px;padding-bottom:10px; }
+          .signup-heading h1 { font-size:23px; }
+          .signup-description { margin-top:6px;font-size:12px; }
+          .signup-notice { padding-top:8px;padding-bottom:8px; }
+          form { gap:10px; }
+          .signup-row { gap:5px; }
+          .signup-field { min-height:44px; }
+          .signup-field input { min-height:42px; }
+          .signup-eye { height:42px; }
+          .signup-submit { min-height:44px; }
+          .signup-intro { min-height:390px; }
+          .signup-orbit { max-width:210px;max-height:160px; }
+          .signup-body { padding-bottom:14px; }
+        }
+        @media (max-width:359px) {
+          .signup-heading h1 { font-size:21px; }
+          .signup-links { gap:4px 12px; }
+          .signup-login,.signup-links :global(.signup-switch) { font-size:11px; }
         }
         @media (prefers-reduced-motion:reduce) { .personal-signup button,.signup-field { transition:none; } }
       `}</style>
