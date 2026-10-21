@@ -183,7 +183,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
         .login-error { margin:0 0 16px;padding:12px;border:1px solid color-mix(in srgb,var(--login-error) 30%,transparent);border-radius:13px;background:color-mix(in srgb,var(--login-error) 7%,transparent);color:var(--login-error);font-size:12px;line-height:1.6;overflow-wrap:anywhere; }
         .login-field-error { margin:0;color:var(--login-error);font-size:12px;line-height:1.5;overflow-wrap:anywhere; }
         .login-biometric { display:none; }
-        @media (hover:hover) { .login-roles button:not(:disabled):hover,.login-eye:not(:disabled):hover,.login-bio-button:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-field:not(:focus-within):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-submit:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 93%,var(--login-panel));border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } }
+        @media (hover:hover) { .login-roles button:not(:disabled):hover,.login-bio-button:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-field:not(:focus-within):hover { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } .login-submit:not(:disabled):hover { background:color-mix(in srgb,var(--login-brand) 93%,var(--login-panel));border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); } }
         @media (min-width:768px) and (max-width:1023px) { .login-center { gap:28px; }.login-intro { padding-right:28px; }.login-intro h2 { font-size:32px; }.login-heading { padding:26px 24px 22px; }.login-heading h1 { font-size:24px; }.login-body { margin:0 24px; } }
         @media (max-width:767px) {
           .login-frame { padding:18px 20px; }
@@ -201,7 +201,7 @@ export const LoginView = ({ onEnter, onBiometric, error }) => {
           .login-bio-button { display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;width:100%;border:1px solid var(--login-line);border-radius:13px;background:transparent;color:var(--login-brand);font-size:12px!important; }
           .login-biometric>p:not(.login-error) { margin:0;text-align:center;color:var(--login-muted);font-size:10px;line-height:1.7; }
           .login-biometric .login-error { margin:0; }
-          .login-roles button:not(:disabled):active,.login-eye:not(:disabled):active,.login-bio-button:not(:disabled):active { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); }
+          .login-roles button:not(:disabled):active,.login-bio-button:not(:disabled):active { background:color-mix(in srgb,var(--login-brand) 7%,transparent);border-color:color-mix(in srgb,var(--login-brand) 40%,transparent); }
         }
         @media (max-width:359px) { .login-frame { padding:16px 14px; }.login-heading { padding:24px 18px 20px; }.login-heading h1 { font-size:21px; }.login-body { margin:0 18px; }.login-register div { flex-direction:column; }.login-register span { display:none; } }
 
