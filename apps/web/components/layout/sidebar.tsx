@@ -1,80 +1,116 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Dumbbell, FileBarChart, LayoutDashboard, Library, MessageCircle, LogOut, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { useQuery } from '@tanstack/react-query'
+import { ChevronLeft, ChevronRight, Dumbbell, FileText, LayoutGrid, Library, MessageCircle, LogOut, Users, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Logo from '@/davi/components/Logo'
 
-const NAV_ITEMS = [
-  { href: '/', label: 'Visão Geral', icon: LayoutDashboard },
-  { href: '/alunos', label: 'Alunos', icon: Users },
-  { href: '/treinos', label: 'Treinos', icon: Dumbbell },
-  { href: '/exercicios', label: 'Biblioteca', icon: Library },
-  { href: '/relatorios', label: 'Relatórios', icon: FileBarChart },
-  { href: '/mys', label: 'Mys', icon: MessageCircle },
+const GROUPS = [
+  { label: 'Acompanhamento', items: [
+    { href: '/', label: 'Visão Geral', icon: LayoutGrid },
+    { href: '/alunos', label: 'Alunos', icon: Users },
+    { href: '/treinos', label: 'Treinos', icon: Dumbbell },
+  ] },
+  { label: 'Ferramentas', items: [
+    { href: '/exercicios', label: 'Biblioteca', icon: Library },
+    { href: '/relatorios', label: 'Relatórios', icon: FileText },
+    { href: '/mys', label: 'Mys · Assistente', icon: MessageCircle },
+  ] },
 ]
 
-export function Sidebar() {
+type Props = { collapsed: boolean; onToggle: () => void; mobileOpen: boolean; onClose: () => void }
+
+export function Sidebar({ collapsed, onToggle, mobileOpen, onClose }: Props) {
   const pathname = usePathname()
   const router = useRouter()
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const [signingOut, setSigningOut] = useState(false)
+  const [error, setError] = useState('')
+  const { data: profile } = useQuery({
+    queryKey: ['personal-menu-user'],
+    queryFn: async () => {
+      const supabase = createClient()
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (error) throw error
+      if (!user) return null
+      const { data } = await supabase.from('usuarios').select('nome').eq('id', user.id).single()
+      return { name: data?.nome || user.user_metadata?.nome || 'Minha conta' }
+    },
+    gcTime: 0,
+  })
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const dialog = dialogRef.current
+    const previousOverflow = document.body.style.overflow
+    const previousFocus = document.activeElement as HTMLElement | null
+    dialog?.showModal()
+    document.body.style.overflow = 'hidden'
+    const desktop = window.matchMedia('(min-width: 1024px)')
+    const resize = () => { if (desktop.matches) onClose() }
+    desktop.addEventListener('change', resize)
+    return () => {
+      desktop.removeEventListener('change', resize)
+      dialog?.close()
+      document.body.style.overflow = previousOverflow
+      if (!desktop.matches && previousFocus?.isConnected) previousFocus.focus()
+    }
+  }, [mobileOpen, onClose])
 
   async function sair() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
+    if (signingOut) return
+    setSigningOut(true)
+    setError('')
+    try {
+      const { error } = await createClient().auth.signOut()
+      if (error) throw error
+      onClose()
+      router.push('/login')
+      router.refresh()
+    } catch {
+      setError('Não foi possível sair. Tente novamente.')
+    } finally { setSigningOut(false) }
   }
 
-  return (
-    <aside className="shapeos-navigation hidden md:flex h-screen w-60 flex-col glass border-r border-border/50">
-      <div className="flex h-16 items-center gap-2.5 border-b border-border/30 px-5">
-        <Logo size="lg" />
+  function contents(mobile = false) {
+    const compact = collapsed && !mobile
+    const name = profile?.name || 'Minha conta'
+    const initials = name.trim().split(/\s+/).slice(0, 2).map((part: string) => part[0]).join('').toUpperCase()
+    return <>
+      <div className="personal-menu-brand">
+        <Link href="/" aria-label="ShapeOS · Visão Geral" onClick={mobile ? onClose : undefined} className="personal-logo"><Logo size="sm" showTagline={false} /></Link>
+        {mobile ? <button type="button" className="personal-icon-button" onClick={onClose} aria-label="Fechar menu"><X size={18} /></button> :
+          <button type="button" className="personal-icon-button personal-menu-toggle" onClick={onToggle} aria-label={compact ? 'Expandir menu' : 'Recolher menu'} aria-expanded={!compact} data-shapeos-tooltip={compact ? 'Expandir menu' : 'Recolher menu'}>{compact ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}</button>}
       </div>
-
-      <nav className="flex-1 space-y-1 p-3">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
-                active
-                  ? 'bg-primary/10 text-primary shadow-[0_0_16px_hsl(var(--primary)/0.15)]'
-                  : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-              )}
-            >
-              <Icon className={cn('h-4 w-4 transition-all duration-200', active && 'text-primary scale-110')} aria-hidden="true" />
-              <span>{label}</span>
-              {active && (
-                <>
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-0.5 rounded-r-full bg-primary animate-slide-up" />
-                  <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-                </>
-              )}
+      <nav aria-label="Menu do Personal" className="personal-menu-nav">
+        {GROUPS.map(group => <div className="personal-menu-group" key={group.label}>
+          {!compact && <p className="personal-menu-group-label">{group.label}</p>}
+          {group.items.map(({ href, label, icon: Icon }) => {
+            const active = href === '/' ? pathname === href : pathname === href || pathname.startsWith(href + '/')
+            return <Link href={href} key={href} className="personal-menu-row" aria-label={label} aria-current={active ? 'page' : undefined} data-shapeos-tooltip={compact ? label : undefined} onClick={mobile ? onClose : undefined}>
+              <Icon size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{label}</span>}
             </Link>
-          )
-        })}
+          })}
+        </div>)}
       </nav>
-
-      <div className="border-t border-border/30 p-3 space-y-1">
-        <div className="flex justify-end px-1 pb-1">
-
+      <div className="personal-menu-footer">
+        <div className="personal-menu-profile" data-shapeos-tooltip={compact ? name + ' · Personal' : undefined} tabIndex={compact ? 0 : undefined} aria-label={compact ? name + ' · Personal' : undefined}>
+          <span className="personal-avatar" aria-hidden="true">{initials}</span>
+          {!compact && <div><p>{name}</p><span>Personal</span></div>}
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={sair}
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-200"
-        >
-          <LogOut className="h-4 w-4" />
-          Sair
-        </Button>
+        <button type="button" className="personal-menu-row personal-logout" onClick={sair} disabled={signingOut} aria-label={signingOut ? 'Saindo…' : 'Sair'} data-shapeos-tooltip={compact ? 'Sair' : undefined}><LogOut size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{signingOut ? 'Saindo…' : 'Sair'}</span>}</button>
+        {error && <p className="personal-menu-error" role="alert">{error}</p>}
       </div>
-    </aside>
-  )
+    </>
+  }
+
+  return <>
+    <aside className="personal-sidebar" data-collapsed={collapsed}>{contents()}</aside>
+    <dialog ref={dialogRef} id="personal-mobile-menu" className="personal-mobile-dialog" aria-label="Menu do Personal" onCancel={event => { event.preventDefault(); onClose() }} onClick={event => { if (event.target === event.currentTarget) onClose() }}>
+      <div className="personal-mobile-menu">{contents(true)}</div>
+    </dialog>
+  </>
 }
