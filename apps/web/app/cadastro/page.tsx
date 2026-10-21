@@ -14,6 +14,7 @@ type CadastroConcluido = 'APROVACAO' | 'EMAIL_E_APROVACAO' | null
 
 export default function CadastroPage() {
   const { resolvedTheme } = useTheme()
+  const [captchaCompacto, setCaptchaCompacto] = useState(false)
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -23,7 +24,14 @@ export default function CadastroPage() {
   const [concluido, setConcluido] = useState<CadastroConcluido>(null)
   const [carregando, setCarregando] = useState(false)
 
-  useEffect(() => { setCaptchaToken('') }, [resolvedTheme])
+  useEffect(() => {
+    const media = window.matchMedia('(max-width:399px)')
+    const update = () => setCaptchaCompacto(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+  useEffect(() => { setCaptchaToken('') }, [resolvedTheme, captchaCompacto])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -160,7 +168,7 @@ export default function CadastroPage() {
                       </button>
                     </div>
                   </div>
-                  <Captcha onToken={setCaptchaToken} theme={resolvedTheme === 'dark' ? 'dark' : 'light'} size="flexible" />
+                  <Captcha onToken={setCaptchaToken} theme={resolvedTheme === 'dark' ? 'dark' : 'light'} size={captchaCompacto ? 'compact' : 'flexible'} />
                   {erro && <p className="signup-error" role="alert">{erro}</p>}
                   <button type="submit" className="signup-submit" disabled={carregando || (captchaAtivo() && !captchaToken)}>
                     {carregando ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /><span>Criando conta...</span></> : <><span>Criar conta de Personal</span><ArrowRight size={18} aria-hidden="true" /></>}
