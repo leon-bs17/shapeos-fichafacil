@@ -27,12 +27,31 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <style jsx global>{`
-        .personal-shell {
+        /* One palette for custom layout, shared components and portaled panels.
+           The shell selector outranks the older internal-area theme sheet. */
+        html:has(.personal-shell), html body [data-shapeos-app-shell="dashboard"].personal-shell, html body .personal-shell .shapeos-workspace {
           --p-bg:#f7f8f2;--p-panel:#fcfdf9;--p-line:#d7ded3;--p-ink:#162623;--p-muted:#5f6f68;--p-brand:#129b89;--p-blue:#2563a6;--p-avatar:#e9f0fa;--p-danger:#b42336;
-          --background:72 30% 96%;--foreground:169 27% 12%;--card:75 50% 98%;--card-foreground:169 27% 12%;--border:98 14% 85%;--muted-foreground:154 8% 40%;--primary:172 79% 34%;
-          display:flex;min-height:100vh;min-height:100dvh;background:var(--p-bg);color:var(--p-ink);
+          --background:70.00000 30.00000% 96.07843%;--foreground:168.75000 26.66667% 11.76471%;--card:75.00000 50.00000% 98.43137%;--card-foreground:168.75000 26.66667% 11.76471%;--popover:75.00000 50.00000% 98.43137%;--popover-foreground:168.75000 26.66667% 11.76471%;--primary:172.11679 79.19075% 33.92157%;--primary-foreground:0.00000 0.00000% 100.00000%;--secondary:82.50000 22.22222% 92.94118%;--secondary-foreground:168.75000 26.66667% 11.76471%;--muted:82.50000 22.22222% 92.94118%;--muted-foreground:153.75000 7.76699% 40.39216%;--accent:82.50000 22.22222% 92.94118%;--accent-foreground:168.75000 26.66667% 11.76471%;--border:98.18182 14.28571% 84.90196%;--input:98.18182 14.28571% 84.90196%;--ring:172.11679 79.19075% 33.92157%;--destructive:352.13793 67.44186% 42.15686%;--destructive-foreground:0.00000 0.00000% 100.00000%;--success:151.05882 54.83871% 30.39216%;--success-foreground:0.00000 0.00000% 100.00000%;--info:211.16279 63.54680% 39.80392%;--info-foreground:0.00000 0.00000% 100.00000%;--warning:39.72973 100.00000% 29.01961%;--warning-foreground:0.00000 0.00000% 100.00000%;
+          --shapeos-bg:var(--p-bg);--shapeos-surface:var(--p-panel);--shapeos-sidebar:var(--p-panel);--shapeos-border:var(--p-line);--shapeos-text:var(--p-ink);--shapeos-muted:var(--p-muted);--shapeos-subtle:var(--p-muted);--shapeos-brand:var(--p-brand);
+          --shapeos-surface-strong:#eef1e9;--shapeos-on-brand:#ffffff;--shapeos-brand-hover:var(--p-brand);--shapeos-brand-soft:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));--shapeos-neutral-rgb:22,38,35;
+          color-scheme:light;
         }
-        html.dark .personal-shell {--p-bg:#041512;--p-panel:#091c18;--p-line:#1c4037;--p-ink:#f5faf9;--p-muted:#a3becd;--p-brand:#00e9df;--p-blue:#a8caff;--p-avatar:#19314b;--p-danger:#ff8f9b;--background:166 68% 5%;--foreground:168 33% 97%;--card:162 51% 7%;--card-foreground:168 33% 97%;--border:165 39% 18%;--muted-foreground:200 29% 72%;--primary:177 100% 46%;}
+        html.dark:has(.personal-shell), html.dark body [data-shapeos-app-shell="dashboard"].personal-shell, html.dark body .personal-shell .shapeos-workspace {
+          --p-bg:#041512;--p-panel:#091c18;--p-line:#1c4037;--p-ink:#f5faf9;--p-muted:#a3becd;--p-brand:#00e9df;--p-blue:#a8caff;--p-avatar:#19314b;--p-danger:#ff8f9b;
+          --background:169.41176 68.00000% 4.90196%;--foreground:168.00000 33.33333% 97.05882%;--card:167.36842 51.35135% 7.25490%;--card-foreground:168.00000 33.33333% 97.05882%;--popover:167.36842 51.35135% 7.25490%;--popover-foreground:168.00000 33.33333% 97.05882%;--primary:177.42489 100.00000% 45.68627%;--primary-foreground:169.41176 68.00000% 4.90196%;--secondary:165.51724 46.03175% 12.35294%;--secondary-foreground:168.00000 33.33333% 97.05882%;--muted:165.51724 46.03175% 12.35294%;--muted-foreground:201.42857 29.57746% 72.15686%;--accent:165.51724 46.03175% 12.35294%;--accent-foreground:168.00000 33.33333% 97.05882%;--border:165.00000 39.13043% 18.03922%;--input:165.00000 39.13043% 18.03922%;--ring:177.42489 100.00000% 45.68627%;--destructive:353.57143 100.00000% 78.03922%;--destructive-foreground:169.41176 68.00000% 4.90196%;--success:155.60976 61.80905% 60.98039%;--success-foreground:169.41176 68.00000% 4.90196%;--info:216.55172 100.00000% 82.94118%;--info-foreground:169.41176 68.00000% 4.90196%;--warning:41.07692 72.22222% 64.70588%;--warning-foreground:169.41176 68.00000% 4.90196%;
+          --shapeos-bg:var(--p-bg);--shapeos-surface:var(--p-panel);--shapeos-sidebar:var(--p-panel);--shapeos-border:var(--p-line);--shapeos-text:var(--p-ink);--shapeos-muted:var(--p-muted);--shapeos-subtle:var(--p-muted);--shapeos-brand:var(--p-brand);
+          --shapeos-surface-strong:#112e27;--shapeos-on-brand:#041512;--shapeos-brand-hover:var(--p-brand);--shapeos-brand-soft:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));--shapeos-neutral-rgb:245,250,249;
+          color-scheme:dark;
+        }
+        html:has(.personal-shell), html body:has(.personal-shell), html body [data-shapeos-app-shell="dashboard"].personal-shell {
+          background:var(--p-bg)!important;color:var(--p-ink)!important;
+        }
+        .personal-shell{display:flex;min-height:100vh;min-height:100dvh;}
+        html body [data-shapeos-app-shell="dashboard"].personal-shell .text-muted-foreground{color:var(--p-muted)!important;}
+        html body [data-shapeos-app-shell="dashboard"].personal-shell :is(.bg-card,.bg-popover,[role="dialog"]){background-color:var(--p-panel)!important;color:var(--p-ink);}
+        html body [data-shapeos-app-shell="dashboard"].personal-shell :is(input,textarea,select){color:var(--p-ink);border-color:var(--p-line);caret-color:var(--p-brand);}
+        html body [data-shapeos-app-shell="dashboard"].personal-shell :is(input,textarea)::placeholder{color:var(--p-muted);opacity:.75;}
+        html body [data-shapeos-app-shell="dashboard"].personal-shell input:is(:-webkit-autofill,:autofill){-webkit-text-fill-color:var(--p-ink)!important;-webkit-box-shadow:0 0 0 1000px var(--p-panel) inset!important;caret-color:var(--p-brand);transition:none!important;}
         .personal-main{min-width:0;flex:1;padding:0 32px 32px;}
         .personal-topbar{max-width:1152px;margin:0 auto 24px;min-height:68px;border-bottom:1px solid var(--p-line);display:flex;align-items:center;justify-content:space-between;gap:12px;}
         .personal-topbar-identity,.personal-topbar-tools{display:flex;align-items:center;gap:10px;}
