@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
 import { TrendingUp } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAlunos } from '@/hooks/use-alunos'
@@ -13,7 +15,7 @@ import { DashboardShell } from '@/components/layout/dashboard-shell'
 export default function RelatoriosPage() {
   return (
     <DashboardShell>
-      <RelatoriosConteudo />
+      <Suspense fallback={<p role="status">Carregando acompanhamento…</p>}><RelatoriosConteudo /></Suspense>
     </DashboardShell>
   )
 }
@@ -30,7 +32,13 @@ interface Agrupado {
 
 function RelatoriosConteudo() {
   const { data: alunos, isLoading: carregandoAlunos, error: erroAlunos, refetch: recarregarAlunos } = useAlunos()
-  const [alunoId, setAlunoId] = useState('')
+  const params = useSearchParams()
+  const router = useRouter()
+  const alunoId = resolveLinkedStudent(params.get('aluno'), alunos ?? [])
+  const initialTab = params.get('aba') === 'avaliacao' ? 'avaliacao' : params.get('aba') === 'agenda' ? 'agenda' : 'evolucao'
+  function selecionarAluno(id: string) {
+    router.replace(id ? `/relatorios?${new URLSearchParams({ aluno: id })}` : '/relatorios', { scroll: false })
+  }
   const { data: registros, isLoading } = useRegistrosDoAluno(alunoId || undefined)
 
   const agrupados = agruparPorExercicio(registros ?? [])
@@ -43,9 +51,9 @@ function RelatoriosConteudo() {
   return (
     <PersonalWorkspace page="relatorios">
       {heading}
-      <div className="personal-toolbar"><div className="personal-toolbar-field max-w-sm"><label htmlFor="personal-report-student">Aluno</label><select id="personal-report-student" value={alunoId} onChange={(event) => setAlunoId(event.target.value)} className="w-full" aria-label="Selecionar aluno"><option value="">Selecione o aluno…</option>{alunos.map(aluno => <option key={aluno.vinculo_id} value={aluno.aluno_id}>{aluno.nome}</option>)}</select></div><p className="personal-results-note">Escolha um aluno para consultar seu acompanhamento.</p></div>
+      <div className="personal-toolbar"><div className="personal-toolbar-field max-w-sm"><label htmlFor="personal-report-student">Aluno</label><select id="personal-report-student" value={alunoId} onChange={(event) => selecionarAluno(event.target.value)} className="w-full" aria-label="Selecionar aluno"><option value="">Selecione o aluno…</option>{alunos.map(aluno => <option key={aluno.vinculo_id} value={aluno.aluno_id}>{aluno.nome}</option>)}</select></div><p className="personal-results-note">Escolha um aluno para consultar seu acompanhamento.</p></div>
       <div className="personal-report-body">
-      {alunoId && <StudentReport key={alunoId} alunoId={alunoId} />}
+      {alunoId && <StudentReport key={`${alunoId}:${initialTab}`} alunoId={alunoId} initialTab={initialTab} />}
       {alunoId && <h2 className="text-lg font-semibold">Histórico de cargas (registros anteriores e atuais)</h2>}
       {!alunoId ? (
         <p className="text-muted-foreground text-sm">
@@ -145,4 +153,5 @@ function agruparPorExercicio(
 
   return [...mapa.values()]
 }
+
 

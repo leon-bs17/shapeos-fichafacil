@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, CircleCheck, ClipboardList, Dumbbell, Library, TrendingUp, Users } from 'lucide-react'
+import { PersonalAttention } from '@/components/fitness/personal-attention'
+import { studentReportHref } from '@/lib/fitness/personal-attention'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos, useMetricasGerais } from '@/hooks/use-alunos'
@@ -45,6 +47,8 @@ export default function PersonalPage() {
         </Link>)}
       </section>
 
+      <PersonalAttention />
+
       <section aria-labelledby="personal-quick-title">
         <div className="personal-section-title"><div><h2 id="personal-quick-title">Acesso rápido</h2><p>Continue o acompanhamento dos seus alunos.</p></div></div>
         <div className="personal-quick-grid">
@@ -64,7 +68,7 @@ export default function PersonalPage() {
             const name = students.data?.find(student => student.aluno_id === session.aluno_id)?.nome ?? 'Aluno'
             const initials = name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase()
             const complete = session.status === 'CONCLUIDO'
-            return <li key={session.id}><Link href="/relatorios" className="personal-session-row">
+            return <li key={session.id}><Link href={studentReportHref(session.aluno_id)} className="personal-session-row">
               <div className="personal-session-person"><span className="personal-avatar" aria-hidden="true">{initials}</span><div><p>{name}</p><small>{session.titulo}</small></div></div>
               <time className="personal-session-date" dateTime={session.inicio}>{new Date(session.inicio).toLocaleDateString('pt-BR')}</time>
               <span className="personal-session-status" data-complete={complete}>{complete ? 'Finalizado' : 'Em andamento'}</span>
@@ -75,4 +79,5 @@ export default function PersonalPage() {
     </div>
   </DashboardShell>
 }
+
 

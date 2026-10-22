@@ -11,8 +11,8 @@ import {
   sessionsForStudent,
   workoutsForStudent,
 } from "@/services/fitness";
-export function StudentReport({ alunoId }: { alunoId: string }) {
-  const [tab, setTab] = useState("evolucao");
+export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao" }) {
+  const [tab, setTab] = useState<string>(initialTab);
   const data = useQuery({
     queryKey: ["fitness-student-report", alunoId],
     queryFn: async () => {
@@ -81,3 +81,4 @@ export function StudentReport({ alunoId }: { alunoId: string }) {
     </div>
   );
 }
+

@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
 import {
   DndContext,
   closestCenter,
@@ -51,7 +53,7 @@ const ITEM_VAZIO: LinhaItem = {
 export default function TreinosPage() {
   return (
     <DashboardShell>
-      <TreinosConteudo />
+      <Suspense fallback={<p role="status">Carregando fichas…</p>}><TreinosConteudo /></Suspense>
     </DashboardShell>
   )
 }
@@ -59,6 +61,11 @@ export default function TreinosPage() {
 function TreinosConteudo() {
   const { data: fichas, isLoading, error, refetch } = useFichas()
   const acoes = useAcoesFichas()
+  const students = useAlunos()
+  const params = useSearchParams()
+  const router = useRouter()
+  const selectedStudentId = resolveLinkedStudent(params.get('aluno'), students.data ?? [])
+  const selectedStudent = students.data?.find(student => student.aluno_id === selectedStudentId)
   const [modalAberto, setModalAberto] = useState(false)
   const [prescricao, setPrescricao] = useState<FichaResumo | null>(null)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
@@ -67,7 +74,8 @@ function TreinosConteudo() {
   const [busca,setBusca]=useState('')
   const [status,setStatus]=useState<WorkoutStatus>('TODAS')
   const [exportMessage,setExportMessage]=useState('')
-  const filtradas=filterWorkouts(fichas??[],busca,status)
+  const studentWorkouts = selectedStudentId ? (fichas ?? []).filter(ficha => ficha.aluno_id === selectedStudentId) : fichas ?? []
+  const filtradas=filterWorkouts(studentWorkouts,busca,status)
   const actionError=acoes.duplicar.error??acoes.alternar.error??acoes.excluir.error
   function exportar(){
     try{
@@ -79,10 +87,15 @@ function TreinosConteudo() {
     }catch{setExportMessage('Não foi possível preparar o arquivo. Tente novamente.')}
   }
 
+  if (params.get('aluno') && students.isPending) return <PersonalWorkspace page="treinos"><PersonalPageHeader icon="treinos" title="Treinos" description="Organize fichas e acompanhe a prescrição de cada aluno." /><p role="status">Carregando aluno…</p></PersonalWorkspace>
+  if (params.get('aluno') && students.error) return <PersonalWorkspace page="treinos"><PersonalPageHeader icon="treinos" title="Treinos" description="Organize fichas e acompanhe a prescrição de cada aluno." /><div className="personal-load-error" role="alert"><p>Não foi possível verificar o aluno.</p><Button variant="outline" onClick={() => void students.refetch()}>Tentar novamente</Button></div></PersonalWorkspace>
+
   return (
     <PersonalWorkspace page="treinos">
       <PersonalPageHeader icon="treinos" title="Treinos" description="Organize fichas e acompanhe a prescrição de cada aluno." actions={<Button onClick={() => setModalAberto(true)}><Plus size={16} aria-hidden="true" />Nova ficha</Button>} />
 
+      {params.get('aluno') && !selectedStudent && <p role="status" className="personal-results-note">Aluno indisponível neste vínculo. Exibindo suas fichas.</p>}
+      {selectedStudent && <div className="personal-toolbar"><p className="personal-results-note">Fichas de <strong>{selectedStudent.nome}</strong></p><Button variant="outline" onClick={() => router.replace('/treinos', { scroll: false })}>Ver todos os alunos</Button></div>}
       <div className="personal-toolbar">
         <div className="personal-toolbar-field"><Label htmlFor="buscar-fichas">Buscar fichas</Label><Input id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} className="h-10"/></div>
         <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
@@ -103,9 +116,9 @@ function TreinosConteudo() {
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
               <Dumbbell className="h-7 w-7 text-primary" />
             </div>
-            <p className="font-semibold text-lg">{fichas?.length ? 'Nenhuma ficha encontrada' : 'Nenhuma ficha criada'}</p>
+            <p className="font-semibold text-lg">{selectedStudent && !studentWorkouts.length ? 'Este aluno ainda não tem ficha' : fichas?.length ? 'Nenhuma ficha encontrada' : 'Nenhuma ficha criada'}</p>
             <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-              {fichas?.length ? 'Ajuste a busca ou o filtro de status para encontrar suas fichas.' : 'Clique em Nova Ficha para montar o treino de um aluno em segundos.'}
+              {selectedStudent && !studentWorkouts.length ? 'Clique em Nova ficha para montar o treino do aluno selecionado.' : fichas?.length ? 'Ajuste a busca ou o filtro de status para encontrar suas fichas.' : 'Clique em Nova Ficha para montar o treino de um aluno em segundos.'}
             </p>
           </CardContent>
         </Card>
@@ -214,6 +227,8 @@ function TreinosConteudo() {
 
       {prescricao && <PrescriptionEditor personal ficha={prescricao} onClose={() => setPrescricao(null)} />}
       <ModalNovaFicha
+        key={selectedStudentId}
+        initialAlunoId={selectedStudentId}
         open={modalAberto}
         onClose={() => { setModalAberto(false); setTemplateSelecionado(null); setTipoTreino('hipertrofia') }}
         erro={acoes.criar.error?.message ?? null}
@@ -238,6 +253,7 @@ function TreinosConteudo() {
 }
 
 function ModalNovaFicha({
+  initialAlunoId = '',
   open,
   onClose,
   erro,
@@ -247,6 +263,7 @@ function ModalNovaFicha({
   tipoTreino,
   onSelecionarTipo,
 }: {
+  initialAlunoId?: string
   open: boolean
   onClose: () => void
   erro: string | null
@@ -260,7 +277,7 @@ function ModalNovaFicha({
   const { data: exercicios } = useExercicios()
   const { criar } = useAcoesFichas()
 
-  const [alunoId, setAlunoId] = useState('')
+  const [alunoId, setAlunoId] = useState(initialAlunoId)
   const [titulo, setTitulo] = useState(template?.titulo ?? '')
   const [itens, setItens] = useState<LinhaItem[]>([{ ...ITEM_VAZIO }])
   const [erroLocal, setErroLocal] = useState<string | null>(null)
@@ -315,7 +332,7 @@ function ModalNovaFicha({
           })),
         },
       })
-      setTitulo(''); setAlunoId(''); setItens([{ ...ITEM_VAZIO }]); onSelecionarTemplate(null); onClose()
+      setTitulo(''); setAlunoId(initialAlunoId); setItens([{ ...ITEM_VAZIO }]); onSelecionarTemplate(null); onClose()
     } catch (e) {
       setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar ficha')
     }
@@ -545,4 +562,5 @@ function ModalEditarFicha({
     </Modal>
   )
 }
+
 
