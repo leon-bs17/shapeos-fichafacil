@@ -15,9 +15,11 @@ import type { FichaResumo } from "@/services/treinos";
 export function PrescriptionEditor({
   ficha,
   onClose,
+  personal = false,
 }: {
   ficha: FichaResumo;
   onClose: () => void;
+  personal?: boolean;
 }) {
   const [rows, setRows] = useState<Prescricao[]>([]),
     [busy, setBusy] = useState(true),
@@ -131,6 +133,7 @@ export function PrescriptionEditor({
   ];
   return (
     <Modal
+      personal={personal}
       open
       onClose={onClose}
       titulo={`Prescrição avançada · ${ficha.titulo}`}
@@ -211,4 +214,5 @@ export function PrescriptionEditor({
     </Modal>
   );
 }
+
 

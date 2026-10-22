@@ -27,6 +27,7 @@ import { useAcoesFichas, useFichas } from '@/hooks/use-fichas'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useExercicios } from '@/hooks/use-exercicios'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { formatarData } from '@/lib/utils'
 import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
 import { PrescriptionEditor } from '@/components/fitness/prescription-editor'
@@ -79,21 +80,11 @@ function TreinosConteudo() {
   }
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-wrap items-center justify-between gap-4 animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Treinos</h1>
-          <p className="text-muted-foreground text-sm">
-            Monte fichas rapidamente e gerencie as ativas de cada aluno.
-          </p>
-        </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Nova Ficha
-        </Button>
-      </header>
+    <PersonalWorkspace page="treinos">
+      <PersonalPageHeader icon="treinos" title="Treinos" description="Organize fichas e acompanhe a prescrição de cada aluno." actions={<Button onClick={() => setModalAberto(true)}><Plus size={16} aria-hidden="true" />Nova ficha</Button>} />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="min-w-0 flex-1 space-y-1.5"><Label htmlFor="buscar-fichas">Buscar fichas</Label><Input id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} className="h-10"/></div>
+      <div className="personal-toolbar">
+        <div className="personal-toolbar-field"><Label htmlFor="buscar-fichas">Buscar fichas</Label><Input id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} className="h-10"/></div>
         <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
         <Button variant="outline" className="h-10" disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><Download size={15} className="mr-2"/>Exportar JSON</Button>
       </div>
@@ -101,7 +92,7 @@ function TreinosConteudo() {
       {actionError && <p role="alert" className="text-sm text-destructive">{actionError.message}</p>}
       {error ? <div role="alert" className="rounded-xl border border-destructive/30 p-4 text-sm"><p>{error.message}</p><Button variant="outline" className="mt-3" onClick={()=>void refetch()}>Tentar novamente</Button></div> :
       isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="personal-workout-grid">
           {[0, 1].map((i) => (
             <div key={i} className="h-48 skeleton" />
           ))}
@@ -119,13 +110,13 @@ function TreinosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {filtradas.map((ficha, idx) => (
-            <Card key={ficha.id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} hover:shadow-md transition-all duration-200`}>
+        <div className="personal-workout-grid">
+          {filtradas.map((ficha) => (
+            <Card key={ficha.id} className="personal-workout-card">
               <CardContent className="p-5 space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base truncate">{ficha.titulo}</h3>
+                    <h3 className="font-semibold text-base">{ficha.titulo}</h3>
                     <p className="text-muted-foreground text-sm mt-0.5">
                       {ficha.aluno_nome} · {formatarData(ficha.criado_em)}
                     </p>
@@ -137,12 +128,12 @@ function TreinosConteudo() {
                         : 'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground shrink-0'
                     }
                   >
-                    <span className={`h-1.5 w-1.5 rounded-full ${ficha.ativo ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`} />
+                    <span className={`h-1.5 w-1.5 rounded-full ${ficha.ativo ? 'bg-success' : 'bg-muted-foreground'}`} />
                     {ficha.ativo ? 'Ativa' : 'Pausada'}
                   </span>
                 </div>
 
-                <div className="space-y-1">
+                <div className="personal-workout-items">
                   {ficha.itens.slice(0, 4).map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-sm py-1">
                       <span className="truncate text-muted-foreground">{item.exercicio.nome}</span>
@@ -159,7 +150,7 @@ function TreinosConteudo() {
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1.5 border-t border-border pt-3">
+                <div className="personal-workout-actions">
                   <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setPrescricao(ficha)}>Prescrição avançada</Button>
                   <Button
                     size="sm"
@@ -203,7 +194,8 @@ function TreinosConteudo() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="ml-auto h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    className="personal-danger ml-auto h-8 w-8 p-0"
+                    aria-label={`Excluir ficha ${ficha.titulo}`}
                     disabled={acoes.excluir.isPending}
                     onClick={() => {
                       if (window.confirm(`Excluir a ficha "${ficha.titulo}"?`)) {
@@ -220,7 +212,7 @@ function TreinosConteudo() {
         </div>
       )}
 
-      {prescricao && <PrescriptionEditor ficha={prescricao} onClose={() => setPrescricao(null)} />}
+      {prescricao && <PrescriptionEditor personal ficha={prescricao} onClose={() => setPrescricao(null)} />}
       <ModalNovaFicha
         open={modalAberto}
         onClose={() => { setModalAberto(false); setTemplateSelecionado(null); setTipoTreino('hipertrofia') }}
@@ -241,7 +233,7 @@ function TreinosConteudo() {
           ocupado={acoes.editar.isPending}
         />
       ) : null}
-    </div>
+    </PersonalWorkspace>
   )
 }
 
@@ -348,18 +340,19 @@ function ModalNovaFicha({
   }
 
   return (
-    <Modal open={open} onClose={onClose} titulo="Nova Ficha de Treino" className="max-w-2xl">
+    <Modal personal open={open} onClose={onClose} titulo="Nova Ficha de Treino" className="max-w-2xl">
       <div className="space-y-5">
         {!template && !editorAberto ? (
           <div className="space-y-5">
             <div className="space-y-2.5">
               <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Tipo de Treino</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="personal-template-grid grid grid-cols-3 gap-2">
                 {TIPOS_TREINO.map((tipo) => (
                   <button
                     key={tipo.id}
+                    aria-pressed={tipoTreino === tipo.id}
                     onClick={() => onSelecionarTipo(tipo.id)}
-                    className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center text-sm transition-all duration-200 ${
+                    className={`personal-template-button flex flex-col items-center gap-1.5 rounded-xl border-2 p-4 text-center text-sm transition-all duration-200 ${
                       tipoTreino === tipo.id
                         ? 'border-primary bg-primary/10 shadow-sm'
                         : 'border-border hover:border-border/80 hover:bg-accent/50'
@@ -379,7 +372,7 @@ function ModalNovaFicha({
               <div className="grid gap-2 sm:grid-cols-2">
                 <button
                   onClick={() => aplicarTemplate(null)}
-                  className="flex flex-col items-start gap-1 rounded-xl border-2 border-dashed border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
+                  className="personal-template-button flex flex-col items-start gap-1 rounded-xl border-2 border-dashed border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
                 >
                   <span className="font-semibold">Em branco</span>
                   <span className="text-muted-foreground text-xs">Monte do zero</span>
@@ -388,7 +381,7 @@ function ModalNovaFicha({
                   <button
                     key={t.id}
                     onClick={() => aplicarTemplate(t)}
-                    className="flex flex-col items-start gap-1 rounded-xl border-2 border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
+                    className="personal-template-button flex flex-col items-start gap-1 rounded-xl border-2 border-border p-4 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
                   >
                     <span className="font-semibold">{t.titulo}</span>
                     <span className="text-muted-foreground text-xs">{t.descricao}</span>
@@ -514,7 +507,7 @@ function ModalEditarFicha({
   }
 
   return (
-    <Modal open={open} onClose={onClose} titulo="Editar Ficha de Treino" className="max-w-2xl">
+    <Modal personal open={open} onClose={onClose} titulo="Editar Ficha de Treino" className="max-w-2xl">
       <div className="space-y-5">
         <div className="space-y-1.5">
           <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Aluno</Label>
@@ -552,3 +545,4 @@ function ModalEditarFicha({
     </Modal>
   )
 }
+

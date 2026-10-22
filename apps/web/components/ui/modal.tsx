@@ -11,6 +11,7 @@ export function Modal({
   children,
   className,
   admin = false,
+  personal = false,
 }: {
   open: boolean
   onClose: () => void
@@ -18,7 +19,9 @@ export function Modal({
   children: ReactNode
   className?: string
   admin?: boolean
+  personal?: boolean
 }) {
+  if (personal) return <AdminModal personal open={open} onClose={onClose} titulo={titulo} className={className}>{children}</AdminModal>
   if (admin) return <AdminModal open={open} onClose={onClose} titulo={titulo} className={className}>{children}</AdminModal>
   if (!open) return null
 
@@ -54,12 +57,13 @@ export function Modal({
   )
 }
 
-function AdminModal({ open, onClose, titulo, children, className }: {
+function AdminModal({ open, onClose, titulo, children, className, personal = false }: {
   open: boolean
   onClose: () => void
   titulo: string
   children: ReactNode
   className?: string
+  personal?: boolean
 }) {
   const ref = useRef<HTMLDialogElement>(null)
   const titleId = useId()
@@ -68,14 +72,17 @@ function AdminModal({ open, onClose, titulo, children, className }: {
     const dialog = ref.current
     if (!open || !dialog) return
     const focused = document.activeElement as HTMLElement | null
+    const previousOverflow = document.body.style.overflow
+    if (personal) document.body.style.overflow = 'hidden'
     if (!dialog.open) dialog.showModal()
     return () => {
       dialog.close()
+      if (personal) document.body.style.overflow = previousOverflow
       focused?.focus()
     }
-  }, [open])
+  }, [open, personal])
 
-  return <dialog ref={ref} data-admin-modal aria-labelledby={titleId}
+  return <dialog ref={ref} data-admin-modal={personal ? undefined : true} data-personal-modal={personal ? true : undefined} aria-labelledby={titleId}
     className={cn('w-full max-w-lg rounded-2xl p-6', className)}
     onCancel={(event) => { event.preventDefault(); onClose() }}
     onClick={(event) => {
@@ -84,13 +91,14 @@ function AdminModal({ open, onClose, titulo, children, className }: {
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
     }}>
     {open && <>
-      <div className="mb-5 flex items-center justify-between gap-4">
+      <div data-personal-modal-heading={personal ? true : undefined} className="mb-5 flex items-center justify-between gap-4">
         <h2 id={titleId} className="text-lg font-bold tracking-tight">{titulo}</h2>
         <button type="button" onClick={onClose} autoFocus
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted"
+          className="personal-command grid h-11 w-11 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-muted"
           aria-label="Fechar" data-shapeos-tooltip="Fechar janela"><X className="h-4 w-4" /></button>
       </div>
       {children}
     </>}
   </dialog>
 }
+

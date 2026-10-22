@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { UserPlus, Users, Mail, Loader2 } from 'lucide-react'
+import { UserPlus, Users, Mail, Loader2, CheckCircle2, Clock3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/modal'
 import { useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { useAlunos } from '@/hooks/use-alunos'
 
 export default function AlunosPage() {
@@ -21,7 +22,7 @@ export default function AlunosPage() {
 }
 
 function AlunosConteudo() {
-  const { data: alunos, isLoading } = useAlunos()
+  const { data: alunos, isLoading, error, refetch } = useAlunos()
   const [modalAberto, setModalAberto] = useState(false)
   const [email, setEmail] = useState('')
   const [erro, setErro] = useState<string | null>(null)
@@ -54,70 +55,20 @@ function AlunosConteudo() {
   }
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Alunos</h1>
-          <p className="text-muted-foreground text-sm">
-            Convide por e-mail: o aluno recebe o acesso e ja aparece aqui.
-          </p>
-        </div>
-        <Button onClick={() => setModalAberto(true)} className="shadow-sm">
-          <UserPlus className="mr-1.5 h-4 w-4" /> Convidar aluno
-        </Button>
-      </header>
-
-      {isLoading ? (
-        <div className="space-y-3">
-          {[0, 1, 2].map((i) => <div key={i} className="h-16 skeleton" />)}
-        </div>
-      ) : alunos?.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="py-14 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-              <Users className="h-7 w-7 text-muted-foreground" />
-            </div>
-            <p className="font-semibold text-lg">Nenhum aluno vinculado</p>
-            <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto">
-              Clique em Convidar aluno, informe o e-mail dele e a ficha de treino ja pode ser criada.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-2">
-          {alunos?.map((a, idx) => (
-            <div key={a.vinculo_id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} flex items-center justify-between rounded-xl border border-border bg-card px-5 py-4 hover:shadow-md transition-all duration-200`}>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-                  {a.nome?.charAt(0)?.toUpperCase() ?? '?'}
-                </div>
-                <div>
-                  <p className="font-medium">{a.nome}</p>
-                  <p className="text-muted-foreground text-xs flex items-center gap-1">
-                    <Mail className="h-3 w-3" />
-                    {a.email}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground">{a.treinos_ativos} ficha(s)</p>
-                </div>
-                <span className={
-                  a.status === 'ATIVO'
-                    ? 'inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success'
-                    : 'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground'
-                }>
-                  <span className={`h-1.5 w-1.5 rounded-full ${a.status === 'ATIVO' ? 'bg-success' : 'bg-muted-foreground'}`} />
-                  {a.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Convidar Aluno">
+    <PersonalWorkspace page="alunos">
+      <PersonalPageHeader icon="alunos" title="Alunos" description="Seus alunos, fichas e vínculos em um só lugar." actions={<Button onClick={() => setModalAberto(true)}><UserPlus size={16} aria-hidden="true" />Convidar aluno</Button>} />
+      {error ? <div className="personal-load-error" role="alert"><p>Não foi possível carregar seus alunos.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? <div role="status" aria-label="Carregando alunos" className="space-y-3">{[0, 1, 2].map(i => <div key={i} className="h-16 skeleton" />)}</div> : !alunos?.length ? <Card><CardContent className="py-12 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground" aria-hidden="true" /><h2>Nenhum aluno vinculado</h2><p className="text-muted-foreground text-xs mt-2 max-w-sm mx-auto">Convide um aluno por e-mail para começar a montar suas fichas.</p></CardContent></Card> :
+        <section className="personal-panel" aria-labelledby="personal-students-title">
+          <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'}</p></header>
+          <table className="personal-table"><caption className="sr-only">Alunos vinculados e suas fichas ativas</caption><thead><tr><th scope="col">Aluno</th><th scope="col">Fichas ativas</th><th scope="col">Status</th></tr></thead><tbody>
+            {alunos.map(aluno => <tr key={aluno.vinculo_id}>
+              <td><div className="personal-student-identity"><span className="personal-avatar" aria-hidden="true">{aluno.nome?.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toLocaleUpperCase('pt-BR') || '?'}</span><div><strong>{aluno.nome}</strong><p><Mail size={12} aria-hidden="true" /><span>{aluno.email}</span></p></div></div></td>
+              <td data-label="Fichas ativas"><span className="personal-student-count">{aluno.treinos_ativos}</span></td>
+              <td data-label="Status"><span className="personal-status" data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
+            </tr>)}
+          </tbody></table>
+        </section>}
+      <Modal personal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Convidar Aluno">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="convite-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail do aluno</Label>
@@ -140,6 +91,6 @@ function AlunosConteudo() {
           </div>
         </div>
       </Modal>
-    </div>
+    </PersonalWorkspace>
   )
 }

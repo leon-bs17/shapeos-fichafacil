@@ -7,6 +7,7 @@ import { useAlunos } from '@/hooks/use-alunos'
 import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
 import { StudentReport } from '@/components/fitness/student-report'
+import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 
 export default function RelatoriosPage() {
@@ -28,54 +29,22 @@ interface Agrupado {
 }
 
 function RelatoriosConteudo() {
-  const { data: alunos, isLoading: carregandoAlunos } = useAlunos()
+  const { data: alunos, isLoading: carregandoAlunos, error: erroAlunos, refetch: recarregarAlunos } = useAlunos()
   const [alunoId, setAlunoId] = useState('')
   const { data: registros, isLoading } = useRegistrosDoAluno(alunoId || undefined)
 
   const agrupados = agruparPorExercicio(registros ?? [])
 
-  if (carregandoAlunos) {
-    return <div className="h-40 animate-pulse rounded-lg bg-muted" />
-  }
-
-  if (alunos?.length === 0) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            Vincule um aluno e registre treinos para ver a evolução aqui.
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  const heading = <PersonalPageHeader icon="relatorios" title="Relatórios" description="Sessões, evolução e avaliações dos seus alunos." />
+  if (carregandoAlunos) return <PersonalWorkspace page="relatorios">{heading}<div className="h-40 skeleton" role="status" aria-label="Carregando alunos" /></PersonalWorkspace>
+  if (erroAlunos) return <PersonalWorkspace page="relatorios">{heading}<div className="personal-load-error" role="alert"><p>Não foi possível carregar seus alunos.</p><button type="button" onClick={() => void recarregarAlunos()}>Tentar novamente</button></div></PersonalWorkspace>
+  if (!alunos?.length) return <PersonalWorkspace page="relatorios">{heading}<Card><CardContent className="py-12 text-center text-muted-foreground text-sm">Vincule um aluno e registre treinos para acompanhar sua evolução.</CardContent></Card></PersonalWorkspace>
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
-        <p className="text-muted-foreground text-sm">
-          Sessões, prescrito × realizado, agenda e avaliações físicas.
-        </p>
-      </header>
-
-      <div className="max-w-sm space-y-1.5">
-        <select
-          value={alunoId}
-          onChange={(e) => setAlunoId(e.target.value)}
-          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Selecionar aluno"
-        >
-          <option value="">Selecione o aluno...</option>
-          {alunos?.map((a) => (
-            <option key={a.vinculo_id} value={a.aluno_id}>
-              {a.nome}
-            </option>
-          ))}
-        </select>
-      </div>
-
+    <PersonalWorkspace page="relatorios">
+      {heading}
+      <div className="personal-toolbar"><div className="personal-toolbar-field max-w-sm"><label htmlFor="personal-report-student">Aluno</label><select id="personal-report-student" value={alunoId} onChange={(event) => setAlunoId(event.target.value)} className="w-full" aria-label="Selecionar aluno"><option value="">Selecione o aluno…</option>{alunos.map(aluno => <option key={aluno.vinculo_id} value={aluno.aluno_id}>{aluno.nome}</option>)}</select></div><p className="personal-results-note">Escolha um aluno para consultar seu acompanhamento.</p></div>
+      <div className="personal-report-body">
       {alunoId && <StudentReport key={alunoId} alunoId={alunoId} />}
       {alunoId && <h2 className="text-lg font-semibold">Histórico de cargas (registros anteriores e atuais)</h2>}
       {!alunoId ? (
@@ -101,7 +70,8 @@ function RelatoriosConteudo() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </PersonalWorkspace>
   )
 }
 
@@ -113,17 +83,17 @@ function EvolucaoExercicio({ grupo }: { grupo: Agrupado }) {
   const evoluiu = ultimo > primeiro
 
   return (
-    <Card>
+    <Card className="personal-history-card">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between text-base">
-          <span className="truncate">{grupo.nome}</span>
+        <CardTitle className="personal-history-title flex items-center justify-between text-base">
+          <span className="">{grupo.nome}</span>
           <span className="text-muted-foreground shrink-0 text-xs font-normal">
             melhor: {melhor} kg
           </span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex h-20 items-end gap-1" aria-hidden="true">
+        <div className="personal-history-chart flex h-20 items-end gap-1" aria-hidden="true">
           {cargas.map((carga, i) => (
             <div
               key={i}
@@ -137,7 +107,7 @@ function EvolucaoExercicio({ grupo }: { grupo: Agrupado }) {
             />
           ))}
         </div>
-        <div className="text-muted-foreground flex items-center gap-3 text-xs">
+        <div className="personal-history-meta">
           <span className="inline-flex items-center gap-1">
             <TrendingUp className={evoluiu ? 'h-3.5 w-3.5 text-primary' : 'h-3.5 w-3.5 rotate-180'} />
             {ultimo === primeiro ? 'sem variação' : `${ultimo > primeiro ? '+' : ''}${Math.round((ultimo - primeiro) * 100) / 100} kg desde o início`}
@@ -175,3 +145,4 @@ function agruparPorExercicio(
 
   return [...mapa.values()]
 }
+

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react'
 import { ArrowUp, ArrowUpRight, ChartColumn, CircleCheck, Check, Copy, Dumbbell, MessageCircle, Plus, RotateCcw, ShieldCheck, Square, Users, X, Database, ChevronDown, Activity, CheckCheck } from 'lucide-react'
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
 import { MessageResponse } from '@/components/ai-elements/message'
@@ -53,6 +53,12 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   useEffect(() => () => { controller.current?.abort(); if (copyTimer.current) clearTimeout(copyTimer.current) }, [])
   useEffect(() => { if (messages.length) end.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' }) }, [messages, loading])
 
+  useLayoutEffect(() => {
+    if (admin || !input.current) return
+    input.current.style.height = 'auto'
+    input.current.style.height = Math.min(input.current.scrollHeight, 160) + 'px'
+  }, [admin, draft])
+
   async function send(retry = false, regenerate = false) {
     if (busy.current || !configured) return
     const previous = regenerate ? messages.slice(0, -2) : retry ? messages.slice(0, -1) : messages
@@ -89,9 +95,9 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     catch { setNotice('Não foi possível copiar automaticamente. Selecione o texto da resposta para copiar.') }
   }
 
-  return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
+  return <section className={`${s.workspace} ${admin ? '' : s.personalWorkspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
     <header className={s.header}>
-      <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
+      <div className={s.identity}><MysMark small/><div><h1>{admin ? <>Mys <span>ShapeOS</span></> : 'Mys · Assistente'}</h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
       <div className={s.headerActions}>
         {admin && <div className={s.headerTools}><NotificationBell/><ThemeToggle/></div>}
       <button className={s.newChat} disabled={loading} aria-label="Nova conversa" title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={18} aria-hidden="true"/><span>Nova conversa</span></button>
@@ -133,3 +139,4 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     <details className={s.scope}><summary><ShieldCheck size={13}/>Seu espaço, seus dados<ChevronDown size={13}/></summary><p>{admin ? 'Consulte contagens gerais, alunos, fichas, sessões e avaliações.' : 'Consulte seus alunos com vínculo ativo, suas fichas e a evolução registrada.'} A Mys tem acesso de leitura, limitado às permissões da sua conta. As mensagens e os dados necessários para responder são enviados à DeepSeek. Esta conversa fica na página até você sair ou começar outra.</p></details>
   </section>
 }
+

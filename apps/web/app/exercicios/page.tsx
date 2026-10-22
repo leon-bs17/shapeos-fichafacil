@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/modal'
 import { useCriarExercicio, useExercicios, useEditarExercicio, useExcluirExercicio } from '@/hooks/use-exercicios'
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import type { ExercicioBiblioteca } from '@/services/exercicios'
 import { ExercisePreview, ExerciseThumbnail } from '@/components/fitness/exercise-demonstration'
 
@@ -34,7 +35,7 @@ export default function ExerciciosPage() {
 }
 
 function ExerciciosConteudo() {
-  const { data: exercicios, isLoading } = useExercicios()
+  const { data: exercicios, isLoading, error, refetch } = useExercicios()
   const criar = useCriarExercicio()
   const editar = useEditarExercicio()
   const excluir = useExcluirExercicio()
@@ -97,39 +98,27 @@ function ExerciciosConteudo() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Biblioteca</h1>
-          <p className="text-muted-foreground text-sm">
-            {exercicios?.length ?? 0} exercícios · {filtrados.length} exibidos
-          </p>
-        </div>
-        <Button onClick={abrirCriacao} className="shadow-sm">
-          <Plus className="mr-1.5 h-4 w-4" /> Novo exercício
-        </Button>
-      </header>
+    <PersonalWorkspace page="biblioteca">
+      <PersonalPageHeader icon="biblioteca" title="Biblioteca de exercícios" description="Encontre demonstrações e organize seus exercícios." actions={<Button onClick={abrirCriacao}><Plus size={16} aria-hidden="true" />Novo exercício</Button>} />
 
-      <div className="space-y-3 animate-fade-in stagger-1">
-        <div className="relative max-w-sm">
+      <div className="personal-toolbar">
+        <div className="personal-search">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
+            aria-label="Buscar exercício pelo nome"
             placeholder="Buscar por nome..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
             className="pl-9 h-10"
           />
         </div>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="personal-filter-chips">
           {['Todos', ...GRUPOS_MUSCULARES].map((g) => (
             <button
               key={g}
               onClick={() => setGrupoAtivo(g)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
-                grupoAtivo === g
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-              }`}
+              className="personal-filter-chip"
+              aria-pressed={grupoAtivo === g}
             >
               {g !== 'Todos' && GRUPO_ICONS[g]}
               {g}
@@ -138,8 +127,10 @@ function ExerciciosConteudo() {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+      <p className="personal-results-note" aria-live="polite">{isLoading ? 'Carregando exercícios…' : `${filtrados.length} de ${exercicios?.length ?? 0} exercícios`}</p>
+      {excluir.error && <p role="alert" className="text-destructive text-sm">{excluir.error.message}</p>}
+      {error ? <div role="alert" className="personal-load-error"><p>Não foi possível carregar os exercícios.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? (
+        <div className="personal-exercise-grid">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="h-20 skeleton" />
           ))}
@@ -155,18 +146,15 @@ function ExerciciosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
-          {filtrados.map((e, idx) => (
-            <Card key={e.id} className={`animate-slide-up stagger-${Math.min(idx + 1, 6)} hover:shadow-md transition-all duration-200 group`}>
+        <div className="personal-exercise-grid">
+          {filtrados.map((e) => (
+            <Card key={e.id} className="personal-exercise-card">
               <CardContent className="flex items-center justify-between gap-3 p-4">
                 <ExerciseThumbnail name={e.nome} exerciseId={e.id} videoUrl={e.video_url} />
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="hidden xl:flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
-                    {GRUPO_ICONS[e.grupo_muscular] ?? <Dumbbell className="h-4 w-4" />}
-                  </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-sm break-words">{e.nome}</p>
-                    <p className="text-muted-foreground text-xs truncate">
+                    <p className="personal-exercise-name">{e.nome}</p>
+                    <p className="personal-exercise-meta">
                       {e.grupo_muscular}
                       {e.equipamento ? ` · ${e.equipamento}` : ''}
                       {e.proprio ? ' · seu' : ''}
@@ -176,11 +164,11 @@ function ExerciciosConteudo() {
                 </div>
                 
                 {e.proprio ? (
-                  <div className="flex items-center shrink-0">
+                  <div className="personal-exercise-actions">
                     <button
                       onClick={() => abrirEdicao(e)}
-                      className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
-                      title="Editar exercício"
+                      className="personal-command"
+                      aria-label={`Editar ${e.nome}`} data-shapeos-tooltip="Editar exercício"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
@@ -188,8 +176,8 @@ function ExerciciosConteudo() {
                       onClick={() => {
                         if (window.confirm(`Excluir "${e.nome}" permanentemente?`)) excluir.mutate(e.id)
                       }}
-                      className="p-1.5 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
-                      title="Excluir exercício"
+                      className="personal-command personal-danger"
+                      aria-label={`Excluir ${e.nome}`} data-shapeos-tooltip="Excluir exercício"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -213,7 +201,7 @@ function ExerciciosConteudo() {
       )}
 
       {/* Modal Criar */}
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercício">
+      <Modal personal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="ex-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -253,7 +241,7 @@ function ExerciciosConteudo() {
       </Modal>
 
       {/* Modal Editar */}
-      <Modal open={modalEditarAberto} onClose={() => setModalEditarAberto(false)} titulo="Editar Exercício">
+      <Modal personal open={modalEditarAberto} onClose={() => setModalEditarAberto(false)} titulo="Editar Exercício">
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="edit-nome" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nome</Label>
@@ -296,7 +284,8 @@ function ExerciciosConteudo() {
           </div>
         </div>
       </Modal>
-    </div>
+    </PersonalWorkspace>
   )
 }
+
 

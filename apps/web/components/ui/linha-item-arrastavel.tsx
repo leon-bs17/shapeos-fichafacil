@@ -52,11 +52,11 @@ export function LinhaItemArrastavel({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-end gap-2 ${isDragging ? 'relative rounded-lg bg-card shadow-lg' : ''}`}
+      className={`personal-workout-item flex items-end gap-2 ${isDragging ? 'relative rounded-lg bg-card shadow-lg' : ''}`}
     >
       <button
         type="button"
-        className="flex h-10 w-6 shrink-0 cursor-grab items-center justify-center text-muted-foreground hover:text-foreground active:cursor-grabbing"
+        className="personal-drag-handle flex h-10 w-6 shrink-0 cursor-grab items-center justify-center text-muted-foreground hover:text-foreground active:cursor-grabbing"
         {...attributes}
         {...listeners}
         aria-label={`Arrastar exercício ${indice + 1}`}
@@ -65,6 +65,7 @@ export function LinhaItemArrastavel({
       </button>
 
       <select
+        aria-label={`Exercício ${indice + 1}`}
         value={item.exercicio_id}
         onChange={(e) => onAtualizar(indice, 'exercicio_id', e.target.value)}
         className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -81,34 +82,13 @@ export function LinhaItemArrastavel({
         ))}
       </select>
 
-      <Input
-        className="w-16"
-        type="number"
-        min={1}
-        max={30}
-        aria-label={`Séries do exercício ${indice + 1}`}
-        value={item.series}
-        onChange={(e) => onAtualizar(indice, 'series', e.target.value)}
-      />
-      <Input
-        className="w-20"
-        placeholder="Reps"
-        aria-label={`Repetições do exercício ${indice + 1}`}
-        value={item.repeticoes}
-        onChange={(e) => onAtualizar(indice, 'repeticoes', e.target.value)}
-      />
-      <Input
-        className="w-20"
-        type="number"
-        min={0}
-        max={900}
-        aria-label={`Descanso do exercício ${indice + 1}`}
-        value={item.descanso_segundos}
-        onChange={(e) => onAtualizar(indice, 'descanso_segundos', e.target.value)}
-      />
+      <div className="personal-workout-number"><label htmlFor={`${id}-series`}>Séries</label><Input id={`${id}-series`} type="number" min={1} max={30} aria-label={`Séries do exercício ${indice + 1}`} value={item.series} onChange={(e) => onAtualizar(indice, 'series', e.target.value)} /></div>
+      <div className="personal-workout-number"><label htmlFor={`${id}-reps`}>Repetições</label><Input id={`${id}-reps`} placeholder="Reps" aria-label={`Repetições do exercício ${indice + 1}`} value={item.repeticoes} onChange={(e) => onAtualizar(indice, 'repeticoes', e.target.value)} /></div>
+      <div className="personal-workout-number"><label htmlFor={`${id}-rest`}>Descanso (s)</label><Input id={`${id}-rest`} type="number" min={0} max={900} aria-label={`Descanso do exercício ${indice + 1}`} value={item.descanso_segundos} onChange={(e) => onAtualizar(indice, 'descanso_segundos', e.target.value)} /></div>
       <Button
         size="icon"
         variant="ghost"
+        className="personal-workout-remove personal-danger"
         aria-label={`Remover exercício ${indice + 1}`}
         onClick={() => onRemover(indice)}
         disabled={totalItens === 1}
@@ -118,3 +98,4 @@ export function LinhaItemArrastavel({
     </div>
   )
 }
+

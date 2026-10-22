@@ -69,9 +69,9 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
   ];
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="personal-report-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
         {metrics.map((m) => (
-          <div key={m.label} className="rounded-2xl border bg-card p-4">
+          <div key={m.label} className="personal-report-metric rounded-2xl border bg-card p-4">
             <m.Icon size={18} className="text-primary mb-3" />
             <p className="text-2xl font-semibold">{m.value}</p>
             <p className="text-xs text-muted-foreground mt-2">{m.label}</p>
@@ -223,3 +223,4 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
     </div>
   );
 }
+
