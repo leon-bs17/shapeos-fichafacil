@@ -1,13 +1,14 @@
+import { localCalendarDate } from '@/lib/fitness/deadlines'
 import { createClient } from '@/lib/supabase/client'
 import type { StudentAttentionSnapshot } from '@/lib/fitness/personal-attention'
 
 interface AttentionRow {
   id: string
   nome: string
-  vinculos: { criado_em: string }[]
+  vinculos: { criado_em: string; proxima_avaliacao_em: string | null }[]
   sessoes: { inicio: string }[]
-  avaliacoes: { id: string }[]
-  fichas: { id: string }[]
+  avaliacoes: { id: string; data: string }[]
+  fichas: { id: string; titulo: string; valida_ate: string | null }[]
 }
 
 export async function fetchPersonalAttention(signal?: AbortSignal): Promise<StudentAttentionSnapshot[]> {
@@ -23,10 +24,10 @@ export async function fetchPersonalAttention(signal?: AbortSignal): Promise<Stud
     // RLS remains enabled; the inner relationship also scopes the owning Personal.
     let query = supabase.from('usuarios').select(`
       id, nome,
-      vinculos:personal_alunos!personal_alunos_aluno_id_fkey!inner(criado_em),
+      vinculos:personal_alunos!personal_alunos_aluno_id_fkey!inner(criado_em,proxima_avaliacao_em),
       sessoes:sessoes_treino!sessoes_treino_aluno_id_fkey(inicio),
-      avaliacoes:avaliacoes_fisicas!avaliacoes_fisicas_aluno_id_fkey(id),
-      fichas:treinos!treinos_aluno_id_fkey(id)
+      avaliacoes:avaliacoes_fisicas!avaliacoes_fisicas_aluno_id_fkey(id,data),
+      fichas:treinos!treinos_aluno_id_fkey(id,titulo,valida_ate)
     `)
       .eq('vinculos.personal_id', user.id)
       .eq('vinculos.status', 'ATIVO')
@@ -34,9 +35,12 @@ export async function fetchPersonalAttention(signal?: AbortSignal): Promise<Stud
       .lte('sessoes.inicio', now)
       .order('inicio', { referencedTable: 'sessoes', ascending: false })
       .limit(1, { referencedTable: 'sessoes' })
+      .lte('avaliacoes.data', localCalendarDate())
+      .order('data', { referencedTable: 'avaliacoes', ascending: false })
       .limit(1, { referencedTable: 'avaliacoes' })
       .eq('fichas.personal_id', user.id)
       .eq('fichas.ativo', true)
+      .order('valida_ate', { referencedTable: 'fichas', ascending: true, nullsFirst: false })
       .limit(1, { referencedTable: 'fichas' })
       .order('criado_em', { referencedTable: 'vinculos', ascending: false })
       .limit(1, { referencedTable: 'vinculos' })
@@ -53,8 +57,13 @@ export async function fetchPersonalAttention(signal?: AbortSignal): Promise<Stud
         ultima_sessao: row.sessoes[0]?.inicio ?? null,
         tem_ficha_ativa: row.fichas.length > 0,
         tem_avaliacao: row.avaliacoes.length > 0,
+        valida_ate: row.fichas[0]?.valida_ate ?? null,
+        titulo_ficha: row.fichas[0]?.titulo ?? null,
+        proxima_avaliacao_em: row.vinculos[0].proxima_avaliacao_em,
+        ultima_avaliacao: row.avaliacoes[0]?.data ?? null,
       })
     }
     if (rows.length < pageSize) return result
   }
 }
+

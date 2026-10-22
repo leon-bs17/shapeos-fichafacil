@@ -33,6 +33,7 @@ export function useAcoesFichas() {
   const queryClient = useQueryClient()
 
   const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: ['personal-attention'] })
     void queryClient.invalidateQueries({ queryKey: ['fichas'] })
     void queryClient.invalidateQueries({ queryKey: ['alunos'] })
   }
@@ -74,3 +75,4 @@ export function useAcoesFichas() {
 
   return { criar, duplicar, alternar, editar, excluir }
 }
+

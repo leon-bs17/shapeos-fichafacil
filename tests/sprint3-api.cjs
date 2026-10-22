@@ -12,9 +12,9 @@ const db={auth:{getUser:async token=>({data:{user:token==='invalid'?null:current
   return Promise.resolve({data,error:null}).then(ok,no)
  }};return q
 },rpc:async(name,args)=>{
- if(name==='editar_ficha_atomica'){const row=rows.find(r=>r.id===args.p_ficha_id);row.titulo=args.p_titulo;row.itens_treino=args.p_itens;return{data:null,error:null}}
+ if(name==='editar_ficha_com_validade'){const row=rows.find(r=>r.id===args.p_ficha_id);row.titulo=args.p_titulo;row.itens_treino=args.p_itens;if(args.p_alterar_validade)row.valida_ate=args.p_valida_ate;return{data:null,error:null}}
  const original=rows.find(r=>r.id===args.p_ficha_id),id=`11111111-1111-4111-8111-${String(++seq).padStart(12,'0')}`
- rows.push({id,titulo:original?original.titulo+' (cópia)':args.p_titulo,ativo:!original,aluno_id:aluno,personal_id:personal,aluno:{nome:'Aluno de teste'},itens_treino:args.p_itens??original.itens_treino})
+ rows.push({id,valida_ate:args.p_valida_ate??null,titulo:original?original.titulo+' (cópia)':args.p_titulo,ativo:!original,aluno_id:aluno,personal_id:personal,aluno:{nome:'Aluno de teste'},itens_treino:args.p_itens??original.itens_treino})
  return {data:id,error:null}
 }}
 const schemas=load('packages/shared/src/schemas/index.ts',{})
@@ -29,7 +29,7 @@ const helpers=load('apps/web/lib/api/fitness.ts',{'@/lib/supabase/server':{creat
 const routes=Object.fromEntries(['treinos','treinos/[id]','treinos/[id]/duplicar','exercicios'].map(path=>[path,load('apps/web/app/api/'+path+'/route.ts',{'@/lib/api/fitness':helpers})]))
 const base='https://shapeos.test'
 function req(path,method='GET',payload,headers={}){return new Request(base+path,{method,headers:{Origin:base,...(payload!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:payload===undefined?undefined:typeof payload==='string'?payload:JSON.stringify(payload)})}
-const input={aluno_id:aluno,titulo:'Treino teste',itens:[{exercicio_id:exercise,series:3,repeticoes:'10',descanso_segundos:60,ordem:0}]}
+const input={valida_ate:'2026-11-15',aluno_id:aluno,titulo:'Treino teste',itens:[{exercicio_id:exercise,series:3,repeticoes:'10',descanso_segundos:60,ordem:0}]}
 ;(async()=>{
  current=null;assert.equal((await routes.treinos.GET(req('/api/treinos'))).status,401);current={id:personal}
  role='ALUNO';assert.equal((await routes.treinos.POST(req('/api/treinos','POST',input))).status,403);role='PERSONAL'
@@ -40,6 +40,9 @@ const input={aluno_id:aluno,titulo:'Treino teste',itens:[{exercicio_id:exercise,
  assert.equal((await routes.treinos.POST(req('/api/treinos','POST',{...input,personal_id:'forged'}))).status,400)
  assert.equal((await routes.treinos.POST(req('/api/treinos','POST','x'.repeat(65537)))).status,413)
  assert.equal((await routes.treinos.GET(req('/api/treinos','GET',undefined,{Authorization:'Bearer invalid'}))).status,401)
+ assert.equal((await routes.treinos.POST(req('/api/treinos','POST',{...input,valida_ate:'2026-02-30'}))).status,400)
+ assert.equal((await routes.treinos.POST(req('/api/treinos','POST',{...input,valida_ate:'22/10/2026'}))).status,400)
+ assert.equal((await routes.treinos.POST(req('/api/treinos','POST',{...input,valida_ate:'0000-01-01'}))).status,400)
  const created=await routes.treinos.POST(req('/api/treinos','POST',input));assert.equal(created.status,201);const id=(await created.json()).data.id,context={params:Promise.resolve({id})}
  assert.equal(created.headers.get('location'),'/api/treinos/'+id);assert.equal(created.headers.get('cache-control'),'no-store')
  const list=await routes.treinos.GET(req('/api/treinos'));assert.equal((await list.json()).data.length,1)
@@ -48,6 +51,11 @@ const input={aluno_id:aluno,titulo:'Treino teste',itens:[{exercicio_id:exercise,
  current={id:'33333333-3333-4333-8333-333333333333'};role='PERSONAL';assert.equal((await routes['treinos/[id]'].GET(req('/api/treinos/'+id),context)).status,404)
  current={id:personal};assert.equal((await routes['treinos/[id]'].PATCH(req('/api/treinos/'+id,'PATCH',{ativo:false}),context)).status,200)
  assert.equal((await routes['treinos/[id]'].PATCH(req('/api/treinos/'+id,'PATCH',{titulo:'Editado',itens:input.itens}),context)).status,200)
+ assert.equal(rows.find(row=>row.id===id).valida_ate,'2026-11-15')
+ assert.equal((await routes['treinos/[id]'].PATCH(req('/api/treinos/'+id,'PATCH',{titulo:'Editado',itens:input.itens,valida_ate:null}),context)).status,200)
+ assert.equal(rows.find(row=>row.id===id).valida_ate,null)
+ assert.equal((await routes['treinos/[id]'].PATCH(req('/api/treinos/'+id,'PATCH',{titulo:'Editado',itens:input.itens,valida_ate:'2026-12-01'}),context)).status,200)
+ assert.equal(rows.find(row=>row.id===id).valida_ate,'2026-12-01')
  const copy=await routes['treinos/[id]/duplicar'].POST(req('/api/treinos/'+id+'/duplicar','POST'),context);assert.equal(copy.status,201);assert.equal((await copy.json()).data.ativo,false)
  const catalog=await routes.exercicios.GET(req('/api/exercicios'));const entry=(await catalog.json()).data[0];assert.equal(entry.proprio,true);assert.equal(entry.criado_por,undefined)
  assert.equal((await routes['treinos/[id]'].GET(req('/api/treinos/bad'),{params:Promise.resolve({id:'bad'})})).status,400)
@@ -55,3 +63,4 @@ const input={aluno_id:aluno,titulo:'Treino teste',itens:[{exercicio_id:exercise,
  assert.equal((await routes['treinos/[id]'].GET(req('/api/treinos/'+id),context)).status,404)
  console.log('PASS: seven REST operations, session, roles, ownership, Origin, Bearer validation, JSON, limits, media fields and HTTP statuses.')
 })().catch(error=>{console.error(error);process.exit(1)})
+

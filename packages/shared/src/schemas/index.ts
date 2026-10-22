@@ -17,9 +17,15 @@ export const itemTreinoSchema = z.object({
 
 export type ItemTreinoInput = z.infer<typeof itemTreinoSchema>
 
+export const dataCalendarioSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida').refine(value => {
+  const date = new Date(`${value}T00:00:00Z`)
+  return Number(value.slice(0, 4)) >= 1 && Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
+}, 'Informe uma data válida')
+
 export const criarTreinoSchema = z.object({
   aluno_id: z.string().uuid(),
   titulo: z.string().min(3, 'Título muito curto').max(80),
+  valida_ate: dataCalendarioSchema.nullable().optional(),
   itens: z.array(itemTreinoSchema).min(1, 'Adicione ao menos um exercício'),
 })
 
@@ -37,3 +43,4 @@ export type RegistroExecucaoInput = z.infer<typeof registroExecucaoSchema>
 export const vincularAlunoSchema = z.object({
   email: z.string().email('E-mail inválido'),
 })
+

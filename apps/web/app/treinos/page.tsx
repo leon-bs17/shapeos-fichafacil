@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { calendarDaysUntil, workoutDeadline } from '@/lib/fitness/deadlines'
 import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
 import {
   DndContext,
@@ -146,6 +147,7 @@ function TreinosConteudo() {
                   </span>
                 </div>
 
+                <WorkoutValidity date={ficha.valida_ate} active={ficha.ativo} />
                 <div className="personal-workout-items">
                   {ficha.itens.slice(0, 4).map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-sm py-1">
@@ -279,6 +281,7 @@ function ModalNovaFicha({
 
   const [alunoId, setAlunoId] = useState(initialAlunoId)
   const [titulo, setTitulo] = useState(template?.titulo ?? '')
+  const [validade, setValidade] = useState('')
   const [itens, setItens] = useState<LinhaItem[]>([{ ...ITEM_VAZIO }])
   const [erroLocal, setErroLocal] = useState<string | null>(null)
   const [editorAberto, setEditorAberto] = useState(false)
@@ -315,6 +318,7 @@ function ModalNovaFicha({
   async function salvar() {
     setErroLocal(null)
     if (!alunoId) { setErroLocal('Escolha o aluno da ficha.'); return }
+    if (validade && calendarDaysUntil(validade) == null) { setErroLocal('Informe uma data de validade válida.'); return }
     if (titulo.trim().length < 3) { setErroLocal('De um titulo com pelo menos 3 letras.'); return }
     const itensValidos = itens.filter((i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim())
     if (itensValidos.length === 0) { setErroLocal('Adicione ao menos um exercicio completo.'); return }
@@ -323,6 +327,7 @@ function ModalNovaFicha({
         ficha: {
           aluno_id: alunoId,
           titulo: titulo.trim(),
+          valida_ate: validade || null,
           itens: itensValidos.map((i, indice) => ({
             exercicio_id: i.exercicio_id,
             series: Number(i.series),
@@ -332,7 +337,7 @@ function ModalNovaFicha({
           })),
         },
       })
-      setTitulo(''); setAlunoId(initialAlunoId); setItens([{ ...ITEM_VAZIO }]); onSelecionarTemplate(null); onClose()
+      setTitulo(''); setValidade(''); setAlunoId(initialAlunoId); setItens([{ ...ITEM_VAZIO }]); onSelecionarTemplate(null); onClose()
     } catch (e) {
       setErroLocal(e instanceof Error ? e.message : 'Erro ao salvar ficha')
     }
@@ -430,6 +435,11 @@ function ModalNovaFicha({
               </div>
             </div>
 
+            <div className="space-y-1.5">
+              <Label htmlFor="ficha-validade">Válida até (opcional)</Label>
+              <Input id="ficha-validade" type="date" min="0001-01-01" max="9999-12-31" value={validade} onChange={event => setValidade(event.target.value)} aria-describedby="ficha-validade-hint" />
+              <p id="ficha-validade-hint" className="text-xs text-muted-foreground">Deixe em branco para manter a ficha sem prazo. O aviso aparece sete dias antes do vencimento.</p>
+            </div>
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Exercicios</Label>
@@ -487,6 +497,7 @@ function ModalEditarFicha({
   const { data: exercicios } = useExercicios()
   const { editar } = useAcoesFichas()
   const [titulo, setTitulo] = useState(ficha.titulo)
+  const [validade, setValidade] = useState(ficha.valida_ate ?? '')
   const [itens, setItens] = useState<LinhaItem[]>(
     ficha.itens.length > 0 ? ficha.itens.map((item) => ({
       exercicio_id: item.exercicio.id, series: String(item.series), repeticoes: item.repeticoes, descanso_segundos: String(item.descanso_segundos),
@@ -500,13 +511,14 @@ function ModalEditarFicha({
 
   async function salvar() {
     setErroLocal(null)
+    if (validade && calendarDaysUntil(validade) == null) { setErroLocal('Informe uma data de validade válida.'); return }
     if (titulo.trim().length < 3) { setErroLocal('De um titulo com pelo menos 3 letras.'); return }
     const itensValidos = itens.filter((i) => i.exercicio_id && Number(i.series) > 0 && i.repeticoes.trim())
     if (itensValidos.length === 0) { setErroLocal('Adicione ao menos um exercicio completo.'); return }
     try {
       await editar.mutateAsync({
         fichaId: ficha.id,
-        ficha: { titulo: titulo.trim(), itens: itensValidos.map((i, indice) => ({
+        ficha: { titulo: titulo.trim(), valida_ate: validade || null, itens: itensValidos.map((i, indice) => ({
           exercicio_id: i.exercicio_id, series: Number(i.series), repeticoes: i.repeticoes.trim(), descanso_segundos: Number(i.descanso_segundos) || 60, ordem: indice,
         })) },
       })
@@ -533,6 +545,11 @@ function ModalEditarFicha({
         <div className="space-y-1.5">
           <Label htmlFor="editar-titulo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Titulo</Label>
           <Input id="editar-titulo" placeholder="Ex.: Push A - Peito e Triceps" value={titulo} onChange={(e) => setTitulo(e.target.value)} className="h-10" />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="editar-validade">Válida até (opcional)</Label>
+          <Input id="editar-validade" type="date" min="0001-01-01" max="9999-12-31" value={validade} onChange={event => setValidade(event.target.value)} aria-describedby="editar-validade-hint" />
+          <p id="editar-validade-hint" className="text-xs text-muted-foreground">Apague a data para retirar o prazo. O aviso aparece sete dias antes do vencimento.</p>
         </div>
         <div className="space-y-2.5">
           <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Exercicios</Label>
@@ -564,3 +581,9 @@ function ModalEditarFicha({
 }
 
 
+
+
+function WorkoutValidity({ date, active }: { date?: string | null; active: boolean }) {
+  const deadline = workoutDeadline(date)
+  return <p className="text-xs" style={{ color: active && deadline && deadline.days < 0 ? 'var(--p-danger)' : 'var(--p-muted)', overflowWrap: 'anywhere' }}>{deadline?.label ?? 'Validade não definida'}</p>
+}

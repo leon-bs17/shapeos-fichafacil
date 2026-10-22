@@ -7,7 +7,8 @@ const root = path.resolve(__dirname, '..')
 function source(file) {
   return ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText
 }
-const helper = { exports: {}, URLSearchParams }
+const deadlines = { exports: {}, Date }; vm.runInNewContext(source('apps/web/lib/fitness/deadlines.ts'), deadlines)
+const helper = { exports: {}, URLSearchParams, require: id => { assert.equal(id, '@/lib/fitness/deadlines'); return deadlines.exports } }
 vm.runInNewContext(source('apps/web/lib/fitness/personal-attention.ts'), helper)
 const { studentReportHref, resolveLinkedStudent } = helper.exports
 const buildStudentAttention = (...args) => structuredClone(helper.exports.buildStudentAttention(...args))
@@ -31,6 +32,29 @@ assert.equal(href.searchParams.get('aba'), 'avaliacao')
 assert.equal(resolveLinkedStudent('other', [student]), '')
 assert.equal(resolveLinkedStudent('a', [student]), 'a')
 assert.equal(resolveLinkedStudent('a', []), '')
+const {calendarDaysUntil,workoutDeadline,assessmentDeadline}=deadlines.exports
+const localNow=new Date(2026,9,22,0,5)
+assert.equal(calendarDaysUntil('2026-10-22',localNow),0)
+assert.equal(calendarDaysUntil('2026-10-23',localNow),1)
+assert.equal(calendarDaysUntil('2026-02-30',localNow),null)
+assert.equal(calendarDaysUntil('0000-01-01',localNow),null)
+assert.equal(calendarDaysUntil('2024-02-29',new Date(2024,1,28,23,59)),1)
+assert.equal(calendarDaysUntil('2026-03-09',new Date(2026,2,8,0,5)),1)
+assert.equal(workoutDeadline(null,localNow),null)
+assert.equal(workoutDeadline('2026-10-30',localNow).warning,false)
+assert.equal(workoutDeadline('2026-10-29',localNow).warning,true)
+assert.equal(workoutDeadline('2026-10-22',localNow).label,'Ficha vence hoje')
+assert.equal(workoutDeadline('2026-10-21',localNow).days,-1)
+assert.equal(assessmentDeadline('2026-10-22',null,localNow).pending,true)
+assert.equal(assessmentDeadline('2026-10-23',null,localNow).pending,false)
+assert.equal(assessmentDeadline('2026-10-21','2026-10-20',localNow).pending,true)
+assert.equal(assessmentDeadline('2026-10-21','2026-10-21',localNow).pending,false)
+assert.equal(assessmentDeadline('2026-10-21','2026-10-23',localNow).completed,false)
+const recentStudent={...student,ultima_sessao:'2026-10-22T00:00:00Z'}
+assert.deepEqual(buildStudentAttention([{...recentStudent,valida_ate:'2026-10-29'}],localNow)[0].motivos,['vencimento'])
+assert.deepEqual(buildStudentAttention([{...recentStudent,proxima_avaliacao_em:'2026-10-21',ultima_avaliacao:'2026-10-20'}],localNow)[0].motivos,['avaliacao'])
+assert.deepEqual(buildStudentAttention([{...recentStudent,proxima_avaliacao_em:'2026-10-21',ultima_avaliacao:'2026-10-21'}],localNow),[])
+
 
 const service = source('apps/web/services/personal-attention.ts')
 function loadService(pages, user = { id: 'personal-own' }) {
@@ -45,7 +69,7 @@ function loadService(pages, user = { id: 'personal-own' }) {
       return query
     },
   }
-  const context = { exports: {}, require: id => { assert.equal(id, '@/lib/supabase/client'); return { createClient: () => client } }, Date, Error }
+  const context = { exports: {}, require: id => { if (id === '@/lib/fitness/deadlines') return deadlines.exports; assert.equal(id, '@/lib/supabase/client'); return { createClient: () => client } }, Date, Error }
   vm.runInNewContext(service, context)
   return { fetch: context.exports.fetchPersonalAttention, calls }
 }
@@ -62,8 +86,15 @@ const row = { id: 'a', nome: 'Ana', vinculos: [{ criado_em: student.vinculado_em
   assert.ok(api.calls.some(call => call[0] === 'eq' && call[1] === 'sessoes.status' && call[2] === 'CONCLUIDO'))
   assert.ok(api.calls.some(call => call[0] === 'limit' && call[1] === 1 && call[2].referencedTable === 'sessoes'))
   assert.ok(api.calls.some(call => call[0] === 'range' && call[1] === 200 && call[2] === 399))
+  const datesApi=loadService([{data:[{...row,vinculos:[{criado_em:student.vinculado_em,proxima_avaliacao_em:'2026-10-24'}],avaliacoes:[{id:'assessment',data:'2026-10-10'}],fichas:[{id:'workout',titulo:'Treino A',valida_ate:'2026-10-29'}]}],error:null}])
+  const [snapshot]=await datesApi.fetch()
+  assert.equal(snapshot.valida_ate,'2026-10-29')
+  assert.equal(snapshot.proxima_avaliacao_em,'2026-10-24')
+  assert.equal(snapshot.ultima_avaliacao,'2026-10-10')
+  assert.ok(datesApi.calls.some(call=>call[0]==='order'&&call[1]==='valida_ate'&&call[2].nullsFirst===false))
   await assert.rejects(loadService([], null).fetch(), /Sessão expirada/)
   await assert.rejects(loadService([{ data: null, error: new Error('Database unavailable') }]).fetch(), /Database unavailable/)
   await assert.rejects(loadService([{ data: [{ ...row, vinculos: [] }], error: null }]).fetch(), /Vínculo indisponível/)
   console.log('Personal attention checks passed (boundaries, grace period, grouping, links, membership, ownership, pagination and errors).')
 })().catch(error => { console.error(error); process.exitCode = 1 })
+

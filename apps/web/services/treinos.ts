@@ -15,6 +15,7 @@ export interface FichaResumo {
   titulo: string
   ativo: boolean
   criado_em: string
+  valida_ate?: string | null
   aluno_id: string
   aluno_nome: string
   itens: ItemFicha[]
@@ -23,6 +24,7 @@ export interface FichaResumo {
 export interface NovaFicha {
   aluno_id: string
   titulo: string
+  valida_ate?: string | null
   itens: {
     exercicio_id: string
     series: number
@@ -52,3 +54,4 @@ export async function excluirFicha(_supabase:SupabaseClient,fichaId:string):Prom
 export async function editarFicha(_supabase:SupabaseClient,fichaId:string,ficha:Omit<NovaFicha,'aluno_id'>):Promise<void> {
   await fitnessRequest(`/api/treinos/${encodeURIComponent(fichaId)}`,'PATCH',ficha)
 }
+

@@ -7,7 +7,8 @@ export async function GET(request:Request){return api(async()=>{
 })}
 export async function POST(request:Request){return api(async()=>{
   const a=await access(request,true),input=validate(createSchema,await body(request))
-  const {data:id,error}=await a.db.rpc('criar_ficha_atomica',{p_aluno_id:input.aluno_id,p_titulo:input.titulo.trim(),p_itens:input.itens})
+  const {data:id,error}=await a.db.rpc('criar_ficha_com_validade',{p_aluno_id:input.aluno_id,p_titulo:input.titulo.trim(),p_itens:input.itens,p_valida_ate:input.valida_ate??null})
   dbError(error)
   return json({data:await workout(a,id)},201,{Location:`/api/treinos/${id}`})
 })}
+

@@ -57,7 +57,7 @@ export function dbError(error:{code?:string;message?:string}|null) {
   if(error.code?.startsWith('22') || error.code==='23514')throw new ApiError(400,'Revise o título, os exercícios e os valores da ficha.')
   throw new ApiError(500,'Não foi possível salvar ou consultar os dados.')
 }
-const select='id,titulo,ativo,criado_em,aluno_id,aluno:usuarios!treinos_aluno_id_fkey(nome),itens_treino(id,ordem,series,repeticoes,descanso_segundos,exercicio:exercicios(id,nome,grupo_muscular,video_url))'
+const select='id,titulo,ativo,criado_em,valida_ate,aluno_id,aluno:usuarios!treinos_aluno_id_fkey(nome),itens_treino(id,ordem,series,repeticoes,descanso_segundos,exercicio:exercicios(id,nome,grupo_muscular,video_url))'
 export function workoutQuery(a:{db:SupabaseClient;id:string;role:string}) {
   let query=a.db.from('treinos').select(select)
   if(a.role==='PERSONAL')query=query.eq('personal_id',a.id)
@@ -65,10 +65,11 @@ export function workoutQuery(a:{db:SupabaseClient;id:string;role:string}) {
   return query
 }
 export function normalizeWorkout(row:any) {
-  return {id:row.id,titulo:row.titulo,ativo:row.ativo,criado_em:row.criado_em,aluno_id:row.aluno_id,aluno_nome:row.aluno?.nome??'—',itens:[...(row.itens_treino??[])].sort((a,b)=>a.ordem-b.ordem)}
+  return {id:row.id,titulo:row.titulo,ativo:row.ativo,criado_em:row.criado_em,valida_ate:row.valida_ate??null,aluno_id:row.aluno_id,aluno_nome:row.aluno?.nome??'—',itens:[...(row.itens_treino??[])].sort((a,b)=>a.ordem-b.ordem)}
 }
 export async function workout(a:Awaited<ReturnType<typeof access>>,id:string) {
   const {data,error}=await workoutQuery(a).eq('id',uuid(id)).maybeSingle();dbError(error)
   if(!data)throw new ApiError(404,'Ficha não encontrada.')
   return normalizeWorkout(data)
 }
+

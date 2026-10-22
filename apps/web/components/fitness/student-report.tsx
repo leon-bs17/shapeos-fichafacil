@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ProgressPanel } from "./progress-panel";
 import { AgendaPanel } from "./agenda-panel";
 import { AssessmentPanel } from "./assessment-panel";
+import { calendarDaysUntil } from '@/lib/fitness/deadlines';
+import { AssessmentSchedule } from "./assessment-schedule";
 import {
   agendaForStudent,
   assessmentsForStudent,
@@ -12,6 +14,7 @@ import {
   workoutsForStudent,
 } from "@/services/fitness";
 export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao" }) {
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<string>(initialTab);
   const data = useQuery({
     queryKey: ["fitness-student-report", alunoId],
@@ -72,13 +75,17 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
         />
       )}
       {tab === "avaliacao" && (
+        <>
+        <AssessmentSchedule alunoId={alunoId} latestAssessment={assessments.find(assessment => { const days = calendarDaysUntil(assessment.data); return days != null && days <= 0; })?.data} />
         <AssessmentPanel
           alunoId={alunoId}
           assessments={assessments}
-          onChange={() => void data.refetch()}
+          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); }}
         />
+        </>
       )}
     </div>
   );
 }
+
 
