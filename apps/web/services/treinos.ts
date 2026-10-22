@@ -42,8 +42,8 @@ export async function criarFicha(_supabase:SupabaseClient,_personalId:string,fic
   const created=await fitnessRequest<FichaResumo>('/api/treinos','POST',ficha)
   return created.id
 }
-export async function duplicarFicha(_supabase:SupabaseClient,fichaId:string):Promise<void> {
-  await fitnessRequest(`/api/treinos/${encodeURIComponent(fichaId)}/duplicar`,'POST')
+export async function duplicarFicha(_supabase:SupabaseClient,fichaId:string,destino?:{aluno_id:string;titulo?:string}):Promise<FichaResumo> {
+  return fitnessRequest<FichaResumo>(`/api/treinos/${encodeURIComponent(fichaId)}/duplicar`,'POST',destino)
 }
 export async function alternarFichaAtiva(_supabase:SupabaseClient,fichaId:string,ativo:boolean):Promise<void> {
   await fitnessRequest(`/api/treinos/${encodeURIComponent(fichaId)}`,'PATCH',{ativo})
@@ -54,4 +54,5 @@ export async function excluirFicha(_supabase:SupabaseClient,fichaId:string):Prom
 export async function editarFicha(_supabase:SupabaseClient,fichaId:string,ficha:Omit<NovaFicha,'aluno_id'>):Promise<void> {
   await fitnessRequest(`/api/treinos/${encodeURIComponent(fichaId)}`,'PATCH',ficha)
 }
+
 

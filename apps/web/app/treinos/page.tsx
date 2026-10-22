@@ -33,6 +33,7 @@ import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { formatarData } from '@/lib/utils'
 import { TEMPLATES, TIPOS_TREINO, aplicarTipoTreino, type TemplateFicha, type TipoTreino } from '@/lib/templates'
+import { DuplicateWorkout } from '@/components/fitness/duplicate-workout'
 import { PrescriptionEditor } from '@/components/fitness/prescription-editor'
 import type { FichaResumo } from '@/services/treinos'
 import { filterWorkouts, exportWorkouts, type WorkoutStatus } from '@/lib/fitness/workout-tools'
@@ -70,6 +71,8 @@ function TreinosConteudo() {
   const [modalAberto, setModalAberto] = useState(false)
   const [prescricao, setPrescricao] = useState<FichaResumo | null>(null)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
+  const [fichaDuplicando, setFichaDuplicando] = useState<FichaResumo | null>(null)
+  const [copyNotice, setCopyNotice] = useState<FichaResumo | null>(null)
   const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
   const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
   const [busca,setBusca]=useState('')
@@ -77,7 +80,7 @@ function TreinosConteudo() {
   const [exportMessage,setExportMessage]=useState('')
   const studentWorkouts = selectedStudentId ? (fichas ?? []).filter(ficha => ficha.aluno_id === selectedStudentId) : fichas ?? []
   const filtradas=filterWorkouts(studentWorkouts,busca,status)
-  const actionError=acoes.duplicar.error??acoes.alternar.error??acoes.excluir.error
+  const actionError=acoes.alternar.error??acoes.excluir.error
   function exportar(){
     try{
       const blob=new Blob([exportWorkouts(filtradas)],{type:'application/json'})
@@ -102,6 +105,7 @@ function TreinosConteudo() {
         <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
         <Button variant="outline" className="h-10" disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><Download size={15} className="mr-2"/>Exportar JSON</Button>
       </div>
+      {copyNotice && <div className="personal-toolbar" role="status"><p className="personal-results-note">Cópia de <strong>{copyNotice.titulo}</strong> criada para <strong>{copyNotice.aluno_nome}</strong> em modo pausado.</p><Button variant="outline" onClick={() => { setBusca(''); setStatus('TODAS'); router.replace(`/treinos?${new URLSearchParams({ aluno: copyNotice.aluno_id })}`, { scroll: false }) }}>Ver fichas do aluno</Button><Button variant="outline" onClick={() => setCopyNotice(null)}>Dispensar</Button></div>}
       {exportMessage && <p role="status" className="text-sm text-muted-foreground">{exportMessage}</p>}
       {actionError && <p role="alert" className="text-sm text-destructive">{actionError.message}</p>}
       {error ? <div role="alert" className="rounded-xl border border-destructive/30 p-4 text-sm"><p>{error.message}</p><Button variant="outline" className="mt-3" onClick={()=>void refetch()}>Tentar novamente</Button></div> :
@@ -171,8 +175,7 @@ function TreinosConteudo() {
                     size="sm"
                     variant="outline"
                     className="h-8 text-xs"
-                    disabled={acoes.duplicar.isPending}
-                    onClick={() => acoes.duplicar.mutate(ficha.id)}
+                    onClick={() => setFichaDuplicando(ficha)}
                   >
                     <Copy className="mr-1 h-3 w-3" /> Duplicar
                   </Button>
@@ -227,6 +230,7 @@ function TreinosConteudo() {
         </div>
       )}
 
+      {fichaDuplicando && <DuplicateWorkout key={fichaDuplicando.id} ficha={fichaDuplicando} onClose={() => setFichaDuplicando(null)} onCreated={setCopyNotice} onReview={(copy, mode) => { setFichaDuplicando(null); if (mode === 'exercicios') setFichaEditando(copy); else setPrescricao(copy) }} />}
       {prescricao && <PrescriptionEditor personal ficha={prescricao} onClose={() => setPrescricao(null)} />}
       <ModalNovaFicha
         key={selectedStudentId}
@@ -587,3 +591,4 @@ function WorkoutValidity({ date, active }: { date?: string | null; active: boole
   const deadline = workoutDeadline(date)
   return <p className="text-xs" style={{ color: active && deadline && deadline.days < 0 ? 'var(--p-danger)' : 'var(--p-muted)', overflowWrap: 'anywhere' }}>{deadline?.label ?? 'Validade não definida'}</p>
 }
+

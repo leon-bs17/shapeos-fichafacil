@@ -43,6 +43,7 @@ export async function body(request:Request): Promise<unknown> {
 }
 export const createSchema=criarTreinoSchema.extend({itens:criarTreinoSchema.shape.itens.max(50)}).strict()
 export const editSchema=createSchema.omit({aluno_id:true}).strict()
+export const duplicateSchema=createSchema.pick({aluno_id:true,titulo:true}).partial({titulo:true}).strict()
 export function validate<T>(schema:{safeParse:(input:unknown)=>{success:true;data:T}|{success:false;error:{issues:{message:string}[]}}},input:unknown):T {
   const result=schema.safeParse(input)
   if(!result.success)throw new ApiError(400,result.error.issues[0]?.message||'Dados inválidos.')
@@ -72,4 +73,5 @@ export async function workout(a:Awaited<ReturnType<typeof access>>,id:string) {
   if(!data)throw new ApiError(404,'Ficha não encontrada.')
   return normalizeWorkout(data)
 }
+
 

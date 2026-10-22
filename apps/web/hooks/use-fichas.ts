@@ -45,8 +45,10 @@ export function useAcoesFichas() {
   })
 
   const duplicar = useMutation({
-    mutationFn: (fichaId: string) =>
-      comSessao(() => duplicarFicha(createClient(), fichaId)),
+    mutationFn: (input: string | { fichaId: string; alunoId: string; titulo?: string }) =>
+      comSessao(() => typeof input === 'string'
+        ? duplicarFicha(createClient(), input)
+        : duplicarFicha(createClient(), input.fichaId, { aluno_id: input.alunoId, titulo: input.titulo })),
     onSuccess: invalidate,
   })
 
@@ -75,4 +77,5 @@ export function useAcoesFichas() {
 
   return { criar, duplicar, alternar, editar, excluir }
 }
+
 
