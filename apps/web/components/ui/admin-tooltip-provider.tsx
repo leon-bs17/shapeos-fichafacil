@@ -20,7 +20,7 @@ export function AdminTooltipProvider() {
 
   useEffect(() => {
     setTip(null)
-    const personalRoutes = ['/', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys']
+    const personalRoutes = ['/', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys', '/conta']
     const personal = personalRoutes.some(route => pathname === route || (route !== '/' && pathname?.startsWith(route + '/')))
     if (!(personal || pathname === '/admin' || pathname?.startsWith('/admin/'))) return
 
@@ -247,4 +247,5 @@ export function AdminTooltipProvider() {
     `}</style>
   </>
 }
+
 
