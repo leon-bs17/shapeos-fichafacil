@@ -84,9 +84,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onClose }: Props) {
     const initials = name.trim().split(/\s+/).slice(0, 2).map((part: string) => part[0]).join('').toUpperCase()
     return <>
       <div className="personal-menu-brand">
-        <Link href="/" aria-label="ShapeOS · Visão Geral" onClick={mobile ? onClose : undefined} className="personal-logo"><Logo size="sm" showTagline={false} /></Link>
-        {mobile ? <button type="button" className="personal-icon-button" onClick={onClose} aria-label="Fechar menu"><X size={18} /></button> :
-          <button type="button" className="personal-icon-button personal-menu-toggle" onClick={onToggle} aria-label={compact ? 'Expandir menu' : 'Recolher menu'} aria-expanded={!compact} data-shapeos-tooltip={compact ? 'Expandir menu' : 'Recolher menu'}>{compact ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}</button>}
+        <Link href="/" aria-label="ShapeOS · Visão Geral" onClick={mobile ? onClose : undefined} className="personal-logo"><Logo size="sm" showTagline={true} /></Link>
+        {mobile ? <button type="button" className="personal-icon-button" onClick={onClose} aria-label="Fechar menu"><X size={20} /></button> :
+          <button type="button" className="personal-icon-button personal-menu-toggle" onClick={onToggle} aria-label={compact ? 'Expandir menu' : 'Recolher menu'} aria-expanded={!compact} data-shapeos-tooltip={compact ? 'Expandir menu' : 'Recolher menu'}>{compact ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}</button>}
       </div>
       <div className="personal-menu-area" data-shapeos-tooltip={compact ? 'Área do Personal' : undefined}>
         <CircleUserRound size={19} strokeWidth={1.75} aria-hidden="true" />
@@ -106,11 +106,11 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onClose }: Props) {
       <div className="personal-menu-footer">
         <button type="button" className="personal-menu-row personal-logout" onClick={sair} disabled={signingOut} aria-label={signingOut ? 'Saindo…' : 'Sair'} data-shapeos-tooltip={compact ? 'Sair' : undefined}><LogOut size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{signingOut ? 'Saindo…' : 'Sair'}</span>}</button>
         {error && <p className="personal-menu-error" role="alert">{error}</p>}
+      </div>
         <div className="personal-menu-profile" data-shapeos-tooltip={compact ? name + ' · Personal' : undefined} tabIndex={compact ? 0 : undefined} aria-label={compact ? name + ' · Personal' : undefined}>
           <span className="personal-avatar" aria-hidden="true">{initials}</span>
           {!compact && <div><p>{name}</p><span>Personal</span></div>}
         </div>
-      </div>
     </>
   }
 

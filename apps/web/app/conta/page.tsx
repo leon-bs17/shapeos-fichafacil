@@ -2,7 +2,8 @@
 
 import { useRef, useState, type FormEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CheckCircle2, CircleUserRound, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
+import { CheckCircle2, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
+import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { createClient } from '@/lib/supabase/client'
 
@@ -75,7 +76,7 @@ export default function ContaPersonalPage() {
 
   return <DashboardShell>
     <div className="personal-overview personal-account">
-      <header className="personal-page-heading"><span className="personal-heading-icon"><CircleUserRound size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>Minha conta</h1><p>Consulte seus dados e gerencie sua senha de acesso.</p></div></header>
+      <PersonalPageHeader icon="conta" title="Minha conta" description="Consulte seus dados e gerencie sua senha de acesso." />
       <div className="personal-account-columns">
         <section className="personal-account-panel" aria-labelledby="personal-account-data-title" aria-busy={profile.isLoading}>
           <header><UserRound size={21} strokeWidth={1.75} aria-hidden="true" /><div><h2 id="personal-account-data-title">Dados da conta</h2><p>Informações do seu perfil de Personal.</p></div></header>

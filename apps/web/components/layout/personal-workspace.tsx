@@ -1,15 +1,17 @@
 'use client'
 
+import { NotificationBell } from '@/components/layout/notification-bell'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import type { ReactNode } from 'react'
-import { Dumbbell, FileText, Library, Users } from 'lucide-react'
+import { Dumbbell, FileText, Library, Users, LayoutGrid, CircleUserRound } from 'lucide-react'
 
-const icons = { alunos: Users, treinos: Dumbbell, biblioteca: Library, relatorios: FileText }
+const icons = { alunos: Users, treinos: Dumbbell, biblioteca: Library, relatorios: FileText, visao: LayoutGrid, conta: CircleUserRound }
 
 export function PersonalPageHeader({ title, description, icon, actions }: { title: string; description: string; icon: keyof typeof icons; actions?: ReactNode }) {
   const Icon = icons[icon]
   return <header className="personal-content-heading">
     <div className="personal-page-heading"><span className="personal-heading-icon"><Icon size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>{title}</h1><p>{description}</p></div></div>
-    {actions && <div className="personal-heading-actions">{actions}</div>}
+    <div className="personal-header-right"><div className="personal-header-tools"><NotificationBell /><ThemeToggle /></div>{actions && <div className="personal-heading-actions">{actions}</div>}</div>
   </header>
 }
 
@@ -18,7 +20,7 @@ export function PersonalWorkspace({ children, page }: { children: ReactNode; pag
   return <div className="personal-content" data-personal-content={page}>
     {children}
     <style jsx global>{`
-      .personal-content{max-width:1152px;margin:0 auto;min-width:0;display:grid;gap:20px;}
+      .personal-content{max-width:1168px;margin:0 auto;min-width:0;display:grid;gap:20px;}
       .personal-content>div:empty{display:none;}
       .personal-content-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;}.personal-heading-actions{display:flex;gap:8px;flex-shrink:0;}.personal-content .personal-page-heading{min-width:0;}.personal-content h2{font-size:15px;font-weight:600;line-height:1.5;}.personal-content h3{font-size:13px;font-weight:600;line-height:1.5;}.personal-content label{font-size:11px;font-weight:500;line-height:1.6;letter-spacing:normal;text-transform:none;}
       html body .personal-content :is(.personal-panel,.bg-card){background:var(--p-panel);border-color:var(--p-line);border-radius:16px;box-shadow:none;}

@@ -10,6 +10,8 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme()
   const pathname = usePathname()
   const admin = pathname === '/admin' || pathname?.startsWith('/admin/')
+  const personalRoutes = ['/', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys', '/conta']
+  const dashboard = admin || personalRoutes.some(route => pathname === route || (route !== '/' && pathname?.startsWith(route + '/')))
   const [mounted, setMounted] = useState(false)
   const themeFrame = useRef(0)
 
@@ -51,7 +53,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
       <button
         type="button"
         data-shapeos-theme-switch
-        data-shapeos-tooltip={admin && mounted ? action : undefined}
+        data-shapeos-tooltip={dashboard && mounted ? action : undefined}
         className={s.button}
         disabled={!mounted}
         onClick={changeTheme}
@@ -59,7 +61,8 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
       >
         {mounted && <Icon size={20} strokeWidth={1.8} aria-hidden="true" />}
       </button>
-      {!admin && <span className={s.tooltip} aria-hidden="true">{action}</span>}
+      {!dashboard && <span className={s.tooltip} aria-hidden="true">{action}</span>}
     </div>
   )
 }
+

@@ -95,11 +95,11 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     catch { setNotice('Não foi possível copiar automaticamente. Selecione o texto da resposta para copiar.') }
   }
 
-  return <section className={`${s.workspace} ${admin ? '' : s.personalWorkspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
+  return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
     <header className={s.header}>
-      <div className={s.identity}><MysMark small/><div><h1>{admin ? <>Mys <span>ShapeOS</span></> : 'Mys · Assistente'}</h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
+      <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
       <div className={s.headerActions}>
-        {admin && <div className={s.headerTools}><NotificationBell/><ThemeToggle/></div>}
+        <div className={s.headerTools}><NotificationBell/><ThemeToggle/></div>
       <button className={s.newChat} disabled={loading} aria-label="Nova conversa" title="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={18} aria-hidden="true"/><span>Nova conversa</span></button>
       </div>
     </header>

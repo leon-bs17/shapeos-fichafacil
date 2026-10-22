@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowRight, CircleCheck, ClipboardList, Dumbbell, LayoutGrid, Library, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, CircleCheck, ClipboardList, Dumbbell, Library, TrendingUp, Users } from 'lucide-react'
+import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos, useMetricasGerais } from '@/hooks/use-alunos'
 import { createClient } from '@/lib/supabase/client'
@@ -26,10 +27,7 @@ export default function PersonalPage() {
   const retrying = students.isFetching || recent.isFetching
   return <DashboardShell>
     <div className="personal-overview">
-      <header className="personal-page-heading">
-        <span className="personal-heading-icon"><LayoutGrid size={21} strokeWidth={1.75} aria-hidden="true" /></span>
-        <div><h1>Visão Geral</h1><p>Acompanhe cada aluno. Fichas, sessões e evolução em um só lugar.</p></div>
-      </header>
+      <PersonalPageHeader icon="visao" title="Visão Geral" description="Acompanhe cada aluno. Fichas, sessões e evolução em um só lugar." />
 
       {(students.error || recent.error) && <div className="personal-load-error" role="alert">
         <p>Não foi possível carregar todos os dados. Tente novamente.</p>
@@ -77,3 +75,4 @@ export default function PersonalPage() {
     </div>
   </DashboardShell>
 }
+
