@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Dumbbell, FileText, LayoutGrid, Library, MessageCircle, LogOut, Users, X } from 'lucide-react'
+import { Megaphone, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Dumbbell, FileText, LayoutGrid, Library, MessageCircle, LogOut, Users, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Logo from '@/davi/components/Logo'
 
@@ -14,6 +14,7 @@ const GROUPS = [
     { href: '/', label: 'Visão Geral', icon: LayoutGrid },
     { href: '/relatorios', label: 'Relatórios', icon: FileText },
     { href: '/agenda', label: 'Agenda', icon: CalendarDays },
+    { href: '/comunicados', label: 'Comunicados', icon: Megaphone },
   ] },
   { label: 'Gestão', items: [
     { href: '/alunos', label: 'Alunos', icon: Users },
@@ -122,5 +123,6 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onClose }: Props) {
     </dialog>
   </>
 }
+
 
 
