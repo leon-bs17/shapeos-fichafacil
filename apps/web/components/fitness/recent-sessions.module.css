@@ -15,9 +15,10 @@
 .identity strong { display:block; font-size:12px; font-weight:600; line-height:1.5; overflow-wrap:anywhere; }
 .identity p { margin:3px 0 0; color:var(--p-muted); font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
 .table time { color:var(--p-muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
-.status { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid transparent; border-radius:999px; color:var(--p-blue); background:color-mix(in srgb,var(--p-blue) 12%,var(--p-panel)); font-size:10px; font-weight:600; white-space:nowrap; }
+/* Match the compact Admin approvals status geometry and exact theme colors. */
+.status { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:28px; padding:5px 9px; border:0; border-radius:999px; color:#0d7e70; background:#e4f3eb; font-size:10px; font-weight:600; line-height:1.5; white-space:nowrap; box-shadow:none; }
+:global(html.dark) .status { color:#00e9df; background:#123b31; }
 .status svg { flex-shrink:0; }
-.status[data-complete=true] { color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 12%,var(--p-panel)); }
 .progress { font-size:12px; font-variant-numeric:tabular-nums; color:var(--p-muted); }
 .root .view,.root .footer button { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:36px; padding:7px 10px; border:1px solid var(--p-line); border-radius:13px; background:transparent; color:var(--p-ink); font:inherit; font-size:11px; font-weight:500; line-height:1.5; text-decoration:none; cursor:pointer; transition:background-color 150ms ease,border-color 150ms ease; }
 .view svg { color:var(--p-brand); }
