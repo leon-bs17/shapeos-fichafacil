@@ -55,8 +55,7 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
           <polyline points={plot('current')} className={styles.currentLine} />
           {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={44 + index / Math.max(1, points.length - 1) * 632} y="170" textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
         </svg>
-        <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)}</p>
-        <details className={styles.chartData}><summary>Dados do gráfico</summary><div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div></details>
+        <details className={styles.chartData}><summary>Dados e períodos do gráfico</summary><p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)}</p><div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div></details>
       </section>
       <section className={styles.panel} aria-label="Última avaliação">
         <header className={styles.panelHeading}><h2>Última avaliação</h2><button type="button" className={styles.textAction} onClick={onAssessments} aria-label="Ver avaliações do aluno"><CalendarDays size={15} aria-hidden="true" />Ver avaliações</button></header>

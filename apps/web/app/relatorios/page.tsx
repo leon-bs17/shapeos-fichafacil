@@ -58,16 +58,23 @@ function RelatoriosConteudo() {
       <>
         <section className={styles.filters} aria-label="Filtros do relatório">
           <ReportStudentPicker students={students} value={alunoId} onChange={id => navigate(id, 'evolucao')} />
-          <div className={styles.periodGroup}><span className={styles.label}>Período do resumo</span><div className={styles.periods} role="group" aria-label="Período do resumo">
+          <div className={styles.periodGroup}><span className={styles.label}>Período</span><div className={styles.periods} role="group" aria-label="Período do resumo">
             {([7, 30, 90] as const).map(period => <button type="button" key={period} aria-pressed={days === period} onClick={() => navigate(alunoId, 'evolucao', period)}>{period} dias</button>)}
           </div></div>
         </section>
         {!student ? <div className={styles.state}><Users size={26} aria-hidden="true" /><h2>Escolha um aluno para começar</h2><p>Selecione o aluno acima para consultar sessões, frequência e avaliações.</p></div> : <>
-          <nav className={styles.tabs} aria-label="Seções do relatório">
+          {tab !== 'evolucao' && <nav className={styles.tabs} aria-label="Seções do relatório">
             {[['evolucao', 'Resumo'], ['analise', 'Cargas e medidas'], ['agenda', 'Agenda e adesão'], ['avaliacao', 'Avaliações físicas']].map(([id, label]) =>
               <button type="button" key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(alunoId, id)}>{label}</button>)}
-          </nav>
-          {tab === 'evolucao' ? <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} onAssessments={() => navigate(alunoId, 'avaliacao')} /> :
+          </nav>}
+
+          {tab === 'evolucao' ? <>
+            <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} onAssessments={() => navigate(alunoId, 'avaliacao')} />
+            <details className={styles.more}><summary>Mais detalhes do acompanhamento</summary><nav className={styles.tabs} aria-label="Seções do relatório">
+            {[['evolucao', 'Resumo'], ['analise', 'Cargas e medidas'], ['agenda', 'Agenda e adesão'], ['avaliacao', 'Avaliações físicas']].map(([id, label]) =>
+              <button type="button" key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(alunoId, id)}>{label}</button>)}
+          </nav></details>
+          </> :
             <div className="personal-report-body">
               <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation />
               {tab === 'analise' && <><h2>Histórico de cargas</h2>
