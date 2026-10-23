@@ -11,13 +11,18 @@ export class MysProviderError extends Error {
 export async function generateMysReply(options: {
   key: string; model: string; role: MysRole; messages: MysMessage[]; signal: AbortSignal
   reader: { run(name: string, raw: string): Promise<string>; sources: Set<string>; cards: MysDataCard[] }
+  studentContext?: { id: string; result: string }
 }) {
   const conversation: ProviderMessage[] = [{ role: 'system', content: mysInstructions(options.role) }, ...options.messages]
-  let calls = 0, dataBytes = 0
+  if (options.studentContext) {
+    conversation.push({ role: 'assistant', content: null, tool_calls: [{ id: 'contexto_aluno_servidor', type: 'function', function: { name: 'resumir_acompanhamento', arguments: JSON.stringify({ aluno_id: options.studentContext.id }) } }] })
+    conversation.push({ role: 'tool', tool_call_id: 'contexto_aluno_servidor', content: options.studentContext.result })
+  }
+  let calls = options.studentContext ? 1 : 0, dataBytes = options.studentContext?.result.length ?? 0
   for (let round = 0; round <= 3; round++) {
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method:'POST', headers: { Authorization:`Bearer ${options.key}`, 'Content-Type':'application/json' },
-      body: JSON.stringify({ model: options.model, messages: conversation, tools: mysDataTools, tool_choice: round === 3 || calls >= 6 ? 'none' : 'auto', max_tokens:1800, thinking:{ type:'disabled' }, stream:false }),
+      body: JSON.stringify({ model: options.model, messages: conversation, tools: options.role === 'PERSONAL' ? mysDataTools : mysDataTools.filter(tool => tool.function.name !== 'resumir_acompanhamento'), tool_choice: round === 3 || calls >= 6 ? 'none' : 'auto', max_tokens:1800, thinking:{ type:'disabled' }, stream:false }),
       cache:'no-store', signal: options.signal,
     })
     if (!response.ok) throw new MysProviderError(response.status)
@@ -39,3 +44,4 @@ export async function generateMysReply(options: {
   }
   throw new MysProviderError(502)
 }
+

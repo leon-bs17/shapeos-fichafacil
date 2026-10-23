@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getMysAccess } from '@/lib/mys/access'
-import { parseMessages } from '@/lib/mys/contract'
+import { parseMessages, parseMysStudent } from '@/lib/mys/contract'
 import { createClient } from '@/lib/supabase/server'
 import { createMysDataReader } from '@/lib/mys/data-tools'
 import { generateMysReply, MysProviderError } from '@/lib/mys/generate'
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   const key = process.env.DEEPSEEK_API_KEY?.trim()
   if (!key) return failure('A conexão da Mys ainda não foi configurada. Tente novamente após a ativação.', 503)
   if (!request.headers.get('content-type')?.includes('application/json')) return failure('Formato de mensagem inválido.', 400)
-  let messages
+  let messages, studentId: string | undefined
   try {
     // Bound the body while reading, including requests without Content-Length.
     const reader = request.body?.getReader()
@@ -49,13 +49,23 @@ export async function POST(request: Request) {
       }
     } finally { reader.releaseLock() }
     body += decoder.decode()
-    messages = parseMessages(JSON.parse(body))
+    const parsed = JSON.parse(body)
+    messages = parseMessages(parsed)
+    studentId = parseMysStudent(parsed)
   } catch (error) { return failure(error instanceof SyntaxError ? 'Pedido inválido.' : error instanceof Error ? error.message : 'Mensagem inválida.', 400) }
+  if (studentId && access.role !== 'PERSONAL') return failure('Seleção de aluno disponível na conta do Personal.', 403)
   if (!acceptRequest(access.id)) return failure('Você enviou várias mensagens em sequência. Aguarde um minuto.', 429)
   try {
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(50000)])
-    const reader = createMysDataReader(await createClient(), access, signal)
-    const result = await generateMysReply({ key, model: process.env.DEEPSEEK_MODEL || 'deepseek-flash', role: access.role, messages, signal, reader })
+    const reader = createMysDataReader(await createClient(), access, signal, studentId)
+    let studentContext
+    if (studentId) {
+      const context = await reader.run('resumir_acompanhamento', JSON.stringify({ aluno_id: studentId }))
+      const parsed = JSON.parse(context)
+      if (parsed.erro) return failure(parsed.erro, parsed.status === 403 ? 403 : 503)
+      studentContext = { id: studentId, result: context }
+    }
+    const result = await generateMysReply({ key, model: process.env.DEEPSEEK_MODEL || 'deepseek-flash', role: access.role, messages, signal, reader, studentContext })
     return NextResponse.json(result, { headers: { 'Cache-Control': 'no-store' } })
   } catch (error) {
     if (error instanceof MysProviderError) {
@@ -67,3 +77,4 @@ export async function POST(request: Request) {
     return failure(error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError') ? 'A resposta demorou mais que o esperado. Tente novamente.' : 'Não foi possível conectar à Mys. Tente novamente.', 504)
   }
 }
+

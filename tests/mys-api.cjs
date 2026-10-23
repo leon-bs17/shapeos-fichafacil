@@ -17,7 +17,8 @@ for (const tipo of ['ADMIN','PERSONAL']) {
 }
 let access = null, calls = 0, sent, providerStatus = 200
 const environment = { DEEPSEEK_API_KEY: 'test-key-not-real' }
-const dataTools = load('apps/web/lib/mys/data-tools.ts', {})
+const summary = load('apps/web/lib/mys/student-summary.ts', {})
+const dataTools = load('apps/web/lib/mys/data-tools.ts', { './student-summary': summary })
 const generate = load('apps/web/lib/mys/generate.ts', { './contract':contract, './data-tools':dataTools }, { fetch: async (url, init) => { calls++; sent = JSON.parse(init.body); return Response.json({ choices: [{ message: { content: 'Resposta de teste' }, finish_reason: 'stop' }] }, { status: providerStatus }) } })
 const api = load('apps/web/app/api/mys/route.ts', {
   'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
@@ -44,7 +45,7 @@ const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'
   assert.equal(ok.headers.get('cache-control'),'no-store')
   assert.match(sent.messages[0].content,/atende o PERSONAL/)
   assert.match(sent.messages[0].content,/CONSULTA ao banco/)
-  assert.equal(sent.tools.length,4)
+  assert.equal(sent.tools.length,5)
   assert.equal((await ok.json()).message,'Resposta de teste')
   providerStatus=401
   const bad=await api.POST(req())
@@ -58,3 +59,4 @@ const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'
   assert.match(sent.messages[0].content,/atende o ADMIN/)
   console.log('Mys: perfis, origem, mensagens, limites, chave ausente, erros do provedor e escopo validados.')
 })().catch(error=>{console.error(error);process.exit(1)})
+

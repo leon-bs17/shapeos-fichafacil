@@ -9,6 +9,7 @@ import { MysWelcomeWireframe } from './mys-welcome-wireframe'
 import s from './mys.module.css'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { NotificationBell } from '@/components/layout/notification-bell'
+import { MysStudentPicker, type MysSelectedStudent } from './mys-student-picker'
 
 type Message = MysMessage & { id: string; truncated?: boolean; sources?: string[]; consultedAt?: string; cards?: MysDataCard[] }
 const prompts = {
@@ -38,6 +39,7 @@ function Answer({ content }: { content: string }) {
 export function MysChat({ role, name, configured }: { role: MysRole; name: string; configured: boolean }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
+  const [selectedStudent, setSelectedStudent] = useState<MysSelectedStudent | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
@@ -72,7 +74,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     const abort = new AbortController()
     controller.current = abort
     try {
-      const response = await fetch('/api/mys', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: context }), signal: abort.signal })
+      const response = await fetch('/api/mys', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: context, ...(selectedStudent && !admin ? { studentId: selectedStudent.id } : {}) }), signal: abort.signal })
       if (response.redirected || !response.headers.get('content-type')?.includes('application/json')) {
         throw new Error('Sua sessão não foi reconhecida. Atualize a página e entre novamente se necessário.')
       }
@@ -87,7 +89,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
   }
 
   function submit(event: FormEvent) { event.preventDefault(); void send() }
-  function clear() { setMessages([]); setDraft(''); setError(''); setNotice('Nova conversa iniciada.'); setConfirmClear(false); input.current?.focus() }
+  function clear() { setMessages([]); setDraft(''); setSelectedStudent(null); setError(''); setNotice('Nova conversa iniciada.'); setConfirmClear(false); input.current?.focus() }
   function editQuestion() { setDraft(messages.at(-1)?.content || ''); setMessages(messages.slice(0,-1)); setError(''); input.current?.focus() }
   function choose(text: string) { setDraft(text); input.current?.focus() }
   async function copy(message: Message) {
@@ -128,6 +130,7 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
         <div ref={end}/>
       </div>
       <div className={s.composerArea}>
+        {!admin && <MysStudentPicker selected={selectedStudent} locked={loading || messages.length > 0} onSelect={student => { setSelectedStudent(student); setDraft('') }} onSummary={() => choose(`Resuma o acompanhamento de ${selectedStudent?.name ?? 'meu aluno'}: frequência nos últimos 7 e 30 dias corridos, último treino concluído, fichas ativas e avaliações. Destaque as informações que faltam e sugira próximos passos para eu revisar, sem alterar os dados.`)} />}
         {confirmClear && <div className={s.confirm} role="alert"><span>Começar outra conversa? As mensagens atuais serão descartadas.</span><button onClick={clear}>Começar</button><button onClick={() => setConfirmClear(false)} aria-label="Manter conversa" data-shapeos-tooltip="Manter conversa"><X size={16}/></button></div>}
         {!configured && <div className={s.setup}><span className={s.dot}/><p>A Mys está sendo conectada. Você já pode preparar sua primeira pergunta.</p></div>}
         {error && <div className={s.error} role="alert"><p>{error}</p><div><button onClick={() => void send(true)}><RotateCcw size={14}/> Tentar novamente</button><button onClick={editQuestion}>Editar pergunta</button></div></div>}
@@ -139,4 +142,5 @@ export function MysChat({ role, name, configured }: { role: MysRole; name: strin
     <details className={s.scope}><summary><ShieldCheck size={13}/>Seu espaço, seus dados<ChevronDown size={13}/></summary><p>{admin ? 'Consulte contagens gerais, alunos, fichas, sessões e avaliações.' : 'Consulte seus alunos com vínculo ativo, suas fichas e a evolução registrada.'} A Mys tem acesso de leitura, limitado às permissões da sua conta. As mensagens e os dados necessários para responder são enviados à DeepSeek. Esta conversa fica na página até você sair ou começar outra.</p></details>
   </section>
 }
+
 

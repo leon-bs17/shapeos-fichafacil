@@ -7,7 +7,8 @@ function load(file, imports, extra = {}) {
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'), { compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022} }).outputText, { module,exports:module.exports,require:name=>imports[name],console,Date,JSON,Object,Set,AbortSignal,...extra })
   return module.exports
 }
-const dataModule = load('apps/web/lib/mys/data-tools.ts',{})
+const summary = load('apps/web/lib/mys/student-summary.ts',{})
+const dataModule = load('apps/web/lib/mys/data-tools.ts',{'./student-summary':summary})
 const contract = load('apps/web/lib/mys/contract.ts',{})
 const queries=[]
 let linked=false, dbError=false
@@ -70,3 +71,4 @@ const personal=dataModule.createMysDataReader(db,{id:'personal-server-id',role:'
   assert.match(requests[1].messages.at(-1).content,/alunosVinculadosAtivos/)
   console.log('Mys: consultas, vínculo ativo, IDs e argumentos, erros, contagens e ciclo de ferramentas validados.')
 })().catch(error=>{console.error(error);process.exit(1)})
+
