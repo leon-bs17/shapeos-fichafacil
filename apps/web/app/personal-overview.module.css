@@ -3,14 +3,16 @@
 .banner {
  position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center;
  min-height:140px; padding:24px 28px; border:1px solid var(--p-line); border-radius:13px;
- background:linear-gradient(115deg,var(--p-panel),color-mix(in srgb,var(--p-brand) 6%,var(--p-panel)));
+ background:#fcfdf9; color:#162623;
 }
-.bannerCopy { position:relative; z-index:1; max-width:calc(100% - 250px); }
+/* Same banner palette and geometry as Admin's control-heading. */
+:global(html.dark) .banner { background:radial-gradient(ellipse at 80% 65%,#073a30,#071b17 48%,#041512); color:#f5faf9; }
+.bannerCopy { position:relative; z-index:1; max-width:68%; }
 .bannerCopy .eyebrow { margin:0 0 8px; font-size:9px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--p-brand); }
-.banner h2 { margin:0; font-size:32px; font-weight:650; line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
+.banner h2 { margin:0; font-size:32px; font-weight:750; line-height:1.2; letter-spacing:-.025em; text-wrap:balance; }
 .banner h2 span { color:var(--p-brand); }
 .bannerCopy>p:last-child { margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--p-muted); }
-.wireframe { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:260px; height:170px; color:var(--p-brand); opacity:.45; pointer-events:none; }
+.wireframe { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:300px; height:auto; color:var(--p-brand); opacity:.45; pointer-events:none; }
 .overview :global(.personal-summary) { padding:18px 0; border:0; border-radius:0; background:transparent; }
 .overview :global(.personal-metric) { padding:0 20px; min-height:56px; flex-direction:row; align-items:center; gap:12px; }
 .overview :global(.personal-metric strong) { font-size:28px; line-height:1.2; margin-bottom:4px; }
@@ -32,11 +34,11 @@
 }
 @media(max-width:639px) {
  .banner { min-height:150px; padding:22px 18px; align-items:flex-start; }
- .bannerCopy { max-width:100%; padding-right:36px; }
+ .bannerCopy { max-width:100%; padding-right:0; }
  .bannerCopy .eyebrow { font-size:9px; margin-bottom:10px; }
- .banner h2 { font-size:26px; }
+ .banner h2 { font-size:28px; }
  .bannerCopy>p:last-child { font-size:12px; max-width:230px; }
- .wireframe { width:150px; height:110px; right:-35px; top:auto; bottom:-22px; transform:none; opacity:.12; z-index:0; }
+ .wireframe { width:300px; height:auto; right:-130px; top:50%; bottom:auto; transform:translateY(-50%); opacity:.16; z-index:0; }
  .overview :global(.personal-summary) { padding:8px 0; }
  .overview :global(.personal-metric) { flex-direction:column; align-items:flex-start; padding:0 10px; gap:8px; }
  .metricIcon { width:36px; height:36px; flex-basis:36px; border-radius:11px; }
@@ -47,4 +49,11 @@
  .overview .quickPanel :global(.personal-quick-grid) { grid-template-columns:minmax(0,1fr); margin-top:12px; }
  .overview :global(.personal-sessions>.personal-section-title) { flex-wrap:wrap; }
  .overview :global(.personal-empty) { padding:22px 14px; }
+}
+
+@media(min-width:640px) and (max-width:767px) {
+ .banner { min-height:150px; padding:22px 18px; }
+ .bannerCopy { max-width:100%; }
+ .banner h2 { font-size:28px; }
+ .wireframe { right:-130px; opacity:.16; }
 }
