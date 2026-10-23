@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ProgressPanel } from "./progress-panel";
+import { PeriodComparison } from "./period-comparison";
 import { AgendaPanel } from "./agenda-panel";
 import { AssessmentPanel } from "./assessment-panel";
 import { calendarDaysUntil } from '@/lib/fitness/deadlines';
@@ -64,7 +65,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
           </Button>
         ))}
       </nav>
-      {tab === "evolucao" && <ProgressPanel sessions={sessions} />}
+      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} /><ProgressPanel sessions={sessions} /></>}
       {tab === "agenda" && (
         <AgendaPanel
           alunoId={alunoId}
@@ -80,7 +81,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
         <AssessmentPanel
           alunoId={alunoId}
           assessments={assessments}
-          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); }}
+          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); }}
         />
         </>
       )}
