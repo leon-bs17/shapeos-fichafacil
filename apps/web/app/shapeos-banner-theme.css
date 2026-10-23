@@ -1,0 +1,42 @@
+/*
+ * Shared banner treatment for every access type.
+ * New banners opt in with data-shapeos-banner (or .shapeos-banner).
+ * This important layer takes precedence over legacy unlayered page overrides.
+ * It changes paint only: each page keeps its layout and responsive dimensions.
+ */
+:root,
+html.light {
+  --shapeos-banner-start: #e4f3eb;
+  --shapeos-banner-middle: #f2f8f1;
+  --shapeos-banner-end: #fcfdf9;
+  --shapeos-banner-gradient: radial-gradient(
+    ellipse at 80% 65%,
+    var(--shapeos-banner-start) 0%,
+    var(--shapeos-banner-middle) 48%,
+    var(--shapeos-banner-end) 100%
+  );
+}
+html.dark {
+  --shapeos-banner-start: #073a30;
+  --shapeos-banner-middle: #071b17;
+  --shapeos-banner-end: #041512;
+}
+
+@layer shapeos-banner-theme {
+  html body :is([data-shapeos-banner], .shapeos-banner),
+  html body [data-admin-route] :is(
+    .control-heading,
+    [data-approvals-hero],
+    .activity-hero,
+    .audit-hero,
+    .notices-workspace .hero,
+    .account-hero,
+    .exercises-hero,
+    .personals-hero,
+    .reports-workspace .hero,
+    .system-workspace .hero,
+    .users-hero
+  ) {
+    background: var(--shapeos-banner-gradient) !important;
+  }
+}

@@ -3,10 +3,10 @@
 .banner {
  position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center;
  min-height:140px; padding:24px 28px; border:1px solid var(--p-line); border-radius:13px;
- background:#fcfdf9; color:#162623;
+ background:var(--shapeos-banner-gradient); color:#162623;
 }
 /* Same banner palette and geometry as Admin's control-heading. */
-:global(html.dark) .banner { background:radial-gradient(ellipse at 80% 65%,#073a30,#071b17 48%,#041512); color:#f5faf9; }
+:global(html.dark) .banner { color:#f5faf9; }
 .bannerCopy { position:relative; z-index:1; max-width:68%; }
 .bannerCopy .eyebrow { margin:0 0 8px; font-size:9px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--p-brand); }
 .banner h2 { margin:0; font-size:32px; font-weight:750; line-height:1.2; letter-spacing:-.025em; text-wrap:balance; }

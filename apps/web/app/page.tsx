@@ -33,7 +33,7 @@ export default function PersonalPage() {
     <div className={`personal-overview ${styles.overview}`}>
       <PersonalPageHeader icon="visao" title="Visão Geral" description="Acompanhe seus alunos e gerencie seus treinos." />
 
-      <section className={styles.banner} aria-labelledby="personal-overview-banner-title">
+      <section data-shapeos-banner className={styles.banner} aria-labelledby="personal-overview-banner-title">
         <div className={styles.bannerCopy}><p className={styles.eyebrow}>Acompanhamento Personal</p><h2 id="personal-overview-banner-title">Visão geral dos <span>seus alunos</span></h2><p>Alunos, fichas e evolução. Tudo em um só lugar.</p></div>
         <PersonalOverviewWireframe className={styles.wireframe} />
       </section>
