@@ -58,7 +58,7 @@ export default function PersonalPage() {
       <PersonalAttention />
 
       <section className={styles.quickPanel} aria-labelledby="personal-quick-title">
-        <div className="personal-section-title"><div><h2 id="personal-quick-title">Acesso rápido</h2><p>Continue o acompanhamento dos seus alunos.</p></div></div>
+        <div className="personal-section-title"><div><h2 id="personal-quick-title">Acesso rápido</h2><p>Continue o acompanhamento.</p></div></div>
         <div className="personal-quick-grid">
           {[
             { href: '/alunos', label: 'Gerenciar alunos', Icon: Users },

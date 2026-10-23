@@ -2,33 +2,36 @@
 .overview :global(.personal-heading-icon) { border:1px solid var(--p-line); background:var(--p-panel); }
 .banner {
  position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center;
- min-height:154px; padding:28px; border:1px solid var(--p-line); border-radius:16px;
+ min-height:140px; padding:24px 28px; border:1px solid var(--p-line); border-radius:13px;
  background:linear-gradient(115deg,var(--p-panel),color-mix(in srgb,var(--p-brand) 6%,var(--p-panel)));
 }
 .bannerCopy { position:relative; z-index:1; max-width:calc(100% - 250px); }
-.bannerCopy .eyebrow { margin:0 0 14px; font-size:10px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--p-brand); }
-.banner h2 { margin:0; font-size:clamp(26px,2.5vw,34px); font-weight:650; line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
+.bannerCopy .eyebrow { margin:0 0 8px; font-size:9px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--p-brand); }
+.banner h2 { margin:0; font-size:32px; font-weight:650; line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
 .banner h2 span { color:var(--p-brand); }
-.bannerCopy>p:last-child { margin:12px 0 0; font-size:13px; line-height:1.6; color:var(--p-muted); }
+.bannerCopy>p:last-child { margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--p-muted); }
 .wireframe { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:260px; height:170px; color:var(--p-brand); opacity:.45; pointer-events:none; }
 .overview :global(.personal-summary) { padding:18px 0; border:0; border-radius:0; background:transparent; }
 .overview :global(.personal-metric) { padding:0 20px; min-height:56px; flex-direction:row; align-items:center; gap:12px; }
 .overview :global(.personal-metric strong) { font-size:28px; line-height:1.2; margin-bottom:4px; }
 .overview :global(.personal-metric p) { font-size:12px; }
 .metricIcon { display:grid; place-items:center; width:44px; height:44px; flex:0 0 44px; border-radius:13px; background:color-mix(in srgb,var(--p-brand) 7%,transparent); color:var(--p-brand); }
-.followup { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:16px; align-items:start; min-width:0; }
-.quickPanel { min-width:0; border:1px solid var(--p-line); border-radius:16px; padding:18px; background:var(--p-panel); }
-.overview .quickPanel :global(.personal-quick-grid) { grid-template-columns:minmax(0,1fr); gap:8px; margin-top:16px; }
-.overview .quickPanel :global(.personal-quick-link) { padding:12px; min-height:48px; gap:10px; font-size:12px; }
+.followup { display:grid; grid-template-columns:minmax(0,7fr) minmax(260px,3fr); gap:16px; align-items:stretch; min-width:0; }
+.quickPanel { min-width:0; border:1px solid var(--p-line); border-radius:13px; padding:16px; background:var(--p-panel); }
+.overview .quickPanel :global(.personal-quick-grid) { grid-template-columns:minmax(0,1fr); gap:8px; margin-top:14px; }
+.overview .quickPanel :global(.personal-quick-link) { padding:10px 12px; min-height:44px; gap:10px; font-size:12px; }
 .overview .quickPanel :global(.personal-quick-link span) { min-width:0; overflow-wrap:anywhere; }
 .overview .quickPanel :global(.personal-quick-link>svg:last-child) { display:block; }
 .overview :global(.personal-empty) { padding:24px 20px; gap:8px; }
-@media(max-width:1199px) {
+.overview :global(.personal-sessions) { border-radius:13px; }
+.overview .quickPanel :global(.personal-section-title h2) { font-size:16px; font-weight:650; }
+.overview .quickPanel :global(.personal-section-title p) { font-size:12px; }
+@media(max-width:1023px) {
  .followup { grid-template-columns:minmax(0,1fr); }
  .overview .quickPanel :global(.personal-quick-grid) { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media(max-width:639px) {
- .banner { min-height:156px; padding:20px 16px; align-items:flex-start; }
+ .banner { min-height:150px; padding:22px 18px; align-items:flex-start; }
  .bannerCopy { max-width:100%; padding-right:36px; }
  .bannerCopy .eyebrow { font-size:9px; margin-bottom:10px; }
  .banner h2 { font-size:26px; }
