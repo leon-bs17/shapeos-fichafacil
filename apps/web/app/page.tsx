@@ -6,12 +6,12 @@ import { ArrowRight, CircleCheck, ClipboardList, Dumbbell, Library, TrendingUp, 
 import styles from './personal-overview.module.css'
 import { PersonalOverviewWireframe } from '@/components/fitness/personal-overview-wireframe'
 import { PersonalAttention } from '@/components/fitness/personal-attention'
-import { studentReportHref } from '@/lib/fitness/personal-attention'
+import { RecentSessions } from '@/components/fitness/recent-sessions'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { useAlunos, useMetricasGerais } from '@/hooks/use-alunos'
 import { createClient } from '@/lib/supabase/client'
-import { completion, type Session } from '@/services/fitness'
+import { type Session } from '@/services/fitness'
 
 export default function PersonalPage() {
   const students = useAlunos()
@@ -74,17 +74,7 @@ export default function PersonalPage() {
       <section className="personal-sessions" aria-labelledby="personal-sessions-title" aria-busy={recent.isLoading}>
         <div className="personal-section-title"><div><h2 id="personal-sessions-title">Sessões recentes</h2><p>Últimos treinos realizados pelos seus alunos.</p></div><Link href="/relatorios" className="personal-text-link">Ver relatórios <ArrowRight size={13} aria-hidden="true" /></Link></div>
         {recent.isLoading ? <div className="personal-empty" role="status"><ClipboardList size={25} strokeWidth={1.5} aria-hidden="true" /><p>Carregando sessões…</p></div> : recent.error && !recent.data ? <div className="personal-empty"><p>As sessões não puderam ser carregadas. Use “Tentar novamente” acima.</p></div> : !recent.data?.length ? <div className="personal-empty"><ClipboardList size={28} strokeWidth={1.5} aria-hidden="true" /><h3>Nenhuma sessão por enquanto</h3><p>As sessões aparecerão aqui após o primeiro treino guiado.</p></div> :
-          <ul className="personal-session-list">{recent.data.slice(0, 12).map(session => {
-            const name = students.data?.find(student => student.aluno_id === session.aluno_id)?.nome ?? 'Aluno'
-            const initials = name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase()
-            const complete = session.status === 'CONCLUIDO'
-            return <li key={session.id}><Link href={studentReportHref(session.aluno_id)} className="personal-session-row">
-              <div className="personal-session-person"><span className="personal-avatar" aria-hidden="true">{initials}</span><div><p>{name}</p><small>{session.titulo}</small></div></div>
-              <time className="personal-session-date" dateTime={session.inicio}>{new Date(session.inicio).toLocaleDateString('pt-BR')}</time>
-              <span className="personal-session-status" data-complete={complete}>{complete ? 'Finalizado' : 'Em andamento'}</span>
-              <span className="personal-session-progress">{completion(session)}% realizado</span>
-            </Link></li>
-          })}</ul>}
+          <RecentSessions sessions={recent.data} students={students.data ?? []} />}
       </section>
     </div>
   </DashboardShell>
