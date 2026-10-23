@@ -58,7 +58,8 @@ export function MysStudentPicker({ selected, locked, onSelect, onSummary }: {
           {!search.trim() && <button type="button" className={styles.option} aria-pressed={!selected} onClick={() => { onSelect(null); close() }}><span><strong>Conversa geral</strong><small>Sem aluno selecionado</small></span>{!selected && <Check size={16} aria-hidden="true" />}</button>}
           {filtered.map(student =>
             <button type="button" className={styles.option} key={student.vinculo_id} aria-pressed={selected?.id === student.aluno_id} onClick={() => { onSelect({ id: student.aluno_id, name: student.nome }); close() }}><span><strong>{student.nome}</strong><small>{student.email}</small></span>{selected?.id === student.aluno_id && <Check size={16} aria-hidden="true" />}</button>)}
-          {search.trim() && !filtered.length && <p className={styles.empty} role="status">Nenhum aluno encontrado.</p>}
+          {!students.length && <p className={styles.empty}>Nenhum aluno com vínculo ativo.</p>}
+          {students.length > 0 && search.trim() && !filtered.length && <p className={styles.empty} role="status">Nenhum aluno encontrado.</p>}
         </div>
       </div>}
     </div>
