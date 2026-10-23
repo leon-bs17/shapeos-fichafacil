@@ -3,90 +3,96 @@
 import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
-import { TrendingUp, Users } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
 import { StudentReport } from '@/components/fitness/student-report'
-import { PersonalReportOverview } from '@/components/fitness/personal-report-overview'
-import { ReportStudentPicker } from '@/components/fitness/report-student-picker'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
-import type { PeriodDays } from '@/lib/fitness/period-comparison'
 import styles from '@/components/fitness/personal-report.module.css'
 
 export default function RelatoriosPage() {
-  return <DashboardShell><Suspense fallback={<p role="status">Carregando acompanhamento…</p>}><RelatoriosConteudo /></Suspense></DashboardShell>
+  return (
+    <DashboardShell>
+      <Suspense fallback={<p role="status">Carregando acompanhamento…</p>}><RelatoriosConteudo /></Suspense>
+    </DashboardShell>
+  )
 }
+
+
 interface Agrupado {
   nome: string
-  registros: { carga: number | null; reps: number | null; data: string }[]
+  registros: {
+    carga: number | null
+    reps: number | null
+    data: string
+  }[]
 }
+
 function RelatoriosConteudo() {
   const { data: alunos, isLoading: carregandoAlunos, error: erroAlunos, refetch: recarregarAlunos } = useAlunos()
   const params = useSearchParams()
   const router = useRouter()
-  const students = alunos?.filter(aluno => aluno.status === 'ATIVO') ?? []
-  const alunoId = resolveLinkedStudent(params.get('aluno'), students)
-  const student = students.find(aluno => aluno.aluno_id === alunoId)
-  const tab = ['agenda', 'avaliacao', 'analise'].includes(params.get('aba') ?? '') ? params.get('aba')! : 'evolucao'
-  const days: PeriodDays = params.get('dias') === '7' ? 7 : params.get('dias') === '90' ? 90 : 30
-  function navigate(id: string, aba: string, period: PeriodDays = days) {
-    const query = new URLSearchParams()
-    if (id) query.set('aluno', id)
-    if (aba !== 'evolucao') query.set('aba', aba)
-    if (period !== 30) query.set('dias', String(period))
-    router.replace('/relatorios' + (query.size ? '?' + query.toString() : ''), { scroll: false })
+  const alunoId = resolveLinkedStudent(params.get('aluno'), alunos ?? [])
+  const initialTab = params.get('aba') === 'avaliacao' ? 'avaliacao' : params.get('aba') === 'agenda' ? 'agenda' : 'evolucao'
+  function selecionarAluno(id: string) {
+    router.replace(id ? `/relatorios?${new URLSearchParams({ aluno: id })}` : '/relatorios', { scroll: false })
   }
-  const { data: registros, isLoading, error: erroRegistros, refetch: recarregarRegistros } = useRegistrosDoAluno(tab === 'analise' ? alunoId || undefined : undefined)
-  const agrupados = agruparPorExercicio(registros ?? [])
-  const heading = <PersonalPageHeader icon="relatorios" title="Relatórios" description="Sessões, evolução e avaliações dos seus alunos." />
-  return <PersonalWorkspace page="relatorios">{heading}<div className={styles.page}>
-    <section className={styles.banner} data-shapeos-banner>
-      <div><h2>Acompanhamento dos alunos</h2><p>Veja a evolução dos treinos, frequência e avaliações em um só lugar.</p></div>
-      <svg className={styles.wireframe} viewBox="0 0 360 140" aria-hidden="true">
-        <g fill="none" stroke="currentColor" strokeWidth=".8">
-          {[0, 1, 2, 3, 4].map(index => <path key={index} d={`M10 ${105 + index * 5} C70 ${80 + index * 5},100 ${120 + index * 5},160 ${65 + index * 5} S240 ${90 + index * 5},350 ${22 + index * 5}`} />)}
-          {[0, 1, 2, 3].map(index => <rect key={index} x={220 + index * 25} y={95 - index * 17} width="12" height={20 + index * 17} rx="2" />)}
-        </g>
-      </svg>
-    </section>
-    {carregandoAlunos ? <div className={styles.state} role="status">Carregando alunos…</div> :
-      erroAlunos ? <div className={styles.state} role="alert"><p>Não foi possível carregar seus alunos.</p><button type="button" onClick={() => void recarregarAlunos()}>Tentar novamente</button></div> :
-      !students.length ? <div className={styles.state}><p>Vincule um aluno para acompanhar sessões e avaliações nesta página.</p></div> :
-      <>
-        <section className={styles.filters} aria-label="Filtros do relatório">
-          <ReportStudentPicker students={students} value={alunoId} onChange={id => navigate(id, 'evolucao')} />
-          <div className={styles.periodGroup}><span className={styles.label}>Período</span><div className={styles.periods} role="group" aria-label="Período do resumo">
-            {([7, 30, 90] as const).map(period => <button type="button" key={period} aria-pressed={days === period} onClick={() => navigate(alunoId, 'evolucao', period)}>{period} dias</button>)}
-          </div></div>
-        </section>
-        {!student ? <div className={styles.state}><Users size={26} aria-hidden="true" /><h2>Escolha um aluno para começar</h2><p>Selecione o aluno acima para consultar sessões, frequência e avaliações.</p></div> : <>
-          {tab !== 'evolucao' && <nav className={styles.tabs} aria-label="Seções do relatório">
-            {[['evolucao', 'Resumo'], ['analise', 'Cargas e medidas'], ['agenda', 'Agenda e adesão'], ['avaliacao', 'Avaliações físicas']].map(([id, label]) =>
-              <button type="button" key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(alunoId, id)}>{label}</button>)}
-          </nav>}
+  const { data: registros, isLoading } = useRegistrosDoAluno(alunoId || undefined)
 
-          {tab === 'evolucao' ? <>
-            <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} onAssessments={() => navigate(alunoId, 'avaliacao')} />
-            <details className={styles.more}><summary>Mais detalhes do acompanhamento</summary><nav className={styles.tabs} aria-label="Seções do relatório">
-            {[['evolucao', 'Resumo'], ['analise', 'Cargas e medidas'], ['agenda', 'Agenda e adesão'], ['avaliacao', 'Avaliações físicas']].map(([id, label]) =>
-              <button type="button" key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(alunoId, id)}>{label}</button>)}
-          </nav></details>
-          </> :
-            <div className="personal-report-body">
-              <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation />
-              {tab === 'analise' && <><h2>Histórico de cargas</h2>
-                {isLoading ? <p role="status">Carregando registros de exercícios…</p> :
-                  erroRegistros ? <div className={styles.state} role="alert"><p>Não foi possível carregar o histórico de cargas.</p><button type="button" onClick={() => void recarregarRegistros()}>Tentar novamente</button></div> :
-                  !agrupados.length ? <div className={styles.state}>Este aluno ainda não registrou execuções no app.</div> :
-                  <div className="grid gap-4 md:grid-cols-2">{agrupados.map(grupo => <EvolucaoExercicio key={grupo.nome} grupo={grupo} />)}</div>}
-              </>}
-            </div>}
-        </>}
-      </>}
-  </div></PersonalWorkspace>
+  const agrupados = agruparPorExercicio(registros ?? [])
+
+  const heading = <PersonalPageHeader icon="relatorios" title="Relatórios" description="Sessões, evolução e avaliações dos seus alunos." />
+  if (carregandoAlunos) return <PersonalWorkspace page="relatorios">{heading}<div className="h-40 skeleton" role="status" aria-label="Carregando alunos" /></PersonalWorkspace>
+  if (erroAlunos) return <PersonalWorkspace page="relatorios">{heading}<div className="personal-load-error" role="alert"><p>Não foi possível carregar seus alunos.</p><button type="button" onClick={() => void recarregarAlunos()}>Tentar novamente</button></div></PersonalWorkspace>
+  if (!alunos?.length) return <PersonalWorkspace page="relatorios">{heading}<Card><CardContent className="py-12 text-center text-muted-foreground text-sm">Vincule um aluno e registre treinos para acompanhar sua evolução.</CardContent></Card></PersonalWorkspace>
+
+  return (
+    <PersonalWorkspace page="relatorios">
+      {heading}
+      <div className={styles.page}>
+      <section className={styles.banner} data-shapeos-banner>
+        <div><h2>Acompanhamento dos alunos</h2><p>Veja a evolução dos treinos, frequência e avaliações em um só lugar.</p></div>
+        <svg className={styles.wireframe} viewBox="0 0 360 140" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeWidth=".8">
+            {[0, 1, 2, 3, 4].map(index => <path key={index} d={`M10 ${105 + index * 5} C70 ${80 + index * 5},100 ${120 + index * 5},160 ${65 + index * 5} S240 ${90 + index * 5},350 ${22 + index * 5}`} />)}
+            {[0, 1, 2, 3].map(index => <rect key={index} x={220 + index * 25} y={95 - index * 17} width="12" height={20 + index * 17} rx="2" />)}
+          </g>
+        </svg>
+      </section>
+      <div className="personal-toolbar"><div className="personal-toolbar-field max-w-sm"><label htmlFor="personal-report-student">Aluno</label><select id="personal-report-student" value={alunoId} onChange={(event) => selecionarAluno(event.target.value)} className="w-full" aria-label="Selecionar aluno"><option value="">Selecione o aluno…</option>{alunos.map(aluno => <option key={aluno.vinculo_id} value={aluno.aluno_id}>{aluno.nome}</option>)}</select></div><p className="personal-results-note">Escolha um aluno para consultar seu acompanhamento.</p></div>
+      <div className="personal-report-body">
+      {alunoId && <StudentReport key={`${alunoId}:${initialTab}`} alunoId={alunoId} initialTab={initialTab} />}
+      {alunoId && <h2 className="text-lg font-semibold">Histórico de cargas (registros anteriores e atuais)</h2>}
+      {!alunoId ? (
+        <p className="text-muted-foreground text-sm">
+          Escolha um aluno para ver o progresso dos treinos registrados no app.
+        </p>
+      ) : isLoading ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {[0, 1].map((i) => (
+            <div key={i} className="h-40 animate-pulse rounded-lg bg-muted" />
+          ))}
+        </div>
+      ) : agrupados.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            Este aluno ainda não registrou execuções no app.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {agrupados.map((grupo) => (
+            <EvolucaoExercicio key={grupo.nome} grupo={grupo} />
+          ))}
+        </div>
+      )}
+      </div>
+      </div>
+    </PersonalWorkspace>
+  )
 }
 
 function EvolucaoExercicio({ grupo }: { grupo: Agrupado }) {
