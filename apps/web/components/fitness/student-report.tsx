@@ -14,7 +14,7 @@ import {
   sessionsForStudent,
   workoutsForStudent,
 } from "@/services/fitness";
-export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao" }) {
+export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<string>(initialTab);
   const data = useQuery({
@@ -46,7 +46,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
   const { sessions, workouts, agenda, assessments } = data.data;
   return (
     <div className="space-y-5">
-      <nav
+      {!hideNavigation && <nav
         className="flex flex-wrap gap-2"
         aria-label="Acompanhamento do aluno"
       >
@@ -64,7 +64,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
             {t.label}
           </Button>
         ))}
-      </nav>
+      </nav>}
       {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} /><ProgressPanel sessions={sessions} /></>}
       {tab === "agenda" && (
         <AgendaPanel
@@ -81,7 +81,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
         <AssessmentPanel
           alunoId={alunoId}
           assessments={assessments}
-          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] }); }}
+          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-report-overview', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] }); }}
         />
         </>
       )}
