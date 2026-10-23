@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, CircleCheck, ClipboardList, Dumbbell, Library, TrendingUp, Users } from 'lucide-react'
+import styles from './personal-overview.module.css'
+import { PersonalOverviewWireframe } from '@/components/fitness/personal-overview-wireframe'
 import { PersonalAttention } from '@/components/fitness/personal-attention'
 import { studentReportHref } from '@/lib/fitness/personal-attention'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
@@ -28,8 +30,13 @@ export default function PersonalPage() {
   })
   const retrying = students.isFetching || recent.isFetching
   return <DashboardShell>
-    <div className="personal-overview">
-      <PersonalPageHeader icon="visao" title="Visão Geral" description="Acompanhe cada aluno. Fichas, sessões e evolução em um só lugar." />
+    <div className={`personal-overview ${styles.overview}`}>
+      <PersonalPageHeader icon="visao" title="Visão Geral" description="Acompanhe seus alunos e gerencie seus treinos." />
+
+      <section className={styles.banner} aria-labelledby="personal-overview-banner-title">
+        <div className={styles.bannerCopy}><p className={styles.eyebrow}>Acompanhamento Personal</p><h2 id="personal-overview-banner-title">Visão geral dos <span>seus alunos</span></h2><p>Alunos, fichas e evolução. Tudo em um só lugar.</p></div>
+        <PersonalOverviewWireframe className={styles.wireframe} />
+      </section>
 
       {(students.error || recent.error) && <div className="personal-load-error" role="alert">
         <p>Não foi possível carregar todos os dados. Tente novamente.</p>
@@ -42,14 +49,15 @@ export default function PersonalPage() {
           { name: 'Alunos ativos', value: metrics.alunosAtivos, href: '/alunos', Icon: CircleCheck },
           { name: 'Fichas ativas', value: metrics.fichasAtivas, href: '/treinos', Icon: Dumbbell },
         ].map(({ name, value, href, Icon }) => <Link key={name} href={href} className="personal-metric" aria-label={name + ': ' + (students.isLoading ? 'carregando' : students.error ? 'indisponível' : value)}>
-          <Icon size={21} strokeWidth={1.75} aria-hidden="true" />
-          <div><p>{name}</p><strong>{students.isLoading ? '…' : students.error && !students.data ? '—' : value}</strong></div>
+          <span className={styles.metricIcon}><Icon size={23} strokeWidth={1.75} aria-hidden="true" /></span>
+          <div><strong>{students.isLoading ? '…' : students.error && !students.data ? '—' : value}</strong><p>{name}</p></div>
         </Link>)}
       </section>
 
+      <div className={styles.followup}>
       <PersonalAttention />
 
-      <section aria-labelledby="personal-quick-title">
+      <section className={styles.quickPanel} aria-labelledby="personal-quick-title">
         <div className="personal-section-title"><div><h2 id="personal-quick-title">Acesso rápido</h2><p>Continue o acompanhamento dos seus alunos.</p></div></div>
         <div className="personal-quick-grid">
           {[
@@ -61,9 +69,11 @@ export default function PersonalPage() {
         </div>
       </section>
 
+      </div>
+
       <section className="personal-sessions" aria-labelledby="personal-sessions-title" aria-busy={recent.isLoading}>
         <div className="personal-section-title"><div><h2 id="personal-sessions-title">Sessões recentes</h2><p>Últimos treinos realizados pelos seus alunos.</p></div><Link href="/relatorios" className="personal-text-link">Ver relatórios <ArrowRight size={13} aria-hidden="true" /></Link></div>
-        {recent.isLoading ? <div className="personal-empty" role="status"><ClipboardList size={25} strokeWidth={1.5} aria-hidden="true" /><p>Carregando sessões…</p></div> : recent.error && !recent.data ? <div className="personal-empty"><p>As sessões não puderam ser carregadas. Use “Tentar novamente” acima.</p></div> : !recent.data?.length ? <div className="personal-empty"><ClipboardList size={28} strokeWidth={1.5} aria-hidden="true" /><h3>Nenhuma sessão por enquanto</h3><p>As sessões dos seus alunos aparecerão aqui quando eles utilizarem o treino guiado.</p></div> :
+        {recent.isLoading ? <div className="personal-empty" role="status"><ClipboardList size={25} strokeWidth={1.5} aria-hidden="true" /><p>Carregando sessões…</p></div> : recent.error && !recent.data ? <div className="personal-empty"><p>As sessões não puderam ser carregadas. Use “Tentar novamente” acima.</p></div> : !recent.data?.length ? <div className="personal-empty"><ClipboardList size={28} strokeWidth={1.5} aria-hidden="true" /><h3>Nenhuma sessão por enquanto</h3><p>As sessões aparecerão aqui após o primeiro treino guiado.</p></div> :
           <ul className="personal-session-list">{recent.data.slice(0, 12).map(session => {
             const name = students.data?.find(student => student.aluno_id === session.aluno_id)?.nome ?? 'Aluno'
             const initials = name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase()

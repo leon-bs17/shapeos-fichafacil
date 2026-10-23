@@ -9,3 +9,21 @@
 @media(max-width:639px){.heading{padding:15px 14px 10px;}.heading h2{font-size:13px;}.criteria{padding:0 14px 12px;}.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 14px 14px;}.filters button{justify-content:space-between;min-height:44px;padding:9px 10px;}.row{padding:14px;}.student{align-items:flex-start;}.actions{padding-left:0;}.actions .action{flex:1 1 140px;min-height:44px;}.refresh{width:44px;min-height:44px;flex-basis:44px;}.footer{padding:12px 14px;}.footer .action{min-height:44px;}}
 
 @media(max-width:639px){.filters button:first-child{grid-column:1/-1;}}
+
+/* Overview: compact Admin-style disclosure and controls. */
+.criteria { margin:0 20px 14px; padding:0; border:1px solid var(--p-line); border-radius:13px; }
+.criteria summary { display:flex; align-items:center; gap:8px; min-height:40px; padding:9px 12px; cursor:pointer; list-style:none; color:var(--p-muted); border-radius:13px; transition:background-color 150ms ease,border-color 150ms ease; }
+.criteria summary::-webkit-details-marker { display:none; }
+.criteria summary>span { flex:1; }
+.criteria[open] summary>svg:last-child { transform:rotate(180deg); }
+.criteria p { margin:0; padding:0 12px 12px; font-size:11px; line-height:1.7; }
+.criteria summary:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+.panel .filters button,.panel .refresh { min-height:40px; }
+.panel .refresh { width:40px; flex-basis:40px; }
+@media(hover:hover) { .criteria summary:hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); } }
+@media(max-width:639px) {
+ .criteria { margin:0 14px 12px; padding:0; }
+ .criteria summary,.panel .filters button,.panel .refresh { min-height:44px; }
+ .panel .refresh { width:44px; flex-basis:44px; }
+}
+@media(prefers-reduced-motion:reduce) { .panel :is(button,a,summary) { transition:none; } }

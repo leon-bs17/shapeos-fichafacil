@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowUpRight, CircleCheck, RefreshCw } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, CircleCheck, Info, RefreshCw } from 'lucide-react'
 import { buildStudentAttention, INACTIVITY_DAYS, studentReportHref, type AttentionKind } from '@/lib/fitness/personal-attention'
 import { DEADLINE_WARNING_DAYS } from '@/lib/fitness/deadlines'
 import { fetchPersonalAttention } from '@/services/personal-attention'
@@ -34,9 +34,9 @@ export function PersonalAttention() {
   return <section className={styles.panel} aria-labelledby="personal-attention-title" aria-busy={query.isFetching}>
     <header className={styles.heading}>
       <div><h2 id="personal-attention-title">Precisam de atenção <span className={styles.count}>{unavailable ? '—' : rows.length}</span></h2><p>Pendências dos alunos com vínculo ativo.</p></div>
-      <button type="button" className={styles.refresh} disabled={query.isFetching} onClick={() => void query.refetch()} aria-label="Atualizar pendências"><RefreshCw size={15} aria-hidden="true" /></button>
+      <button type="button" className={styles.refresh} disabled={query.isFetching} onClick={() => void query.refetch()} aria-label="Atualizar pendências" data-shapeos-tooltip="Atualizar pendências"><RefreshCw size={15} aria-hidden="true" /></button>
     </header>
-    <p className={styles.criteria}>Sem treinar: {INACTIVITY_DAYS} dias sem sessão concluída, a partir do vínculo. Fichas: até {DEADLINE_WARNING_DAYS} dias para vencer ou já vencidas. Avaliações: sem registro ou pendentes a partir da data marcada.</p>
+    <details className={styles.criteria}><summary><Info size={15} aria-hidden="true" /><span>Como funcionam os alertas?</span><ChevronDown size={15} aria-hidden="true" /></summary><p>Sem treinar: {INACTIVITY_DAYS} dias sem sessão concluída, a partir do vínculo. Fichas: até {DEADLINE_WARNING_DAYS} dias para vencer ou já vencidas. Avaliações: sem registro ou pendentes a partir da data marcada.</p></details>
     {query.isPending ? <p className={styles.empty} role="status">Verificando acompanhamento…</p> : query.isError ? <div className={styles.empty} role="alert"><p>Não foi possível verificar as pendências.</p><button type="button" className={styles.action} disabled={query.isFetching} onClick={() => void query.refetch()}>Tentar novamente</button></div> : <>
       <div className={styles.filters} role="group" aria-label="Filtrar pendências">{FILTERS.map(item => <button key={item.id} type="button" aria-pressed={filter === item.id} onClick={() => { setFilter(item.id); setLimit(6) }}>{item.label}<span>{item.id === 'todos' ? rows.length : rows.filter(row => row.motivos.includes(item.id as AttentionKind)).length}</span></button>)}</div>
       {!filtered.length ? <div className={styles.empty} role="status"><CircleCheck size={23} aria-hidden="true" /><p>{!query.data?.length ? 'Nenhum aluno com vínculo ativo para acompanhar.' : rows.length ? 'Nenhum aluno nesta categoria.' : 'Nenhuma pendência pelos critérios acima.'}</p></div> : <>
