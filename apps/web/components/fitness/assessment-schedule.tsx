@@ -26,6 +26,7 @@ export function AssessmentSchedule({ alunoId, latestAssessment }: { alunoId: str
       await saveAssessmentSchedule(alunoId, value || null)
       queryClient.setQueryData(['personal-assessment-schedule', alunoId], value || null)
       void queryClient.invalidateQueries({ queryKey: ['personal-attention'] })
+      void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] })
       setDraft(null)
       setSuccess(value ? 'Próxima avaliação salva.' : 'Agendamento removido.')
     } catch (e) { setError(e instanceof Error ? e.message : 'Não foi possível salvar a data.') }

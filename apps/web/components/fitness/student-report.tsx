@@ -72,7 +72,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
           workouts={workouts}
           agenda={agenda}
           sessions={sessions}
-          onChange={() => void data.refetch()}
+          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] }); }}
         />
       )}
       {tab === "avaliacao" && (
@@ -81,7 +81,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao" }: { alunoId: s
         <AssessmentPanel
           alunoId={alunoId}
           assessments={assessments}
-          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); }}
+          onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] }); }}
         />
         </>
       )}
