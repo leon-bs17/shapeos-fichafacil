@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Library, Plus, Search, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2 } from 'lucide-react'
+import { Library, Plus, Search, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2, Star, ArrowLeftRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -11,6 +11,10 @@ import { useCriarExercicio, useExercicios, useEditarExercicio, useExcluirExercic
 import { EQUIPAMENTOS, GRUPOS_MUSCULARES } from '@shapeos/shared'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
+import { useExerciseFavorites } from '@/hooks/use-exercise-favorites'
+import { filterExerciseLibrary } from '@/lib/fitness/exercise-library'
+import { ExerciseAlternatives } from '@/components/fitness/exercise-alternatives'
+import styles from '@/components/fitness/exercise-library.module.css'
 import type { ExercicioBiblioteca } from '@/services/exercicios'
 import { ExercisePreview, ExerciseThumbnail } from '@/components/fitness/exercise-demonstration'
 
@@ -39,6 +43,10 @@ function ExerciciosConteudo() {
   const criar = useCriarExercicio()
   const editar = useEditarExercicio()
   const excluir = useExcluirExercicio()
+  const favorites = useExerciseFavorites()
+  const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const [equipmentFilter, setEquipmentFilter] = useState('Todos')
+  const [alternativeSource, setAlternativeSource] = useState<ExercicioBiblioteca | null>(null)
 
   const [busca, setBusca] = useState('')
   const [grupoAtivo, setGrupoAtivo] = useState('Todos')
@@ -52,14 +60,8 @@ function ExerciciosConteudo() {
   const [grupo, setGrupo] = useState<string>(GRUPOS_MUSCULARES[0])
   const [equipamento, setEquipamento] = useState<string>(EQUIPAMENTOS[0])
 
-  const filtrados = useMemo(() => {
-    const termo = busca.trim().toLowerCase()
-    return (exercicios ?? []).filter(
-      (e) =>
-        (grupoAtivo === 'Todos' || e.grupo_muscular === grupoAtivo) &&
-        (!termo || e.nome.toLowerCase().includes(termo))
-    )
-  }, [exercicios, busca, grupoAtivo])
+  const filtrados = useMemo(() => filterExerciseLibrary(exercicios ?? [], busca, grupoAtivo, equipmentFilter, favoritesOnly, favorites.ids), [exercicios, busca, grupoAtivo, equipmentFilter, favoritesOnly, favorites.ids])
+  const filterEquipment = Array.from(new Set([...EQUIPAMENTOS, ...(exercicios ?? []).map(item => item.equipamento || 'Sem equipamento informado')])).sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
   function abrirCriacao() {
     setNome('')
@@ -112,6 +114,10 @@ function ExerciciosConteudo() {
             className="pl-9 h-10"
           />
         </div>
+        <div className={styles.filters}>
+          <div className={styles.equipment}><label htmlFor="library-equipment">Equipamento</label><select id="library-equipment" value={equipmentFilter} onChange={event => setEquipmentFilter(event.target.value)}><option value="Todos">Todos os equipamentos</option>{filterEquipment.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
+          <button type="button" className={`personal-filter-chip ${styles.favoriteFilter}`} aria-pressed={favoritesOnly} disabled={!favorites.query.data} onClick={() => setFavoritesOnly(value => !value)}><Star size={16} aria-hidden="true" />Somente favoritos</button>
+        </div>
         <div className="personal-filter-chips">
           {['Todos', ...GRUPOS_MUSCULARES].map((g) => (
             <button
@@ -127,7 +133,9 @@ function ExerciciosConteudo() {
         </div>
       </div>
 
-      <p className="personal-results-note" aria-live="polite">{isLoading ? 'Carregando exercícios…' : `${filtrados.length} de ${exercicios?.length ?? 0} exercícios`}</p>
+      <p className="personal-results-note" aria-live="polite">{isLoading ? 'Carregando exercícios…' : favoritesOnly && favorites.query.isError ? 'Favoritos indisponíveis.' : `${filtrados.length} de ${exercicios?.length ?? 0} exercícios`}</p>
+      {favorites.query.isError && <div role="alert" className="personal-load-error"><p>Não foi possível carregar seus favoritos. A biblioteca continua disponível.</p><Button variant="outline" onClick={() => void favorites.query.refetch()}>Recarregar favoritos</Button></div>}
+      {favorites.mutation.error && <p role="alert" className="text-destructive text-sm">{favorites.mutation.error.message}</p>}
       {excluir.error && <p role="alert" className="text-destructive text-sm">{excluir.error.message}</p>}
       {error ? <div role="alert" className="personal-load-error"><p>Não foi possível carregar os exercícios.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? (
         <div className="personal-exercise-grid">
@@ -135,14 +143,14 @@ function ExerciciosConteudo() {
             <div key={i} className="h-20 skeleton" />
           ))}
         </div>
-      ) : filtrados.length === 0 ? (
+      ) : favoritesOnly && favorites.query.isError ? null : filtrados.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-12 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
               <Library className="h-6 w-6 text-muted-foreground" />
             </div>
             <p className="font-medium">Nenhum exercício encontrado.</p>
-            <p className="text-xs text-muted-foreground mt-1">Tente outro termo ou crie um novo.</p>
+            <p className="text-xs text-muted-foreground mt-1">{favoritesOnly ? 'Marque exercícios como favoritos ou ajuste os filtros.' : 'Tente outro termo ou equipamento, ou crie um novo.'}</p>
           </CardContent>
         </Card>
       ) : (
@@ -195,10 +203,16 @@ function ExerciciosConteudo() {
                   ) : null
                 )}
               </CardContent>
+              <div className={styles.secondaryActions}>
+                <button type="button" className={`personal-command ${styles.favorite}`} data-favorite={favorites.ids.has(e.id)} aria-pressed={favorites.ids.has(e.id)} aria-label={`${favorites.ids.has(e.id) ? 'Remover dos favoritos' : 'Favoritar'} ${e.nome}`} disabled={!favorites.query.data || favorites.mutation.isPending} onClick={() => favorites.mutation.mutate({ id: e.id, favorite: !favorites.ids.has(e.id) })}><Star size={15} aria-hidden="true" />{favorites.ids.has(e.id) ? 'Favorito' : 'Favoritar'}</button>
+                <button type="button" className="personal-command" onClick={() => setAlternativeSource(e)} aria-label={`Ver alternativas de ${e.nome}`}><ArrowLeftRight size={15} aria-hidden="true" />Alternativas</button>
+              </div>
             </Card>
           ))}
         </div>
       )}
+
+      {alternativeSource && <ExerciseAlternatives key={alternativeSource.id} exercise={alternativeSource} exercises={exercicios ?? []} onClose={() => setAlternativeSource(null)} />}
 
       {/* Modal Criar */}
       <Modal personal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercício">
@@ -287,5 +301,6 @@ function ExerciciosConteudo() {
     </PersonalWorkspace>
   )
 }
+
 
 

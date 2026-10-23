@@ -5,10 +5,11 @@ const destination='44444444-4444-4444-8444-444444444444'
 const personal='40e247a5-ec08-4c0a-b8f9-62b44c0fcdac',aluno='05067dea-ec38-4f40-a592-e2bff1275d06',exercise='22222222-2222-4222-8222-222222222222'
 let current={id:personal},role='PERSONAL',status='ATIVO',rows=[],seq=0,denyCopy=false
 const db={auth:{getUser:async token=>({data:{user:token==='invalid'?null:current},error:null})},from(table){
- let filters=[],patch=null,remove=false
- const q={select(){return q},order(){return q},ilike(){return q},eq(k,v){filters.push([k,v]);return q},update(v){patch=v;return q},delete(){remove=true;return q},single(){return Promise.resolve({data:table==='usuarios'?{tipo:role,status_conta:status}:null,error:null})},maybeSingle(){return q.then(r=>({...r,data:r.data[0]??null}))},then(ok,no){
+ let filters=[],patch=null,remove=false,range=null
+ const q={select(){return q},order(){return q},ilike(){return q},range(a,b){range=[a,b];return q},eq(k,v){filters.push([k,v]);return q},update(v){patch=v;return q},delete(){remove=true;return q},single(){return Promise.resolve({data:table==='usuarios'?{tipo:role,status_conta:status}:null,error:null})},maybeSingle(){return q.then(r=>({...r,data:r.data[0]??null}))},then(ok,no){
   let data=table==='treinos'?rows:table==='exercicios'?[{id:exercise,nome:'Supino Reto',grupo_muscular:'Peito',criado_por:personal}]:[]
   data=data.filter(row=>filters.every(([k,v])=>row[k]===v))
+  if(range)data=data.slice(range[0],range[1]+1)
   if(patch)data.forEach(row=>Object.assign(row,patch));if(remove)rows=rows.filter(row=>!data.includes(row))
   return Promise.resolve({data,error:null}).then(ok,no)
  }};return q
