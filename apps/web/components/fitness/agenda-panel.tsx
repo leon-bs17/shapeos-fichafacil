@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import styles from "./agenda-panel.module.css";
+import { AgendaDatePicker } from "./agenda-date-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,12 +77,12 @@ export function AgendaPanel({
           </div>
           <div>
             <Label htmlFor="agenda-date">Data</Label>
-            <Input
+            {compact ? <AgendaDatePicker id="agenda-date" allowClear label="Data" value={date} onChange={setDate} /> : <Input
               id="agenda-date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-            />
+            />}
           </div>
           <Button
             className="self-end"
@@ -152,7 +153,9 @@ export function AgendaPanel({
                       Treinar
                     </Button>
                   )}
-                  <Input
+                  {compact ? <AgendaDatePicker label={`Remarcar ${w?.titulo ?? "sessão"}`} value={a.data} disabled={busy || finished} onChange={value => {
+                    if (value) void action(() => saveAgenda({ ...a, data: value }));
+                  }} /> : <Input
                     aria-label={`Remarcar ${w?.titulo ?? "sessão"}`}
                     type="date"
                     className="w-40"
@@ -164,7 +167,7 @@ export function AgendaPanel({
                           saveAgenda({ ...a, data: e.target.value }),
                         );
                     }}
-                  />
+                  />}
                   <Button
                     variant="ghost"
                     size="sm"

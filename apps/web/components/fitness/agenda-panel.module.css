@@ -27,3 +27,32 @@
 @media(hover:hover) { .compact button:not(:disabled):hover,.compact input:not(:disabled):not(.search input):hover { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); } }
 @media(max-width:639px) { .form { grid-template-columns:minmax(0,1fr); gap:10px; }.compact .row { align-items:stretch; }.row>div:first-child { flex-basis:100%; }.actions { width:100%; display:grid; grid-template-columns:minmax(0,1fr) auto; }.compact .actions input { width:100%; }.compact input,.compact button { min-height:44px; }.compact input { font-size:16px; }.compact .search input { font-size:16px; }.compact .trigger { font-size:12px; }}
 @media(prefers-reduced-motion:reduce) { .compact input,.compact button { transition:none; } }
+
+/* The search wrapper is the single border/focus surface. */
+:global(html body) .compact .menu .search input,
+:global(html body) .compact .menu .search input:is(:hover,:focus,:focus-visible,:active) {
+  border:0!important; border-radius:0!important; outline:none!important; box-shadow:none!important;
+  background:transparent!important; padding:7px 0!important; margin:0!important; min-width:0; width:100%;
+}
+.datePicker { position:relative; min-width:0; }
+.compact .dateTrigger { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left; font-variant-numeric:tabular-nums; }
+.dateTrigger span { min-width:0; }.dateTrigger svg { flex-shrink:0; color:var(--p-muted); }
+.actions .datePicker { width:154px; }
+.calendar { position:absolute; right:0; top:calc(100% + 8px); z-index:30; width:min(300px,calc(100vw - 48px)); box-sizing:border-box; padding:10px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); color:var(--p-ink); }
+.calendarHeading { display:grid; grid-template-columns:32px minmax(0,1fr) 32px; align-items:center; gap:6px; }
+.calendarHeading>span { text-align:center; text-transform:capitalize; font-size:12px; font-weight:600; }
+.compact .calendarHeading button { display:grid; place-items:center; padding:0; width:32px; min-height:32px; }
+.weekdays,.calendarDays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:3px; }
+.weekdays { margin:10px 0 4px; text-align:center; color:var(--p-muted); font-size:10px; line-height:1.5; }
+.compact .calendarDays button { min-width:0; min-height:34px; padding:4px 0; border-color:transparent; border-radius:9px; font-size:11px; }
+.compact .calendarDays button[aria-current=date] { border-color:var(--p-line); }
+.compact .calendarDays button[aria-pressed=true] { color:var(--p-brand); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+.calendarFooter { display:flex; justify-content:space-between; gap:8px; margin-top:10px; padding-top:8px; border-top:1px solid var(--p-line); }
+.compact .calendarFooter button { min-height:32px; padding:5px 10px; }
+@media(max-width:639px) {
+  .calendar { right:auto; left:0; width:min(340px,calc(100vw - 48px)); }
+  .actions .datePicker { width:100%; }
+  .compact .calendarDays button,.compact .calendarHeading button,.compact .calendarFooter button { min-height:44px; }
+  .calendarHeading { grid-template-columns:44px minmax(0,1fr) 44px; }
+  .compact .calendarHeading button { width:44px; }
+}
