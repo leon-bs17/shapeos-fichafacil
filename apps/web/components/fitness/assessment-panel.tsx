@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import { AgendaDatePicker } from "./agenda-date-picker";
+import styles from "./assessment-panel.module.css";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,11 +13,13 @@ export function AssessmentPanel({
   assessments,
   onChange,
   own = false,
+  compact = false,
 }: {
   alunoId: string;
   assessments: Assessment[];
   onChange: () => void;
   own?: boolean;
+  compact?: boolean;
 }) {
   const [date, setDate] = useState(today()),
     [values, setValues] = useState({
@@ -118,9 +122,9 @@ export function AssessmentPanel({
         ? Math.round((latest.peso! - first.peso!) * 100) / 100
         : null;
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${compact ? styles.compact : ""}`} data-assessment-panel>
       {latest && (
-        <div className="rounded-2xl border bg-card p-5">
+        <div className="rounded-2xl border bg-card p-5" data-assessment-weight>
           <p className="text-sm text-muted-foreground">
             Último peso registrado
           </p>
@@ -133,16 +137,16 @@ export function AssessmentPanel({
           )}
         </div>
       )}
-      <section className="rounded-2xl border bg-card p-5 space-y-4">
+      <section className="rounded-2xl border bg-card p-5 space-y-4" data-assessment-form>
         <h2 className="text-lg font-semibold">Nova avaliação</h2>
         <div>
           <Label htmlFor="assessment-date">Data</Label>
-          <Input
+          <div className={compact ? styles.dateField : undefined}>{compact ? <AgendaDatePicker id="assessment-date" label="Data da avaliação" value={date} disabled={busy} align="start" onChange={setDate} /> : <Input
             id="assessment-date"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-          />
+          />}</div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {(["peso", "cintura", "quadril", "braco"] as const).map((k) => (

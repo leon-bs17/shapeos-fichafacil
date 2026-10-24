@@ -7,6 +7,7 @@ import { ProgressPanel } from "./progress-panel";
 import { PeriodComparison } from "./period-comparison";
 import { AgendaPanel } from "./agenda-panel";
 import { AssessmentPanel } from "./assessment-panel";
+import styles from "./assessment-panel.module.css";
 import { calendarDaysUntil } from '@/lib/fitness/deadlines';
 import { AssessmentSchedule } from "./assessment-schedule";
 import {
@@ -46,7 +47,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
   if (!data.data) return null;
   const { sessions, workouts, agenda, assessments } = data.data;
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${hideNavigation && tab === "avaliacao" ? styles.assessments : ""}`}>
       {!hideNavigation && <nav
         className="flex flex-wrap gap-2"
         aria-label="Acompanhamento do aluno"
@@ -79,8 +80,9 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
       )}
       {tab === "avaliacao" && (
         <>
-        <AssessmentSchedule alunoId={alunoId} latestAssessment={assessments.find(assessment => { const days = calendarDaysUntil(assessment.data); return days != null && days <= 0; })?.data} />
+        <AssessmentSchedule compact={hideNavigation} alunoId={alunoId} latestAssessment={assessments.find(assessment => { const days = calendarDaysUntil(assessment.data); return days != null && days <= 0; })?.data} />
         <AssessmentPanel
+          compact={hideNavigation}
           alunoId={alunoId}
           assessments={assessments}
           onChange={() => { void data.refetch(); void queryClient.invalidateQueries({ queryKey: ['personal-attention'] }); void queryClient.invalidateQueries({ queryKey: ['personal-period-comparison', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-report-overview', alunoId] }); void queryClient.invalidateQueries({ queryKey: ['personal-weekly-agenda'] }); }}

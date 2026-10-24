@@ -56,3 +56,5 @@
   .calendarHeading { grid-template-columns:44px minmax(0,1fr) 44px; }
   .compact .calendarHeading button { width:44px; }
 }
+
+.calendar[data-align=start] { left:0; right:auto; }

@@ -10,7 +10,7 @@ const keyOf = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 
 const parseDay = (value: string) => new Date(`${value}T12:00:00`);
 const labelOf = (date: Date) => date.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 
-export function AgendaDatePicker({ id, label, value, disabled = false, allowClear = false, onChange }: { id?: string; label: string; value: string; disabled?: boolean; allowClear?: boolean; onChange: (value: string) => void }) {
+export function AgendaDatePicker({ id, label, value, disabled = false, allowClear = false, align = "end", describedBy, onChange }: { id?: string; label: string; value: string; disabled?: boolean; allowClear?: boolean; align?: "start" | "end"; describedBy?: string; onChange: (value: string) => void }) {
   const popupId = useId();
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState(() => parseDay(value || today()));
@@ -33,16 +33,16 @@ export function AgendaDatePicker({ id, label, value, disabled = false, allowClea
     setMonth(next); setFocused(keyOf(next));
   };
   const pick = (day: string) => { onChange(day); close(); };
-  return <div className={styles.datePicker} ref={field} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false); }}>
+  return <div className={`${styles.datePicker} ${styles.compact}`} ref={field} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false); }}>
     <button id={id} ref={trigger} type="button" disabled={disabled} className={styles.dateTrigger} aria-label={`${label}: ${value ? parseDay(value).toLocaleDateString("pt-BR") : "Selecione a data"}`}
-      aria-expanded={open} aria-haspopup="dialog" aria-controls={open ? popupId : undefined}
+      aria-describedby={describedBy} aria-expanded={open} aria-haspopup="dialog" aria-controls={open ? popupId : undefined}
       onClick={() => {
         if (!open) { const day = value || today(); setMonth(parseDay(day)); setFocused(day); }
         setOpen(previous => !previous);
       }}>
       <span>{value ? parseDay(value).toLocaleDateString("pt-BR") : "Selecione a data"}</span><CalendarDays size={15} aria-hidden="true" />
     </button>
-    {open && !disabled && <div id={popupId} ref={calendar} className={styles.calendar} role="dialog" aria-label={`Calendário — ${label}`}
+    {open && !disabled && <div id={popupId} ref={calendar} className={styles.calendar} data-align={align} role="dialog" aria-label={`Calendário — ${label}`}
       onKeyDown={event => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); close(); } }}>
       <div className={styles.calendarHeading}>
         <button type="button" aria-label="Mês anterior" onClick={() => moveMonth(-1)}><ChevronLeft size={16} aria-hidden="true" /></button>

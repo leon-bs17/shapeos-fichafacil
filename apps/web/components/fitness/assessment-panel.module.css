@@ -1,0 +1,40 @@
+/* Use the compact Personal report scale; keep shared student views unchanged. */
+:global(html body .personal-content) .compact {
+  display:grid; gap:14px; min-width:0; color:var(--p-ink);
+}
+:global(html body .personal-content) .compact>* { margin-top:0; margin-bottom:0; }
+:global(html body .personal-content) .compact[data-assessment-schedule],
+:global(html body .personal-content) .compact :global(.bg-card) {
+  padding:12px 14px; border:1px solid var(--p-line); border-radius:13px;
+  background:var(--p-panel); box-shadow:none;
+}
+:global(html body .personal-content) .compact[data-assessment-schedule] { gap:10px; }
+:global(html body .personal-content) .compact :global(section.bg-card) { display:grid; gap:12px; }
+:global(html body .personal-content) .compact :global(section.bg-card)>* { margin-top:0; margin-bottom:0; }
+:global(html body .personal-content) .compact :is(h2,h3) { margin:0; font-size:13px; font-weight:600; line-height:1.5; }
+:global(html body .personal-content) .compact p { margin:0; font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+:global(html body .personal-content) .compact h2+p { margin-top:4px; }
+:global(html body .personal-content) .compact label { display:block; margin:0 0 6px; font-size:11px; font-weight:500; }
+:global(html body .personal-content) .compact :global([data-assessment-weight]) { display:grid; gap:4px; }
+:global(html body .personal-content) .compact :global([data-assessment-weight])>p:nth-child(2) { font-size:22px; font-weight:600; line-height:1.3; font-variant-numeric:tabular-nums; }
+:global(html body .personal-content) .compact :is(input:not([type=file]),select,textarea) {
+  width:100%; min-width:0; min-height:36px; border:1px solid var(--p-line);
+  border-radius:13px; background:var(--p-panel); color:var(--p-ink);
+  padding:7px 10px; font-size:12px; line-height:1.5; box-shadow:none;
+}
+:global(html body .personal-content) .compact textarea { min-height:72px; resize:vertical; }
+:global(html body .personal-content) .compact :is(input,select,textarea):focus { outline:none; box-shadow:none; border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
+:global(html body .personal-content) .compact :global(button.btn-tech) { min-height:36px; padding:7px 10px; font-size:11px; width:fit-content; }
+:global(html body .personal-content) .compact caption { margin-bottom:10px; font-size:13px; }
+:global(html body .personal-content) .compact :is(th,td) { padding:9px 10px; font-size:11px; }
+:global(html body .personal-content) .compact td p { white-space:normal; }
+.dateField { width:100%; max-width:260px; min-width:0; }
+.actions { display:flex; flex-wrap:wrap; gap:8px; }
+@media(max-width:639px) {
+  :global(html body .personal-content) .compact :is(input:not([type=file]),select,textarea) { min-height:44px; font-size:16px; }
+  :global(html body .personal-content) .compact :global(button.btn-tech) { min-height:44px; }
+  .dateField { max-width:none; }
+}
+
+:global(html body .personal-content) .assessments { display:grid; gap:14px; min-width:0; }
+:global(html body .personal-content) .assessments>* { margin-top:0; margin-bottom:0; }
