@@ -22,7 +22,7 @@ export function StudentFollowUpPanel({ student, onClose }: { student: AlunoVincu
   const data = query.data
   const assessment = assessmentDeadline(data?.nextAssessment, data?.latestAssessment)
   const active = student.status === 'ATIVO'
-  return <Modal personal open onClose={onClose} titulo="Acompanhamento do aluno" className="max-w-2xl">
+  return <Modal personal open onClose={onClose} titulo="Acompanhamento do aluno" className={styles.modal}>
     <div className={styles.panel}>
       <header className={styles.identity}><span className="personal-avatar" aria-hidden="true">{student.nome.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toLocaleUpperCase('pt-BR') || '?'}</span><div><h3>{student.nome}</h3><p>{student.email}</p><span className="personal-status" data-active={active}>{active ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{active ? 'Ativo' : 'Inativo'}</span></div></header>
       {!active ? <p className={styles.note}>O acompanhamento está disponível para vínculos ativos.</p> : query.isPending ? <div className={styles.loading} role="status">Carregando acompanhamento…</div> : query.isError ? <div className={styles.error} role="alert"><p>{query.error.message}</p><Button variant="outline" disabled={query.isFetching} onClick={() => void query.refetch()}>Tentar novamente</Button></div> : data ? <>
