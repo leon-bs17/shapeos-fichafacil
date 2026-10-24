@@ -1,0 +1,39 @@
+.page { display:grid; gap:14px; min-width:0; color:var(--p-ink); container-type:inline-size; }
+.metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin:0; padding:18px 0; border:0; background:transparent; }
+.metrics>div { display:flex; align-items:center; gap:12px; min-width:0; min-height:56px; padding:0 20px; }
+.metrics>div+div { border-left:1px solid var(--p-line); }
+.metrics>div>div { display:flex; flex-direction:column; min-width:0; }
+.metrics dt { order:1; margin:4px 0 0; font-size:12px; line-height:1.5; color:var(--p-muted); overflow-wrap:anywhere; }
+.metrics dd { order:0; margin:0; font-size:28px; font-weight:600; line-height:1.2; font-variant-numeric:tabular-nums; }
+.metricIcon { display:grid; place-items:center; flex:0 0 44px; width:44px; height:44px; border-radius:13px; color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 7%,transparent); }
+.metricIcon svg { width:24px; height:24px; }
+:global(html body .personal-content) .page .panel { border-radius:13px; background:var(--p-panel); }
+:global(html body .personal-content) .page .table { width:100%; min-width:0; table-layout:fixed; }
+:global(html body .personal-content) .page .table th { padding:11px 20px; font-size:11px; font-weight:500; }
+:global(html body .personal-content) .page .table td { padding:12px 20px; height:auto; font-size:12px; }
+:global(html body .personal-content) .page .table :is(th,td):first-child { width:50%; }
+:global(html body .personal-content) .page .table :is(th,td):nth-child(2) { width:17%; text-align:center; }
+:global(html body .personal-content) .page .table :is(th,td):nth-child(3) { width:17%; }
+:global(html body .personal-content) .page .table :global(.personal-student-identity) { gap:11px; }
+:global(html body .personal-content) .page .table .avatar { display:grid; place-items:center; box-sizing:border-box; width:32px; height:32px; min-width:32px; flex:0 0 32px; aspect-ratio:1; border:0; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:11px; font-weight:700; line-height:1; }
+.actionCell { text-align:right; }
+:global(html body .personal-content) .page .table .view { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:36px; height:auto; padding:7px 10px; font-size:11px; color:var(--p-ink); border-radius:13px; }
+:global(html body .personal-content) .page .table .view svg { color:var(--p-blue); flex-shrink:0; }
+@media(max-width:767px) {
+ .metrics { padding:8px 0; }
+ .metrics>div { flex-direction:column; align-items:flex-start; gap:8px; padding:0 10px; }
+ .metricIcon { width:36px; height:36px; flex-basis:36px; border-radius:11px; }
+ .metricIcon svg { width:20px; height:20px; }
+ .metrics dd { font-size:24px; }
+ .metrics dt { font-size:10px; }
+ :global(html body .personal-content) .page .table,:global(html body .personal-content) .page .table tbody { display:block; }
+ :global(html body .personal-content) .page .table thead { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
+ :global(html body .personal-content) .page .table tbody tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; padding:14px; border-bottom:1px solid var(--p-line); }
+ :global(html body .personal-content) .page .table tbody tr:last-child { border-bottom:0; }
+ :global(html body .personal-content) .page .table td:nth-child(n) { display:block; width:100%; min-width:0; padding:0; border:0; text-align:left; }
+ :global(html body .personal-content) .page .table td:first-child,:global(html body .personal-content) .page .table td:last-child { grid-column:1/-1; }
+ :global(html body .personal-content) .page .table td::before { display:none; }
+ :global(html body .personal-content) .page .table td[data-label="Fichas ativas"]::before,:global(html body .personal-content) .page .table td[data-label="Status"]::before { content:attr(data-label); display:block; margin-bottom:6px; color:var(--p-muted); font-size:10px; }
+ :global(html body .personal-content) .page .table .avatar { width:34px; height:34px; min-width:34px; flex-basis:34px; }
+ :global(html body .personal-content) .page .table .view { width:100%; min-height:44px; }
+}
