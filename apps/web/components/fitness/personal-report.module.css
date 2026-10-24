@@ -1,9 +1,9 @@
 .page { display:grid; gap:14px; min-width:0; }
-.banner { position:relative; isolation:isolate; overflow:hidden; min-height:112px; padding:20px 24px; border:1px solid var(--p-line); border-radius:13px; background:var(--shapeos-banner-gradient); display:flex; align-items:center; }
-.banner>div { position:relative; z-index:1; max-width:70%; }
-.page .banner h2 { margin:0; font-size:28px; font-weight:750; line-height:1.15; letter-spacing:-.035em; color:var(--p-ink); }
-.banner p { margin:8px 0 0; color:var(--p-muted); font-size:12px; line-height:1.7; max-width:550px; }
-.wireframe { position:absolute; width:34%; height:100%; right:12px; top:0; color:var(--p-brand); opacity:.3; pointer-events:none; }
+.banner { position:relative; isolation:isolate; overflow:hidden; min-height:140px; padding:24px 28px; border:1px solid var(--p-line); border-radius:13px; background:var(--shapeos-banner-gradient); display:flex; align-items:center; }
+.banner>div { position:relative; z-index:1; max-width:68%; }
+.page .banner h2 { margin:0; font-size:32px; font-weight:750; line-height:1.2; letter-spacing:-.025em; color:var(--p-ink); }
+.banner p { margin:8px 0 0; color:var(--p-muted); font-size:13px; line-height:1.6; max-width:none; }
+.wireframe { position:absolute; width:300px; height:auto; right:8px; top:50%; transform:translateY(-50%); color:var(--p-brand); opacity:.45; pointer-events:none; }
 .filters { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.8fr); align-items:end; gap:24px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); padding:12px 14px; position:relative; z-index:3; }
 .label { display:block; margin-bottom:7px; font-size:11px; font-weight:500; color:var(--p-ink); }
 .periodGroup { border-left:1px solid var(--p-line); padding-left:24px; min-width:0; }
@@ -110,9 +110,9 @@
 @media(hover:hover) { .page button:not(:disabled):not([aria-current=page]):not([aria-pressed=true]):hover,.overview button:not(:disabled):not([aria-current=page]):hover,.picker button:hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); } }
 .page button:not(:disabled):not([aria-current=page]):not([aria-pressed=true]):active,.overview button:not(:disabled):not([aria-current=page]):active { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
 @media(max-width:1000px) { .charts { grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr); }.metrics>div { gap:12px; padding:0 16px; }.table th,.table td { padding:8px; }.table th:nth-child(2) { width:92px; }.table th:nth-child(3) { width:128px; }.table th:nth-child(4) { width:98px; }.table th:last-child { width:70px; } }
-@media(max-width:799px) { .charts { grid-template-columns:minmax(0,1fr); }.metrics>div { flex-direction:column; align-items:flex-start; gap:8px; }.filters { grid-template-columns:minmax(0,1fr) minmax(220px,.8fr); gap:16px; }.periodGroup { padding-left:16px; }.page .banner h2 { font-size:28px; } }
+@media(max-width:799px) { .charts { grid-template-columns:minmax(0,1fr); }.metrics>div { flex-direction:column; align-items:flex-start; gap:8px; }.filters { grid-template-columns:minmax(0,1fr) minmax(220px,.8fr); gap:16px; }.periodGroup { padding-left:16px; } }
 @media(max-width:639px) {
- .page,.overview { gap:14px; }.banner { min-height:150px; padding:22px 18px; }.banner>div { max-width:85%; }.page .banner h2 { font-size:28px; max-width:280px; }.banner p { font-size:11px; max-width:260px; }.wireframe { width:50%; right:-15px; opacity:.18; }
+ .page,.overview { gap:14px; }
  .filters { grid-template-columns:minmax(0,1fr); padding:14px; gap:14px; }.periodGroup { border-left:0; padding-left:0; }.periods button { min-height:44px; }.tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.page .tabs button { min-height:44px; padding:8px; font-size:11px; }
  .picker .pickerSearch input,.picker .pickerSearch input:focus { font-size:16px; }
  .metrics { padding:14px 0; }.metrics>div { padding:0 10px; gap:8px; }.metrics svg { width:36px; height:36px; padding:8px; border-radius:11px; }.metrics dd { font-size:22px; }.metrics dt { font-size:10px; }.metrics span { font-size:9px; }
@@ -136,4 +136,13 @@
   .page .periods button { min-height:44px; }
   :global(html body) .page .picker .pickerSearch input,
   :global(html body) .page .picker .pickerSearch input:is(:hover,:focus,:focus-visible) { min-height:42px!important; font-size:16px; }
+}
+
+/* Match Admin's responsive banner geometry; retain this page's chart artwork. */
+@media(max-width:767px) {
+ .banner { min-height:150px; padding:22px 18px; }
+ .banner>div { max-width:100%; }
+ .page .banner h2 { font-size:28px; line-height:1.2; max-width:none; overflow-wrap:anywhere; }
+ .banner p { font-size:13px; line-height:1.6; max-width:none; }
+ .wireframe { width:300px; height:auto; right:-130px; top:50%; transform:translateY(-50%); opacity:.16; z-index:0; }
 }
