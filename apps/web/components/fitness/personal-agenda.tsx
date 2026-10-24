@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, ChevronLeft, ChevronRight, Dumbbell, ClipboardCheck, ArrowUpRight, NotebookPen, Plus, ChevronDown, Check } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, Dumbbell, ClipboardCheck, ArrowUpRight, NotebookPen, Plus, ChevronDown, Check, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AgendaDatePicker } from './agenda-date-picker'
 import { localCalendarDate, formatCalendarDate } from '@/lib/fitness/deadlines'
 import { moveWeek, weekWindow } from '@/lib/fitness/personal-agenda'
 import { fetchPersonalAgenda } from '@/services/personal-agenda'
 import styles from './personal-agenda.module.css'
+import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { fitnessRequest } from '@/lib/api/client'
 import { mergeReminderEvents,type PersonalReminder } from '@/lib/fitness/personal-reminders'
 import { ReminderActions,ReminderEditor } from './personal-reminders'
@@ -55,6 +56,24 @@ export function PersonalAgenda() {
   const events = mergeReminderEvents(query.data?.events ?? [],reminders.data ?? [],localCalendarDate()).filter(event => (!student || event.studentId === student) && (kind === 'todos' || event.kind === kind))
   const today = localCalendarDate()
   return <div className={styles.agenda}>
+    <ShapeosBanner titleId="personal-agenda-title" eyebrow="Agenda do Personal"
+      title={<>Organize a <span>semana</span> dos seus alunos</>}
+      description="Acompanhe treinos, avaliações e lembretes em um só lugar."
+      art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
+        <ellipse cx="180" cy="75" rx="145" ry="34" transform="rotate(-12 180 75)" />
+        <ellipse cx="180" cy="75" rx="122" ry="22" transform="rotate(12 180 75)" />
+        <rect x="145" y="28" width="70" height="84" rx="9" /><path d="M145 51h70M164 18v22M196 18v22" />
+        {[0,1,2].map(row => [0,1,2].map(col => <circle key={`${row}-${col}`} cx={163+col*17} cy={65+row*15} r="1.5" />))}
+        <circle cx="76" cy="91" r="8" /><circle cx="76" cy="91" r="3" /><circle cx="259" cy="28" r="7" />
+      </svg>} />
+    {!query.isError && query.data && reminders.isSuccess && (
+      <dl className={styles.metrics}>
+        {[{ label: 'Treinos na semana', value: events.filter(event => event.kind === 'treino').length, icon: Dumbbell },
+          { label: 'Avaliações na semana', value: events.filter(event => event.kind === 'avaliacao').length, icon: ClipboardCheck },
+          { label: 'Lembretes pendentes', value: events.filter(event => event.kind === 'lembrete' && !event.complete).length, icon: NotebookPen },
+          { label: 'Dias com compromissos', value: new Set(events.map(event => event.date)).size, icon: CalendarDays }].map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon} aria-hidden="true"><Icon size={24} /></span><div><dt>{label}</dt><dd>{value}</dd></div></div>)}
+      </dl>
+    )}
     <section className={styles.toolbar} aria-label="Filtros da agenda">
       <div className={styles.weekControl}>
         <div className={styles.navigation}>
@@ -79,12 +98,6 @@ export function PersonalAgenda() {
     {reminders.isPending && <p role="status" className={styles.notice}>Carregando lembretes…</p>}
     {reminders.isError && <div role="alert" className={styles.error}><p>Não foi possível carregar seus lembretes.</p><Button variant="outline" onClick={()=>void reminders.refetch()}>Recarregar lembretes</Button></div>}
     {!query.isError && query.data && reminders.isSuccess && <>
-      <dl className={styles.metrics}>
-        {[{ label: 'Treinos na semana', value: events.filter(event => event.kind === 'treino').length, icon: Dumbbell },
-          { label: 'Avaliações na semana', value: events.filter(event => event.kind === 'avaliacao').length, icon: ClipboardCheck },
-          { label: 'Lembretes pendentes', value: events.filter(event => event.kind === 'lembrete' && !event.complete).length, icon: NotebookPen },
-          { label: 'Dias com compromissos', value: new Set(events.map(event => event.date)).size, icon: CalendarDays }].map(({label,value,icon:Icon}) => <div key={label}><dt><Icon size={16} aria-hidden="true" />{label}</dt><dd>{value}</dd></div>)}
-      </dl>
       <p className={styles.note} aria-live="polite">{events.length} {events.length === 1 ? 'compromisso nesta semana' : 'compromissos nesta semana'} com os filtros selecionados.</p>
       {!events.length && <p className={styles.notice}>Nenhum compromisso nesta semana com esses filtros.</p>}
       <div className={styles.days}>
@@ -97,7 +110,7 @@ export function PersonalAgenda() {
               {items.map(event => <li key={event.id}><div className={styles.event}>
                 <span className={styles.eventIcon}>{event.kind === 'treino' ? <Dumbbell size={17} aria-hidden="true" /> : event.kind === 'lembrete' ? <NotebookPen size={17} aria-hidden="true" /> : <ClipboardCheck size={17} aria-hidden="true" />}</span>
                 <div className={styles.identity}><strong>{event.kind === 'lembrete' ? event.title : event.studentName}</strong><p className={event.kind === 'lembrete' ? styles.reminderDescription : undefined}>{event.kind === 'lembrete' ? event.reminder.descricao || 'Lembrete pessoal' : event.title}</p><span className={styles.status} data-complete={event.complete}>{event.state}</span></div>
-                {event.kind !== 'lembrete' && <Link href={event.href} className={styles.open} aria-label={`${event.kind === 'treino' ? 'Planejar treino' : 'Ver avaliação'} de ${event.studentName}`}>Ver <ArrowUpRight size={14} aria-hidden="true" /></Link>}
+                {event.kind !== 'lembrete' && <Link href={event.href} className={styles.open} aria-label={`${event.kind === 'treino' ? 'Planejar treino' : 'Ver avaliação'} de ${event.studentName}`}><Eye size={14} aria-hidden="true" /> Ver</Link>}
               </div>{event.kind === 'lembrete' && <ReminderActions reminder={event.reminder} onEdit={()=>setEditor(event.reminder)}/>}</li>)}
             </ul>}
           </section>
