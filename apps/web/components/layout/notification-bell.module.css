@@ -2,9 +2,10 @@
 .trigger:hover, .trigger[aria-expanded="true"] { color: hsl(var(--primary)); background: hsl(var(--primary) / .05); }
 .trigger svg { width: 20px; height: 20px; flex-shrink: 0; }
 .badge { position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border: 1px solid hsl(var(--background)); border-radius: 50%; background: #00dcd0; pointer-events: none; }
-.panel { position: fixed; inset: 80px 24px auto auto; width: min(440px, calc(100vw - 32px)); max-height: min(680px, calc(100dvh - 112px)); margin: 0; padding: 0; overflow: hidden; border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 20px 65px hsl(var(--foreground) / .12); font-family: 'Sora', sans-serif; }
+:global(html body) .panel.panel.panel { position: fixed; inset: 0; width: min(440px, calc(100vw - 32px)); min-width:0; max-width:calc(100vw - 32px); height:fit-content; max-height:calc(100dvh - 32px); box-sizing:border-box; margin:auto; transform:none; translate:none; animation:none; overscroll-behavior:contain; padding: 0; overflow-x:hidden; overflow-y:auto; border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 20px 65px hsl(var(--foreground) / .12); font-family: 'Sora', sans-serif; }
 .panel[open] { display: flex; flex-direction: column; }
-.panel::backdrop { background: hsl(var(--foreground) / .14); backdrop-filter: blur(3px); }
+.panel::backdrop { background:rgba(0,0,0,.5); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+:global(html):has(.panel[open]),:global(body):has(.panel[open]) { overflow:hidden!important; overscroll-behavior:none; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 20px 16px; }
 .header h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em; }
 .header p { margin: 5px 0 0; font-size: 12px; color: hsl(var(--muted-foreground)); }
@@ -45,8 +46,8 @@
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .spinner { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-@media (max-width: 750px) {
-  .panel { inset: auto 12px max(12px, env(safe-area-inset-bottom)); width: auto; max-height: min(640px, calc(100dvh - 32px - env(safe-area-inset-bottom))); border-radius: 20px; }
+@media (max-width: 767px) {
+  :global(html body) .panel.panel.panel { inset:0; margin:auto; width:calc(100vw - 24px); max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); border-radius:20px; }
   .header { padding: 18px 16px 12px; }
   .toolbar { padding: 0 16px 10px; }
   .toolbar button { min-height: 44px; }
@@ -56,7 +57,7 @@
 }
 @media (prefers-reduced-motion: reduce) { .trigger { transition: none; } .spinner { animation: none; } }
 
-:global(html.light [data-admin-route]) .badge { background:#129b89; }
-:global(html.light [data-admin-route]) .unread { background:#e4f3eb; border-color:#d7ded3; }
-:global(html.light [data-admin-route]) .item:hover { background:#eef1e9; }
-:global(html.light [data-admin-route]) .unread:hover { background:#e4f3eb; border-color:#129b89; }
+:global(html.light :is([data-admin-route],.personal-shell)) .badge { background:#129b89; }
+:global(html.light :is([data-admin-route],.personal-shell)) .unread { background:#e4f3eb; border-color:#d7ded3; }
+:global(html.light :is([data-admin-route],.personal-shell)) .item:hover { background:#eef1e9; }
+:global(html.light :is([data-admin-route],.personal-shell)) .unread:hover { background:#e4f3eb; border-color:#129b89; }
