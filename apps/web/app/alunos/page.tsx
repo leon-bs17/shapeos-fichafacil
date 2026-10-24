@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { UserPlus, Users, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react'
+import { UserPlus, Users, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -91,7 +91,7 @@ function AlunosConteudo() {
           <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'}</p></header>
           <div className={styles.tableFrame}><table className={`personal-table ${styles.table}`}><caption className="sr-only">Alunos vinculados, fichas ativas e acesso ao acompanhamento</caption><thead><tr><th scope="col">Aluno</th><th scope="col">Fichas ativas</th><th scope="col">Status</th><th scope="col" className={styles.actionCell}>Ações</th></tr></thead><tbody>
             {visibleStudents?.map(aluno => <tr key={aluno.vinculo_id}>
-              <td data-label="Aluno"><div className="personal-student-identity"><span className={`personal-avatar ${styles.avatar}`} aria-hidden="true">{studentInitials(aluno.nome)}</span><div className={styles.studentIdentity}><div className={styles.nameProfile}><strong>{aluno.nome}</strong><span className={styles.roleBadge}><GraduationCap size={12} aria-hidden="true" />ALUNO</span></div><span className={styles.studentEmail}>{aluno.email}</span></div></div></td>
+              <td data-label="Aluno"><div className="personal-student-identity"><span className={`personal-avatar ${styles.avatar}`} aria-hidden="true">{studentInitials(aluno.nome)}</span><div className={styles.studentIdentity}><div className={styles.nameProfile}><strong>{aluno.nome}</strong></div><span className={styles.studentEmail}>{aluno.email}</span></div></div></td>
               <td data-label="Fichas ativas"><span className="personal-student-count">{aluno.treinos_ativos}</span></td>
               <td data-label="Status"><span className={`personal-status ${styles.status}`} data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
               <td data-label="Ações" className={styles.actionCell}><Button variant="outline" size="sm" className={styles.view} disabled={!aluno.aluno_id} onClick={() => setSelectedStudentId(aluno.aluno_id)} aria-label={`Ver acompanhamento de ${aluno.nome}`}><Eye size={14} strokeWidth={1.75} aria-hidden="true" />Ver</Button></td>
