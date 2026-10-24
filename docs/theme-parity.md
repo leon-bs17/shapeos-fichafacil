@@ -28,9 +28,9 @@ Use `var(--shapeos-banner-gradient)` para consultar o tratamento compartilhado. 
 | Borda / raio | 1 / 13 px | 1 / 13 px |
 | Título | 28 px, peso 700, entrelinha 1,2 | 26 px, peso 700, entrelinha 1,2 |
 | Descrição | 13 px, entrelinha 1,6, margem superior 8 px | Mesmo padrão |
-| Ilustração | 300 px, opacidade 35%, direita 8 px | 300 px (máximo 100% do banner), opacidade 16%, centralizada nos dois eixos |
+| Ilustração | 300 px, opacidade 35%, direita 8 px | 300 px, opacidade 16%, direita −150 px, centralizada verticalmente |
 
-No celular, centralize a ilustração horizontal e verticalmente dentro do banner: `top:50%`, `left:50%` e `transform:translate(-50%,-50%)`. Mantenha o wireframe sem máscara de desvanecimento, com largura de 300 px limitada à largura disponível. Ela permanece decorativa, atrás do texto e sem eventos de ponteiro. Essa adaptação é exclusiva de até 767 px; a ilustração de desktop conserva largura, posição e opacidade.
+No celular, centralize a ilustração **verticalmente**, mantendo o lado direito já definido: `top:50%`, `right:-150px`, `left:auto` e `transform:translateY(-50%)`. Não centralize horizontalmente no banner. Use largura de 300 px, opacidade de 16% e nenhuma máscara de desvanecimento. Ela permanece decorativa, atrás do texto e sem eventos de ponteiro. Essa adaptação é exclusiva de até 767 px; a ilustração de desktop conserva largura, posição e opacidade.
 
 A altura é mínima, não fixa: texto longo ou zoom podem aumentar o banner sem cortar conteúdo. Preserve títulos, descrições, ilustrações e funções de cada página. A paleta muda conforme o modo; as medidas permanecem as mesmas.
 

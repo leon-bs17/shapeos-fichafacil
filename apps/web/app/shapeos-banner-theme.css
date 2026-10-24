@@ -261,9 +261,9 @@ html.dark {
     [data-admin-route] .system-workspace .hero,
     [data-admin-route] .users-hero
   ) :is([data-shapeos-banner-art], [data-approvals-wireframe], .control-heading-art, [class*="wireframe"]) {
-      width:300px!important; max-width:100%!important; height:auto!important;
-      top:50%!important; left:50%!important; right:auto!important; bottom:auto!important;
-      transform:translate(-50%,-50%)!important; opacity:.16!important;
+      width:300px!important; max-width:none!important; height:auto!important;
+      top:50%!important; right:-150px!important; left:auto!important; bottom:auto!important;
+      transform:translateY(-50%)!important; opacity:.16!important;
       -webkit-mask-image:none!important; mask-image:none!important;
     }
     html body :is(
