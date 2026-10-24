@@ -8,7 +8,7 @@ import styles from './personal-search.module.css'
 export const PersonalSearch = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   function PersonalSearch({ className, ...props }, ref) {
     return <div className={styles.field} data-personal-search>
-      <Search size={19} strokeWidth={1.8} aria-hidden="true" />
+      <Search size={17} strokeWidth={1.8} aria-hidden="true" />
       <input {...props} className={className} type="search" ref={ref} />
     </div>
   }

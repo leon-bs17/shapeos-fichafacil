@@ -1,14 +1,14 @@
-/* Match the shared Admin search geometry. The wrapper owns every visual state;
-   generic Personal form rules must never add an inner border or focus ring. */
+/* Admin search appearance at the compact Personal scale.
+   Keep one subtle border in every state; never add an outer ring. */
 :global(html body) .field[data-personal-search] {
-  display:flex; align-items:center; gap:13px; position:relative;
-  width:100%; min-width:0; height:48px; min-height:48px; box-sizing:border-box;
-  padding:0 16px; border:1px solid var(--p-line); border-radius:11px;
-  background:var(--p-panel); color:var(--p-muted); box-shadow:none;
+  display:flex; align-items:center; gap:10px; position:relative;
+  width:100%; min-width:0; height:40px; min-height:40px; box-sizing:border-box;
+  padding:0 12px; border:1px solid var(--p-line); border-radius:13px;
+  background:var(--p-panel); color:var(--p-muted); box-shadow:none; outline:none;
   transition:background-color 150ms ease,border-color 150ms ease;
 }
 :global(html body) .field[data-personal-search]>svg {
-  position:static; transform:none; flex-shrink:0; width:19px; height:19px;
+  position:static; transform:none; flex-shrink:0; width:17px; height:17px;
   color:var(--p-muted); pointer-events:none;
 }
 :global(html body) .field[data-personal-search]>input,
@@ -17,7 +17,7 @@
   height:100%!important; min-height:0!important; margin:0!important; padding:0!important;
   border:0!important; border-radius:0!important; background:transparent!important;
   color:var(--p-ink)!important; font-family:'Sora',sans-serif!important;
-  font-size:13px!important; font-weight:400!important; line-height:1.5!important;
+  font-size:12px!important; font-weight:400!important; line-height:1.5!important;
   outline:none!important; box-shadow:none!important; filter:none!important;
 }
 :global(html body) .field[data-personal-search]>input::placeholder {
@@ -25,10 +25,9 @@
 }
 :global(html.light body) .field[data-personal-search]>input::placeholder { color:#7b8983; }
 :global(html body) .field[data-personal-search]:focus-within {
-  border-color:var(--p-brand);
-}
-:global(html body) .field[data-personal-search]:has(input:focus-visible) {
-  outline:2px solid var(--p-brand); outline-offset:3px;
+  background:color-mix(in srgb,var(--p-brand) 7%,transparent);
+  border-color:color-mix(in srgb,var(--p-brand) 40%,transparent);
+  outline:none; box-shadow:none;
 }
 @media(hover:hover) and (pointer:fine) {
   :global(html body) .field[data-personal-search]:not(:has(input:disabled)):hover {
@@ -39,6 +38,7 @@
 }
 :global(html body) .field[data-personal-search]:has(input:disabled) { opacity:.55; cursor:not-allowed; }
 @media(max-width:767px) {
+  :global(html body) .field[data-personal-search] { height:44px; min-height:44px; }
   :global(html body) .field[data-personal-search]>input,
   :global(html body) .field[data-personal-search]>input:is(:hover,:focus,:focus-visible,:active) { font-size:16px!important; }
   :global(html body) .field[data-personal-search]:not(:has(input:disabled)):active {
