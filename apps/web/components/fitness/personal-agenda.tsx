@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, ChevronLeft, ChevronRight, Dumbbell, ClipboardCheck, ArrowUpRight, NotebookPen, Plus } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, Dumbbell, ClipboardCheck, ArrowUpRight, NotebookPen, Plus, ChevronDown, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AgendaDatePicker } from './agenda-date-picker'
 import { localCalendarDate, formatCalendarDate } from '@/lib/fitness/deadlines'
 import { moveWeek, weekWindow } from '@/lib/fitness/personal-agenda'
 import { fetchPersonalAgenda } from '@/services/personal-agenda'
@@ -12,6 +13,37 @@ import styles from './personal-agenda.module.css'
 import { fitnessRequest } from '@/lib/api/client'
 import { mergeReminderEvents,type PersonalReminder } from '@/lib/fitness/personal-reminders'
 import { ReminderActions,ReminderEditor } from './personal-reminders'
+
+function AgendaFilter({ id, label, value, options, onChange }: { id: string; label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), menu = useRef<HTMLDivElement>(null)
+  const close = () => { setOpen(false); trigger.current?.focus() }
+  useEffect(() => {
+    if (!open) return
+    menu.current?.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus()
+    const outside = (event: PointerEvent) => { if (!field.current?.contains(event.target as Node)) setOpen(false) }
+    document.addEventListener('pointerdown', outside)
+    return () => document.removeEventListener('pointerdown', outside)
+  }, [open])
+  return <div className={styles.filter} ref={field} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false) }}>
+    <button id={id} type="button" ref={trigger} className={styles.filterTrigger} aria-labelledby={`${id}-label ${id}-value`} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-options` : undefined} onClick={() => setOpen(previous => !previous)} onKeyDown={event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setOpen(true) } }}><span id={`${id}-value`}>{options.find(option => option.value === value)?.label ?? options[0]?.label}</span><ChevronDown size={15} aria-hidden="true" /></button>
+    {open && <div id={`${id}-options`} ref={menu} className={styles.filterMenu} role="listbox" aria-label={label} onKeyDown={event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); return }
+      const controls = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="option"]'))
+      const current = controls.indexOf(document.activeElement as HTMLButtonElement)
+      let next = current
+      if (event.key === 'ArrowDown') next = (current + 1) % controls.length
+      else if (event.key === 'ArrowUp') next = (current - 1 + controls.length) % controls.length
+      else if (event.key === 'Home') next = 0
+      else if (event.key === 'End') next = controls.length - 1
+      else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey && event.key !== ' ') {
+        const matches = controls.findIndex((control, index) => index > current && control.textContent?.trim().toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+        next = matches >= 0 ? matches : controls.findIndex(control => control.textContent?.trim().toLocaleLowerCase('pt-BR').startsWith(event.key.toLocaleLowerCase('pt-BR')))
+      } else return
+      if (next >= 0) { event.preventDefault(); controls[next]?.focus() }
+    }}>{options.map(option => <button type="button" key={option.value} role="option" aria-selected={value === option.value} tabIndex={value === option.value ? 0 : -1} onClick={() => { onChange(option.value); close() }}><span>{option.label}</span>{value === option.value && <Check size={14} aria-hidden="true" />}</button>)}</div>}
+  </div>
+}
 
 export function PersonalAgenda() {
   const [anchor, setAnchor] = useState(() => localCalendarDate())
@@ -33,13 +65,14 @@ export function PersonalAgenda() {
         <Button variant="outline" onClick={() => setAnchor(today)}>Semana atual</Button>
       </div>
       <div className={styles.filters}>
-        <div><label htmlFor="agenda-week-date">Ir para a semana de</label><input id="agenda-week-date" type="date" value={anchor} onChange={event => { if (event.target.value) setAnchor(event.target.value) }} /></div>
-        <div><label htmlFor="agenda-student">Aluno</label><select id="agenda-student" value={student} onChange={event => setStudent(event.target.value)}><option value="">Todos os alunos</option>{query.data?.students.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div>
-        <div><label htmlFor="agenda-kind">Compromisso</label><select id="agenda-kind" value={kind} onChange={event => setKind(event.target.value)}><option value="todos">Todos</option><option value="treino">Treinos</option><option value="avaliacao">Avaliações</option><option value="lembrete">Lembretes pessoais</option></select></div>
+        <div><label htmlFor="agenda-week-date">Ir para a semana de</label><AgendaDatePicker id="agenda-week-date" label="Ir para a semana de" value={anchor} align="start" onChange={date => { if (date) setAnchor(date) }} /></div>
+        <div><label id="agenda-student-label" htmlFor="agenda-student">Aluno</label><AgendaFilter id="agenda-student" label="Aluno" value={student} onChange={setStudent} options={[{ value: '', label: 'Todos os alunos' }, ...(query.data?.students.map(item => ({ value: item.id, label: item.name })) ?? [])]} /></div>
+        <div><label id="agenda-kind-label" htmlFor="agenda-kind">Compromisso</label><AgendaFilter id="agenda-kind" label="Compromisso" value={kind} onChange={setKind} options={[{ value: 'todos', label: 'Todos' }, { value: 'treino', label: 'Treinos' }, { value: 'avaliacao', label: 'Avaliações' }, { value: 'lembrete', label: 'Lembretes pessoais' }]} /></div>
       </div>
-      <p className={styles.note}>Treinos das suas fichas e próxima avaliação dos alunos com vínculo ativo. Para agendar ou remarcar, abra o acompanhamento do aluno em Relatórios.</p>
-      <p className={styles.note}>Lembretes pessoais aparecem com o filtro “Todos os alunos”.</p>
+      <div className={styles.toolbarFooter}>
+        <p className={styles.note}>Agende ou remarque treinos e avaliações em Relatórios. Lembretes pessoais aparecem em “Todos os alunos”.</p>
       <div className={styles.toolbarActions}><Link href="/relatorios" className="personal-command">Planejar em Relatórios <ArrowUpRight size={15} aria-hidden="true" /></Link><Button variant="outline" onClick={()=>setEditor('new')}><Plus size={15} aria-hidden="true"/>Novo lembrete</Button></div>
+      </div>
     </section>
     {query.isPending && <p role="status" className={styles.notice}>Carregando agenda…</p>}
     {query.isError && <div role="alert" className={styles.error}><p>{query.error.message}</p><Button variant="outline" onClick={() => void query.refetch()}>Tentar novamente</Button></div>}
