@@ -49,11 +49,32 @@
 .legend span { display:inline-flex; align-items:center; gap:5px; }
 .legend i { width:7px; height:7px; border-radius:50%; background:var(--p-brand); }
 .legend span+span i { background:var(--p-muted); }
-.chart { display:block; width:100%; height:156px; min-height:0; margin-top:6px; overflow:visible; }
-.chart text { fill:var(--p-muted); font-size:11px; }
-.gridLine { stroke:var(--p-line); stroke-width:1; stroke-dasharray:3 4; }
-.currentLine { fill:none; stroke:var(--p-brand); stroke-width:2; stroke-linejoin:round; }
-.previousLine { fill:none; stroke:var(--p-muted); stroke-width:1.5; stroke-dasharray:5 5; opacity:.8; }
+.frequencyHeading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:12px; }
+.page .frequencyHeading h2 { margin:0; font-size:13px; font-weight:600; line-height:1.5; }
+.frequencyTotal { display:flex; flex-direction:column; flex-shrink:0; text-align:right; gap:3px; }
+.frequencyTotal strong { color:var(--p-brand); font-size:28px; font-weight:650; line-height:1.1; font-variant-numeric:tabular-nums; }
+.frequencyTotal span { font-size:10px; color:var(--p-ink); }
+.frequencyTotal small { font-size:10px; color:var(--p-muted); }
+.frequencyPanel>.legend { justify-content:flex-end; }
+.frequencyScroll { overflow-x:auto; overscroll-behavior-x:contain; margin-top:6px; border-radius:8px; }
+.frequencyScroll:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+.frequencyPlot { position:relative; }
+.weeklyChart { display:block; width:100%; height:auto; min-height:170px; max-height:240px; overflow:visible; }
+.weeklyChart text { fill:var(--p-muted); font-family:inherit; font-size:11px; }
+.gridLine { stroke:var(--p-line); stroke-width:1; stroke-dasharray:2 5; }
+.currentBar { fill:var(--p-brand); }
+.previousBar { fill:var(--p-muted); opacity:.65; }
+.weeklyChart .currentValue { fill:var(--p-ink); font-size:12px; font-weight:600; }
+.weeklyChart .previousValue { fill:var(--p-muted); font-size:11px; }
+.weeklyChart .partialWeek { font-size:9px; }
+.weekTarget { fill:transparent; stroke:transparent; stroke-width:1; transition:fill 150ms ease,stroke 150ms ease; }
+.weekGroup { cursor:pointer; outline:none; }
+.weekGroup[data-active=true] .weekTarget { fill:color-mix(in srgb,var(--p-brand) 7%,transparent); stroke:color-mix(in srgb,var(--p-brand) 40%,transparent); }
+.weekGroup:focus-visible .weekTarget { stroke:var(--p-brand); stroke-width:2; }
+.frequencyTooltip { position:absolute; top:0; transform:translateX(-50%); display:grid; gap:5px; width:184px; max-width:calc(100% - 8px); padding:10px 12px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); color:var(--p-muted); font-size:10px; line-height:1.5; pointer-events:none; z-index:2; }
+.frequencyTooltip strong { color:var(--p-ink); font-weight:600; }
+.frequencyTooltip b { color:var(--p-ink); font-weight:500; }
+.frequencyHelp { color:var(--p-muted); font-size:10px; line-height:1.6; margin:6px 0 0; }
 .chartData { margin-top:7px; font-size:10px; color:var(--p-muted); }
 .chartData summary { cursor:pointer; width:fit-content; border-radius:6px; padding:4px 0; }
 .dailyData { max-height:140px; overflow:auto; padding:4px; }
@@ -116,7 +137,7 @@
  .filters { grid-template-columns:minmax(0,1fr); padding:14px; gap:14px; }.periodGroup { border-left:0; padding-left:0; }.periods button { min-height:44px; }.tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.page .tabs button { min-height:44px; padding:8px; font-size:11px; }
  .picker .pickerSearch input,.picker .pickerSearch input:focus { font-size:16px; }
  .metrics { padding:14px 0; }.metrics>div { padding:0 10px; gap:8px; }.metrics svg { width:36px; height:36px; padding:8px; border-radius:11px; }.metrics dd { font-size:22px; }.metrics dt { font-size:10px; }.metrics span { font-size:9px; }
- .panel,.sessionPanel { padding:14px; }.sessionPanel { padding-bottom:0; }.chart { height:140px; min-height:0; }.panelHeading { gap:6px; }.tableHeading { margin-bottom:12px; }
+ .panel,.sessionPanel { padding:14px; }.sessionPanel { padding-bottom:0; } .frequencyHeading { gap:10px; }.frequencyTotal strong { font-size:26px; }.weeklyChart { min-height:180px; }.panelHeading { gap:6px; }.tableHeading { margin-bottom:12px; }
  .table,.table tbody { display:block; }.table thead { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
  .table tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px 12px; border-bottom:1px solid var(--p-line); padding:14px; }.table tr:last-child { border-bottom:0; }
  .table td { display:block; min-width:0; border:0; padding:0; }.table td:first-child { grid-column:1/-1; }.table td:last-child { justify-self:end; align-self:end; }.mobileLabel { display:block; color:var(--p-muted); font-size:10px; margin-bottom:5px; }
