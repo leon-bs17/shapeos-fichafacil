@@ -9,7 +9,7 @@
 .metricIcon svg { width:24px; height:24px; }
 :global(html body .personal-content) .page .panel { border-radius:16px; background:var(--p-panel); overflow:visible; }
 :global(html body .personal-content) .page .table { width:100%; min-width:0; table-layout:fixed; }
-:global(html body .personal-content) .page .table th { padding:11px 20px; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:.09em; color:var(--p-muted); }
+:global(html body .personal-content) .page .table th { padding:11px 20px; font-size:10px; font-weight:500; line-height:1.5; text-transform:uppercase; letter-spacing:.04em; color:var(--p-muted); }
 :global(html body .personal-content) .page .table td { padding:12px 20px; height:auto; font-size:12px; }
 :global(html body .personal-content) .page .table :is(th,td):first-child { width:50%; }
 :global(html body .personal-content) .page .table :is(th,td):nth-child(2) { width:17%; text-align:center; }
