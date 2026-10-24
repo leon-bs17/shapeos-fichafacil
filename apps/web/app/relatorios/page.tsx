@@ -44,7 +44,7 @@ function RelatoriosConteudo() {
   const heading = <PersonalPageHeader icon="relatorios" title="Relatórios" description="Sessões, evolução e avaliações dos seus alunos." />
   return <PersonalWorkspace page="relatorios">{heading}<div className={styles.page}>
     <section className={styles.banner} data-shapeos-banner>
-      <div><h2>Acompanhamento dos <span>alunos</span></h2><p>Veja a evolução dos treinos, frequência e avaliações em um só lugar.</p></div>
+      <div><p data-shapeos-banner-label>Relatórios do Personal</p><h2>Acompanhamento dos <span>alunos</span></h2><p>Veja a evolução dos treinos, frequência e avaliações em um só lugar.</p></div>
       <svg className={styles.wireframe} viewBox="0 0 360 140" aria-hidden="true">
         <g fill="none" stroke="currentColor" strokeWidth=".8">
           {[0, 1, 2, 3, 4].map(index => <path key={index} d={`M10 ${105 + index * 5} C70 ${80 + index * 5},100 ${120 + index * 5},160 ${65 + index * 5} S240 ${90 + index * 5},350 ${22 + index * 5}`} />)}
