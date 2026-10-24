@@ -11,7 +11,7 @@ import {
   workingSets,
   type Session,
 } from "@/services/fitness";
-export function ProgressPanel({ sessions, compact = false, periodDays }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays }) {
+export function ProgressPanel({ sessions, compact = false, periodDays, hideMetrics = false, metricsOnly = false }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays; hideMetrics?: boolean; metricsOnly?: boolean }) {
   const periodWindow = periodDays == null ? null : comparisonWindows(periodDays)
   const scopedSessions = periodWindow ? sessions.filter(session => {
     const date = Date.parse(session.inicio)
@@ -74,9 +74,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays }: { sessi
     },
     { label: "Exercícios acompanhados", value: groups.length, Icon: Trophy },
   ];
-  return (
-    <div data-compact-progress={compact || undefined} className="space-y-6">
-      {compact ? <dl className={reportStyles.progressMetrics} aria-label="Indicadores de evolução do aluno">
+  const metricsContent = (compact ? <dl className={reportStyles.progressMetrics} aria-label="Indicadores de evolução do aluno">
         {metrics.map(m => <div key={m.label}>
           <span className={reportStyles.progressMetricIcon} aria-hidden="true"><m.Icon size={24} strokeWidth={1.75} /></span>
           <div><dt>{m.label}</dt><dd>{m.value}</dd></div>
@@ -89,7 +87,11 @@ export function ProgressPanel({ sessions, compact = false, periodDays }: { sessi
             <p className="text-xs text-muted-foreground mt-2">{m.label}</p>
           </div>
         ))}
-      </div>}
+      </div>)
+  if (metricsOnly) return metricsContent
+  return (
+    <div data-compact-progress={compact || undefined} className="space-y-6">
+      {!hideMetrics && metricsContent}
       <section data-consistency data-filtered-period={periodDays} className="rounded-2xl border bg-card p-5">
         <h2 className="font-semibold mb-4">{periodDays ? `Consistência · ${periodDays} dias` : "Consistência · últimas 4 semanas"}</h2>
         <div className="grid grid-cols-7 gap-2" tabIndex={periodDays ? 0 : undefined} role={periodDays ? "region" : undefined} aria-label={periodDays ? `Dias com treino no período de ${periodDays} dias` : undefined}>

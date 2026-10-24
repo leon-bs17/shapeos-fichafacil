@@ -19,8 +19,8 @@ function SessionStatus({ session }: { session: Session }) {
   const done = session.status === 'CONCLUIDO'
   return <span className={styles.status} data-complete={done}>{done ? <CircleCheck size={13} aria-hidden="true" /> : <Clock3 size={13} aria-hidden="true" />}{done ? 'Finalizado' : 'Em andamento'}</span>
 }
-export function PersonalReportOverview({ alunoId, studentName, days, onAssessments }: {
-  alunoId: string; studentName: string; days: PeriodDays; onAssessments: () => void
+export function PersonalReportOverview({ alunoId, studentName, days, onAssessments, hideSessionMetric = false }: {
+  alunoId: string; studentName: string; days: PeriodDays; onAssessments: () => void; hideSessionMetric?: boolean
 }) {
   const query = useQuery({ queryKey: ['personal-report-overview', alunoId, days], queryFn: ({ signal }) => fetchPersonalReport(alunoId, days, signal) })
   const [page, setPage] = useState(1)
@@ -42,12 +42,12 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
   const weekday = (date: string) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')
   const window = query.data.window
   return <div className={styles.overview}>
-    <dl className={styles.metrics} aria-label="Indicadores do período">
+    <dl className={`${styles.metrics} ${hideSessionMetric ? styles.summaryMetrics : ''}`} aria-label="Indicadores do período">
       {[
         { icon: ClipboardList, label: 'Sessões concluídas', value: number(comparison.current.sessions), note: `Anterior: ${number(comparison.previous.sessions)}` },
         { icon: Target, label: 'Conclusão das sessões', value: report.completionRate == null ? '—' : report.completionRate + '%', note: current.length ? `${comparison.current.sessions} de ${current.length} sessões iniciadas` : 'Nenhuma sessão iniciada' },
         { icon: FileText, label: 'Avaliações no período', value: number(report.assessments.length), note: `${formatCalendarDate(window.startDate)} a ${formatCalendarDate(window.endDate)}` },
-      ].map(metric => <div key={metric.label}><metric.icon size={25} strokeWidth={1.6} aria-hidden="true" /><div><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.note}</span></div></div>)}
+      ].filter((_, index) => !hideSessionMetric || index > 0).map(metric => <div key={metric.label}><metric.icon size={25} strokeWidth={1.6} aria-hidden="true" /><div><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.note}</span></div></div>)}
     </dl>
     <div className={styles.charts}>
       <section className={`${styles.panel} ${styles.frequencyDays}`} aria-labelledby={chartId + '-heading'}>

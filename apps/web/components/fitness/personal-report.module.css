@@ -239,3 +239,9 @@
  .progressMetrics dd { font-size:24px; }
  .progressMetrics dt { font-size:10px; }
 }
+
+.topIndicators { container-type:inline-size; min-width:0; padding:0; background:transparent; }
+.indicatorContext { margin:0; padding:0 20px; color:var(--p-muted); font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
+.indicatorError { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--p-muted); font-size:11px; }.indicatorError p { margin:0; }
+.summaryMetrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media(max-width:639px) { .indicatorContext { padding:0 10px; font-size:10px; } }

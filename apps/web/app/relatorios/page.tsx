@@ -10,6 +10,7 @@ import { useRegistrosDoAluno } from '@/hooks/use-registros'
 import { formatarData } from '@/lib/utils'
 import { StudentReport } from '@/components/fitness/student-report'
 import { PersonalReportOverview } from '@/components/fitness/personal-report-overview'
+import { PersonalReportIndicators } from '@/components/fitness/personal-report-indicators'
 import { ReportStudentPicker } from '@/components/fitness/report-student-picker'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
@@ -67,13 +68,14 @@ function RelatoriosConteudo() {
           </div></div>
         </section>
         {!student ? <div className={styles.state}><Users size={26} aria-hidden="true" /><h2>Escolha um aluno para começar</h2><p>Selecione o aluno acima para consultar sessões, frequência e avaliações.</p></div> : <>
+          <PersonalReportIndicators key={'indicators:' + alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} />
           <nav className={styles.tabs} aria-label="Seções do relatório">
             {[['evolucao', 'Resumo'], ['analise', 'Cargas e medidas'], ['agenda', 'Agenda e adesão'], ['avaliacao', 'Avaliações físicas']].map(([id, label]) =>
               <button type="button" key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(alunoId, id)}>{label}</button>)}
           </nav>
-          {tab === 'evolucao' ? <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} onAssessments={() => navigate(alunoId, 'avaliacao')} /> :
+          {tab === 'evolucao' ? <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} hideSessionMetric onAssessments={() => navigate(alunoId, 'avaliacao')} /> :
             <div className="personal-report-body">
-              <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation periodDays={days} />
+              <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation periodDays={days} hideProgressMetrics />
               {tab === 'analise' && <><h2>Histórico de cargas</h2>
                 {isLoading ? <p role="status">Carregando registros de exercícios…</p> :
                   erroRegistros ? <div className={styles.state} role="alert"><p>Não foi possível carregar o histórico de cargas.</p><button type="button" onClick={() => void recarregarRegistros()}>Tentar novamente</button></div> :

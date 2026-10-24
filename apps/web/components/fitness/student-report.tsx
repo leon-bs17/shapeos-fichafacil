@@ -15,7 +15,7 @@ import {
   sessionsForStudent,
   workoutsForStudent,
 } from "@/services/fitness";
-export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false, periodDays }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean; periodDays?: PeriodDays }) {
+export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false, periodDays, hideProgressMetrics = false }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean; periodDays?: PeriodDays; hideProgressMetrics?: boolean }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<string>(initialTab);
   const data = useQuery({
@@ -66,7 +66,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
           </Button>
         ))}
       </nav>}
-      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} periodDays={periodDays} /><ProgressPanel sessions={sessions} compact={hideNavigation} periodDays={periodDays} /></>}
+      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} periodDays={periodDays} /><ProgressPanel sessions={sessions} compact={hideNavigation} periodDays={periodDays} hideMetrics={hideProgressMetrics} /></>}
       {tab === "agenda" && (
         <AgendaPanel
           alunoId={alunoId}
