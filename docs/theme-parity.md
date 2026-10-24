@@ -6,7 +6,9 @@ Todo tratamento visual do modo escuro precisa de uma versão equivalente no modo
 
 ## Banners
 
-O arquivo `apps/web/app/shapeos-banner-theme.css`, importado no layout raiz, define o degradê compartilhado. Novos banners devem usar `data-shapeos-banner` ou a classe `shapeos-banner`, em qualquer perfil ou página. Os banners existentes do Admin também estão mapeados nessa folha.
+O arquivo `apps/web/app/shapeos-banner-theme.css`, importado no layout raiz, define o padrão global de banner com base em **Admin → Aprovações**. Vale para os banners existentes e os próximos banners, em todos os tipos de acesso. Os banners legados do Admin e os dois banners do Personal estão mapeados nessa folha.
+
+Novos banners devem usar `ShapeosBanner`, de `apps/web/components/layout/shapeos-banner.tsx`. Para marcação externa ou legada, use `data-shapeos-banner` (ou `shapeos-banner`), um `h1`/`h2`, a descrição logo após o título e `data-shapeos-banner-art` para a ilustração. O componente não implementa consultas, controles, navegação ou permissões.
 
 | Propriedade | Claro | Escuro |
 | --- | --- | --- |
@@ -16,7 +18,28 @@ O arquivo `apps/web/app/shapeos-banner-theme.css`, importado no layout raiz, def
 | Forma e posição | Elipse em 80% 65% | Elipse em 80% 65% |
 | Paradas | 0%, 48%, 100% | 0%, 48%, 100% |
 
-Use `var(--shapeos-banner-gradient)` para consultar o tratamento compartilhado. Não duplique cores locais por perfil. A camada de banner prevalece sobre as antigas regras de fundo das páginas, inclusive aquelas com `!important`. Ela altera apenas o fundo: texto, wireframes, medidas e responsividade continuam sob responsabilidade do componente.
+Use `var(--shapeos-banner-gradient)` para consultar o tratamento compartilhado. Não duplique cores locais por perfil. A camada de banner prevalece sobre as antigas regras de fundo das páginas, inclusive aquelas com `!important`. Ela centraliza também dimensões, tipografia, borda e posicionamento das ilustrações. Não crie exceções locais para compactar ou ampliar o banner de um perfil.
+
+| Propriedade | Desktop, a partir de 768 px | Celular, até 767 px |
+| --- | --- | --- |
+| Largura | 100% do espaço disponível | 100% do espaço disponível |
+| Altura mínima | 130 px | 150 px |
+| Espaçamento vertical / lateral | 24 / 28 px | 22 / 18 px |
+| Borda / raio | 1 / 13 px | 1 / 13 px |
+| Título | 28 px, peso 700, entrelinha 1,2 | 26 px, peso 700, entrelinha 1,2 |
+| Descrição | 13 px, entrelinha 1,6, margem superior 8 px | Mesmo padrão |
+| Ilustração | 300 px, opacidade 35%, direita 8 px | 300 px, opacidade 16%, direita −150 px |
+
+A altura é mínima, não fixa: texto longo ou zoom podem aumentar o banner sem cortar conteúdo. Preserve títulos, descrições, ilustrações e funções de cada página. A paleta muda conforme o modo; as medidas permanecem as mesmas.
+
+```tsx
+<ShapeosBanner
+  title={<>Visão geral dos <span>seus alunos</span></>}
+  description="Alunos, fichas e evolução. Tudo em um só lugar."
+  titleId="overview-banner-title"
+  art={<PersonalOverviewWireframe />}
+/>
+```
 
 ## Demais componentes
 
