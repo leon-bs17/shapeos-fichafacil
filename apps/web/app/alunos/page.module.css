@@ -49,3 +49,21 @@
  :global(html body .personal-content) .page .table .avatar { width:34px; height:34px; min-width:34px; flex-basis:34px; }
  :global(html body .personal-content) .page .table .view { width:100%; min-width:0; height:44px; min-height:44px; }
 }
+
+:global(html body .personal-content) .inviteModal:global([data-personal-modal]) { width:520px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); padding:18px; border-radius:13px; box-shadow:none; }
+:global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) { padding-bottom:12px; margin-bottom:12px; gap:12px; }
+:global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) h2 { font-size:16px; line-height:1.5; font-weight:600; }
+:global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) button { width:36px; min-width:36px; height:36px; min-height:36px; padding:0; }
+.inviteForm { display:grid; gap:12px; min-width:0; }
+.inviteField { display:grid; gap:6px; min-width:0; }
+:global(html body .personal-content) .inviteModal .inviteField label { font-size:11px; font-weight:500; letter-spacing:normal; text-transform:none; margin:0; }
+:global(html body .personal-content) .inviteModal .inviteField input { box-sizing:border-box; width:100%; min-width:0; height:36px; min-height:36px; padding:7px 10px; font-size:12px; line-height:1.5; border-radius:13px; }
+.inviteNote { margin:0; font-size:11px; line-height:1.6; color:var(--p-muted); }
+.inviteActions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; padding-top:12px; border-top:1px solid var(--p-line); }
+:global(html body .personal-content) .inviteModal .inviteActions button { height:auto; min-height:36px; padding:7px 10px; border-radius:13px; font-size:11px; }
+@media(max-width:639px) {
+ :global(html body .personal-content) .inviteModal:global([data-personal-modal]) { max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:16px; }
+ :global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) button { width:44px; min-width:44px; height:44px; min-height:44px; }
+ :global(html body .personal-content) .inviteModal .inviteField input { height:44px; min-height:44px; font-size:16px; }
+ :global(html body .personal-content) .inviteModal .inviteActions button { flex:1; min-height:44px; }
+}

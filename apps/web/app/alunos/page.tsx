@@ -89,12 +89,12 @@ function AlunosConteudo() {
         </section>}
       </div>
       {selectedStudent && <StudentFollowUpPanel key={selectedStudent.vinculo_id} student={selectedStudent} onClose={() => setSelectedStudentId('')} />}
-      <Modal personal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Convidar Aluno">
-        <div className="space-y-4">
-          <div className="space-y-1.5">
+      <Modal personal className={styles.inviteModal} open={modalAberto} onClose={() => setModalAberto(false)} titulo="Convidar Aluno">
+        <div className={styles.inviteForm}>
+          <div className={styles.inviteField}>
             <Label htmlFor="convite-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail do aluno</Label>
             <Input id="convite-email" type="email" placeholder="aluno@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10" />
-            <p className="text-muted-foreground text-xs">
+            <p className={styles.inviteNote}>
               Se o aluno ainda não tem conta, ele recebera um e-mail de convite.
             </p>
           </div>
@@ -103,7 +103,7 @@ function AlunosConteudo() {
               <p className="text-destructive text-sm">{erro}</p>
             </div>
           ) : null}
-          <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <div className={styles.inviteActions}>
             <Button variant="outline" onClick={() => setModalAberto(false)} className="rounded-xl">Cancelar</Button>
             <Button onClick={convidar} disabled={ocupado || !email.includes('@')} className="rounded-xl shadow-sm">
               {ocupado ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
