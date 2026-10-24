@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,13 +35,6 @@ export function AssessmentPanel({
     [a, setA] = useState(""),
     [b, setB] = useState(""),
     [urls, setUrls] = useState<string[]>([]);
-  const notesField = useRef<HTMLTextAreaElement>(null);
-  useLayoutEffect(() => {
-    const field = notesField.current;
-    if (!compact || !field) return;
-    field.style.height = "auto";
-    field.style.height = `${Math.min(field.scrollHeight + 2, 240)}px`;
-  }, [compact, notes]);
   useEffect(() => {
     let cancelled = false;
     setUrls([]);
@@ -186,7 +179,6 @@ export function AssessmentPanel({
           <Label htmlFor="assessment-notes">Observações e metas</Label>
           <textarea
             id="assessment-notes"
-            ref={notesField}
             rows={compact ? 2 : undefined}
             maxLength={2000}
             className="w-full rounded-md border bg-background p-3"
