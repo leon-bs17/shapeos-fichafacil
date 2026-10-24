@@ -22,7 +22,7 @@
   border-radius:13px; background:var(--p-panel); color:var(--p-ink);
   padding:7px 10px; font-size:12px; line-height:1.5; box-shadow:none;
 }
-:global(html body .personal-content) .compact textarea { min-height:72px; resize:vertical; }
+:global(html body .personal-content) .compact textarea { min-height:56px; max-height:240px; resize:vertical; overflow-y:auto; }
 :global(html body .personal-content) .compact :is(input,select,textarea):focus { outline:none; box-shadow:none; border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
 :global(html body .personal-content) .compact :global(button.btn-tech) { min-height:36px; padding:7px 10px; font-size:11px; width:fit-content; }
 :global(html body .personal-content) .compact caption { margin-bottom:10px; font-size:13px; }
@@ -38,3 +38,33 @@
 
 :global(html body .personal-content) .assessments { display:grid; gap:14px; min-width:0; }
 :global(html body .personal-content) .assessments>* { margin-top:0; margin-bottom:0; }
+
+/* Keep the date and numeric fields on one compact row when the card has room. */
+:global(html body .personal-content) .compact[data-assessment-panel] { container-type:inline-size; }
+.measurements { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:end; gap:12px; min-width:0; }
+.measurements>div,.measureInputs>div { min-width:0; }
+.assessmentDate { grid-column:1/-1; }
+.measureInputs { display:contents; }
+.measurements .dateField { max-width:none; }
+:global(html body .personal-content) .compact .measurements input[type=number] {
+  height:36px!important; min-height:36px!important; padding:7px 10px!important;
+  font-size:12px!important; font-variant-numeric:tabular-nums; appearance:textfield; -moz-appearance:textfield;
+}
+:global(html body .personal-content) .compact .measurements input[type=number]::-webkit-inner-spin-button,
+:global(html body .personal-content) .compact .measurements input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+:global(html body .personal-content) .compact .measurements :global(button[aria-haspopup=dialog]) { height:36px; min-height:36px; }
+:global(html body .personal-content) .compact :global(textarea#assessment-notes) { height:56px; min-height:56px; padding:7px 10px; font-size:12px; line-height:1.5; }
+.formActions { display:flex; justify-content:flex-end; padding-top:4px; }
+:global(html body .personal-content) .compact .formActions .saveButton {
+  color:var(--p-brand); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line));
+  background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));
+}
+@container(min-width:760px) {
+  .measurements { grid-template-columns:minmax(150px,1.2fr) repeat(4,minmax(0,1fr)); }
+  .assessmentDate { grid-column:auto; }
+}
+@media(max-width:639px) {
+  :global(html body .personal-content) .compact .measurements input[type=number] { height:44px!important; min-height:44px!important; font-size:16px!important; }
+  :global(html body .personal-content) .compact .measurements :global(button[aria-haspopup=dialog]) { height:44px; min-height:44px; }
+  :global(html body .personal-content) .compact :global(textarea#assessment-notes) { font-size:16px; }
+}

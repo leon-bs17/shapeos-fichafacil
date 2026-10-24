@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +35,13 @@ export function AssessmentPanel({
     [a, setA] = useState(""),
     [b, setB] = useState(""),
     [urls, setUrls] = useState<string[]>([]);
+  const notesField = useRef<HTMLTextAreaElement>(null);
+  useLayoutEffect(() => {
+    const field = notesField.current;
+    if (!compact || !field) return;
+    field.style.height = "auto";
+    field.style.height = `${Math.min(field.scrollHeight + 2, 240)}px`;
+  }, [compact, notes]);
   useEffect(() => {
     let cancelled = false;
     setUrls([]);
@@ -139,7 +146,8 @@ export function AssessmentPanel({
       )}
       <section className="rounded-2xl border bg-card p-5 space-y-4" data-assessment-form>
         <h2 className="text-lg font-semibold">Nova avaliação</h2>
-        <div>
+        <div className={compact ? styles.measurements : undefined}>
+        <div className={compact ? styles.assessmentDate : undefined}>
           <Label htmlFor="assessment-date">Data</Label>
           <div className={compact ? styles.dateField : undefined}>{compact ? <AgendaDatePicker id="assessment-date" label="Data da avaliação" value={date} disabled={busy} align="start" onChange={setDate} /> : <Input
             id="assessment-date"
@@ -148,7 +156,7 @@ export function AssessmentPanel({
             onChange={(e) => setDate(e.target.value)}
           />}</div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 ${compact ? styles.measureInputs : ""}`}>
           {(["peso", "cintura", "quadril", "braco"] as const).map((k) => (
             <div key={k}>
               <Label htmlFor={`measure-${k}`}>
@@ -164,6 +172,7 @@ export function AssessmentPanel({
               <Input
                 id={`measure-${k}`}
                 type="number"
+                inputMode="decimal"
                 min={1}
                 step="0.1"
                 value={values[k]}
@@ -172,10 +181,13 @@ export function AssessmentPanel({
             </div>
           ))}
         </div>
+        </div>
         <div>
           <Label htmlFor="assessment-notes">Observações e metas</Label>
           <textarea
             id="assessment-notes"
+            ref={notesField}
+            rows={compact ? 2 : undefined}
             maxLength={2000}
             className="w-full rounded-md border bg-background p-3"
             value={notes}
@@ -201,9 +213,11 @@ export function AssessmentPanel({
             </p>
           </div>
         )}
-        <Button disabled={busy} onClick={() => void save()}>
-          {busy ? "Salvando…" : "Salvar avaliação"}
-        </Button>
+        <div className={compact ? styles.formActions : undefined}>
+          <Button className={compact ? styles.saveButton : undefined} disabled={busy} onClick={() => void save()}>
+            {busy ? "Salvando…" : "Salvar avaliação"}
+          </Button>
+        </div>
         {error && (
           <p role="alert" className="text-destructive text-sm">
             {error}
