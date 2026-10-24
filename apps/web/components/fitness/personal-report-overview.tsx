@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CalendarDays, ChevronLeft, ChevronRight, CircleCheck, Clock3, ClipboardList, Eye, FileText, Target } from 'lucide-react'
 import { Modal } from '@/components/ui/modal'
@@ -9,12 +9,12 @@ import { fetchPersonalReport } from '@/services/personal-report'
 import { personalReportSummary } from '@/lib/fitness/personal-report'
 import { formatCalendarDate } from '@/lib/fitness/deadlines'
 import type { PeriodDays } from '@/lib/fitness/period-comparison'
-import { WeeklyTrainingFrequency } from './weekly-training-frequency'
 import styles from './personal-report.module.css'
 
 const PAGE_SIZE = 4
 const number = (value: number) => value.toLocaleString('pt-BR', { maximumFractionDigits: 1 })
 const dateTime = (date: string) => new Date(date).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+const shortDate = (date: string) => formatCalendarDate(date).slice(0, 5)
 function SessionStatus({ session }: { session: Session }) {
   const done = session.status === 'CONCLUIDO'
   return <span className={styles.status} data-complete={done}>{done ? <CircleCheck size={13} aria-hidden="true" /> : <Clock3 size={13} aria-hidden="true" />}{done ? 'Finalizado' : 'Em andamento'}</span>
@@ -25,12 +25,15 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
   const query = useQuery({ queryKey: ['personal-report-overview', alunoId, days], queryFn: ({ signal }) => fetchPersonalReport(alunoId, days, signal) })
   const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<Session | null>(null)
+  const chartId = useId()
   if (query.isPending) return <div className={styles.state} role="status">Carregando sessões e avaliações…</div>
   if (query.isError) return <div className={styles.state} role="alert"><p>{query.error.message}</p><button type="button" onClick={() => void query.refetch()}>Tentar novamente</button></div>
   const report = personalReportSummary(query.data.sessions, query.data.assessments, query.data.window)
   const { comparison, current, latest, points } = report
   const pages = Math.max(1, Math.ceil(current.length / PAGE_SIZE)), currentPage = Math.min(page, pages), start = (currentPage - 1) * PAGE_SIZE
   const pageNumbers = Array.from(new Set([1, currentPage - 1, currentPage, currentPage + 1, pages].filter(value => value >= 1 && value <= pages))).sort((a, b) => a - b)
+  const max = Math.max(1, ...points.flatMap(point => [point.current, point.previous]))
+  const plot = (key: 'current' | 'previous') => points.map((point, index) => `${44 + index / Math.max(1, points.length - 1) * 632},${146 - point[key] / max * 120}`).join(' ')
   const window = query.data.window
   return <div className={styles.overview}>
     <dl className={styles.metrics} aria-label="Indicadores do período">
@@ -41,7 +44,20 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
       ].map(metric => <div key={metric.label}><metric.icon size={25} strokeWidth={1.6} aria-hidden="true" /><div><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.note}</span></div></div>)}
     </dl>
     <div className={styles.charts}>
-      <WeeklyTrainingFrequency points={points} />
+      <section className={styles.panel} aria-labelledby={chartId + '-heading'}>
+        <header className={styles.panelHeading}><h2 id={chartId + '-heading'}>Frequência de treinos</h2><div className={styles.legend}><span><i />Atual</span><span><i />Anterior</span></div></header>
+        <p className={styles.note}>Sessões concluídas por dia, comparadas ao mesmo ponto do período anterior.</p>
+        <svg className={styles.chart} viewBox="0 0 720 176" role="img" aria-labelledby={chartId + '-title ' + chartId + '-description'}>
+          <title id={chartId + '-title'}>Frequência de treinos nos últimos {days} dias</title>
+          <desc id={chartId + '-description'}>{comparison.current.sessions} sessões concluídas no período atual; {comparison.previous.sessions} no anterior. Os dois períodos têm {days} dias.</desc>
+          {[0, 1, 2].map(index => <g key={index}><line x1="44" y1={26 + index * 60} x2="676" y2={26 + index * 60} className={styles.gridLine} /><text x="30" y={30 + index * 60} textAnchor="end">{number(max * (1 - index / 2))}</text></g>)}
+          <polyline points={plot('previous')} className={styles.previousLine} />
+          <polyline points={plot('current')} className={styles.currentLine} />
+          {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={44 + index / Math.max(1, points.length - 1) * 632} y="170" textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
+        </svg>
+        <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)}</p>
+        <details className={styles.chartData}><summary>Dados do gráfico</summary><div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div></details>
+      </section>
       <section className={styles.panel} aria-label="Última avaliação">
         <header className={styles.panelHeading}><h2>Última avaliação</h2><button type="button" className={styles.textAction} onClick={onAssessments} aria-label="Ver avaliações do aluno"><CalendarDays size={15} aria-hidden="true" />Ver avaliações</button></header>
         {latest ? <><p className={styles.note}>{formatCalendarDate(latest.data)}{latest.data < window.startDate ? ' · Antes do período selecionado' : ''}</p><dl className={styles.measures}>
