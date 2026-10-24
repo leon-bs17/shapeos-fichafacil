@@ -57,13 +57,16 @@
 .inviteForm { display:grid; gap:12px; min-width:0; }
 .inviteField { display:grid; gap:6px; min-width:0; }
 :global(html body .personal-content) .inviteModal .inviteField label { font-size:11px; font-weight:500; letter-spacing:normal; text-transform:none; margin:0; }
-:global(html body .personal-content) .inviteModal .inviteField input { box-sizing:border-box; width:100%; min-width:0; height:36px; min-height:36px; padding:7px 10px; font-size:12px; line-height:1.5; border-radius:13px; }
+:global(html body .personal-content) .inviteModal .inviteField input:global(#convite-email) { box-sizing:border-box; width:100%; min-width:0; height:36px; min-height:36px; padding:7px 10px; font-size:12px; line-height:1.5; border-radius:13px; }
 .inviteNote { margin:0; font-size:11px; line-height:1.6; color:var(--p-muted); }
 .inviteActions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; padding-top:12px; border-top:1px solid var(--p-line); }
 :global(html body .personal-content) .inviteModal .inviteActions button { height:auto; min-height:36px; padding:7px 10px; border-radius:13px; font-size:11px; }
 @media(max-width:639px) {
  :global(html body .personal-content) .inviteModal:global([data-personal-modal]) { max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:16px; }
  :global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) button { width:44px; min-width:44px; height:44px; min-height:44px; }
- :global(html body .personal-content) .inviteModal .inviteField input { height:44px; min-height:44px; font-size:16px; }
+ :global(html body .personal-content) .inviteModal .inviteField input:global(#convite-email) { height:44px; min-height:44px; font-size:16px; }
  :global(html body .personal-content) .inviteModal .inviteActions button { flex:1; min-height:44px; }
 }
+
+:global(html body .personal-content) .inviteModal .inviteError { min-width:0; padding:8px 10px; border:1px solid color-mix(in srgb,var(--p-danger) 25%,var(--p-line)); border-radius:13px; background:color-mix(in srgb,var(--p-danger) 7%,var(--p-panel)); color:var(--p-danger); }
+:global(html body .personal-content) .inviteModal .inviteError p { margin:0; font-size:11px; line-height:1.6; overflow-wrap:anywhere; }

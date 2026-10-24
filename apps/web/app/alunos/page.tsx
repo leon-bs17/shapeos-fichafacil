@@ -99,8 +99,8 @@ function AlunosConteudo() {
             </p>
           </div>
           {erro ? (
-            <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3">
-              <p className="text-destructive text-sm">{erro}</p>
+            <div className={styles.inviteError} role="alert">
+              <p>{erro}</p>
             </div>
           ) : null}
           <div className={styles.inviteActions}>
