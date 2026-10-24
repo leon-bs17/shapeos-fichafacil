@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleCheck, Clock3, ClipboardList, Eye, FileText, Target } from 'lucide-react'
+import { CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, Clock3, ClipboardList, Eye, FileText, Target } from 'lucide-react'
 import { Modal } from '@/components/ui/modal'
 import { completion, type Session } from '@/services/fitness'
 import { fetchPersonalReport } from '@/services/personal-report'
@@ -68,9 +68,23 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
           </nav>}
         </div>
         {dayPages > 1 && <div className={styles.dayTotals}><span>Total no período: <strong>{comparison.current.sessions} {comparison.current.sessions === 1 ? 'sessão' : 'sessões'}</strong></span><span>Anterior: {previousTrainedDays} {previousTrainedDays === 1 ? 'dia' : 'dias'} com treino</span></div>}
-        <details className={styles.chartData}><summary>Dados do gráfico</summary>
-          <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)} · {comparison.previous.sessions} sessões concluídas</p>
-          <div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div>
+        <details className={styles.chartData}>
+          <summary><CalendarDays size={14} aria-hidden="true" /><span>Dados do gráfico</span><small>{points.length} dias</small><ChevronDown className={styles.detailsChevron} size={15} aria-hidden="true" /></summary>
+          <div className={styles.detailPeriods}>
+            <div><span>Período atual</span><strong>{formatCalendarDate(window.startDate)}–{formatCalendarDate(window.endDate)}</strong><small>{comparison.current.sessions} sessões concluídas</small></div>
+            <div><span>Período anterior</span><strong>{formatCalendarDate(window.previousStartDate)}–{formatCalendarDate(window.previousEndDate)}</strong><small>{comparison.previous.sessions} sessões concluídas</small></div>
+          </div>
+          <div className={styles.dailyData} role="region" aria-label="Comparação diária de sessões concluídas" tabIndex={0}>
+            <table className={styles.dailyTable}>
+              <caption className={styles.srOnly}>Comparação por dia; a data do período anterior aparece abaixo da data atual. Valores em sessões concluídas.</caption>
+              <thead><tr><th scope="col">Datas comparadas</th><th scope="col">Atual</th><th scope="col">Anterior</th></tr></thead>
+              <tbody>{points.map(point => <tr key={point.date}>
+                <th scope="row"><time dateTime={point.date}>{shortDate(point.date)}</time><small>Anterior: <time dateTime={point.previousDate}>{shortDate(point.previousDate)}</time></small></th>
+                <td data-positive={point.current > 0}><span className={styles.srOnly}>Sessões atuais: </span>{point.current}</td>
+                <td><span className={styles.srOnly}>Sessões anteriores: </span>{point.previous}</td>
+              </tr>)}</tbody>
+            </table>
+          </div>
         </details>
       </section>
       <section className={styles.panel} aria-label="Última avaliação">

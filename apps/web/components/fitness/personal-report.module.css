@@ -62,12 +62,26 @@
 .dayNavigation { display:flex; align-items:center; gap:6px; }
 .dayNavigation button { display:inline-flex; align-items:center; justify-content:center; padding:4px; width:28px; height:28px; min-height:28px; border:1px solid var(--p-line); border-radius:13px; background:transparent; color:var(--p-muted); }
 .dayNavigation button:disabled { cursor:default; opacity:.4; }
-.frequencyDays .chartData { border-top:1px solid var(--p-line); padding-top:5px; margin-top:9px; }
 @container(max-width:520px) { .dayTiles { grid-template-columns:repeat(4,minmax(0,1fr)); }.dayTiles li { padding:9px 7px; } }
-.chartData { margin-top:7px; font-size:10px; color:var(--p-muted); }
-.chartData summary { cursor:pointer; width:fit-content; border-radius:6px; padding:4px 0; }
-.dailyData { max-height:140px; overflow:auto; padding:4px; }
-.dailyData p { margin:4px 0; }
+.frequencyDays .chartData { margin-top:9px; font-size:10px; color:var(--p-muted); }
+.frequencyDays .chartData summary { display:flex; align-items:center; gap:8px; width:100%; box-sizing:border-box; min-height:36px; cursor:pointer; list-style:none; border:1px solid var(--p-line); border-radius:13px; padding:8px 10px; background:transparent; color:var(--p-ink); transition:background-color 150ms ease,border-color 150ms ease; }
+.chartData summary::-webkit-details-marker { display:none; }.chartData summary::marker { content:""; }
+.chartData summary>svg:first-child { color:var(--p-brand); flex-shrink:0; }.chartData summary>span { flex:1; }
+.chartData summary small { color:var(--p-muted); font-size:10px; font-weight:400; }
+.detailsChevron { color:var(--p-muted); flex-shrink:0; }.chartData[open] .detailsChevron { transform:rotate(180deg); }
+@media(hover:hover) { .frequencyDays .chartData summary:hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); } }
+.frequencyDays .chartData summary:active { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
+.detailPeriods { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:12px 0; }
+.detailPeriods>div { display:flex; flex-direction:column; min-width:0; gap:3px; }.detailPeriods>div+div { border-left:1px solid var(--p-line); padding-left:12px; }
+.detailPeriods span { color:var(--p-muted); font-size:10px; }.detailPeriods strong { font-size:10px; font-weight:500; color:var(--p-ink); overflow-wrap:anywhere; }.detailPeriods small { font-size:10px; }
+.dailyData { max-height:220px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--p-line); border-radius:13px; }
+.dailyData:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+.dailyTable { width:100%; border-collapse:separate; border-spacing:0; table-layout:fixed; text-align:left; font-size:11px; font-variant-numeric:tabular-nums; }
+.dailyTable thead th { position:sticky; top:0; background:var(--p-panel); z-index:1; font-size:10px; font-weight:500; color:var(--p-muted); border-bottom:1px solid var(--p-line); }
+.dailyTable :is(th,td) { padding:8px 10px; vertical-align:middle; }.dailyTable th:first-child { width:52%; }
+.dailyTable :is(th,td):not(:first-child) { text-align:center; }.dailyTable tbody th { font-weight:500; color:var(--p-ink); }
+.dailyTable tbody tr+tr :is(th,td) { border-top:1px solid var(--p-line); }.dailyTable small { display:block; font-size:9px; font-weight:400; line-height:1.5; margin-top:2px; color:var(--p-muted); }
+.dailyTable td { color:var(--p-muted); }.dailyTable td[data-positive=true] { color:var(--p-brand); font-weight:600; }
 .textAction { min-height:32px; padding:5px 7px; color:var(--p-brand); border-color:transparent; font-size:10px; }
 .measures { margin:10px 0 0; }
 .measures>div { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; }
@@ -126,7 +140,7 @@
  .filters { grid-template-columns:minmax(0,1fr); padding:14px; gap:14px; }.periodGroup { border-left:0; padding-left:0; }.periods button { min-height:44px; }.tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.page .tabs button { min-height:44px; padding:8px; font-size:11px; }
  .picker .pickerSearch input,.picker .pickerSearch input:focus { font-size:16px; }
  .metrics { padding:14px 0; }.metrics>div { padding:0 10px; gap:8px; }.metrics svg { width:36px; height:36px; padding:8px; border-radius:11px; }.metrics dd { font-size:22px; }.metrics dt { font-size:10px; }.metrics span { font-size:9px; }
- .panel,.sessionPanel { padding:14px; }.sessionPanel { padding-bottom:0; }.dayTiles { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }.dayTiles li { padding:9px 7px; }.dayTiles time { font-size:10px; }.dayResult { gap:4px; font-size:9px; }.dayNavigation button { min-width:44px; min-height:44px; }.frequencyDays .chartData summary { min-height:44px; box-sizing:border-box; padding:12px 0; }.panelHeading { gap:6px; }.tableHeading { margin-bottom:12px; }
+ .panel,.sessionPanel { padding:14px; }.sessionPanel { padding-bottom:0; }.dayTiles { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }.dayTiles li { padding:9px 7px; }.dayTiles time { font-size:10px; }.dayResult { gap:4px; font-size:9px; }.dayNavigation button { min-width:44px; min-height:44px; }.frequencyDays .chartData summary { min-height:44px; padding:10px; }.detailPeriods { gap:8px; }.detailPeriods>div+div { padding-left:8px; }.dailyTable :is(th,td) { padding:8px; }.panelHeading { gap:6px; }.tableHeading { margin-bottom:12px; }
  .table,.table tbody { display:block; }.table thead { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
  .table tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px 12px; border-bottom:1px solid var(--p-line); padding:14px; }.table tr:last-child { border-bottom:0; }
  .table td { display:block; min-width:0; border:0; padding:0; }.table td:first-child { grid-column:1/-1; }.table td:last-child { justify-self:end; align-self:end; }.mobileLabel { display:block; color:var(--p-muted); font-size:10px; margin-bottom:5px; }
