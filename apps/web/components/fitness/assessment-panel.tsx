@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,12 +14,18 @@ export function AssessmentPanel({
   onChange,
   own = false,
   compact = false,
+  assessmentMode,
+  actionPicker,
+  schedule,
 }: {
   alunoId: string;
   assessments: Assessment[];
   onChange: () => void;
   own?: boolean;
   compact?: boolean;
+  assessmentMode?: "now" | "schedule" | null;
+  actionPicker?: ReactNode;
+  schedule?: ReactNode;
 }) {
   const [date, setDate] = useState(today()),
     [values, setValues] = useState({
@@ -121,9 +127,7 @@ export function AssessmentPanel({
       latest && first
         ? Math.round((latest.peso! - first.peso!) * 100) / 100
         : null;
-  return (
-    <div className={`space-y-5 ${compact ? styles.compact : ""}`} data-assessment-panel>
-      {latest && (
+  const weightSummary = latest && (
         <div className="rounded-2xl border bg-card p-5" data-assessment-weight>
           <p className="text-sm text-muted-foreground">
             Último peso registrado
@@ -136,9 +140,14 @@ export function AssessmentPanel({
             </p>
           )}
         </div>
-      )}
+  );
+  return (
+    <div className={`space-y-5 ${compact ? styles.compact : ""}`} data-assessment-panel>
+      {actionPicker}
+      {assessmentMode === undefined && weightSummary}
+      <div hidden={assessmentMode !== undefined && assessmentMode !== "now"}>
       <section className="rounded-2xl border bg-card p-5 space-y-4" data-assessment-form>
-        <h2 className="text-lg font-semibold">Nova avaliação</h2>
+        <h2 className="text-lg font-semibold">{assessmentMode === undefined ? "Nova avaliação" : "Avaliar agora"}</h2>
         <div className={compact ? styles.measurements : undefined}>
         <div className={compact ? styles.assessmentDate : undefined}>
           <Label htmlFor="assessment-date">Data</Label>
@@ -216,6 +225,9 @@ export function AssessmentPanel({
           </p>
         )}
       </section>
+      </div>
+      {schedule}
+      {assessmentMode !== undefined && weightSummary}
       {assessments.some((v) => v.foto_path) && (
         <section className="rounded-2xl border bg-card p-5 space-y-4">
           <h2 className="font-semibold">Comparar fotos de evolução</h2>

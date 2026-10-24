@@ -68,3 +68,9 @@
   :global(html body .personal-content) .compact .measurements :global(button[aria-haspopup=dialog]) { height:44px; min-height:44px; }
   :global(html body .personal-content) .compact :global(textarea#assessment-notes) { font-size:16px; }
 }
+
+/* Choose one task while keeping both mounted forms and their unsaved drafts. */
+:global(html body .personal-content) .compact .actionPicker { display:grid; gap:10px; padding:12px 14px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.actionChoices { display:flex; flex-wrap:wrap; gap:8px; }
+:global(html body .personal-content) .compact .actionChoices :global(button.btn-tech[aria-pressed=true]) { color:var(--p-brand); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+@media(max-width:639px) { .actionChoices { display:grid; grid-template-columns:minmax(0,1fr); } :global(html body .personal-content) .compact .actionChoices :global(button.btn-tech) { width:100%; } }

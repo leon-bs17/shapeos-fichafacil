@@ -19,6 +19,7 @@ import {
 export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false, periodDays, hideProgressMetrics = false }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean; periodDays?: PeriodDays; hideProgressMetrics?: boolean }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<string>(initialTab);
+  const [assessmentAction, setAssessmentAction] = useState<"now" | "schedule" | null>(null);
   const data = useQuery({
     queryKey: ["fitness-student-report", alunoId],
     queryFn: async () => {
@@ -46,6 +47,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
     );
   if (!data.data) return null;
   const { sessions, workouts, agenda, assessments } = data.data;
+  const assessmentSchedule = <AssessmentSchedule compact={hideNavigation} alunoId={alunoId} editorVisible={!hideNavigation || assessmentAction === "schedule"} latestAssessment={assessments.find(assessment => { const days = calendarDaysUntil(assessment.data); return days != null && days <= 0; })?.data} />;
   return (
     <div className={`space-y-5 ${hideNavigation && tab === "avaliacao" ? styles.assessments : ""}`}>
       {!hideNavigation && <nav
@@ -80,8 +82,17 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
       )}
       {tab === "avaliacao" && (
         <>
-        <AssessmentSchedule compact={hideNavigation} alunoId={alunoId} latestAssessment={assessments.find(assessment => { const days = calendarDaysUntil(assessment.data); return days != null && days <= 0; })?.data} />
+        {!hideNavigation && assessmentSchedule}
         <AssessmentPanel
+          assessmentMode={hideNavigation ? assessmentAction : undefined}
+          schedule={hideNavigation ? assessmentSchedule : undefined}
+          actionPicker={hideNavigation ? <section className={styles.actionPicker} aria-label="Escolher ação de avaliação">
+            <h2>O que deseja fazer?</h2>
+            <div className={styles.actionChoices}>
+              <Button variant="outline" aria-pressed={assessmentAction === "now"} onClick={() => setAssessmentAction("now")}>Avaliar agora</Button>
+              <Button variant="outline" aria-pressed={assessmentAction === "schedule"} onClick={() => setAssessmentAction("schedule")}>Agendar próxima avaliação</Button>
+            </div>
+          </section> : undefined}
           compact={hideNavigation}
           alunoId={alunoId}
           assessments={assessments}
