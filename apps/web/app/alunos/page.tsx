@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { UserPlus, Users, Mail, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound } from 'lucide-react'
+import { UserPlus, Users, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -16,6 +16,11 @@ import { StudentFollowUpPanel } from '@/components/fitness/student-follow-up'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import styles from './page.module.css'
 
+function studentInitials(nome: string) {
+  const partes = (nome || '').trim().split(/\s+/).filter(Boolean)
+  return partes.length > 1 ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase() : (partes[0]?.slice(0, 2).toUpperCase() || '?')
+}
+
 export default function AlunosPage() {
   return (
     <DashboardShell>
@@ -27,6 +32,12 @@ export default function AlunosPage() {
 function AlunosConteudo() {
   const { data: alunos, isLoading, error, refetch } = useAlunos()
   const [modalAberto, setModalAberto] = useState(false)
+  const [page, setPage] = useState(1)
+  const totalStudents = alunos?.length ?? 0
+  const totalPages = Math.max(1, Math.ceil(totalStudents / 5))
+  const currentPage = Math.min(page, totalPages)
+  const start = (currentPage - 1) * 5
+  const visibleStudents = alunos?.slice(start, start + 5)
   const [selectedStudentId, setSelectedStudentId] = useState('')
   const selectedStudent = alunos?.find(student => student.aluno_id === selectedStudentId)
   const [email, setEmail] = useState('')
@@ -79,13 +90,18 @@ function AlunosConteudo() {
         <section className={`personal-panel ${styles.panel}`} aria-labelledby="personal-students-title">
           <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'}</p></header>
           <div className={styles.tableFrame}><table className={`personal-table ${styles.table}`}><caption className="sr-only">Alunos vinculados, fichas ativas e acesso ao acompanhamento</caption><thead><tr><th scope="col">Aluno</th><th scope="col">Fichas ativas</th><th scope="col">Status</th><th scope="col" className={styles.actionCell}>Ações</th></tr></thead><tbody>
-            {alunos.map(aluno => <tr key={aluno.vinculo_id}>
-              <td data-label="Aluno"><div className="personal-student-identity"><span className={`personal-avatar ${styles.avatar}`} aria-hidden="true">{aluno.nome?.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toLocaleUpperCase('pt-BR') || '?'}</span><div><strong>{aluno.nome}</strong><p><Mail size={12} aria-hidden="true" /><span>{aluno.email}</span></p></div></div></td>
+            {visibleStudents?.map(aluno => <tr key={aluno.vinculo_id}>
+              <td data-label="Aluno"><div className="personal-student-identity"><span className={`personal-avatar ${styles.avatar}`} aria-hidden="true">{studentInitials(aluno.nome)}</span><div className={styles.studentIdentity}><div className={styles.nameProfile}><strong>{aluno.nome}</strong><span className={styles.roleBadge}><GraduationCap size={12} aria-hidden="true" />ALUNO</span></div><span className={styles.studentEmail}>{aluno.email}</span></div></div></td>
               <td data-label="Fichas ativas"><span className="personal-student-count">{aluno.treinos_ativos}</span></td>
-              <td data-label="Status"><span className="personal-status" data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
+              <td data-label="Status"><span className={`personal-status ${styles.status}`} data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
               <td data-label="Ações" className={styles.actionCell}><Button variant="outline" size="sm" className={styles.view} disabled={!aluno.aluno_id} onClick={() => setSelectedStudentId(aluno.aluno_id)} aria-label={`Ver acompanhamento de ${aluno.nome}`}><Eye size={14} strokeWidth={1.75} aria-hidden="true" />Ver</Button></td>
             </tr>)}
-          </tbody></table></div>
+          </tbody></table>
+          <footer className={styles.pagination}><span>{start + 1}–{Math.min(start + 5, totalStudents)} de {totalStudents} {totalStudents === 1 ? 'aluno' : 'alunos'}</span><nav aria-label="Paginação de alunos">
+            <Button variant="outline" aria-label="Página anterior" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16} aria-hidden="true" /></Button>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(number => <Button key={number} variant="outline" aria-label={`Página ${number}`} aria-current={number === currentPage ? 'page' : undefined} onClick={() => setPage(number)}>{number}</Button>)}
+            <Button variant="outline" aria-label="Próxima página" disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16} aria-hidden="true" /></Button>
+          </nav></footer></div>
         </section>}
       </div>
       {selectedStudent && <StudentFollowUpPanel key={selectedStudent.vinculo_id} student={selectedStudent} onClose={() => setSelectedStudentId('')} />}
