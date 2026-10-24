@@ -3,6 +3,7 @@
 import { useAlunos } from '@/hooks/use-alunos'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Check, ChevronDown, Users } from 'lucide-react'
+import { useAnchoredPopover } from '@/components/ui/use-anchored-popover'
 import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from './mys-student-picker.module.css'
 
@@ -19,11 +20,13 @@ export function MysStudentPicker({ selected, locked, onSelect, onSummary }: {
   const field = useRef<HTMLDivElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
   const searchInput = useRef<HTMLInputElement>(null)
+  const menu = useRef<HTMLDivElement>(null)
+  useAnchoredPopover({ open, trigger, panel: menu, matchWidth: true, heightLimit: 360, onHidden: () => { setOpen(false); setSearch('') } })
   const menuId = useId()
   const close = () => { setOpen(false); setSearch(''); trigger.current?.focus() }
   useEffect(() => {
     if (!open) return
-    searchInput.current?.focus()
+    searchInput.current?.focus({ preventScroll: true })
     const outside = (event: PointerEvent) => {
       if (!field.current?.contains(event.target as Node)) { setOpen(false); setSearch('') }
     }
@@ -43,7 +46,7 @@ export function MysStudentPicker({ selected, locked, onSelect, onSummary }: {
         onClick={() => { setOpen(value => !value); setSearch('') }}>
         <Users size={16} aria-hidden="true" /><span id={menuId + '-value'}>{selected?.name ?? 'Conversa geral'}</span><ChevronDown size={16} aria-hidden="true" />
       </button>
-      {open && <div id={menuId} className={styles.menu} role="dialog" aria-labelledby={menuId + '-label'}
+      {open && <div ref={menu} popover="manual" style={{ visibility: 'hidden' }} id={menuId} className={styles.menu} role="dialog" aria-labelledby={menuId + '-label'}
         onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node) && !trigger.current?.contains(event.relatedTarget as Node)) { setOpen(false); setSearch('') } }}
         onKeyDown={event => {
           if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close() }

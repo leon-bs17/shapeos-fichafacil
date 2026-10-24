@@ -5,6 +5,9 @@
   background:var(--p-panel); color:var(--p-ink); min-width:0;
 }
 .field { position:relative; min-width:0; }
+.menu[popover] { display:flex; flex-direction:column; font:inherit; }
+.menu[popover]>:first-child { flex-shrink:0; }
+.menu[popover] .options { flex:1 1 auto; min-height:0; }
 .label { display:block; font-size:11px; font-weight:500; margin-bottom:6px; color:var(--p-muted); }
 .picker .trigger,.picker .summary,.error button {
   display:flex; align-items:center; gap:8px; min-height:44px;

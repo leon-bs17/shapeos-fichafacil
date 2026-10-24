@@ -246,6 +246,9 @@
 }
 
 .topIndicators { container-type:inline-size; min-width:0; padding:0; background:transparent; }
+.pickerMenu[popover] { display:flex; flex-direction:column; color:var(--p-ink); font:inherit; }
+.pickerMenu[popover]>:first-child { flex-shrink:0; }
+.pickerMenu[popover] .pickerOptions { flex:1 1 auto; min-height:0; }
 .indicatorContext { margin:0; padding:0 20px; color:var(--p-muted); font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
 .indicatorError { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--p-muted); font-size:11px; }.indicatorError p { margin:0; }
 .summaryMetrics { grid-template-columns:repeat(2,minmax(0,1fr)); }

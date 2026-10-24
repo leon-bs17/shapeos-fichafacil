@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { today } from "@/services/fitness";
-import { positionAnchoredPopover } from "@/lib/ui/anchored-popover";
+import { useAnchoredPopover } from "@/components/ui/use-anchored-popover";
 import styles from "./agenda-panel.module.css";
 
 const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -18,40 +18,7 @@ export function AgendaDatePicker({ id, label, value, disabled = false, allowClea
   const [focused, setFocused] = useState(value || today());
   const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), calendar = useRef<HTMLDivElement>(null);
   const close = () => { setOpen(false); trigger.current?.focus(); };
-  useLayoutEffect(() => {
-    if (!open || disabled) return;
-    const panel = calendar.current, button = trigger.current;
-    if (!panel || !button) return;
-    // The browser top layer escapes clipped/translated ancestors while preserving
-    // inherited theme tokens, dialog focus scope and the React DOM relationship.
-    if (typeof panel.showPopover === "function") panel.showPopover();
-    let frame = 0;
-    const update = () => {
-      const rect = button.getBoundingClientRect(), visual = window.visualViewport;
-      const viewport = { left: visual?.offsetLeft ?? 0, top: visual?.offsetTop ?? 0, width: visual?.width ?? window.innerWidth, height: visual?.height ?? window.innerHeight };
-      if (rect.bottom < viewport.top || rect.top > viewport.top + viewport.height || rect.right < viewport.left || rect.left > viewport.left + viewport.width) { setOpen(false); return; }
-      const box = panel.getBoundingClientRect();
-      const placement = positionAnchoredPopover(rect, { width: box.width, height: Math.max(panel.scrollHeight + 2, box.height) }, viewport, align);
-      Object.assign(panel.style, { left: `${placement.left}px`, top: `${placement.top}px`, maxWidth: `${placement.maxWidth}px`, maxHeight: `${placement.maxHeight}px`, visibility: "visible" });
-      panel.dataset.side = placement.side;
-    };
-    const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
-    update();
-    window.addEventListener("resize", schedule);
-    document.addEventListener("scroll", schedule, true);
-    window.visualViewport?.addEventListener("resize", schedule);
-    window.visualViewport?.addEventListener("scroll", schedule);
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
-    observer?.observe(panel); observer?.observe(button);
-    return () => {
-      cancelAnimationFrame(frame); observer?.disconnect();
-      window.removeEventListener("resize", schedule);
-      document.removeEventListener("scroll", schedule, true);
-      window.visualViewport?.removeEventListener("resize", schedule);
-      window.visualViewport?.removeEventListener("scroll", schedule);
-      if (typeof panel.hidePopover === "function" && panel.matches(":popover-open")) panel.hidePopover();
-    };
-  }, [open, disabled, align]);
+  useAnchoredPopover({ open: open && !disabled, trigger, panel: calendar, align, onHidden: () => setOpen(false) });
   useEffect(() => {
     if (!open) return;
     const outside = (event: PointerEvent) => { if (!field.current?.contains(event.target as Node)) setOpen(false); };

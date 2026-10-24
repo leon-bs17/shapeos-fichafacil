@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
+import { useAnchoredPopover } from "@/components/ui/use-anchored-popover";
 import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from "./agenda-panel.module.css";
 import { AgendaDatePicker } from "./agenda-date-picker";
@@ -189,13 +190,14 @@ export function AgendaPanel({
 
 function WorkoutPicker({ workouts, value, onChange }: { workouts: Workout[]; value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false), [search, setSearch] = useState("");
-  const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), input = useRef<HTMLInputElement>(null);
+  const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), input = useRef<HTMLInputElement>(null), menu = useRef<HTMLDivElement>(null);
+  useAnchoredPopover({ open, trigger, panel: menu, matchWidth: true, heightLimit: 360, onHidden: () => { setOpen(false); setSearch(""); } });
   const id = useId();
   const selected = workouts.find(workout => workout.id === value);
   const close = () => { setOpen(false); setSearch(""); trigger.current?.focus(); };
   useEffect(() => {
     if (!open) return;
-    input.current?.focus();
+    input.current?.focus({ preventScroll: true });
     const outside = (event: PointerEvent) => { if (!field.current?.contains(event.target as Node)) { setOpen(false); setSearch(""); } };
     document.addEventListener("pointerdown", outside);
     return () => document.removeEventListener("pointerdown", outside);
@@ -208,7 +210,7 @@ function WorkoutPicker({ workouts, value, onChange }: { workouts: Workout[]; val
       onClick={() => { setOpen(previous => !previous); setSearch(""); }}>
       <span>{selected?.titulo ?? "Selecione"}</span><ChevronDown size={15} aria-hidden="true" />
     </button>
-    {open && <div id={id} role="dialog" aria-label="Selecionar ficha" className={styles.menu}
+    {open && <div ref={menu} popover="manual" style={{ visibility: "hidden" }} id={id} role="dialog" aria-label="Selecionar ficha" className={styles.menu}
       onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node) && !trigger.current?.contains(event.relatedTarget as Node)) { setOpen(false); setSearch(""); } }}
       onKeyDown={event => {
         if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); close(); }

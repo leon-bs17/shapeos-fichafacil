@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { Check, ChevronDown, Users } from 'lucide-react'
+import { useAnchoredPopover } from '@/components/ui/use-anchored-popover'
 import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from './personal-report.module.css'
 
@@ -9,13 +10,14 @@ type Student = { aluno_id: string; nome: string; email: string }
 const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').trim()
 export function ReportStudentPicker({ students, value, onChange }: { students: Student[]; value: string; onChange: (id: string) => void }) {
   const [open, setOpen] = useState(false), [search, setSearch] = useState('')
-  const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), input = useRef<HTMLInputElement>(null)
+  const field = useRef<HTMLDivElement>(null), trigger = useRef<HTMLButtonElement>(null), input = useRef<HTMLInputElement>(null), menu = useRef<HTMLDivElement>(null)
+  useAnchoredPopover({ open, trigger, panel: menu, matchWidth: true, heightLimit: 360, onHidden: () => { setOpen(false); setSearch('') } })
   const id = useId()
   const selected = students.find(student => student.aluno_id === value)
   const close = () => { setOpen(false); setSearch(''); trigger.current?.focus() }
   useEffect(() => {
     if (!open) return
-    input.current?.focus()
+    input.current?.focus({ preventScroll: true })
     const outside = (event: PointerEvent) => { if (!field.current?.contains(event.target as Node)) { setOpen(false); setSearch('') } }
     document.addEventListener('pointerdown', outside)
     return () => document.removeEventListener('pointerdown', outside)
@@ -29,7 +31,7 @@ export function ReportStudentPicker({ students, value, onChange }: { students: S
       {selected ? <span className={styles.avatar} aria-hidden="true">{selected.nome.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('')}</span> : <Users size={17} aria-hidden="true" />}
       <span id={id + '-value'}>{selected?.nome ?? 'Selecione o aluno…'}</span><ChevronDown size={16} aria-hidden="true" />
     </button>
-    {open && <div id={id} role="dialog" aria-labelledby={id + '-label'} className={styles.pickerMenu}
+    {open && <div ref={menu} popover="manual" style={{ visibility: 'hidden' }} id={id} role="dialog" aria-labelledby={id + '-label'} className={styles.pickerMenu}
       onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node) && !trigger.current?.contains(event.relatedTarget as Node)) { setOpen(false); setSearch('') } }}
       onKeyDown={event => {
         if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close() }
