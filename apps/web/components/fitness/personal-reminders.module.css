@@ -1,1 +1,27 @@
-.editor{display:grid;gap:16px;min-width:0;color:var(--p-ink)}.editor label{display:block;font-size:11px;margin-bottom:7px}.editor :is(input,textarea){width:100%;min-width:0}.editor textarea{resize:vertical;min-height:96px;max-height:300px}.note{font-size:11px;line-height:1.7;color:var(--p-muted);margin:5px 0 0}.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;border-top:1px solid var(--p-line);padding-top:16px}.confirm{border:1px solid var(--p-line);border-radius:13px;padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}.confirm p{margin:0;flex-basis:100%;line-height:1.7}.error,.rowActions>p{font-size:11px;color:var(--p-danger);line-height:1.7;margin:0}.rowActions{display:grid;gap:8px;padding:0 16px 14px}.rowActions>div{display:flex;gap:7px;flex-wrap:wrap}.rowActions button{min-height:36px!important;font-size:11px!important;padding:7px 10px!important}@media(max-width:639px){.rowActions button,.actions button,.confirm button{min-height:44px!important;flex:1}.rowActions{padding-left:14px;padding-right:14px}}
+:global(html body .personal-content) .modal:global([data-personal-modal]) { width:520px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); padding:18px; border-radius:13px; box-shadow:none; }
+:global(html body .personal-content) .modal>:global([data-personal-modal-heading]) { padding-bottom:12px; margin-bottom:12px; gap:12px; }
+:global(html body .personal-content) .modal>:global([data-personal-modal-heading]) h2 { font-size:16px; line-height:1.5; font-weight:600; }
+:global(html body .personal-content) .modal>:global([data-personal-modal-heading]) button { width:36px; height:36px; min-width:36px; min-height:36px; padding:0; }
+.editor { display:grid; gap:12px; min-width:0; color:var(--p-ink); }
+.fields { display:grid; grid-template-columns:minmax(0,1fr) 154px; align-items:end; gap:12px; }.fields>div { min-width:0; }
+.editor label { display:block; font-size:11px; margin-bottom:6px; font-weight:500; }
+:global(html body .personal-content) .modal .editor :is(input,textarea) { box-sizing:border-box; width:100%; min-width:0; min-height:36px; padding:7px 10px; font:inherit; font-size:12px; line-height:1.5; border-radius:13px; }
+:global(html body .personal-content) .modal .editor textarea { resize:vertical; min-height:72px; max-height:200px; }
+:global(html body .personal-content) .modal .fields :global(button[aria-haspopup=dialog]) { min-height:36px; padding:7px 10px; font-size:12px; font-weight:400; }
+.note,.counter { font-size:11px; line-height:1.6; color:var(--p-muted); margin:0; }.counter { font-size:10px; margin-top:5px; text-align:right; font-variant-numeric:tabular-nums; }
+.actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; border-top:1px solid var(--p-line); padding-top:12px; }
+:global(html body .personal-content) .modal .actions button,:global(html body .personal-content) .modal .confirm button { min-height:36px; padding:7px 10px; font-size:11px; }
+.confirm { border:1px solid var(--p-line); border-radius:13px; padding:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:12px; }.confirm p { margin:0; flex-basis:100%; line-height:1.6; }
+.error,.rowActions>p { font-size:11px; color:var(--p-danger); line-height:1.7; margin:0; }
+.rowActions { display:grid; gap:8px; padding:0 16px 14px; }.rowActions>div { display:flex; gap:7px; flex-wrap:wrap; }.rowActions button { min-height:36px!important; font-size:11px!important; padding:7px 10px!important; }
+@media(max-width:639px) {
+  :global(html body .personal-content) .modal:global([data-personal-modal]) { max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:16px; }
+  .fields { grid-template-columns:minmax(0,1fr); gap:10px; }
+  :global(html body .personal-content) .modal .editor :is(input,textarea) { min-height:44px; font-size:16px; }
+  :global(html body .personal-content) .modal .fields :global(button[aria-haspopup=dialog]),:global(html body .personal-content) .modal>:global([data-personal-modal-heading]) button { min-height:44px; }
+  :global(html body .personal-content) .modal>:global([data-personal-modal-heading]) button { width:44px; height:44px; min-width:44px; }
+  :global(html body .personal-content) .modal .actions button,:global(html body .personal-content) .modal .confirm button { min-height:44px; flex:1; }
+  .rowActions button { min-height:44px!important; flex:1; }.rowActions { padding-left:14px; padding-right:14px; }
+}
+
+:global(html body .personal-content) .modal .editor :is(input,textarea):focus { outline:none; border-color:var(--p-brand); }

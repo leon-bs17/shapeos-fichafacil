@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Modal } from '@/components/ui/modal'
 import { fitnessRequest } from '@/lib/api/client'
 import { parseReminderFields,type PersonalReminder } from '@/lib/fitness/personal-reminders'
+import { AgendaDatePicker } from './agenda-date-picker'
 import styles from './personal-reminders.module.css'
 
 export function ReminderActions({reminder,onEdit}:{reminder:PersonalReminder;onEdit:()=>void}){
@@ -36,11 +37,13 @@ export function ReminderEditor({reminder,defaultDate,onClose,onSaved}:{reminder?
     catch(error){setError(error instanceof Error?error.message:'Não foi possível salvar o lembrete.')}
     finally{busy.current=false}
   }
-  return <Modal personal open onClose={()=>{if(!busy.current)onClose()}} titulo={reminder?'Editar lembrete':'Novo lembrete'}><div className={styles.editor}>
+  return <Modal personal open className={styles.modal} onClose={()=>{if(!busy.current)onClose()}} titulo={reminder?'Editar lembrete':'Novo lembrete'}><div className={styles.editor}>
     <p className={styles.note}>Lembrete privado da sua Agenda.</p>
-    <div><label htmlFor="reminder-title">Título</label><Input id="reminder-title" maxLength={120} value={titulo} disabled={mutation.isPending} onChange={event=>{changed();setTitulo(event.target.value)}}/></div>
-    <div><label htmlFor="reminder-date">Data</label><Input id="reminder-date" type="date" min="0001-01-01" max="9999-12-31" value={data} disabled={mutation.isPending} onChange={event=>{changed();setData(event.target.value)}}/></div>
-    <div><label htmlFor="reminder-description">Descrição (opcional)</label><textarea id="reminder-description" rows={3} maxLength={1000} value={descricao} disabled={mutation.isPending} onChange={event=>{changed();setDescricao(event.target.value)}}/><p className={styles.note}>{descricao.length}/1.000 caracteres</p></div>
+    <div className={styles.fields}>
+      <div><label htmlFor="reminder-title">Título</label><Input id="reminder-title" maxLength={120} value={titulo} disabled={mutation.isPending} onChange={event=>{changed();setTitulo(event.target.value)}}/></div>
+      <div><label htmlFor="reminder-date">Data</label><AgendaDatePicker id="reminder-date" label="Data do lembrete" allowClear value={data} disabled={mutation.isPending} onChange={value=>{changed();setData(value)}}/></div>
+    </div>
+    <div><label htmlFor="reminder-description">Descrição (opcional)</label><textarea id="reminder-description" aria-describedby="reminder-description-count" rows={3} maxLength={1000} value={descricao} disabled={mutation.isPending} onChange={event=>{changed();setDescricao(event.target.value)}}/><p id="reminder-description-count" className={styles.counter}>{descricao.length}/1.000 caracteres</p></div>
     {reminder?.concluido_em&&<p className={styles.note}>Concluído em {new Date(reminder.concluido_em).toLocaleString('pt-BR')}.</p>}
     {error&&<p role="alert" className={styles.error}>{error}</p>}
     {confirmDelete&&<div className={styles.confirm}><p>Excluir este lembrete?</p><Button variant="outline" className="personal-danger" disabled={mutation.isPending} onClick={()=>void run('delete')}>Confirmar exclusão</Button><Button variant="outline" disabled={mutation.isPending} onClick={()=>setConfirmDelete(false)}>Manter lembrete</Button></div>}
