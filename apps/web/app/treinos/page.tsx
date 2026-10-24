@@ -19,7 +19,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, FileCheck2, BookOpen, FileText, Users } from 'lucide-react'
+import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, FileCheck2, BookOpen, FileText, Users, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
@@ -169,7 +169,7 @@ function TreinosConteudo() {
                       {ficha.aluno_nome} · {formatarData(ficha.criado_em)}
                     </p>
                   </div>
-                  <span className={styles.status} data-active={ficha.ativo}><span className={styles.statusDot} aria-hidden="true" />{ficha.ativo ? 'Ativa' : 'Pausada'}</span>
+                  <span className={styles.status} data-active={ficha.ativo}>{ficha.ativo ? <CheckCircle2 size={12} aria-hidden="true" /> : <span className={styles.statusDot} aria-hidden="true" />}{ficha.ativo ? 'Ativa' : 'Pausada'}</span>
                 </div>
 
                 <WorkoutValidity date={ficha.valida_ate} active={ficha.ativo} />
