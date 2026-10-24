@@ -146,7 +146,8 @@ html.dark {
     [data-admin-route] .system-workspace .hero,
     [data-admin-route] .users-hero
   ) :is([data-shapeos-banner-label], [data-approval-hero-label], .eyebrow, [class*="eyebrow"], .control-heading-copy>p:first-child) {
-    font-size:9px!important; font-weight:650!important; letter-spacing:.1em!important;
+    font-size:9px!important; font-weight:650!important; line-height:1.4!important;
+    letter-spacing:.1em!important; text-transform:uppercase!important;
     color:var(--shapeos-banner-brand)!important;
     border:0!important; background:transparent!important; padding:0!important;
     margin:0 0 8px!important;

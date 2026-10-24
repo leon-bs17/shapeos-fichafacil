@@ -4,6 +4,10 @@ Padrão de produto para todos os tipos de acesso: Admin, Personal, Aluno e pági
 
 Todo tratamento visual do modo escuro precisa de uma versão equivalente no modo claro, usando a paleta do respectivo modo. Isso inclui degradês, bordas, estados selecionados, hover e foco. Geometria, hierarquia, dimensões e comportamento responsivo permanecem equivalentes. Conteúdo e permissões continuam específicos de cada perfil.
 
+## Referência obrigatória entre contas
+
+A conta Admin é a referência primordial de interface. Personal, Aluno e os demais acessos devem espelhar seus componentes, medidas, tipografia, espaçamentos e estados nos dois modos. Adapte apenas o conteúdo e a identidade visual de cada área; compactação deve seguir os componentes compactos já definidos no Admin. Não invente variações locais de tamanho ou apresentação. Compare sempre com o componente correspondente do Admin antes de concluir.
+
 ## Banners
 
 O arquivo `apps/web/app/shapeos-banner-theme.css`, importado no layout raiz, define o padrão global de banner com base em **Admin → Aprovações**. Vale para os banners existentes e os próximos banners, em todos os tipos de acesso. Os banners legados do Admin e os dois banners do Personal estão mapeados nessa folha.
@@ -27,6 +31,7 @@ Use `var(--shapeos-banner-gradient)` para consultar o tratamento compartilhado. 
 | Espaçamento vertical / lateral | 24 / 28 px | 22 / 18 px |
 | Borda / raio | 1 / 13 px | 1 / 13 px |
 | Título | 28 px, peso 700, entrelinha 1,2 | 26 px, peso 700, entrelinha 1,2 |
+| Rótulo acima do título | 9 px, peso 650, entrelinha 1,4, espaçamento entre letras 0,1 em, maiúsculas, margem inferior 8 px, cor primária do modo | Mesmo padrão |
 | Descrição | 13 px, entrelinha 1,6, margem superior 8 px | Mesmo padrão |
 | Ilustração | 300 px, opacidade 35%, direita 8 px | 300 px, opacidade 16%, direita −150 px, centralizada verticalmente |
 
