@@ -260,6 +260,30 @@ html.dark {
     [data-admin-route] .reports-workspace .hero,
     [data-admin-route] .system-workspace .hero,
     [data-admin-route] .users-hero
-  ) :is([data-shapeos-banner-art], [data-approvals-wireframe], .control-heading-art, [class*="wireframe"]) { right:-150px!important; opacity:.16!important; }
+  ) :is([data-shapeos-banner-art], [data-approvals-wireframe], .control-heading-art, [class*="wireframe"]) {
+      width:clamp(180px,55vw,260px)!important; max-width:70%!important;
+      top:auto!important; right:-24px!important; bottom:-12px!important; left:auto!important;
+      transform:none!important; opacity:.12!important;
+      -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%)!important;
+      mask-image:linear-gradient(to right,transparent 0%,#000 55%)!important;
+    }
+    html body :is(
+    [data-shapeos-banner], .shapeos-banner,
+    [data-admin-route] .control-heading,
+    [data-admin-route] [data-approvals-hero],
+    [data-admin-route] .activity-hero,
+    [data-admin-route] .audit-hero,
+    [data-admin-route] .notices-workspace .hero,
+    [data-admin-route] .account-hero,
+    [data-admin-route] .exercises-hero,
+    [data-admin-route] .personals-hero,
+    [data-admin-route] .reports-workspace .hero,
+    [data-admin-route] .system-workspace .hero,
+    [data-admin-route] .users-hero
+  ) :is([data-shapeos-banner-art],.control-heading-art)>svg {
+      position:static!important; width:100%!important; max-width:none!important;
+      transform:none!important; opacity:1!important;
+      -webkit-mask-image:none!important; mask-image:none!important;
+    }
   }
 }

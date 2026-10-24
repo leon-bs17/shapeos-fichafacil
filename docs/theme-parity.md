@@ -28,7 +28,9 @@ Use `var(--shapeos-banner-gradient)` para consultar o tratamento compartilhado. 
 | Borda / raio | 1 / 13 px | 1 / 13 px |
 | Título | 28 px, peso 700, entrelinha 1,2 | 26 px, peso 700, entrelinha 1,2 |
 | Descrição | 13 px, entrelinha 1,6, margem superior 8 px | Mesmo padrão |
-| Ilustração | 300 px, opacidade 35%, direita 8 px | 300 px, opacidade 16%, direita −150 px |
+| Ilustração | 300 px, opacidade 35%, direita 8 px | Largura proporcional de 180–260 px (máximo 70% do banner), opacidade 12%, direita −24 px / base −12 px |
+
+No celular, a ilustração fica no canto inferior direito, com um desaparecimento gradual à esquerda. Ela permanece decorativa, atrás do texto e sem eventos de ponteiro. Essa adaptação é exclusiva de até 767 px; a ilustração de desktop conserva largura, posição e opacidade.
 
 A altura é mínima, não fixa: texto longo ou zoom podem aumentar o banner sem cortar conteúdo. Preserve títulos, descrições, ilustrações e funções de cada página. A paleta muda conforme o modo; as medidas permanecem as mesmas.
 
