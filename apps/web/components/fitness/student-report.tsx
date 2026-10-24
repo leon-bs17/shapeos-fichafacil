@@ -69,6 +69,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
       {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} periodDays={periodDays} /><ProgressPanel sessions={sessions} compact={hideNavigation} periodDays={periodDays} hideMetrics={hideProgressMetrics} /></>}
       {tab === "agenda" && (
         <AgendaPanel
+          compact={hideNavigation}
           alunoId={alunoId}
           workouts={workouts}
           agenda={agenda}

@@ -1,0 +1,29 @@
+.compact { display:grid; gap:14px; min-width:0; color:var(--p-ink); }
+.compact .planner,.compact .row { min-width:0; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); padding:12px 14px; }
+.compact .planner h2 { margin:0; font-size:13px; font-weight:600; line-height:1.5; }
+.compact .planner>p { margin:4px 0 0; font-size:11px; line-height:1.6; color:var(--p-muted); }
+.form { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,.7fr) auto; align-items:end; gap:12px; margin-top:12px; }
+.form>div { min-width:0; }.compact label { display:block; margin-bottom:6px; font-size:11px; font-weight:500; color:var(--p-ink); }
+.compact input,.compact button { box-sizing:border-box; min-width:0; height:auto; min-height:36px; border:1px solid var(--p-line); border-radius:13px; padding:7px 10px; background:transparent; color:var(--p-ink); font:inherit; font-size:11px; font-weight:500; line-height:1.5; box-shadow:none; transition:background-color 150ms ease,border-color 150ms ease; }
+.compact input[type=date] { width:100%; color-scheme:light; font-variant-numeric:tabular-nums; }
+:global(html.dark) .compact input[type=date] { color-scheme:dark; }
+.compact input:focus { outline:none; border-color:var(--p-brand); box-shadow:none; }
+.compact button:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+.compact button:disabled,.compact input:disabled { opacity:.45; cursor:default; }
+.list { display:grid; gap:10px; min-width:0; }
+.compact .row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 16px; }
+.row>div:first-child { flex:1; min-width:0; }.compact .row p { margin:0; overflow-wrap:anywhere; }
+.compact .row p:first-child { font-size:12px; font-weight:500; line-height:1.5; }
+.compact .row p+p { margin-top:4px; font-size:11px; line-height:1.5; color:var(--p-muted); }
+.status { color:var(--p-muted); }.status[data-finished=true] { color:var(--p-brand); }
+.actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }.compact .actions input { width:154px; }.actions button { white-space:nowrap; }
+.picker { position:relative; min-width:0; }.compact .trigger { display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px; text-align:left; }
+.trigger>span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }.trigger svg { flex-shrink:0; color:var(--p-muted); }
+.menu { position:absolute; z-index:20; left:0; top:calc(100% + 8px); width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.search { display:flex; align-items:center; gap:8px; padding:0 10px; border:1px solid var(--p-line); border-radius:13px; color:var(--p-muted); }.search:focus-within { border-color:var(--p-brand); }
+.compact .search input,.compact .search input:is(:focus,:hover) { width:100%; min-width:0; border:0; border-radius:0; background:transparent; padding:7px 0; box-shadow:none; outline:none; font-weight:400; }
+.options { margin-top:6px; max-height:240px; overflow:auto; overscroll-behavior:contain; }.compact .options button { display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; text-align:left; border-color:transparent; }.options button span { min-width:0; overflow-wrap:anywhere; }.options svg { flex-shrink:0; color:var(--p-brand); }.options p { margin:8px; color:var(--p-muted); font-size:11px; }
+.compact .options button[aria-pressed=true] { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+@media(hover:hover) { .compact button:not(:disabled):hover,.compact input:not(:disabled):not(.search input):hover { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); } }
+@media(max-width:639px) { .form { grid-template-columns:minmax(0,1fr); gap:10px; }.compact .row { align-items:stretch; }.row>div:first-child { flex-basis:100%; }.actions { width:100%; display:grid; grid-template-columns:minmax(0,1fr) auto; }.compact .actions input { width:100%; }.compact input,.compact button { min-height:44px; }.compact input { font-size:16px; }.compact .search input { font-size:16px; }.compact .trigger { font-size:12px; }}
+@media(prefers-reduced-motion:reduce) { .compact input,.compact button { transition:none; } }
