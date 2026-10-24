@@ -94,7 +94,7 @@
 .tableFrame { border:1px solid var(--p-line); border-radius:13px; overflow:hidden; }
 .table { border-collapse:collapse; width:100%; text-align:left; table-layout:fixed; font-size:11px; }
 .table th { padding:9px 10px; font-size:10px; color:var(--p-muted); font-weight:500; border-bottom:1px solid var(--p-line); text-transform:uppercase; letter-spacing:.04em; }
-.table th:nth-child(2) { width:106px; }.table th:nth-child(3) { width:142px; }.table th:nth-child(4) { width:140px; }.table th:last-child { width:78px; }
+.table th:nth-child(2) { width:106px; }.table th:nth-child(3) { width:142px; }.table th:nth-child(4) { width:140px; }.table th:last-child { width:104px; }
 .table td { padding:6px 10px; border-bottom:1px solid var(--p-line); vertical-align:middle; line-height:1.5; }
 .table td strong { font-size:12px; font-weight:500; overflow-wrap:anywhere; }
 .table tr:last-child td { border-bottom:0; }.table time { white-space:nowrap; color:var(--p-muted); font-variant-numeric:tabular-nums; }
@@ -108,7 +108,9 @@
 .track { flex:1; height:5px; background:var(--p-line); border-radius:99px; overflow:hidden; }
 .track i { display:block; height:100%; background:var(--p-blue); border-radius:99px; }
 .track[data-complete=true] i { background:var(--p-brand); }
-.view { min-height:28px; padding:5px 8px; border-color:transparent; color:var(--p-brand); }.view svg { color:var(--p-brand); }
+/* Mirror Admin's outlined Ver action; only the eye uses the brand color. */
+.page .overview .view { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:auto; min-width:84px; height:36px; min-height:36px; padding:0 14px; border:1px solid var(--p-line); border-radius:13px; background:transparent; color:var(--p-ink); font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap; box-shadow:none; transform:none; filter:none; }
+.page .overview .view svg { width:14px; height:14px; flex-shrink:0; color:var(--p-brand); }
 .footer { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:10px 0; gap:12px; }
 .footer p { margin:0; font-size:11px; color:var(--p-muted); }
 .footer nav { display:flex; align-items:center; flex-wrap:wrap; justify-content:center; gap:5px; }
@@ -133,7 +135,7 @@
 .page :is(button,summary):focus-visible,.overview :is(button,summary):focus-visible,.picker button:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
 @media(hover:hover) { .page button:not(:disabled):not([aria-current=page]):not([aria-pressed=true]):hover,.overview button:not(:disabled):not([aria-current=page]):hover,.picker button:hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); } }
 .page button:not(:disabled):not([aria-current=page]):not([aria-pressed=true]):active,.overview button:not(:disabled):not([aria-current=page]):active { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
-@media(max-width:1000px) { .charts { grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr); }.metrics>div { gap:12px; padding:0 16px; }.table th,.table td { padding:8px; }.table th:nth-child(2) { width:92px; }.table th:nth-child(3) { width:128px; }.table th:nth-child(4) { width:98px; }.table th:last-child { width:70px; } }
+@media(max-width:1000px) { .charts { grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr); }.metrics>div { gap:12px; padding:0 16px; }.table th,.table td { padding:8px; }.table th:nth-child(2) { width:92px; }.table th:nth-child(3) { width:128px; }.table th:nth-child(4) { width:98px; }.table th:last-child { width:100px; } }
 @media(max-width:799px) { .charts { grid-template-columns:minmax(0,1fr); }.metrics>div { flex-direction:column; align-items:flex-start; gap:8px; }.filters { grid-template-columns:minmax(0,1fr) minmax(220px,.8fr); gap:16px; }.periodGroup { padding-left:16px; } }
 @media(max-width:639px) {
  .page,.overview { gap:14px; }
@@ -170,3 +172,5 @@
  .banner p { font-size:13px; line-height:1.6; max-width:none; }
  .wireframe { width:300px; height:auto; right:-130px; top:50%; transform:translateY(-50%); opacity:.16; z-index:0; }
 }
+
+@media(max-width:639px) { .page .overview .view { height:44px; min-height:44px; } }
