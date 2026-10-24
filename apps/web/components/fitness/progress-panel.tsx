@@ -68,7 +68,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
     { label: "Exercícios acompanhados", value: groups.length, Icon: Trophy },
   ];
   return (
-    <div data-progress-panel className="space-y-6">
+    <div className="space-y-6">
       <div className="personal-report-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
         {metrics.map((m) => (
           <div key={m.label} className="personal-report-metric rounded-2xl border bg-card p-4">
@@ -78,7 +78,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           </div>
         ))}
       </div>
-      <section data-progress-consistency className="rounded-2xl border bg-card p-5">
+      <section className="rounded-2xl border bg-card p-5">
         <h2 className="font-semibold mb-4">Consistência · últimas 4 semanas</h2>
         <div className="grid grid-cols-7 gap-2">
           {Array.from({ length: 28 }, (_, i) => {
@@ -111,14 +111,14 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           anteriores continuam nos relatórios existentes.
         </p>
       )}
-      <div data-progress-exercises className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {groups.map((g) => {
           const best = Math.max(...g.rows.map((r) => r.carga)),
             first = g.rows[0].carga,
             last = g.rows.at(-1)!.carga,
             diff = Math.round((last - first) * 100) / 100;
           return (
-            <section data-progress-exercise key={g.id} className="rounded-2xl border bg-card p-5">
+            <section key={g.id} className="rounded-2xl border bg-card p-5">
               <h3 className="font-semibold">{g.nome}</h3>
               <div className="flex justify-between mt-2 text-sm">
                 <span className="text-primary">
@@ -130,7 +130,6 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
                 </span>
               </div>
               <div
-                data-progress-chart
                 aria-hidden="true"
                 className="flex h-24 gap-1 items-end mt-4"
               >
@@ -162,7 +161,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           );
         })}
       </div>
-      <section data-progress-prescription className="space-y-3">
+      <section className="space-y-3">
         <h2 className="text-lg font-semibold">Prescrito × realizado</h2>
         {sessions.slice(0, 50).map((s) => (
           <details key={s.id} className="rounded-2xl border bg-card p-4">
