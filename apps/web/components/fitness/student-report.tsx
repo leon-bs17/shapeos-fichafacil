@@ -65,7 +65,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
           </Button>
         ))}
       </nav>}
-      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} /><ProgressPanel sessions={sessions} /></>}
+      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} /><ProgressPanel sessions={sessions} compact={hideNavigation} /></>}
       {tab === "agenda" && (
         <AgendaPanel
           alunoId={alunoId}

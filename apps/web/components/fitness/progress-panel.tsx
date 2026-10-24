@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { CalendarDays, Dumbbell, Trophy, TrendingUp } from "lucide-react";
+import { CalendarDays, ChevronDown, Dumbbell, FileText, Trophy, TrendingUp } from "lucide-react";
 import {
   completion,
   dayOf,
@@ -9,7 +9,7 @@ import {
   workingSets,
   type Session,
 } from "@/services/fitness";
-export function ProgressPanel({ sessions }: { sessions: Session[] }) {
+export function ProgressPanel({ sessions, compact = false }: { sessions: Session[]; compact?: boolean }) {
   const done = useMemo(
       () => sessions.filter((s) => s.status === "CONCLUIDO"),
       [sessions],
@@ -68,7 +68,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
     { label: "Exercícios acompanhados", value: groups.length, Icon: Trophy },
   ];
   return (
-    <div className="space-y-6">
+    <div data-compact-progress={compact || undefined} className="space-y-6">
       <div className="personal-report-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
         {metrics.map((m) => (
           <div key={m.label} className="personal-report-metric rounded-2xl border bg-card p-4">
@@ -78,7 +78,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           </div>
         ))}
       </div>
-      <section className="rounded-2xl border bg-card p-5">
+      <section data-consistency className="rounded-2xl border bg-card p-5">
         <h2 className="font-semibold mb-4">Consistência · últimas 4 semanas</h2>
         <div className="grid grid-cols-7 gap-2">
           {Array.from({ length: 28 }, (_, i) => {
@@ -111,14 +111,14 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           anteriores continuam nos relatórios existentes.
         </p>
       )}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div data-exercise-grid className="grid md:grid-cols-2 gap-4">
         {groups.map((g) => {
           const best = Math.max(...g.rows.map((r) => r.carga)),
             first = g.rows[0].carga,
             last = g.rows.at(-1)!.carga,
             diff = Math.round((last - first) * 100) / 100;
           return (
-            <section key={g.id} className="rounded-2xl border bg-card p-5">
+            <section data-exercise-card key={g.id} className="rounded-2xl border bg-card p-5">
               <h3 className="font-semibold">{g.nome}</h3>
               <div className="flex justify-between mt-2 text-sm">
                 <span className="text-primary">
@@ -130,6 +130,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
                 </span>
               </div>
               <div
+                data-load-chart
                 aria-hidden="true"
                 className="flex h-24 gap-1 items-end mt-4"
               >
@@ -146,7 +147,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
               </div>
               <details className="mt-3 text-sm">
                 <summary className="cursor-pointer text-muted-foreground">
-                  Ver valores do gráfico
+                  <span>Ver valores do gráfico</span>{compact && <ChevronDown size={14} aria-hidden="true" />}
                 </summary>
                 <ul className="mt-2 space-y-1">
                   {g.rows.slice(-20).map((r, i) => (
@@ -161,11 +162,12 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
           );
         })}
       </div>
-      <section className="space-y-3">
+      <section data-prescription-list className="space-y-3">
         <h2 className="text-lg font-semibold">Prescrito × realizado</h2>
         {sessions.slice(0, 50).map((s) => (
           <details key={s.id} className="rounded-2xl border bg-card p-4">
             <summary className="cursor-pointer flex flex-wrap justify-between gap-2">
+              {compact && <FileText size={14} aria-hidden="true" />}
               <span className="font-medium">
                 {s.titulo} · {new Date(s.inicio).toLocaleDateString("pt-BR")}
               </span>
@@ -173,6 +175,7 @@ export function ProgressPanel({ sessions }: { sessions: Session[] }) {
                 {s.status === "CONCLUIDO" ? "Finalizado" : "Em andamento"} ·{" "}
                 {completion(s)}%
               </span>
+              {compact && <ChevronDown size={14} aria-hidden="true" />}
             </summary>
             <p className="mt-3 text-sm text-muted-foreground">
               {workingSets(s).length}/{plannedSets(s)} séries de trabalho ·{" "}

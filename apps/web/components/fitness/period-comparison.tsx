@@ -16,7 +16,7 @@ function change(current: number | null, previous: number | null, unit = '') {
   const delta = difference(current, previous)
   return delta == null ? 'Sem comparação' : delta === 0 ? 'Sem mudança' : `${delta > 0 ? '+' : '−'}${number(Math.abs(delta))}${unit ? ` ${unit}` : ''}`
 }
-export function PeriodComparison({ alunoId }: { alunoId: string }) {
+export function PeriodComparison({ alunoId, compact = false }: { alunoId: string; compact?: boolean }) {
   const [days, setDays] = useState<PeriodDays>(30)
   const query = useQuery({
     queryKey: ['personal-period-comparison', alunoId, days],
@@ -24,7 +24,7 @@ export function PeriodComparison({ alunoId }: { alunoId: string }) {
   })
   const data = query.data
   const comparison = data ? comparePeriods(data.sessions, data.window) : null
-  return <section className={styles.panel} aria-label="Comparação entre períodos">
+  return <section className={`${styles.panel} ${compact ? styles.compact : ''}`} aria-label="Comparação entre períodos">
     <header className={styles.header}>
       <div><h2>Comparação entre períodos</h2><p>Frequência, cargas e medidas do aluno.</p></div>
       <div className={styles.periods} role="group" aria-label="Período da comparação">
@@ -48,10 +48,15 @@ export function PeriodComparison({ alunoId }: { alunoId: string }) {
         ].map(metric => <div key={metric.label}><dt>{metric.label}</dt><dd><strong>{value(metric.current, metric.unit)}</strong>
           <span>Anterior: {value(metric.previous, metric.unit)}</span><span>{change(metric.current, metric.previous, metric.unit)}</span></dd></div>)}
       </dl>
+      <div className={compact ? styles.columns : styles.sectionStack}>
       <div className={styles.section}><h3>Carga por exercício</h3>
         <p className={styles.note}>Maior carga registrada com repetições em cada período. Compare junto da prescrição e da execução; os valores não indicam, sozinhos, melhora ou piora.</p>
         {comparison.exercises.length === 0 ? <p className={styles.note}>Nenhuma carga registrada nesses períodos.</p> :
-          <div className={styles.rows}>
+          compact ? <div className={styles.tableFrame}><table className={styles.comparisonTable}>
+            <caption className={styles.srOnly}>Carga por exercício nos períodos anterior e atual</caption>
+            <thead><tr><th scope="col">Exercício</th><th scope="col">Anterior</th><th scope="col">Atual</th><th scope="col">Variação</th></tr></thead>
+            <tbody>{comparison.exercises.map(exercise => <tr key={exercise.id}><th scope="row">{exercise.name}</th><td>{value(exercise.previous, 'kg')}</td><td>{value(exercise.current, 'kg')}</td><td>{change(exercise.current, exercise.previous, 'kg')}</td></tr>)}</tbody>
+          </table></div> : <div className={styles.rows}>
             {comparison.exercises.map(exercise => <div className={styles.row} key={exercise.id}>
               <strong>{exercise.name}</strong><dl>
                 <div><dt>Anterior</dt><dd>{value(exercise.previous, 'kg')}</dd></div>
@@ -63,7 +68,13 @@ export function PeriodComparison({ alunoId }: { alunoId: string }) {
       </div>
       <div className={styles.section}><h3>Medidas</h3>
         <p className={styles.note}>Última avaliação registrada dentro de cada período. Atual: {data.currentAssessment ? formatCalendarDate(data.currentAssessment.data) : 'sem avaliação'}; anterior: {data.previousAssessment ? formatCalendarDate(data.previousAssessment.data) : 'sem avaliação'}.</p>
-        <div className={styles.rows}>
+        {compact ? <div className={styles.tableFrame}><table className={styles.comparisonTable}>
+          <caption className={styles.srOnly}>Medidas das avaliações dos períodos anterior e atual</caption>
+          <thead><tr><th scope="col">Medida</th><th scope="col">Anterior</th><th scope="col">Atual</th><th scope="col">Variação</th></tr></thead>
+          <tbody>{([
+            ['peso', 'Peso', 'kg'], ['cintura', 'Cintura', 'cm'], ['quadril', 'Quadril', 'cm'], ['braco', 'Braço', 'cm'],
+          ] as const).map(([key, label, unit]) => <tr key={key}><th scope="row">{label}</th><td>{value(data.previousAssessment?.[key], unit)}</td><td>{value(data.currentAssessment?.[key], unit)}</td><td>{change(data.currentAssessment?.[key] ?? null, data.previousAssessment?.[key] ?? null, unit)}</td></tr>)}</tbody>
+        </table></div> : <div className={styles.rows}>
           {([
             ['peso', 'Peso', 'kg'], ['cintura', 'Cintura', 'cm'], ['quadril', 'Quadril', 'cm'], ['braco', 'Braço', 'cm'],
           ] as const).map(([key, label, unit]) => {
@@ -74,7 +85,8 @@ export function PeriodComparison({ alunoId }: { alunoId: string }) {
               <div><dt>Variação</dt><dd>{change(current, previous, unit)}</dd></div>
             </dl></div>
           })}
-        </div>
+        </div>}
+      </div>
       </div>
     </>}
   </section>
