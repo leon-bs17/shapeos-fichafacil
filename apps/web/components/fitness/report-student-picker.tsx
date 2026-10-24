@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
-import { Check, ChevronDown, Search, Users } from 'lucide-react'
+import { Check, ChevronDown, Users } from 'lucide-react'
+import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from './personal-report.module.css'
 
 type Student = { aluno_id: string; nome: string; email: string }
@@ -39,7 +40,7 @@ export function ReportStudentPicker({ students, value, onChange }: { students: S
           event.preventDefault(); controls[next]?.focus()
         }
       }}>
-      <div className={styles.pickerSearch}><Search size={15} aria-hidden="true" /><input ref={input} type="search" aria-label="Buscar aluno por nome ou e-mail" placeholder="Buscar aluno…" value={search} onChange={event => setSearch(event.target.value)} /></div>
+      <PersonalSearch ref={input} type="search" aria-label="Buscar aluno por nome ou e-mail" placeholder="Buscar aluno…" value={search} onChange={event => setSearch(event.target.value)} />
       <div className={styles.pickerOptions}>
         {filtered.map(student => <button type="button" key={student.aluno_id} aria-pressed={value === student.aluno_id}
           onClick={() => { onChange(student.aluno_id); close() }}><span><strong>{student.nome}</strong><small>{student.email}</small></span>{value === student.aluno_id && <Check size={15} aria-hidden="true" />}</button>)}

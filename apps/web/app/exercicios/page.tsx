@@ -1,9 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Library, Plus, Search, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2, Star, ArrowLeftRight } from 'lucide-react'
+import { Library, Plus, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2, Star, ArrowLeftRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { PersonalSearch } from '@/components/ui/personal-search'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
@@ -105,13 +106,11 @@ function ExerciciosConteudo() {
 
       <div className="personal-toolbar">
         <div className="personal-search">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
+          <PersonalSearch
             aria-label="Buscar exercício pelo nome"
             placeholder="Buscar por nome..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-9 h-10"
           />
         </div>
         <div className={styles.filters}>

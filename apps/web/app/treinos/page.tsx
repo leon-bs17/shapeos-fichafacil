@@ -22,6 +22,7 @@ import {
 import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, GripVertical, Download, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { PersonalSearch } from '@/components/ui/personal-search'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
@@ -112,7 +113,7 @@ function TreinosConteudo() {
       {params.get('aluno') && !selectedStudent && <p role="status" className="personal-results-note">Aluno indisponível neste vínculo. Exibindo suas fichas.</p>}
       {selectedStudent && <div className="personal-toolbar"><p className="personal-results-note">Fichas de <strong>{selectedStudent.nome}</strong></p><Button variant="outline" onClick={() => router.replace('/treinos', { scroll: false })}>Ver todos os alunos</Button></div>}
       <div className="personal-toolbar">
-        <div className="personal-toolbar-field"><Label htmlFor="buscar-fichas">Buscar fichas</Label><Input id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} className="h-10"/></div>
+        <div className="personal-toolbar-field"><Label htmlFor="buscar-fichas">Buscar fichas</Label><PersonalSearch id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} /></div>
         <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
         <Button variant="outline" className="h-10" disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><Download size={15} className="mr-2"/>Exportar JSON</Button>
       </div>

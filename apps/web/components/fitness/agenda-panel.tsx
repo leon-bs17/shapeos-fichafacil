@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, ChevronDown, Search } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from "./agenda-panel.module.css";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import { Button } from "@/components/ui/button";
@@ -218,7 +219,7 @@ function WorkoutPicker({ workouts, value, onChange }: { workouts: Workout[]; val
           event.preventDefault(); controls[next]?.focus();
         }
       }}>
-      <div className={styles.search}><Search size={14} aria-hidden="true" /><input ref={input} type="search" placeholder="Buscar ficha…" aria-label="Buscar ficha" value={search} onChange={event => setSearch(event.target.value)} /></div>
+      <PersonalSearch ref={input} type="search" placeholder="Buscar ficha…" aria-label="Buscar ficha" value={search} onChange={event => setSearch(event.target.value)} />
       <div className={styles.options}>
         <button type="button" aria-pressed={!value} onClick={() => { onChange(""); close(); }}><span>Selecione</span>{!value && <Check size={14} aria-hidden="true" />}</button>
         {filtered.map(workout => <button type="button" key={workout.id} aria-pressed={value === workout.id} onClick={() => { onChange(workout.id); close(); }}><span>{workout.titulo}</span>{value === workout.id && <Check size={14} aria-hidden="true" />}</button>)}

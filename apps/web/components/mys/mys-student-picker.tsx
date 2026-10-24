@@ -2,7 +2,8 @@
 
 import { useAlunos } from '@/hooks/use-alunos'
 import { useEffect, useId, useRef, useState } from 'react'
-import { Check, ChevronDown, Search, Users } from 'lucide-react'
+import { Check, ChevronDown, Users } from 'lucide-react'
+import { PersonalSearch } from '@/components/ui/personal-search'
 import styles from './mys-student-picker.module.css'
 
 const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLocaleLowerCase('pt-BR')
@@ -53,7 +54,7 @@ export function MysStudentPicker({ selected, locked, onSelect, onSummary }: {
             event.preventDefault(); controls[next]?.focus()
           }
         }}>
-        <div className={styles.search}><Search size={15} aria-hidden="true" /><input ref={searchInput} type="search" aria-label="Buscar aluno por nome ou e-mail" placeholder="Buscar aluno…" value={search} onChange={event => setSearch(event.target.value)} /></div>
+        <PersonalSearch ref={searchInput} type="search" aria-label="Buscar aluno por nome ou e-mail" placeholder="Buscar aluno…" value={search} onChange={event => setSearch(event.target.value)} />
         <div className={styles.options}>
           {!search.trim() && <button type="button" className={styles.option} aria-pressed={!selected} onClick={() => { onSelect(null); close() }}><span><strong>Conversa geral</strong><small>Sem aluno selecionado</small></span>{!selected && <Check size={16} aria-hidden="true" />}</button>}
           {filtered.map(student =>

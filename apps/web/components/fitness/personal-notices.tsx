@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Eye, Send, Users, CheckCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { PersonalSearch } from '@/components/ui/personal-search'
 import { Input } from '@/components/ui/input'
 import { Modal } from '@/components/ui/modal'
 import { fitnessRequest } from '@/lib/api/client'
@@ -49,7 +50,7 @@ export function PersonalNotices() {
       <div className={styles.field}><label htmlFor="notice-message">Mensagem</label><textarea ref={textarea} id="notice-message" rows={4} maxLength={4000} value={mensagem} disabled={mutation.isPending} onChange={event => { changed(); setMensagem(event.target.value) }} /><p className={styles.note}>{mensagem.length}/4.000 caracteres</p></div>
       <div className={styles.recipientHeading}><h3>Destinatários</h3><span>{selected.length}/100 selecionados</span></div>
       {recipients.isPending ? <p role="status">Carregando alunos…</p> : recipients.isError ? <div role="alert"><p>Não foi possível carregar seus alunos.</p><Button variant="outline" onClick={() => void recipients.refetch()}>Recarregar alunos</Button></div> : <>
-        <Input aria-label="Buscar destinatário" placeholder="Buscar aluno por nome ou e-mail" value={search} onChange={event => setSearch(event.target.value)} />
+        <PersonalSearch aria-label="Buscar destinatário" placeholder="Buscar aluno por nome ou e-mail" value={search} onChange={event => setSearch(event.target.value)} />
         <div className={styles.selectionActions}><Button variant="outline" disabled={!filtered.length || mutation.isPending} onClick={() => { const ids = Array.from(new Set([...selected, ...filtered.map(student => student.id)])); if (ids.length > 100) { setError('O grupo excede 100 alunos. Refine a busca ou selecione individualmente.'); return } changed(); setSelected(ids) }}>Selecionar exibidos ({filtered.length})</Button><Button variant="outline" disabled={!selected.length || mutation.isPending} onClick={() => { changed(); setSelected([]) }}>Limpar seleção</Button></div>
         {!filtered.length ? <p className={styles.note}>Nenhum aluno com vínculo ativo e conta liberada encontrado.</p> : <ul className={styles.recipients}>{filtered.map(student => <li key={student.id}><label><input type="checkbox" checked={selected.includes(student.id)} disabled={mutation.isPending} onChange={() => toggle(student.id)} /><span><strong>{student.nome}</strong><small>{student.email}</small></span></label></li>)}</ul>}
       </>}
