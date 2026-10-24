@@ -7,7 +7,7 @@
 .panel::backdrop { background:rgba(0,0,0,.5); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
 :global(html):has(.panel[open]),:global(body):has(.panel[open]) { overflow:hidden!important; overscroll-behavior:none; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 20px 16px; }
-.header h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em; }
+:global(html body) .panel .header h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em; }
 .header p { margin: 5px 0 0; font-size: 12px; color: hsl(var(--muted-foreground)); }
 .close { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 11px; background: hsl(var(--muted) / .5); color: hsl(var(--muted-foreground)); cursor: pointer; }
 .close:hover { color: hsl(var(--foreground)); background: hsl(var(--muted)); }
@@ -33,7 +33,7 @@
 .chevronOpen { transform: rotate(180deg); }
 .state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 210px; padding: 28px 20px; text-align: center; color: hsl(var(--muted-foreground)); }
 .emptyIcon { display: grid; place-items: center; width: 58px; height: 58px; margin-bottom: 14px; border-radius: 18px; color: hsl(var(--primary)); background: hsl(var(--primary) / .07); }
-.state h3 { margin: 8px 0 0; font-size: 14px; font-weight: 550; color: hsl(var(--foreground)); }
+:global(html body) .panel .state h3 { margin: 8px 0 0; font-size: 14px; font-weight: 550; color: hsl(var(--foreground)); }
 .state p { max-width: 260px; margin: 8px 0 0; font-size: 12px; line-height: 1.8; }
 .retry, .more { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 14px; border: 1px solid hsl(var(--border)); border-radius: 10px; background: hsl(var(--card)); color: hsl(var(--primary)); font: inherit; font-size: 12px; cursor: pointer; }
 .retry { margin-top: 18px; }
