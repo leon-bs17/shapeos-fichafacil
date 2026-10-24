@@ -20,7 +20,7 @@ export function PersonalWorkspace({ children, page }: { children: ReactNode; pag
   return <div className="personal-content" data-personal-content={page}>
     {children}
     <style jsx global>{`
-      .personal-content{max-width:1168px;margin:0 auto;min-width:0;display:grid;gap:20px;}
+      .personal-content{width:100%;max-width:var(--personal-content-max,1400px);margin:0 auto;min-width:0;display:grid;gap:20px;}
       .personal-content>div:empty{display:none;}
       .personal-content-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;}.personal-heading-actions{display:flex;gap:8px;flex-shrink:0;}.personal-content .personal-page-heading{min-width:0;}.personal-content h2{font-size:15px;font-weight:600;line-height:1.5;}.personal-content h3{font-size:13px;font-weight:600;line-height:1.5;}.personal-content label{font-size:11px;font-weight:500;line-height:1.6;letter-spacing:normal;text-transform:none;}
       html body .personal-content :is(.personal-panel,.bg-card){background:var(--p-panel);border-color:var(--p-line);border-radius:16px;box-shadow:none;}

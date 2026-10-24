@@ -501,3 +501,6 @@
  :global([data-personal-mys]) .workspace.workspace.workspace.workspace .composer:not(:has(textarea:disabled)):hover { background:color-mix(in srgb,var(--mys-accent) 7%,var(--mys-refined-surface)); border-color:color-mix(in srgb,var(--mys-accent) 40%,var(--mys-line)); }
  :global([data-personal-mys]) .workspace.workspace.workspace.workspace .composer:not(:has(textarea:disabled)):focus-within { border-color:var(--mys-accent); }
 }
+
+/* Personal uses the same outer content width as Admin; keep chat text limits. */
+:global([data-personal-mys]) .workspace.workspace.workspace.workspace { width:100%; max-width:var(--personal-content-max,1400px); }
