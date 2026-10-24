@@ -7,49 +7,71 @@
 .metrics dd { order:0; margin:0; font-size:28px; font-weight:600; line-height:1.2; font-variant-numeric:tabular-nums; }
 .metricIcon { display:grid; place-items:center; flex:0 0 44px; width:44px; height:44px; border-radius:13px; color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 7%,transparent); }
 .metricIcon svg { width:24px; height:24px; }
-:global(html body .personal-content) .page .panel { border:0; border-radius:0; background:transparent; overflow:visible; }
-:global(html body .personal-content) .page .table { width:100%; min-width:0; table-layout:fixed; }
-:global(html body .personal-content) .page .table th { padding:12px; font-size:10px; font-weight:650; line-height:1.5; text-transform:uppercase; letter-spacing:.1em; color:var(--p-muted); }
-:global(html body .personal-content) .page .table td { padding:10px 12px; height:50px; font-size:12px; }
-:global(html body .personal-content) .page .table :is(th,td):first-child { width:52%; }
-:global(html body .personal-content) .page .table :is(th,td):nth-child(2) { width:22%; text-align:left; }
-:global(html body .personal-content) .page .table :is(th,td):nth-child(3) { width:14%; }
-:global(html body .personal-content) .page .table :global(.personal-student-identity) { gap:10px; }
-:global(html body .personal-content) .page .table .avatar { display:grid; place-items:center; box-sizing:border-box; width:32px; height:32px; min-width:32px; flex:0 0 32px; aspect-ratio:1; border:0; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:11px; font-weight:700; line-height:1; }
-.actionCell { text-align:right; }
-:global(html body .personal-content) .page .table .view { display:inline-flex; align-items:center; justify-content:center; gap:6px; width:auto; min-width:64px; height:34px; min-height:34px; padding:0 14px; font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap; color:var(--p-ink); border:1px solid var(--p-line); border-radius:13px; background:transparent; box-shadow:none; transform:none; filter:none; transition:background-color 150ms ease,border-color 150ms ease; }
-:global(html body .personal-content) .page .table .view svg { width:15px; height:15px; color:var(--p-brand); flex-shrink:0; }
+:global(html body .personal-content) .page .panel { min-width:0; padding:16px 18px 0; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); overflow:hidden; }
 :global(html body .personal-content) .page .panel>:global(.personal-panel-heading) { padding:0 0 12px; border:0; }
-:global(html body .personal-content) .page .panel>:global(.personal-panel-heading) h2 { font-size:15px; font-weight:650; }
-.tableFrame { margin:0; border:1px solid var(--p-line); border-radius:13px; overflow:hidden; background:var(--p-panel); }
-:global(html body .personal-content) .page .table :global(.personal-student-identity) strong { font-size:12px; font-weight:650; }
-:global(html body .personal-content) .page .table :global(.personal-student-count) { font-family:inherit; font-size:12px; font-weight:400; font-variant-numeric:tabular-nums; letter-spacing:normal; line-height:1.5; }
-:global(html body .personal-content) .page .table :is(th,td):nth-child(3) { text-align:left; }
-:global(html body .personal-content) .page .table :is(th,td):last-child { width:12%; text-align:center; }
-:global(html body .personal-content) .page .table .view:focus-visible { outline:2px solid var(--p-brand); outline-offset:3px; }
-@media(hover:hover) and (pointer:fine) { :global(html body .personal-content) .page .table .view:not(:disabled):hover { background:color-mix(in srgb,var(--p-brand) 7%,transparent); border-color:color-mix(in srgb,var(--p-brand) 40%,transparent); } }
-@media(prefers-reduced-motion:reduce) { :global(html body .personal-content) .page .table .view { transition:none; } }
+:global(html body .personal-content) .page .panel>:global(.personal-panel-heading) h2 { font-size:13px; font-weight:600; }
+.tableFrame { overflow:hidden; border:1px solid var(--p-line); border-radius:13px; }
+:global(html body .personal-content) .page .table { width:100%; border-collapse:collapse; table-layout:fixed; text-align:left; background:var(--p-panel); }
+:global(html body .personal-content) .page .table th { padding:11px 12px; border-bottom:1px solid var(--p-line); color:var(--p-muted); font-size:10px; font-weight:500; line-height:1.5; letter-spacing:.06em; text-transform:uppercase; text-align:left; }
+:global(html body .personal-content) .page .table th:first-child { width:auto; }
+:global(html body .personal-content) .page .table th:nth-child(2) { width:106px; }
+:global(html body .personal-content) .page .table th:nth-child(3) { width:136px; }
+:global(html body .personal-content) .page .table th:last-child { width:82px; }
+:global(html body .personal-content) .page .table td { padding:12px; border-bottom:1px solid var(--p-line); vertical-align:middle; height:auto; font-size:11px; line-height:1.5; text-align:left; }
+:global(html body .personal-content) .page .table tr:last-child td { border-bottom:0; }
+:global(html body .personal-content) .page .table :global(.personal-student-identity) { display:flex; align-items:center; gap:10px; min-width:0; }
+:global(html body .personal-content) .page .table .avatar { display:grid; place-items:center; box-sizing:border-box; width:32px; height:32px; min-width:32px; max-width:32px; flex:0 0 32px; aspect-ratio:1; border:0; border-radius:50%; background:linear-gradient(145deg,#6f86b6,#4f678f); color:#fff; font-size:11px; font-weight:700; line-height:1; }
+.studentIdentity { min-width:0; flex:1; }
+.nameProfile { min-width:0; }
+.actionCell { text-align:left; }
+:global(html body .personal-content) .page .table .studentIdentity strong { display:block; font-size:12px; font-weight:600; line-height:1.5; overflow-wrap:anywhere; }
+.studentEmail { display:block; margin:3px 0 0; color:var(--p-muted); font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
+:global(html body .personal-content) .page .table :global(.personal-student-count) { font-family:inherit; font-size:12px; font-weight:400; font-variant-numeric:tabular-nums; color:var(--p-muted); }
+:global(html body .personal-content) .page .table .status { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:28px; padding:5px 9px; border:0; border-radius:999px; font-size:10px; font-weight:600; line-height:1.5; white-space:nowrap; box-shadow:none; }
+:global(html body .personal-content) .page .table .status[data-active=true] { color:#0d7e70; background:#e4f3eb; }
+:global(html.dark body .personal-content) .page .table .status[data-active=true] { color:#00e9df; background:#123b31; }
+:global(html body .personal-content) .page .table .status svg { flex-shrink:0; }
+:global(html body .personal-content) .page .table .view,:global(html body .personal-content) .page .pagination button { display:inline-flex; align-items:center; justify-content:center; gap:6px; width:auto; min-width:0; height:auto; min-height:36px; padding:7px 10px; border:1px solid var(--p-line); border-radius:13px; background:transparent; color:var(--p-ink); font:inherit; font-size:11px; font-weight:500; line-height:1.5; text-decoration:none; cursor:pointer; transition:background-color 150ms ease,border-color 150ms ease; }
+:global(html body .personal-content) .page .table .view svg { color:var(--p-brand); width:14px; height:14px; }
+.pagination { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:14px 0; color:var(--p-muted); font-size:11px; line-height:1.6; }
+.pagination nav { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:5px; }
+:global(html body .personal-content) .page .pagination button { min-width:36px; padding:7px; }
+:global(html body .personal-content) .page .pagination button[aria-current=page] { color:var(--p-panel); border-color:var(--p-brand); background:var(--p-brand); }
+:global(html body .personal-content) .page .pagination button:disabled { opacity:.45; cursor:default; }
+:global(html body .personal-content) .page .table .view:focus-visible,:global(html body .personal-content) .page .pagination button:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+@media(hover:hover) {
+ :global(html body .personal-content) .page .table .view:not(:disabled):hover,:global(html body .personal-content) .page .pagination button:not(:disabled):not([aria-current=page]):hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); }
+}
+@media(min-width:640px) and (max-width:900px) {
+ :global(html body .personal-content) .page .table th,:global(html body .personal-content) .page .table td { padding:10px 8px; }
+ :global(html body .personal-content) .page .table th:nth-child(2) { width:94px; }
+ :global(html body .personal-content) .page .table th:nth-child(3) { width:124px; }
+ :global(html body .personal-content) .page .table th:last-child { width:72px; }
+}
 @media(max-width:767px) {
- .tableFrame { margin:0; border:0; background:transparent; overflow:visible; }
- :global(html body .personal-content) .page .panel>:global(.personal-panel-heading) { padding:0 0 12px; }
- :global(html body .personal-content) .page .table tbody { display:grid; gap:12px; padding:0; }
  .metrics { padding:8px 0; }
  .metrics>div { flex-direction:column; align-items:flex-start; gap:8px; padding:0 10px; }
  .metricIcon { width:36px; height:36px; flex-basis:36px; border-radius:11px; }
  .metricIcon svg { width:20px; height:20px; }
  .metrics dd { font-size:24px; }
  .metrics dt { font-size:10px; }
- :global(html body .personal-content) .page .table { display:block; }
- :global(html body .personal-content) .page .table thead { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
- :global(html body .personal-content) .page .table tbody tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; padding:14px; border:1px solid var(--p-line); border-radius:13px; align-items:center; background:var(--p-panel); }
- :global(html body .personal-content) .page .table tbody tr:last-child { border-bottom:1px solid var(--p-line); }
- :global(html body .personal-content) .page .table td:nth-child(n) { display:block; width:100%; min-width:0; padding:0; border:0; text-align:left; }
- :global(html body .personal-content) .page .table td:first-child,:global(html body .personal-content) .page .table td:last-child { grid-column:1/-1; }
- :global(html body .personal-content) .page .table td::before { display:none; }
- :global(html body .personal-content) .page .table td[data-label="Fichas ativas"]::before,:global(html body .personal-content) .page .table td[data-label="Status"]::before { content:attr(data-label); display:block; margin-bottom:6px; color:var(--p-muted); font-size:10px; }
- :global(html body .personal-content) .page .table .avatar { width:34px; height:34px; min-width:34px; flex-basis:34px; }
- :global(html body .personal-content) .page .table .view { width:100%; min-width:0; height:44px; min-height:44px; }
 }
+@media(max-width:639px) {
+ :global(html body .personal-content) .page .panel { padding:14px 14px 0; }
+ :global(html body .personal-content) .page .table,:global(html body .personal-content) .page .table tbody { display:block; }
+ :global(html body .personal-content) .page .table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+ :global(html body .personal-content) .page .table tbody tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px 12px; padding:14px; border-bottom:1px solid var(--p-line); }
+ :global(html body .personal-content) .page .table tbody tr:last-child { border-bottom:0; }
+ :global(html body .personal-content) .page .table td { display:block; min-width:0; width:auto; height:auto; padding:0; border:0; }
+ :global(html body .personal-content) .page .table td:first-child { grid-column:1/-1; }
+ :global(html body .personal-content) .page .table td:last-child { grid-column:2; justify-self:end; align-self:end; }
+ :global(html body .personal-content) .page .table td::before { display:none; }
+ :global(html body .personal-content) .page .table td[data-label="Fichas ativas"]::before,:global(html body .personal-content) .page .table td[data-label="Status"]::before { content:attr(data-label); display:block; font-size:10px; color:var(--p-muted); margin-bottom:5px; }
+ :global(html body .personal-content) .page .table .view,:global(html body .personal-content) .page .pagination button { min-height:44px; min-width:44px; }
+ .pagination { justify-content:center; padding:14px 0; gap:10px; }
+ .pagination>span { width:100%; text-align:center; }
+}
+@media(prefers-reduced-motion:reduce) { :global(html body .personal-content) .page :is(.view,.pagination button) { transition:none; } }
 
 :global(html body .personal-content) .inviteModal:global([data-personal-modal]) { width:520px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); padding:18px; border-radius:13px; box-shadow:none; }
 :global(html body .personal-content) .inviteModal>:global([data-personal-modal-heading]) { padding-bottom:12px; margin-bottom:12px; gap:12px; }
@@ -72,20 +94,3 @@
 :global(html body .personal-content) .inviteModal .inviteError { min-width:0; padding:8px 10px; border:1px solid color-mix(in srgb,var(--p-danger) 25%,var(--p-line)); border-radius:13px; background:color-mix(in srgb,var(--p-danger) 7%,var(--p-panel)); color:var(--p-danger); }
 :global(html body .personal-content) .inviteModal .inviteError p { margin:0; font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
 
-.studentIdentity { min-width:0; flex:1; }
-.nameProfile { display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px; min-width:0; }
-.studentEmail { display:block; margin-top:3px; font-size:11px; line-height:1.5; overflow-wrap:anywhere; color:var(--p-muted); }
-:global(html body .personal-content) .page .table .status { border:0; min-height:0; gap:7px; padding:7px 12px; border-radius:999px; font-size:11px; font-weight:500; line-height:1.5; }
-:global(html body .personal-content) .page .table .status svg { width:15px; height:15px; flex-shrink:0; }
-:global(html body .personal-content) .page .table .status[data-active=true] { background:#e4f3eb; color:#0d7e70; }
-:global(html.dark body .personal-content) .page .table .status[data-active=true] { background:#123b31; color:#00e9df; }
-.pagination { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-top:1px solid var(--p-line); color:var(--p-muted); font-size:11px; }
-.pagination nav { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
-:global(html body .personal-content) .page .pagination button { display:grid; place-items:center; width:36px; min-width:36px; height:36px; min-height:36px; padding:0; border-radius:13px; font-size:12px; }
-:global(html body .personal-content) .page .pagination button[aria-current=page] { border-color:var(--p-brand); background:var(--p-brand); color:var(--p-bg); font-weight:700; }
-@media(max-width:767px) {
- :global(html body .personal-content) .page .table tbody tr { display:flex; flex-direction:column; align-items:stretch; }
- :global(html body .personal-content) .page .table .status { padding:6px 8px; font-size:10px; }
- .pagination { flex-direction:column; justify-content:center; text-align:center; margin-top:16px; padding:16px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
- :global(html body .personal-content) .page .pagination button { width:44px; min-width:44px; height:44px; min-height:44px; }
-}

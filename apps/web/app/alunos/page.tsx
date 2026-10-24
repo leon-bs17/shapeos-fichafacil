@@ -96,12 +96,12 @@ function AlunosConteudo() {
               <td data-label="Status"><span className={`personal-status ${styles.status}`} data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
               <td data-label="Ações" className={styles.actionCell}><Button variant="outline" size="sm" className={styles.view} disabled={!aluno.aluno_id} onClick={() => setSelectedStudentId(aluno.aluno_id)} aria-label={`Ver acompanhamento de ${aluno.nome}`}><Eye size={14} strokeWidth={1.75} aria-hidden="true" />Ver</Button></td>
             </tr>)}
-          </tbody></table>
+          </tbody></table></div>
           <footer className={styles.pagination}><span>{start + 1}–{Math.min(start + 5, totalStudents)} de {totalStudents} {totalStudents === 1 ? 'aluno' : 'alunos'}</span><nav aria-label="Paginação de alunos">
             <Button variant="outline" aria-label="Página anterior" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16} aria-hidden="true" /></Button>
             {Array.from({ length: totalPages }, (_, index) => index + 1).map(number => <Button key={number} variant="outline" aria-label={`Página ${number}`} aria-current={number === currentPage ? 'page' : undefined} onClick={() => setPage(number)}>{number}</Button>)}
             <Button variant="outline" aria-label="Próxima página" disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16} aria-hidden="true" /></Button>
-          </nav></footer></div>
+          </nav></footer>
         </section>}
       </div>
       {selectedStudent && <StudentFollowUpPanel key={selectedStudent.vinculo_id} student={selectedStudent} onClose={() => setSelectedStudentId('')} />}
