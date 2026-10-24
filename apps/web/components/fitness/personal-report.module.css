@@ -170,3 +170,66 @@
  .banner p { font-size:13px; line-height:1.6; max-width:none; }
  .wireframe { width:300px; height:auto; right:-130px; top:50%; transform:translateY(-50%); opacity:.16; z-index:0; }
 }
+
+/* Compact only the comparison/progress panels embedded in Personal Reports. */
+.page.page :global(.personal-report-body [data-period-part="panel"]) { padding:14px 16px; gap:10px; border-radius:13px; }
+.page.page :global(.personal-report-body [data-period-part="header"]) { gap:12px; }
+.page.page :global(.personal-report-body [data-period-part="header"] h2) { font-size:13px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-period-part="header"] p),
+.page.page :global(.personal-report-body [data-period-part="note"]) { font-size:10px; line-height:1.6; margin-top:3px; }
+.page.page :global(.personal-report-body [data-period-part="periods"] button) { min-height:36px; padding:6px 10px; border-radius:13px; font-size:11px; }
+.page.page :global(.personal-report-body [data-period-part="ranges"]) { gap:4px 18px; padding-top:9px; }
+.page.page :global(.personal-report-body [data-period-part="ranges"] p) { font-size:10px; line-height:1.6; }
+.page.page :global(.personal-report-body [data-period-part="metrics"]) { padding:10px 0; }
+.page.page :global(.personal-report-body [data-period-part="metrics"]>div) { padding:0 12px; }
+.page.page :global(.personal-report-body [data-period-part="metrics"] dt) { font-size:10px; }
+.page.page :global(.personal-report-body [data-period-part="metrics"] dd) { margin-top:6px; gap:3px; }
+.page.page :global(.personal-report-body [data-period-part="metrics"] strong) { font-size:20px; line-height:1.3; }
+.page.page :global(.personal-report-body [data-period-part="metrics"] span) { font-size:10px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-period-part="section"]) { gap:6px; padding-top:10px; }
+.page.page :global(.personal-report-body [data-period-part="section"] h3) { font-size:12px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-period-part="row"]) { gap:12px; padding:8px 0; }
+.page.page :global(.personal-report-body [data-period-part="row"]>strong) { font-size:11px; }
+.page.page :global(.personal-report-body [data-period-part="row"] dl) { gap:8px; }
+.page.page :global(.personal-report-body [data-period-part="row"] dt) { font-size:9px; }
+.page.page :global(.personal-report-body [data-period-part="row"] dd) { margin-top:3px; font-size:11px; line-height:1.5; }
+.page.page :global(.personal-report-body>div:has(>[data-period-part="panel"])),
+.page.page :global(.personal-report-body [data-progress-panel]) { display:grid; gap:12px; }
+.page.page :global(.personal-report-body>div:has(>[data-period-part="panel"])>*),
+.page.page :global(.personal-report-body [data-progress-panel]>*) { margin-top:0; margin-bottom:0; }
+.page.page :global(.personal-report-body [data-progress-panel] .personal-report-metrics) { padding:12px 0; border-radius:13px; }
+.page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric) { padding:0 12px!important; }
+.page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric svg) { width:17px; height:17px; margin-bottom:6px; }
+.page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric p:first-of-type) { font-size:20px; line-height:1.3; }
+.page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric p:last-child) { margin-top:3px; font-size:10px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-progress-panel] .bg-card) { padding:12px 14px; border-radius:13px; }
+.page.page :global(.personal-report-body [data-progress-panel] h2),
+.page.page :global(.personal-report-body [data-progress-panel] h3) { font-size:13px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-progress-consistency] h2) { margin-bottom:10px; }
+.page.page :global(.personal-report-body [data-progress-consistency]>div) { gap:5px; }
+.page.page :global(.personal-report-body [data-progress-consistency]>div>div) { padding:5px 4px; border-radius:7px; font-size:10px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-progress-consistency]>p) { margin-top:8px; font-size:10px; line-height:1.6; }
+.page.page :global(.personal-report-body [data-progress-exercises]) { gap:12px; }
+.page.page :global(.personal-report-body [data-progress-exercise]>div:not([data-progress-chart])) { gap:10px; margin-top:5px; font-size:11px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-progress-chart]) { height:72px; margin-top:10px; }
+.page.page :global(.personal-report-body [data-progress-exercise] details) { margin-top:8px; font-size:10px; line-height:1.6; }
+.page.page :global(.personal-report-body [data-progress-prescription]>*) { margin-top:0; margin-bottom:0; }
+.page.page :global(.personal-report-body [data-progress-prescription]) { display:grid; gap:8px; }
+.page.page :global(.personal-report-body [data-progress-prescription]>details) { padding:10px 12px; }
+.page.page :global(.personal-report-body [data-progress-prescription] summary) { align-items:center; gap:6px 12px; min-height:24px; font-size:11px; line-height:1.5; }
+.page.page :global(.personal-report-body [data-progress-prescription] summary>span:last-child) { font-size:10px; }
+.page.page :global(.personal-report-body [data-progress-prescription] details p),
+.page.page :global(.personal-report-body [data-progress-prescription] details>div) { font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+@media(max-width:639px) {
+ .page.page :global(.personal-report-body [data-period-part="panel"]) { padding:12px; }
+ .page.page :global(.personal-report-body [data-period-part="header"]) { gap:8px; }
+ .page.page :global(.personal-report-body [data-period-part="periods"] button) { min-height:44px; }
+ .page.page :global(.personal-report-body [data-period-part="metrics"]) { padding:0; }
+ .page.page :global(.personal-report-body [data-period-part="metrics"]>div) { padding:10px 12px; }
+ .page.page :global(.personal-report-body [data-period-part="row"]) { gap:6px; }
+ .page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric) { padding:0 8px!important; }
+ .page.page :global(.personal-report-body [data-progress-panel] .personal-report-metric p:first-of-type) { font-size:19px; }
+ .page.page :global(.personal-report-body [data-progress-chart]) { height:64px; }
+ .page.page :global(.personal-report-body [data-progress-prescription] summary) { min-height:44px; align-content:center; }
+ .page.page :global(.personal-report-body [data-progress-exercise] summary) { min-height:44px; padding:10px 0; box-sizing:border-box; }
+}
