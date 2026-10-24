@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import reportStyles from "./personal-report.module.css";
 import { comparisonWindows, type PeriodDays } from "@/lib/fitness/period-comparison";
 import { CalendarDays, ChevronDown, Dumbbell, FileText, Trophy, TrendingUp } from "lucide-react";
 import {
@@ -75,7 +76,12 @@ export function ProgressPanel({ sessions, compact = false, periodDays }: { sessi
   ];
   return (
     <div data-compact-progress={compact || undefined} className="space-y-6">
-      <div className="personal-report-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {compact ? <dl className={reportStyles.progressMetrics} aria-label="Indicadores de evolução do aluno">
+        {metrics.map(m => <div key={m.label}>
+          <span className={reportStyles.progressMetricIcon} aria-hidden="true"><m.Icon size={24} strokeWidth={1.75} /></span>
+          <div><dt>{m.label}</dt><dd>{m.value}</dd></div>
+        </div>)}
+      </dl> : <div className="personal-report-metrics grid grid-cols-2 lg:grid-cols-4 gap-3">
         {metrics.map((m) => (
           <div key={m.label} className="personal-report-metric rounded-2xl border bg-card p-4">
             <m.Icon size={18} className="text-primary mb-3" />
@@ -83,7 +89,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays }: { sessi
             <p className="text-xs text-muted-foreground mt-2">{m.label}</p>
           </div>
         ))}
-      </div>
+      </div>}
       <section data-consistency data-filtered-period={periodDays} className="rounded-2xl border bg-card p-5">
         <h2 className="font-semibold mb-4">{periodDays ? `Consistência · ${periodDays} dias` : "Consistência · últimas 4 semanas"}</h2>
         <div className="grid grid-cols-7 gap-2" tabIndex={periodDays ? 0 : undefined} role={periodDays ? "region" : undefined} aria-label={periodDays ? `Dias com treino no período de ${periodDays} dias` : undefined}>
