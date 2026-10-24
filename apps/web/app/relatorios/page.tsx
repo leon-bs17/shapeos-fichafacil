@@ -13,7 +13,7 @@ import { PersonalReportOverview } from '@/components/fitness/personal-report-ove
 import { ReportStudentPicker } from '@/components/fitness/report-student-picker'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
-import type { PeriodDays } from '@/lib/fitness/period-comparison'
+import { comparisonWindows, type PeriodDays } from '@/lib/fitness/period-comparison'
 import styles from '@/components/fitness/personal-report.module.css'
 
 export default function RelatoriosPage() {
@@ -40,7 +40,11 @@ function RelatoriosConteudo() {
     router.replace('/relatorios' + (query.size ? '?' + query.toString() : ''), { scroll: false })
   }
   const { data: registros, isLoading, error: erroRegistros, refetch: recarregarRegistros } = useRegistrosDoAluno(tab === 'analise' ? alunoId || undefined : undefined)
-  const agrupados = agruparPorExercicio(registros ?? [])
+  const analysisWindow = comparisonWindows(days)
+  const agrupados = agruparPorExercicio((registros ?? []).filter(registro => {
+    const date = Date.parse(registro.data_registro)
+    return Number.isFinite(date) && date >= Date.parse(analysisWindow.start) && date <= Date.parse(analysisWindow.end)
+  }))
   const heading = <PersonalPageHeader icon="relatorios" title="Relatórios" description="Sessões, evolução e avaliações dos seus alunos." />
   return <PersonalWorkspace page="relatorios">{heading}<div className={styles.page}>
     <section className={styles.banner} data-shapeos-banner>
@@ -58,8 +62,8 @@ function RelatoriosConteudo() {
       <>
         <section className={styles.filters} aria-label="Filtros do relatório">
           <ReportStudentPicker students={students} value={alunoId} onChange={id => navigate(id, 'evolucao')} />
-          <div className={styles.periodGroup}><span className={styles.label}>Período do resumo</span><div className={styles.periods} role="group" aria-label="Período do resumo">
-            {([7, 30, 90] as const).map(period => <button type="button" key={period} aria-pressed={days === period} onClick={() => navigate(alunoId, 'evolucao', period)}>{period} dias</button>)}
+          <div className={styles.periodGroup}><span className={styles.label}>Período da análise</span><div className={styles.periods} role="group" aria-label="Período da análise">
+            {([7, 30, 90] as const).map(period => <button type="button" key={period} aria-pressed={days === period} onClick={() => navigate(alunoId, tab, period)}>{period} dias</button>)}
           </div></div>
         </section>
         {!student ? <div className={styles.state}><Users size={26} aria-hidden="true" /><h2>Escolha um aluno para começar</h2><p>Selecione o aluno acima para consultar sessões, frequência e avaliações.</p></div> : <>
@@ -69,11 +73,11 @@ function RelatoriosConteudo() {
           </nav>
           {tab === 'evolucao' ? <PersonalReportOverview key={alunoId + ':' + days} alunoId={alunoId} studentName={student.nome} days={days} onAssessments={() => navigate(alunoId, 'avaliacao')} /> :
             <div className="personal-report-body">
-              <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation />
+              <StudentReport key={alunoId + ':' + tab} alunoId={alunoId} initialTab={tab === 'agenda' ? 'agenda' : tab === 'avaliacao' ? 'avaliacao' : 'evolucao'} hideNavigation periodDays={days} />
               {tab === 'analise' && <><h2>Histórico de cargas</h2>
                 {isLoading ? <p role="status">Carregando registros de exercícios…</p> :
                   erroRegistros ? <div className={styles.state} role="alert"><p>Não foi possível carregar o histórico de cargas.</p><button type="button" onClick={() => void recarregarRegistros()}>Tentar novamente</button></div> :
-                  !agrupados.length ? <div className={styles.state}>Este aluno ainda não registrou execuções no app.</div> :
+                  !agrupados.length ? <div className={styles.state}>Nenhuma execução registrada no período selecionado.</div> :
                   <div className="grid gap-4 md:grid-cols-2">{agrupados.map(grupo => <EvolucaoExercicio key={grupo.nome} grupo={grupo} />)}</div>}
               </>}
             </div>}

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import type { PeriodDays } from "@/lib/fitness/period-comparison";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ProgressPanel } from "./progress-panel";
@@ -14,7 +15,7 @@ import {
   sessionsForStudent,
   workoutsForStudent,
 } from "@/services/fitness";
-export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean }) {
+export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation = false, periodDays }: { alunoId: string; initialTab?: "evolucao" | "agenda" | "avaliacao"; hideNavigation?: boolean; periodDays?: PeriodDays }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<string>(initialTab);
   const data = useQuery({
@@ -65,7 +66,7 @@ export function StudentReport({ alunoId, initialTab = "evolucao", hideNavigation
           </Button>
         ))}
       </nav>}
-      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} /><ProgressPanel sessions={sessions} compact={hideNavigation} /></>}
+      {tab === "evolucao" && <><PeriodComparison alunoId={alunoId} compact={hideNavigation} periodDays={periodDays} /><ProgressPanel sessions={sessions} compact={hideNavigation} periodDays={periodDays} /></>}
       {tab === "agenda" && (
         <AgendaPanel
           alunoId={alunoId}

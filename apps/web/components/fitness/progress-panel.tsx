@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import { comparisonWindows, type PeriodDays } from "@/lib/fitness/period-comparison";
 import { CalendarDays, ChevronDown, Dumbbell, FileText, Trophy, TrendingUp } from "lucide-react";
 import {
   completion,
@@ -9,12 +10,17 @@ import {
   workingSets,
   type Session,
 } from "@/services/fitness";
-export function ProgressPanel({ sessions, compact = false }: { sessions: Session[]; compact?: boolean }) {
+export function ProgressPanel({ sessions, compact = false, periodDays }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays }) {
+  const periodWindow = periodDays == null ? null : comparisonWindows(periodDays)
+  const scopedSessions = periodWindow ? sessions.filter(session => {
+    const date = Date.parse(session.inicio)
+    return Number.isFinite(date) && date >= Date.parse(periodWindow.start) && date <= Date.parse(periodWindow.end)
+  }) : sessions
   const done = useMemo(
-      () => sessions.filter((s) => s.status === "CONCLUIDO"),
-      [sessions],
+      () => scopedSessions.filter((s) => s.status === "CONCLUIDO"),
+      [scopedSessions],
     ),
-    cutoff = Date.now() - 30 * 86400000,
+    cutoff = periodWindow ? Date.parse(periodWindow.start) : Date.now() - 30 * 86400000,
     recent = done.filter((s) => new Date(s.inicio).getTime() >= cutoff);
   const days = new Set(recent.map((s) => dayOf(s.inicio))),
     volume = recent.reduce((n, s) => n + sessionVolume(s), 0);
@@ -54,14 +60,14 @@ export function ProgressPanel({ sessions, compact = false }: { sessions: Session
     }));
   }, [done]);
   const metrics = [
-    { label: "Sessões · 30 dias", value: recent.length, Icon: Dumbbell },
+    { label: `Sessões · ${periodDays ?? 30} dias`, value: recent.length, Icon: Dumbbell },
     {
-      label: "Dias com treino · 30 dias",
+      label: `Dias com treino · ${periodDays ?? 30} dias`,
       value: days.size,
       Icon: CalendarDays,
     },
     {
-      label: "Volume · 30 dias",
+      label: `Volume · ${periodDays ?? 30} dias`,
       value: `${volume.toLocaleString("pt-BR")} kg`,
       Icon: TrendingUp,
     },
@@ -78,12 +84,12 @@ export function ProgressPanel({ sessions, compact = false }: { sessions: Session
           </div>
         ))}
       </div>
-      <section data-consistency className="rounded-2xl border bg-card p-5">
-        <h2 className="font-semibold mb-4">Consistência · últimas 4 semanas</h2>
-        <div className="grid grid-cols-7 gap-2">
-          {Array.from({ length: 28 }, (_, i) => {
+      <section data-consistency data-filtered-period={periodDays} className="rounded-2xl border bg-card p-5">
+        <h2 className="font-semibold mb-4">{periodDays ? `Consistência · ${periodDays} dias` : "Consistência · últimas 4 semanas"}</h2>
+        <div className="grid grid-cols-7 gap-2" tabIndex={periodDays ? 0 : undefined} role={periodDays ? "region" : undefined} aria-label={periodDays ? `Dias com treino no período de ${periodDays} dias` : undefined}>
+          {Array.from({ length: periodDays ?? 28 }, (_, i) => {
             const d = new Date();
-            d.setDate(d.getDate() - 27 + i);
+            d.setDate(d.getDate() - (periodDays ?? 28) + 1 + i);
             const key = dayOf(d.toISOString()),
               count = done.filter((s) => dayOf(s.inicio) === key).length;
             return (
@@ -107,8 +113,7 @@ export function ProgressPanel({ sessions, compact = false }: { sessions: Session
       </section>
       {!done.length && (
         <p className="rounded-2xl border border-dashed p-6 text-muted-foreground">
-          Finalize uma sessão para acompanhar sua evolução. Os registros
-          anteriores continuam nos relatórios existentes.
+          {periodDays ? "Nenhuma sessão concluída no período selecionado." : "Finalize uma sessão para acompanhar sua evolução. Os registros anteriores continuam nos relatórios existentes."}
         </p>
       )}
       <div data-exercise-grid className="grid md:grid-cols-2 gap-4">
@@ -164,7 +169,7 @@ export function ProgressPanel({ sessions, compact = false }: { sessions: Session
       </div>
       <section data-prescription-list className="space-y-3">
         <h2 className="text-lg font-semibold">Prescrito × realizado</h2>
-        {sessions.slice(0, 50).map((s) => (
+        {scopedSessions.slice(0, 50).map((s) => (
           <details key={s.id} className="rounded-2xl border bg-card p-4">
             <summary className="cursor-pointer flex flex-wrap justify-between gap-2">
               {compact && <FileText size={14} aria-hidden="true" />}

@@ -223,3 +223,6 @@
  .page.page :global(.personal-report-body [data-prescription-list] summary>svg:last-child) { grid-column:3; grid-row:1/3; }
  .page.page :global(.personal-report-body [data-exercise-card] summary) { min-height:44px; }
 }
+
+.page.page :global(.personal-report-body [data-consistency][data-filtered-period]>div) { max-height:160px; overflow:auto; overscroll-behavior:contain; padding:2px; }
+.page.page :global(.personal-report-body [data-consistency][data-filtered-period]>div:focus-visible) { outline:2px solid var(--p-brand); outline-offset:2px; }

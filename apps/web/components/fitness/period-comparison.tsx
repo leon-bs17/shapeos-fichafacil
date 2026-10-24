@@ -16,8 +16,9 @@ function change(current: number | null, previous: number | null, unit = '') {
   const delta = difference(current, previous)
   return delta == null ? 'Sem comparação' : delta === 0 ? 'Sem mudança' : `${delta > 0 ? '+' : '−'}${number(Math.abs(delta))}${unit ? ` ${unit}` : ''}`
 }
-export function PeriodComparison({ alunoId, compact = false }: { alunoId: string; compact?: boolean }) {
-  const [days, setDays] = useState<PeriodDays>(30)
+export function PeriodComparison({ alunoId, compact = false, periodDays }: { alunoId: string; compact?: boolean; periodDays?: PeriodDays }) {
+  const [localDays, setDays] = useState<PeriodDays>(30)
+  const days = periodDays ?? localDays
   const query = useQuery({
     queryKey: ['personal-period-comparison', alunoId, days],
     queryFn: ({ signal }) => fetchPeriodComparison(alunoId, days, signal),
@@ -27,10 +28,10 @@ export function PeriodComparison({ alunoId, compact = false }: { alunoId: string
   return <section className={`${styles.panel} ${compact ? styles.compact : ''}`} aria-label="Comparação entre períodos">
     <header className={styles.header}>
       <div><h2>Comparação entre períodos</h2><p>Frequência, cargas e medidas do aluno.</p></div>
-      <div className={styles.periods} role="group" aria-label="Período da comparação">
+      {periodDays == null && <div className={styles.periods} role="group" aria-label="Período da comparação">
         {([7, 30, 90] as const).map(period => <Button key={period} variant="outline" aria-pressed={days === period}
           onClick={() => setDays(period)}>{period} dias</Button>)}
-      </div>
+      </div>}
     </header>
     {query.isPending && <p role="status">Carregando comparação…</p>}
     {query.isError && <div role="alert"><p>{query.error.message}</p><Button variant="outline" onClick={() => void query.refetch()}>Tentar novamente</Button></div>}
