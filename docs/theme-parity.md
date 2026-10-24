@@ -53,3 +53,9 @@ A altura é mínima, não fixa: texto longo ou zoom podem aumentar o banner sem 
 Use os tokens de tema para superfícies, texto e cor primária. O hover estabelecido usa 7% da cor primária no fundo, 40% na borda, borda de 1px e transição de 150ms ease. Preserve foco visível, o estado desabilitado e a preferência por movimento reduzido.
 
 Antes de concluir uma alteração visual, confira claro e escuro nas larguras de desktop e celular, com os mesmos dados, estados e nível de zoom.
+
+## Campos de texto com várias linhas
+
+Descrições, mensagens e observações começam compactas e aumentam a altura conforme o conteúdo digitado ou colado. Ao apagar texto, a altura acompanha o conteúdo até o mínimo inicial. Não habilite alça de redimensionamento manual (`resize:vertical` ou `resize:both`) e não acrescente altura fixa ou limite local que corte o texto. Quando o formulário estiver em um modal, a janela deve respeitar a tela e permitir rolagem do conteúdo completo.
+
+Use `AutoResizeTextarea`, em `apps/web/components/ui/auto-resize-textarea.tsx`, nos novos campos e ao adaptar campos existentes. O componente ajusta conteúdo previamente salvo e recalcula a altura quando a largura muda no celular ou no desktop, mantendo os eventos, limites de caracteres e estilos do formulário. Esse é o padrão para Admin, Personal, Aluno e demais acessos nos dois modos.

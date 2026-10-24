@@ -6,7 +6,7 @@
 .fields { display:grid; grid-template-columns:minmax(0,1fr) 154px; align-items:end; gap:12px; }.fields>div { min-width:0; }
 .editor label { display:block; font-size:11px; margin-bottom:6px; font-weight:500; }
 :global(html body .personal-content) .modal .editor :is(input,textarea) { box-sizing:border-box; width:100%; min-width:0; min-height:36px; padding:7px 10px; font:inherit; font-size:12px; line-height:1.5; border-radius:13px; }
-:global(html body .personal-content) .modal .editor textarea { resize:vertical; min-height:72px; max-height:200px; }
+:global(html body .personal-content) .modal .editor textarea { resize:none; min-height:72px; max-height:none; overflow-y:hidden; }
 :global(html body .personal-content) .modal .fields :global(button[aria-haspopup=dialog]) { min-height:36px; padding:7px 10px; font-size:12px; font-weight:400; }
 .note,.counter { font-size:11px; line-height:1.6; color:var(--p-muted); margin:0; }.counter { font-size:10px; margin-top:5px; text-align:right; font-variant-numeric:tabular-nums; }
 .actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; border-top:1px solid var(--p-line); padding-top:12px; }

@@ -3,6 +3,7 @@ import { useRef,useState } from 'react'
 import { useMutation,useQueryClient } from '@tanstack/react-query'
 import { Pencil,Check,RotateCcw,Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AutoResizeTextarea } from '@/components/ui/auto-resize-textarea'
 import { Input } from '@/components/ui/input'
 import { Modal } from '@/components/ui/modal'
 import { fitnessRequest } from '@/lib/api/client'
@@ -43,7 +44,7 @@ export function ReminderEditor({reminder,defaultDate,onClose,onSaved}:{reminder?
       <div><label htmlFor="reminder-title">Título</label><Input id="reminder-title" maxLength={120} value={titulo} disabled={mutation.isPending} onChange={event=>{changed();setTitulo(event.target.value)}}/></div>
       <div><label htmlFor="reminder-date">Data</label><AgendaDatePicker id="reminder-date" label="Data do lembrete" allowClear value={data} disabled={mutation.isPending} onChange={value=>{changed();setData(value)}}/></div>
     </div>
-    <div><label htmlFor="reminder-description">Descrição (opcional)</label><textarea id="reminder-description" aria-describedby="reminder-description-count" rows={3} maxLength={1000} value={descricao} disabled={mutation.isPending} onChange={event=>{changed();setDescricao(event.target.value)}}/><p id="reminder-description-count" className={styles.counter}>{descricao.length}/1.000 caracteres</p></div>
+    <div><label htmlFor="reminder-description">Descrição (opcional)</label><AutoResizeTextarea id="reminder-description" aria-describedby="reminder-description-count" rows={2} maxLength={1000} value={descricao} disabled={mutation.isPending} onChange={event=>{changed();setDescricao(event.target.value)}}/><p id="reminder-description-count" className={styles.counter}>{descricao.length}/1.000 caracteres</p></div>
     {reminder?.concluido_em&&<p className={styles.note}>Concluído em {new Date(reminder.concluido_em).toLocaleString('pt-BR')}.</p>}
     {error&&<p role="alert" className={styles.error}>{error}</p>}
     {confirmDelete&&<div className={styles.confirm}><p>Excluir este lembrete?</p><Button variant="outline" className="personal-danger" disabled={mutation.isPending} onClick={()=>void run('delete')}>Confirmar exclusão</Button><Button variant="outline" disabled={mutation.isPending} onClick={()=>setConfirmDelete(false)}>Manter lembrete</Button></div>}
