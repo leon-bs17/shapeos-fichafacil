@@ -53,17 +53,3 @@ A altura é mínima, não fixa: texto longo ou zoom podem aumentar o banner sem 
 Use os tokens de tema para superfícies, texto e cor primária. O hover estabelecido usa 7% da cor primária no fundo, 40% na borda, borda de 1px e transição de 150ms ease. Preserve foco visível, o estado desabilitado e a preferência por movimento reduzido.
 
 Antes de concluir uma alteração visual, confira claro e escuro nas larguras de desktop e celular, com os mesmos dados, estados e nível de zoom.
-
-## Relatórios do Personal: blocos integrados
-
-Os blocos de comparação e evolução integrados em `/relatorios` espelham as regras compactas de `apps/web/app/admin/(dashboard)/relatorios/page.tsx`, nos seletores `#reports-refined` / `data-reports-refined`.
-
-| Elemento | Desktop | Celular até 767 px |
-| --- | --- | --- |
-| Painel | Espaçamento interno 18 px, raio 13 px | Espaçamento interno 14 px, raio 13 px |
-| Título do painel | 14 px, peso 600 | Mesmo padrão |
-| Indicadores | Faixa aberta, divisórias, valor 24 px | Duas colunas, valor 23 px |
-| Linhas comparativas | Espaçamento interno 10 × 12 px, valores 12 px, rótulos 10 px | Nome acima dos valores, preservando leitura |
-| Controles | Altura mínima 36 px | Altura mínima 44 px |
-
-Os três indicadores de comparação adaptam a distribuição móvel: dois na primeira linha e o volume na linha seguinte. Os quatro indicadores de evolução usam duas linhas de duas colunas. Preserve os cálculos, datas, controles, conteúdo e a ausência de hover nas quatro abas. As regras ficam restritas a `.personal-report-body` dentro da página de Relatórios.
