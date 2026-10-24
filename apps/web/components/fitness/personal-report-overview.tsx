@@ -32,8 +32,14 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
   const { comparison, current, latest, points } = report
   const pages = Math.max(1, Math.ceil(current.length / PAGE_SIZE)), currentPage = Math.min(page, pages), start = (currentPage - 1) * PAGE_SIZE
   const pageNumbers = Array.from(new Set([1, currentPage - 1, currentPage, currentPage + 1, pages].filter(value => value >= 1 && value <= pages))).sort((a, b) => a - b)
-  const max = Math.max(1, ...points.flatMap(point => [point.current, point.previous]))
-  const plot = (key: 'current' | 'previous') => points.map((point, index) => `${44 + index / Math.max(1, points.length - 1) * 632},${146 - point[key] / max * 120}`).join(' ')
+  const peak = Math.max(1, ...points.flatMap(point => [point.current, point.previous]))
+  const tickStep = Math.max(1, Math.ceil(peak / 4))
+  const max = Math.ceil(peak / tickStep) * tickStep
+  const ticks = Array.from({ length: max / tickStep + 1 }, (_, index) => index * tickStep)
+  const dateTicks = Array.from(new Set(Array.from({ length: Math.min(8, points.length) }, (_, index) => Math.round(index / Math.max(1, Math.min(8, points.length) - 1) * (points.length - 1)))))
+  const mobileTicks = new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])
+  const dateLabel = (date: string) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace(' de ', '/').replace('.', '')
+  const plot = (key: 'current' | 'previous') => points.map((point, index) => `${44 + index / Math.max(1, points.length - 1) * 632},${156 - point[key] / max * 132}`).join(' ')
   const window = query.data.window
   return <div className={styles.overview}>
     <dl className={styles.metrics} aria-label="Indicadores do período">
@@ -44,17 +50,26 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
       ].map(metric => <div key={metric.label}><metric.icon size={25} strokeWidth={1.6} aria-hidden="true" /><div><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.note}</span></div></div>)}
     </dl>
     <div className={styles.charts}>
-      <section className={styles.panel} aria-labelledby={chartId + '-heading'}>
-        <header className={styles.panelHeading}><h2 id={chartId + '-heading'}>Frequência de treinos</h2><div className={styles.legend}><span><i />Atual</span><span><i />Anterior</span></div></header>
+      <section className={`${styles.panel} ${styles.frequencyPanel}`} aria-labelledby={chartId + '-heading'}>
+        <header className={styles.panelHeading}><h2 id={chartId + '-heading'}>Frequência de treinos</h2><div className={styles.legend}><span><i /><span className={styles.legendName}>{studentName}</span></span><span><i className={styles.dashedLegend} />Período anterior</span></div></header>
         <p className={styles.note}>Sessões concluídas por dia, comparadas ao mesmo ponto do período anterior.</p>
-        <svg className={styles.chart} viewBox="0 0 720 176" role="img" aria-labelledby={chartId + '-title ' + chartId + '-description'}>
-          <title id={chartId + '-title'}>Frequência de treinos nos últimos {days} dias</title>
+        <div className={styles.chartViewport} role="region" aria-label="Frequência de treinos; role horizontalmente no celular para consultar o gráfico" tabIndex={0}>
+        <svg className={styles.chart} viewBox="0 0 720 202" role="img" aria-labelledby={chartId + '-title ' + chartId + '-description'}>
+          <title id={chartId + '-title'}>{`Frequência de treinos nos últimos ${days} dias`}</title>
           <desc id={chartId + '-description'}>{comparison.current.sessions} sessões concluídas no período atual; {comparison.previous.sessions} no anterior. Os dois períodos têm {days} dias.</desc>
-          {[0, 1, 2].map(index => <g key={index}><line x1="44" y1={26 + index * 60} x2="676" y2={26 + index * 60} className={styles.gridLine} /><text x="30" y={30 + index * 60} textAnchor="end">{number(max * (1 - index / 2))}</text></g>)}
+          <defs><linearGradient id={chartId + '-area'} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--p-brand)" stopOpacity=".28" /><stop offset="100%" stopColor="var(--p-brand)" stopOpacity=".015" /></linearGradient></defs>
+          {ticks.map(tick => <g key={tick}><line x1="44" y1={156 - tick / max * 132} x2="676" y2={156 - tick / max * 132} className={styles.gridLine} /><text x="31" y={160 - tick / max * 132} textAnchor="end">{tick}</text></g>)}
+          <path d={`M44 156 L${plot('current').replaceAll(' ', ' L')} L676 156 Z`} fill={`url(#${chartId}-area)`} aria-hidden="true" />
+          <path d="M44 24 V156 H676" className={styles.chartAxis} />
           <polyline points={plot('previous')} className={styles.previousLine} />
           <polyline points={plot('current')} className={styles.currentLine} />
-          {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={44 + index / Math.max(1, points.length - 1) * 632} y="170" textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
+          {points.map((point, index) => <g key={point.date}>
+            <circle cx={44 + index / Math.max(1, points.length - 1) * 632} cy={156 - point.previous / max * 132} r="2.5" className={styles.previousPoint} />
+            <circle cx={44 + index / Math.max(1, points.length - 1) * 632} cy={156 - point.current / max * 132} r="3.5" className={styles.currentPoint}><title>{`${formatCalendarDate(point.date)}: ${point.current} sessões concluídas; anterior (${formatCalendarDate(point.previousDate)}): ${point.previous}`}</title></circle>
+          </g>)}
+          {Array.from(new Set([...dateTicks, ...mobileTicks])).sort((a, b) => a - b).map(index => <text key={index} className={!dateTicks.includes(index) ? styles.mobileDate : mobileTicks.has(index) ? undefined : styles.desktopDate} x={44 + index / Math.max(1, points.length - 1) * 632} y="184" textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{dateLabel(points[index].date)}</text>)}
         </svg>
+        </div>
         <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)}</p>
         <details className={styles.chartData}><summary>Dados do gráfico</summary><div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div></details>
       </section>
