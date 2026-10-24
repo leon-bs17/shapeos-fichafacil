@@ -1,0 +1,62 @@
+.page { display:grid; gap:14px; min-width:0; color:var(--p-ink); container-type:inline-size; }
+.metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0; padding:18px 0; }
+.metrics>div { display:flex; align-items:center; gap:12px; min-width:0; min-height:56px; padding:0 20px; }
+.metrics>div+div { border-left:1px solid var(--p-line); }
+.metrics>div>div { display:flex; flex-direction:column; min-width:0; }
+.metrics dt { order:1; margin:4px 0 0; font-size:12px; line-height:1.5; color:var(--p-muted); overflow-wrap:anywhere; }
+.metrics dd { order:0; margin:0; font-size:28px; font-weight:600; line-height:1.2; font-variant-numeric:tabular-nums; }
+.metricIcon { display:grid; place-items:center; flex:0 0 44px; width:44px; height:44px; border-radius:13px; color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 7%,transparent); }
+.metricIcon svg { width:24px; height:24px; }
+.toolbar { display:grid; grid-template-columns:minmax(0,1fr) 180px auto; align-items:end; gap:12px; padding:12px 14px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.searchField,.filterField { min-width:0; display:grid; gap:6px; }
+:global(html body .personal-content) .page .toolbar label { margin:0; font-size:11px; }
+:global(html body .personal-content) .page .exportButton { min-height:36px; height:auto; padding:7px 10px; border-radius:13px; font-size:11px; font-weight:500; color:var(--p-brand); background:var(--p-panel); }
+.exportButton svg { color:inherit; flex-shrink:0; }
+:global(html body .personal-content) .page .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:stretch; }
+:global(html body .personal-content) .page .card { min-width:0; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); overflow:hidden; }
+:global(html body .personal-content) .page .card>div { padding:16px; display:flex; flex-direction:column; gap:12px; min-width:0; height:100%; }
+:global(html body .personal-content) .page .card>div>* { margin-top:0; margin-bottom:0; }
+:global(html body .personal-content) .page .card h3 { font-size:13px; line-height:1.5; font-weight:600; overflow-wrap:anywhere; }
+:global(html body .personal-content) .page .card h3+p { font-size:11px; margin-top:3px; line-height:1.5; }
+:global(html body .personal-content) .page .card>div>p { font-size:11px; line-height:1.6; }
+:global(html body .personal-content) .page :global(.personal-workout-items) { display:grid; gap:5px; font-size:12px; }
+:global(html body .personal-content) .page :global(.personal-workout-items)>div { padding:0; font-size:12px; line-height:1.5; gap:10px; }
+:global(html body .personal-content) .page :global(.personal-workout-items)>div>span:first-child { white-space:normal; overflow-wrap:anywhere; }
+:global(html body .personal-content) .page :global(.personal-workout-items)>div>span:last-child { font-family:inherit; font-size:11px; color:var(--p-muted); }
+.status { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:28px; padding:5px 9px; flex-shrink:0; border:0; border-radius:999px; font-size:10px; font-weight:600; line-height:1.5; white-space:nowrap; color:var(--p-muted); background:color-mix(in srgb,var(--p-muted) 10%,transparent); }
+.status[data-active=true] { color:#0d7e70; background:#e4f3eb; }
+:global(html.dark) .status[data-active=true] { color:#00e9df; background:#123b31; }
+.statusDot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+:global(html body .personal-content) .page .card .cardActions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin-top:auto; padding-top:12px; border-top:1px solid var(--p-line); }
+:global(html body .personal-content) .page .card .cardActions button { min-width:0; width:100%; min-height:36px!important; height:auto; padding:7px 8px!important; margin:0; font-size:11px!important; border-radius:13px; white-space:normal; line-height:1.4; }
+:global(html body .personal-content) .page .card .cardActions button:last-child { justify-self:end; width:36px; padding:0!important; color:var(--p-danger); }
+.cardActions svg { flex-shrink:0; margin:0; }
+:global(html body .personal-content) .page :global([data-personal-modal]) { width:520px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); padding:18px; border-radius:13px; box-shadow:none; }
+:global(html body .personal-content) .page :global([data-personal-modal].max-w-2xl) { width:640px; }
+:global(html body .personal-content) .page :global([data-personal-modal].max-w-3xl) { width:720px; }
+:global(html body .personal-content) .page :global([data-personal-modal])>:global([data-personal-modal-heading]) { padding-bottom:12px; margin-bottom:12px; gap:12px; }
+:global(html body .personal-content) .page :global([data-personal-modal-heading]) h2 { font-size:16px; line-height:1.5; font-weight:600; }
+:global(html body .personal-content) .page :global([data-personal-modal-heading]) button { width:36px; min-width:36px; height:36px; min-height:36px; padding:0; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :is(h3,label) { font-size:12px; }
+:global(html body .personal-content) .page :global([data-personal-modal]) label { display:block; margin-bottom:6px; font-size:11px; text-transform:none; letter-spacing:normal; }
+:global(html body .personal-content) .page :global([data-personal-modal]) p { font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :is(input,select,textarea):not([type=checkbox]):not([type=radio]) { box-sizing:border-box; min-height:36px; height:auto; padding:7px 10px; font-size:12px; border-radius:13px; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :global(button.btn-tech) { min-height:36px; height:auto; padding:7px 10px; font-size:11px; border-radius:13px; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :is(:global(.space-y-4),:global(.space-y-5))>:not([hidden])~:not([hidden]) { margin-top:12px; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :global(.p-4) { padding:12px; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :global(.personal-template-button) { border-width:1px; padding:12px; font-size:12px; box-shadow:none; }
+:global(html body .personal-content) .page :global([data-personal-modal]) :global(.pt-4) { padding-top:12px; }
+@container(max-width:880px) { :global(html body .personal-content) .page .grid { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:767px) {
+ .toolbar { grid-template-columns:minmax(0,1fr); }
+ .metrics { padding:8px 0; }.metrics>div { flex-direction:column; align-items:flex-start; gap:8px; padding:0 10px; }.metricIcon { width:36px; height:36px; flex-basis:36px; border-radius:11px; }.metricIcon svg { width:20px; height:20px; }.metrics dd { font-size:24px; }.metrics dt { font-size:10px; }
+ :global(html body .personal-content) .page .exportButton { min-height:44px; }
+ :global(html body .personal-content) .page .card>div { padding:14px; }
+ :global(html body .personal-content) .page .card .cardActions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ :global(html body .personal-content) .page .card .cardActions button { min-height:44px!important; }
+ :global(html body .personal-content) .page .card .cardActions button:last-child { width:44px; }
+ :global(html body .personal-content) .page :global([data-personal-modal]) { max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:16px; }
+ :global(html body .personal-content) .page :global([data-personal-modal-heading]) button { width:44px; min-width:44px; height:44px; min-height:44px; }
+ :global(html body .personal-content) .page :global([data-personal-modal]) :is(input,select,textarea):not([type=checkbox]):not([type=radio]) { min-height:44px; font-size:16px; }
+ :global(html body .personal-content) .page :global([data-personal-modal]) :global(button.btn-tech) { min-height:44px; }
+}

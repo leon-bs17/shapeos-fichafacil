@@ -19,9 +19,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, GripVertical, Download, BookOpen } from 'lucide-react'
+import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, FileCheck2, BookOpen, FileText, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ShapeosBanner } from '@/components/layout/shapeos-banner'
+import { WorkoutSelect } from '@/components/fitness/workout-select'
+import { AgendaDatePicker } from '@/components/fitness/agenda-date-picker'
+import styles from './page.module.css'
 import { PersonalSearch } from '@/components/ui/personal-search'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -88,6 +92,11 @@ function TreinosConteudo() {
   const studentWorkouts = selectedStudentId ? (fichas ?? []).filter(ficha => ficha.aluno_id === selectedStudentId) : fichas ?? []
   const filtradas=filterWorkouts(studentWorkouts,busca,status)
   const actionError=acoes.alternar.error??acoes.excluir.error
+  const metrics = [
+    { label: 'Fichas cadastradas', value: studentWorkouts.length, icon: FileText },
+    { label: 'Fichas ativas', value: studentWorkouts.filter(ficha => ficha.ativo).length, icon: Play },
+    { label: 'Alunos com ficha', value: new Set(studentWorkouts.map(ficha => ficha.aluno_id)).size, icon: Users },
+  ]
   function reviewCopy(copy: FichaResumo, mode: WorkoutReviewMode) {
     setFichaDuplicando(null); setModeloAplicando(null)
     if (mode === 'exercicios') setFichaEditando(copy); else setPrescricao(copy)
@@ -110,12 +119,20 @@ function TreinosConteudo() {
     <PersonalWorkspace page="treinos">
       <PersonalPageHeader icon="treinos" title="Treinos" description="Organize fichas e acompanhe a prescrição de cada aluno." actions={<><Button variant="outline" onClick={() => setModelosAbertos(true)}><BookOpen size={16} aria-hidden="true" />Meus modelos</Button><Button onClick={() => setModalAberto(true)}><Plus size={16} aria-hidden="true" />Nova ficha</Button></>} />
 
+      <div className={styles.page}>
+      <ShapeosBanner titleId="personal-workouts-banner" eyebrow="Treinos do Personal" title={<>Prescreva com <span>clareza</span> e organização</>} description="Organize suas fichas e acompanhe a prescrição de cada aluno."
+        art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
+          <path d="M10 110C85 10 145 140 225 45S320 20 355 85M10 90C85 0 145 120 225 25S320 0 355 65" />
+          <g transform="translate(210 20) rotate(12)"><rect width="82" height="108" rx="6" fill="var(--p-bg)" /><path d="M15 23h9m9 0h34M15 43h9m9 0h34M15 63h9m9 0h34M15 83h9m9 0h25" /></g>
+          <g transform="translate(55 50)"><rect x="0" y="6" width="12" height="36" rx="3"/><rect x="16" width="12" height="48" rx="3"/><path d="M28 19h50v10H28"/><rect x="78" width="12" height="48" rx="3"/><rect x="94" y="6" width="12" height="36" rx="3"/></g>
+        </svg>} />
+      <dl className={styles.metrics} aria-label="Resumo das fichas" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value}</dd></div></div>)}</dl>
       {params.get('aluno') && !selectedStudent && <p role="status" className="personal-results-note">Aluno indisponível neste vínculo. Exibindo suas fichas.</p>}
       {selectedStudent && <div className="personal-toolbar"><p className="personal-results-note">Fichas de <strong>{selectedStudent.nome}</strong></p><Button variant="outline" onClick={() => router.replace('/treinos', { scroll: false })}>Ver todos os alunos</Button></div>}
-      <div className="personal-toolbar">
-        <div className="personal-toolbar-field"><Label htmlFor="buscar-fichas">Buscar fichas</Label><PersonalSearch id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} /></div>
-        <div className="space-y-1.5"><Label htmlFor="status-fichas">Status</Label><select id="status-fichas" value={status} onChange={e=>setStatus(e.target.value as WorkoutStatus)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm sm:w-40"><option value="TODAS">Todas</option><option value="ATIVAS">Ativas</option><option value="PAUSADAS">Pausadas</option></select></div>
-        <Button variant="outline" className="h-10" disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><Download size={15} className="mr-2"/>Exportar JSON</Button>
+      <div className={styles.toolbar}>
+        <div className={styles.searchField}><Label htmlFor="buscar-fichas">Buscar fichas</Label><PersonalSearch id="buscar-fichas" placeholder="Título da ficha ou nome do aluno" value={busca} onChange={e=>setBusca(e.target.value)} /></div>
+        <div className={styles.filterField}><Label htmlFor="status-fichas">Status</Label><WorkoutSelect id="status-fichas" label="Status das fichas" value={status} onChange={value=>setStatus(value as WorkoutStatus)} options={[{value:'TODAS',label:'Todas'},{value:'ATIVAS',label:'Ativas'},{value:'PAUSADAS',label:'Pausadas'}]} /></div>
+        <Button variant="outline" className={styles.exportButton} disabled={isLoading||Boolean(error)||!filtradas.length} onClick={exportar}><FileCheck2 size={16} aria-hidden="true"/>Exportar JSON</Button>
       </div>
       {modeloSalvo && <div className="personal-toolbar" role="status"><p className="personal-results-note">Modelo <strong>{modeloSalvo.titulo}</strong> salvo na sua biblioteca.</p><Button variant="outline" onClick={() => setModelosAbertos(true)}>Meus modelos</Button><Button variant="outline" onClick={() => setModeloSalvo(null)}>Dispensar</Button></div>}
       {copyNotice && <div className="personal-toolbar" role="status"><p className="personal-results-note">Cópia de <strong>{copyNotice.titulo}</strong> criada para <strong>{copyNotice.aluno_nome}</strong> em modo pausado.</p><Button variant="outline" onClick={() => { setBusca(''); setStatus('TODAS'); router.replace(`/treinos?${new URLSearchParams({ aluno: copyNotice.aluno_id })}`, { scroll: false }) }}>Ver fichas do aluno</Button><Button variant="outline" onClick={() => setCopyNotice(null)}>Dispensar</Button></div>}
@@ -123,7 +140,7 @@ function TreinosConteudo() {
       {actionError && <p role="alert" className="text-sm text-destructive">{actionError.message}</p>}
       {error ? <div role="alert" className="rounded-xl border border-destructive/30 p-4 text-sm"><p>{error.message}</p><Button variant="outline" className="mt-3" onClick={()=>void refetch()}>Tentar novamente</Button></div> :
       isLoading ? (
-        <div className="personal-workout-grid">
+        <div className={`personal-workout-grid ${styles.grid}`}>
           {[0, 1].map((i) => (
             <div key={i} className="h-48 skeleton" />
           ))}
@@ -141,9 +158,9 @@ function TreinosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <div className="personal-workout-grid">
+        <div className={`personal-workout-grid ${styles.grid}`}>
           {filtradas.map((ficha) => (
-            <Card key={ficha.id} className="personal-workout-card">
+            <Card key={ficha.id} className={`personal-workout-card ${styles.card}`}>
               <CardContent className="p-5 space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
@@ -152,16 +169,7 @@ function TreinosConteudo() {
                       {ficha.aluno_nome} · {formatarData(ficha.criado_em)}
                     </p>
                   </div>
-                  <span
-                    className={
-                      ficha.ativo
-                        ? 'inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success shrink-0'
-                        : 'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground shrink-0'
-                    }
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${ficha.ativo ? 'bg-success' : 'bg-muted-foreground'}`} />
-                    {ficha.ativo ? 'Ativa' : 'Pausada'}
-                  </span>
+                  <span className={styles.status} data-active={ficha.ativo}><span className={styles.statusDot} aria-hidden="true" />{ficha.ativo ? 'Ativa' : 'Pausada'}</span>
                 </div>
 
                 <WorkoutValidity date={ficha.valida_ate} active={ficha.ativo} />
@@ -182,7 +190,7 @@ function TreinosConteudo() {
                   )}
                 </div>
 
-                <div className="personal-workout-actions">
+                <div className={`personal-workout-actions ${styles.cardActions}`}>
                   <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setPrescricao(ficha)}>Prescrição avançada</Button>
                   <Button size="sm" variant="outline" className="h-8 text-xs" disabled={!ficha.itens.length} onClick={() => setFichaParaModelo(ficha)}><BookOpen size={13} aria-hidden="true" />Salvar modelo</Button>
                   <Button
@@ -271,6 +279,7 @@ function TreinosConteudo() {
           ocupado={acoes.editar.isPending}
         />
       ) : null}
+      </div>
     </PersonalWorkspace>
   )
 }
@@ -438,17 +447,7 @@ function ModalNovaFicha({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="ficha-aluno" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Aluno</Label>
-                <select
-                  id="ficha-aluno"
-                  value={alunoId}
-                  onChange={(e) => setAlunoId(e.target.value)}
-                  className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="">Selecione...</option>
-                  {alunos?.map((a) => (
-                    <option key={a.vinculo_id} value={a.aluno_id}>{a.nome}</option>
-                  ))}
-                </select>
+                <WorkoutSelect id="ficha-aluno" label="Aluno da ficha" value={alunoId} onChange={setAlunoId} options={[{value:'',label:'Selecione...'},...(alunos ?? []).map(aluno=>({value:aluno.aluno_id,label:aluno.nome}))]} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="ficha-titulo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Titulo</Label>
@@ -458,7 +457,7 @@ function ModalNovaFicha({
 
             <div className="space-y-1.5">
               <Label htmlFor="ficha-validade">Válida até (opcional)</Label>
-              <Input id="ficha-validade" type="date" min="0001-01-01" max="9999-12-31" value={validade} onChange={event => setValidade(event.target.value)} aria-describedby="ficha-validade-hint" />
+              <AgendaDatePicker id="ficha-validade" label="Validade da ficha" value={validade} onChange={setValidade} allowClear describedBy="ficha-validade-hint" />
               <p id="ficha-validade-hint" className="text-xs text-muted-foreground">Deixe em branco para manter a ficha sem prazo. O aviso aparece sete dias antes do vencimento.</p>
             </div>
             <div className="space-y-2.5">
@@ -569,7 +568,7 @@ function ModalEditarFicha({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="editar-validade">Válida até (opcional)</Label>
-          <Input id="editar-validade" type="date" min="0001-01-01" max="9999-12-31" value={validade} onChange={event => setValidade(event.target.value)} aria-describedby="editar-validade-hint" />
+          <AgendaDatePicker id="editar-validade" label="Validade da ficha" value={validade} onChange={setValidade} allowClear describedBy="editar-validade-hint" />
           <p id="editar-validade-hint" className="text-xs text-muted-foreground">Apague a data para retirar o prazo. O aviso aparece sete dias antes do vencimento.</p>
         </div>
         <div className="space-y-2.5">
