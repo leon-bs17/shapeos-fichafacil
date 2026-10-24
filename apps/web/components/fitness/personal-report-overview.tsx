@@ -26,14 +26,20 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
   const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<Session | null>(null)
   const chartId = useId()
+  const [dayPage, setDayPage] = useState(0)
   if (query.isPending) return <div className={styles.state} role="status">Carregando sessões e avaliações…</div>
   if (query.isError) return <div className={styles.state} role="alert"><p>{query.error.message}</p><button type="button" onClick={() => void query.refetch()}>Tentar novamente</button></div>
   const report = personalReportSummary(query.data.sessions, query.data.assessments, query.data.window)
   const { comparison, current, latest, points } = report
   const pages = Math.max(1, Math.ceil(current.length / PAGE_SIZE)), currentPage = Math.min(page, pages), start = (currentPage - 1) * PAGE_SIZE
   const pageNumbers = Array.from(new Set([1, currentPage - 1, currentPage, currentPage + 1, pages].filter(value => value >= 1 && value <= pages))).sort((a, b) => a - b)
-  const max = Math.max(1, ...points.flatMap(point => [point.current, point.previous]))
-  const plot = (key: 'current' | 'previous') => points.map((point, index) => `${44 + index / Math.max(1, points.length - 1) * 632},${146 - point[key] / max * 120}`).join(' ')
+  const dayPages = Math.ceil(points.length / 7)
+  const visiblePage = Math.min(dayPage, Math.max(0, dayPages - 1))
+  const visibleEnd = points.length - visiblePage * 7
+  const visiblePoints = points.slice(Math.max(0, visibleEnd - 7), visibleEnd)
+  const trainedDays = points.filter(point => point.current > 0).length
+  const previousTrainedDays = points.filter(point => point.previous > 0).length
+  const weekday = (date: string) => new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')
   const window = query.data.window
   return <div className={styles.overview}>
     <dl className={styles.metrics} aria-label="Indicadores do período">
@@ -44,19 +50,28 @@ export function PersonalReportOverview({ alunoId, studentName, days, onAssessmen
       ].map(metric => <div key={metric.label}><metric.icon size={25} strokeWidth={1.6} aria-hidden="true" /><div><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.note}</span></div></div>)}
     </dl>
     <div className={styles.charts}>
-      <section className={styles.panel} aria-labelledby={chartId + '-heading'}>
-        <header className={styles.panelHeading}><h2 id={chartId + '-heading'}>Frequência de treinos</h2><div className={styles.legend}><span><i />Atual</span><span><i />Anterior</span></div></header>
-        <p className={styles.note}>Sessões concluídas por dia, comparadas ao mesmo ponto do período anterior.</p>
-        <svg className={styles.chart} viewBox="0 0 720 176" role="img" aria-labelledby={chartId + '-title ' + chartId + '-description'}>
-          <title id={chartId + '-title'}>Frequência de treinos nos últimos {days} dias</title>
-          <desc id={chartId + '-description'}>{comparison.current.sessions} sessões concluídas no período atual; {comparison.previous.sessions} no anterior. Os dois períodos têm {days} dias.</desc>
-          {[0, 1, 2].map(index => <g key={index}><line x1="44" y1={26 + index * 60} x2="676" y2={26 + index * 60} className={styles.gridLine} /><text x="30" y={30 + index * 60} textAnchor="end">{number(max * (1 - index / 2))}</text></g>)}
-          <polyline points={plot('previous')} className={styles.previousLine} />
-          <polyline points={plot('current')} className={styles.currentLine} />
-          {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={44 + index / Math.max(1, points.length - 1) * 632} y="170" textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
-        </svg>
-        <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)}</p>
-        <details className={styles.chartData}><summary>Dados do gráfico</summary><div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div></details>
+      <section className={`${styles.panel} ${styles.frequencyDays}`} aria-labelledby={chartId + '-heading'}>
+        <header className={styles.panelHeading}><h2 id={chartId + '-heading'}>Frequência de treinos</h2><p className={styles.dayCount}>{trainedDays} de {points.length} dias com treino</p></header>
+        <ul className={styles.dayTiles} aria-label="Sessões concluídas por dia">
+          {visiblePoints.map(point => <li key={point.date} data-trained={point.current > 0} aria-label={`${formatCalendarDate(point.date)}: ${point.current} ${point.current === 1 ? 'treino concluído' : 'treinos concluídos'}`}>
+            <time dateTime={point.date}>{point.date.slice(-2)} · <span>{weekday(point.date)}</span></time>
+            <span className={styles.dayResult}>{point.current > 0 ? <CircleCheck size={15} strokeWidth={1.7} aria-hidden="true" /> : <span className={styles.noTraining} aria-hidden="true">—</span>}<span>{point.current > 0 ? `${point.current} ${point.current === 1 ? 'treino' : 'treinos'}` : 'Sem treino'}</span></span>
+          </li>)}
+        </ul>
+        <div className={styles.dayPeriod}>
+          <p aria-live="polite">{visiblePoints.length > 0 && <>{shortDate(visiblePoints[0].date)}–{shortDate(visiblePoints[visiblePoints.length - 1].date)} · {visiblePoints.reduce((sum, point) => sum + point.current, 0)} sessões concluídas</>}</p>
+          {dayPages === 1 && <span>Anterior: {previousTrainedDays} {previousTrainedDays === 1 ? 'dia' : 'dias'} com treino</span>}
+          {dayPages > 1 && <nav className={styles.dayNavigation} aria-label="Navegar pelos dias do período">
+            <button type="button" aria-label="Ver dias anteriores" disabled={visiblePage === dayPages - 1} onClick={() => setDayPage(visiblePage + 1)}><ChevronLeft size={14} aria-hidden="true" /></button>
+            <span>{dayPages - visiblePage} / {dayPages}</span>
+            <button type="button" aria-label="Ver dias seguintes" disabled={visiblePage === 0} onClick={() => setDayPage(visiblePage - 1)}><ChevronRight size={14} aria-hidden="true" /></button>
+          </nav>}
+        </div>
+        {dayPages > 1 && <div className={styles.dayTotals}><span>Total no período: <strong>{comparison.current.sessions} {comparison.current.sessions === 1 ? 'sessão' : 'sessões'}</strong></span><span>Anterior: {previousTrainedDays} {previousTrainedDays === 1 ? 'dia' : 'dias'} com treino</span></div>}
+        <details className={styles.chartData}><summary>Dados do gráfico</summary>
+          <p className={styles.range}>Atual: {formatCalendarDate(window.startDate)} a {formatCalendarDate(window.endDate)}<br />Anterior: {formatCalendarDate(window.previousStartDate)} a {formatCalendarDate(window.previousEndDate)} · {comparison.previous.sessions} sessões concluídas</p>
+          <div className={styles.dailyData}>{points.map(point => <p key={point.date}>{shortDate(point.date)}: {point.current} atual · {point.previous} anterior ({shortDate(point.previousDate)})</p>)}</div>
+        </details>
       </section>
       <section className={styles.panel} aria-label="Última avaliação">
         <header className={styles.panelHeading}><h2>Última avaliação</h2><button type="button" className={styles.textAction} onClick={onAssessments} aria-label="Ver avaliações do aluno"><CalendarDays size={15} aria-hidden="true" />Ver avaliações</button></header>
