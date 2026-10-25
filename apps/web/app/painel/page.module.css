@@ -3,7 +3,7 @@
 .metric { border:1px solid transparent; border-radius:0; background:transparent; cursor:pointer; text-align:left; transition:background-color 150ms ease,border-color 150ms ease; }
 .metric:disabled { cursor:default; }
 .sectionTitle { margin:0 0 12px; }
-.empty { display:grid; justify-items:center; gap:12px; padding:32px 20px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); text-align:center; color:var(--p-muted); }
+.empty { display:grid; justify-items:center; gap:12px; padding:24px 20px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); text-align:center; color:var(--p-muted); }
 .empty>svg { color:var(--p-brand); }
 .empty p { margin:0; max-width:500px; font-size:12px; line-height:1.7; }
 .resume { padding:18px 20px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
@@ -18,11 +18,9 @@
 .exercise { display:flex; justify-content:space-between; gap:12px; border-top:1px solid var(--p-line); padding:10px 0; font-size:12px; line-height:1.6; }
 .exercise>div { min-width:0; overflow-wrap:anywhere; }
 .note { margin:0; padding:14px 18px; border:1px solid var(--p-line); border-radius:13px; color:var(--p-muted); font-size:11px; line-height:1.7; text-align:center; }
-@media(hover:hover) { .metric:not(:disabled):hover { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); } }
-.metric:not(:disabled):active { background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
 @media(max-width:767px) {
   .body,.training { gap:16px; } .workoutGrid { grid-template-columns:minmax(0,1fr); } .workout { padding:16px; }
-  .empty { padding:24px 16px; } .empty p { font-size:12px; }
+  .empty { padding:22px 14px; } .empty p { font-size:12px; }
   .resume { padding:16px; } .exercise { flex-wrap:wrap; gap:6px; } .note { padding:14px; }
 }
 @media(prefers-reduced-motion:reduce) { .metric { transition:none; } }
