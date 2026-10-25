@@ -61,13 +61,18 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
     await page.keyboard.press('Escape')
     await page.getByRole('button', { name: 'Orientações', exact: true }).click()
     await page.getByText('Personal E2E · Orientação E2E · Não lida', { exact: true }).click()
-    await expect(page.getByText('Mantenha a execução controlada.', { exact: true })).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Orientações e avisos', exact: true }).getByText('Mantenha a execução controlada.', { exact: true })).toBeVisible()
     await expect.poll(async () => (await rest('personal_comunicado_leituras?select=lida_em')).length).toBe(1)
     await page.setViewportSize({ width: 390, height: 844 })
     for (const mode of ['claro', 'escuro']) {
       const toggle = page.getByRole('button', { name: `Ativar modo ${mode}`, exact: true })
       if (await toggle.count()) await toggle.click()
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+      for (const tab of ['Treinar', 'Evolução', 'Agenda', 'Avaliações', 'Orientações', 'Meus dados']) {
+        await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
+        await page.getByRole('dialog', { name: 'Menu do Aluno', exact: true }).getByRole('button', { name: tab, exact: true }).click()
+        await expect(page.getByRole('heading', { name: tab, exact: true })).toBeVisible()
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${tab} no modo ${mode}`).toBe(true)
+      }
     }
     const cleanup = await adminRequest(`/rest/v1/treinos?id=eq.${workoutId}`, { method: 'DELETE' })
     expect(cleanup.ok).toBe(true)

@@ -12,7 +12,7 @@
 .choices { display:flex; flex-wrap:wrap; gap:6px; }
 .choices button,.week button { color:var(--p-muted); background:var(--p-panel); border:1px solid var(--p-line); border-radius:8px; font-size:12px; padding:8px 12px; cursor:pointer; }
 .choices button[aria-pressed="true"],.week button[aria-pressed="true"] { color:var(--p-brand); border-color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
-.choices button:hover,.week button:hover { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+@media(hover:hover) { .choices button:hover,.week button:hover { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); } }
 .choices button:focus-visible,.week button:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
 .week { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin-top:12px; }
 .week button { display:grid; justify-items:center; gap:5px; padding:10px 2px; }
