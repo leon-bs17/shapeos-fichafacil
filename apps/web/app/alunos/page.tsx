@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { UserPlus, Users, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -43,6 +43,8 @@ function AlunosConteudo() {
   const [email, setEmail] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const [ocupado, setOcupado] = useState(false)
+  const conviteEmAndamento = useRef(false)
+  const emailValido = email.trim().length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
   const queryClient = useQueryClient()
 
   const metrics = [
@@ -52,15 +54,23 @@ function AlunosConteudo() {
   ]
 
   async function convidar() {
+    if (conviteEmAndamento.current) return
     setErro(null)
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setErro('Sessão expirada. Entre novamente.'); return }
-
+    if (!emailValido) { setErro('Informe um e-mail válido.'); return }
+    conviteEmAndamento.current = true
     setOcupado(true)
     try {
+      const supabase = createClient()
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      if (authError || !user) throw new Error('Sessão expirada. Entre novamente.')
       const { data, error } = await supabase.functions.invoke('convite-aluno', { body: { email: email.trim().toLowerCase() } })
-      if (error) throw new Error('Falha ao chamar o serviço de convites.')
+      if (error) {
+        const response = error.context instanceof Response ? error.context : null
+        const failure = response ? await response.clone().json().catch(() => null) as { error?: unknown } | null : null
+        if (typeof failure?.error === 'string') throw new Error(failure.error)
+        if (response?.status === 401) throw new Error('Sessão expirada. Entre novamente.')
+        throw new Error('Não foi possível acessar o serviço de convites. Tente novamente.')
+      }
       const alunoId: string | undefined = (data as { data?: { user?: { id?: string } } })?.data?.user?.id
       if (!alunoId) throw new Error((data as { error?: string })?.error ?? 'Não foi possivel convidar.')
 
@@ -73,7 +83,7 @@ function AlunosConteudo() {
       setEmail(''); setModalAberto(false)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro inesperado.')
-    } finally { setOcupado(false) }
+    } finally { conviteEmAndamento.current = false; setOcupado(false) }
   }
 
   return (
@@ -105,11 +115,11 @@ function AlunosConteudo() {
         </section>}
       </div>
       {selectedStudent && <StudentFollowUpPanel key={selectedStudent.vinculo_id} student={selectedStudent} onClose={() => setSelectedStudentId('')} />}
-      <Modal personal className={styles.inviteModal} open={modalAberto} onClose={() => setModalAberto(false)} titulo="Convidar Aluno">
+      <Modal personal className={styles.inviteModal} open={modalAberto} onClose={() => { if (!conviteEmAndamento.current) setModalAberto(false) }} titulo="Convidar Aluno">
         <div className={styles.inviteForm}>
           <div className={styles.inviteField}>
             <Label htmlFor="convite-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail do aluno</Label>
-            <Input id="convite-email" type="email" placeholder="aluno@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10" />
+            <Input id="convite-email" type="email" placeholder="aluno@exemplo.com" value={email} disabled={ocupado} onChange={(e) => { setEmail(e.target.value); setErro(null) }} className="h-10" />
             <p className={styles.inviteNote}>
               Se o aluno ainda não tem conta, ele recebera um e-mail de convite.
             </p>
@@ -120,8 +130,8 @@ function AlunosConteudo() {
             </div>
           ) : null}
           <div className={styles.inviteActions}>
-            <Button variant="outline" onClick={() => setModalAberto(false)} className="rounded-xl">Cancelar</Button>
-            <Button onClick={convidar} disabled={ocupado || !email.includes('@')} className="rounded-xl shadow-sm">
+            <Button variant="outline" disabled={ocupado} onClick={() => setModalAberto(false)} className="rounded-xl">Cancelar</Button>
+            <Button onClick={convidar} disabled={ocupado || !emailValido} className="rounded-xl shadow-sm">
               {ocupado ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {ocupado ? 'Enviando...' : 'Convidar e vincular'}
             </Button>

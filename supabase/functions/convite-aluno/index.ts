@@ -1,167 +1,86 @@
-import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { createClient } from 'npm:@supabase/supabase-js@2.105.0'
+import { corsHeaders as sdkCorsHeaders } from 'npm:@supabase/supabase-js@2.105.0/cors'
 
-interface ConvitePayload {
-  email: string
-  nome?: string
-}
-
-const ALLOWED_ORIGINS = [
+const WEB_APP_URL = (Deno.env.get('WEB_APP_URL') || 'https://shapeos-fichafacil.vercel.app').replace(/\/$/, '')
+const ALLOWED_ORIGINS = new Set([
   'https://shapeos-fichafacil.vercel.app',
+  new URL(WEB_APP_URL).origin,
   'http://localhost:3000',
   'http://127.0.0.1:3000',
-]
-
-function corsHeaders(origin: string | null) {
-  const allowed = ALLOWED_ORIGINS.includes(origin ?? '')
-  return {
-    'Access-Control-Allow-Origin': allowed ? origin! : ALLOWED_ORIGINS[0],
-    'Access-Control-Allow-Headers':
-      'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    Vary: 'Origin',
-  }
-}
+])
 
 Deno.serve(async (req: Request) => {
   const origin = req.headers.get('Origin')
-  const headers = corsHeaders(origin)
-
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers })
+  const headers = {
+    ...sdkCorsHeaders,
+    'Access-Control-Allow-Origin': origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://shapeos-fichafacil.vercel.app',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    Vary: 'Origin',
   }
+  const reply = (status: number, body: unknown) => Response.json(body, { status, headers })
 
-  if (req.method !== 'POST') {
-    return Response.json(
-      { error: 'Metodo não permitido' },
-      { status: 405, headers }
-    )
-  }
+  // The browser sends this unauthenticated check before the authenticated POST.
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers })
+  if (req.method !== 'POST') return reply(405, { error: 'Método não permitido.' })
+  if (origin && !ALLOWED_ORIGINS.has(origin)) return reply(403, { error: 'Origem não permitida.' })
 
   const authHeader = req.headers.get('Authorization')
-  if (!authHeader?.startsWith('Bearer ')) {
-    return Response.json(
-      { error: 'Não autenticado' },
-      { status: 401, headers }
-    )
-  }
+  if (!authHeader?.startsWith('Bearer ')) return reply(401, { error: 'Sessão expirada. Entre novamente.' })
 
-  let payload: ConvitePayload
+  let payload: unknown
+  try { payload = await req.json() } catch { return reply(400, { error: 'Dados do convite inválidos.' }) }
+  if (!payload || typeof payload !== 'object' || !('email' in payload) || typeof payload.email !== 'string') {
+    return reply(400, { error: 'Informe um e-mail válido.' })
+  }
+  const email = payload.email.trim().toLowerCase()
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return reply(400, { error: 'Informe um e-mail válido.' })
+  const nome = 'nome' in payload && typeof payload.nome === 'string' ? payload.nome.trim().slice(0, 120) : undefined
+
   try {
-    payload = await req.json()
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+    const { data: caller, error: authError } = await admin.auth.getUser(authHeader.slice(7))
+    if (authError || !caller.user) return reply(401, { error: 'Sessão expirada. Entre novamente.' })
+    const { data: profile, error: profileError } = await admin.from('usuarios').select('tipo, status_conta').eq('id', caller.user.id).maybeSingle()
+    if (profileError) return reply(503, { error: 'Não foi possível verificar sua conta. Tente novamente.' })
+    if (profile?.tipo !== 'PERSONAL' || profile.status_conta !== 'ATIVO') {
+      return reply(403, { error: 'Apenas personais com a conta ativa podem convidar alunos.' })
+    }
+
+    const { data: allowed, error: limitError } = await admin.rpc('consumir_limite_convite', {
+      p_usuario_id: caller.user.id, p_limite: 10, p_janela_segundos: 60,
+    })
+    if (limitError) {
+      console.error('convite-aluno: rate limit indisponível', limitError.code)
+      return reply(503, { error: 'O serviço de convites está temporariamente indisponível. Tente novamente.' })
+    }
+    if (!allowed) return reply(429, { error: 'Muitos convites em sequência. Aguarde um minuto e tente novamente.' })
+
+    // Existing students can be linked even if the email provider is unavailable.
+    const findExisting = () => admin.from('usuarios').select('id, tipo, status_conta').eq('email', email).maybeSingle()
+    const existingReply = (student: { id: string; tipo: string; status_conta: string }) => {
+      if (student.tipo !== 'ALUNO') return reply(409, { error: 'Este e-mail pertence a uma conta que não é de aluno.' })
+      if (student.status_conta !== 'ATIVO') return reply(409, { error: 'A conta deste aluno não está ativa.' })
+      return reply(200, { data: { user: { id: student.id, novo: false } } })
+    }
+    const { data: existing, error: lookupError } = await findExisting()
+    if (lookupError) return reply(503, { error: 'Não foi possível consultar o aluno. Tente novamente.' })
+    if (existing) return existingReply(existing)
+
+    const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: `${WEB_APP_URL}/login`, data: { nome, tipo: 'ALUNO' },
+    })
+    if (!error && data.user) return reply(200, { data: { user: { id: data.user.id, novo: true } } })
+    if (error?.code === 'email_exists' || error?.code === 'user_already_exists' || /already.*(registered|exists)/i.test(error?.message || '')) {
+      const { data: student, error: retryError } = await findExisting()
+      if (!retryError && student) return existingReply(student)
+    }
+    if (error?.status === 429) return reply(429, { error: 'O limite de envio de e-mails foi atingido. Aguarde e tente novamente.' })
+    console.error('convite-aluno: falha no envio', error?.code, error?.status)
+    return reply(502, { error: 'Não foi possível enviar o e-mail de convite. Tente novamente.' })
   } catch {
-    return Response.json(
-      { error: 'JSON invalido' },
-      { status: 400, headers }
-    )
+    console.error('convite-aluno: falha inesperada')
+    return reply(503, { error: 'O serviço de convites está temporariamente indisponível. Tente novamente.' })
   }
-
-  const email = payload.email?.trim().toLowerCase()
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email ?? '')
-  if (!emailValido) {
-    return Response.json(
-      { error: 'E-mail invalido' },
-      { status: 400, headers }
-    )
-  }
-
-  const admin = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-  )
-
-  const token = authHeader.slice('Bearer '.length)
-  const { data: chamador, error: erroUsuario } = await admin.auth.getUser(token)
-  if (erroUsuario || !chamador.user) {
-    return Response.json(
-      { error: 'Sessao invalida' },
-      { status: 401, headers }
-    )
-  }
-
-  const { data: perfilChamador, error: erroPerfil } = await admin
-    .from('usuarios')
-    .select('tipo')
-    .eq('id', chamador.user.id)
-    .maybeSingle()
-
-  if (erroPerfil || perfilChamador?.tipo !== 'PERSONAL') {
-    return Response.json(
-      { error: 'Apenas personal trainers podem convidar alunos.' },
-      { status: 403, headers }
-    )
-  }
-
-  const { data: permitido, error: erroLimite } = await admin.rpc(
-    'consumir_limite_convite',
-    {
-      p_usuario_id: chamador.user.id,
-      p_limite: 10,
-      p_janela_segundos: 60,
-    }
-  )
-
-  if (erroLimite) {
-    console.error('Falha ao verificar rate limit', erroLimite)
-    return Response.json(
-      { error: 'Não foi possivel validar o limite de convites.' },
-      { status: 503, headers }
-    )
-  }
-
-  if (!permitido) {
-    return Response.json(
-      { error: 'Rate limit excedido' },
-      { status: 429, headers }
-    )
-  }
-
-  const { data, error } = await admin.auth.admin.inviteUserByEmail(email!, {
-    redirectTo: \`\${Deno.env.get('WEB_APP_URL') ?? ''}/login\`,
-    data: { nome: payload.nome?.trim() || undefined, tipo: 'ALUNO' },
-  })
-
-  if (!error && data.user) {
-    return Response.json(
-      { data: { user: { id: data.user.id, novo: true } } },
-      { status: 200, headers }
-    )
-  }
-
-  if (
-    error &&
-    (error.message.includes('already been registered') ||
-      error.message.includes('already exists'))
-  ) {
-    const { data: perfil, error: erroBusca } = await admin
-      .from('usuarios')
-      .select('id, tipo')
-      .eq('email', email)
-      .maybeSingle()
-
-    if (erroBusca) {
-      return Response.json(
-        { error: 'Falha ao consultar usuario existente.' },
-        { status: 500, headers }
-      )
-    }
-
-    if (perfil?.id && perfil.tipo === 'ALUNO') {
-      return Response.json(
-        { data: { user: { id: perfil.id, novo: false } } },
-        { status: 200, headers }
-      )
-    }
-
-    if (perfil?.id) {
-      return Response.json(
-        { error: 'Este e-mail pertence a uma conta que não e de aluno.' },
-        { status: 409, headers }
-      )
-    }
-  }
-
-  return Response.json(
-    { error: error?.message ?? 'Falha no convite' },
-    { status: 400, headers }
-  )
 })
