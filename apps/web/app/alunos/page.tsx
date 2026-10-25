@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
@@ -42,10 +42,23 @@ function AlunosConteudo() {
   const selectedStudent = alunos?.find(student => student.aluno_id === selectedStudentId)
   const [email, setEmail] = useState('')
   const [erro, setErro] = useState<string | null>(null)
+  const [avisoConvite, setAvisoConvite] = useState('')
   const [ocupado, setOcupado] = useState(false)
   const conviteEmAndamento = useRef(false)
   const emailValido = email.trim().length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
   const queryClient = useQueryClient()
+  const convites = useQuery<{ id: string; email: string; expira_em: string }[]>({
+    queryKey: ['personal-student-invitations'],
+    queryFn: async () => {
+      const db = createClient()
+      const { data: auth, error: authError } = await db.auth.getUser()
+      if (authError || !auth.user) throw new Error('Sessão expirada.')
+      const { data, error } = await db.from('convites_aluno').select('id,email,expira_em')
+        .eq('personal_id', auth.user.id).eq('estado', 'PENDENTE').gt('expira_em', new Date().toISOString()).order('criado_em', { ascending: false })
+      if (error) throw error
+      return data ?? []
+    },
+  })
 
   const metrics = [
     { label: 'Alunos vinculados', value: alunos?.length, icon: Users },
@@ -71,15 +84,10 @@ function AlunosConteudo() {
         if (response?.status === 401) throw new Error('Sessão expirada. Entre novamente.')
         throw new Error('Não foi possível acessar o serviço de convites. Tente novamente.')
       }
-      const alunoId: string | undefined = (data as { data?: { user?: { id?: string } } })?.data?.user?.id
-      if (!alunoId) throw new Error((data as { error?: string })?.error ?? 'Não foi possivel convidar.')
-
-      const { error: erroVinculo } = await supabase.from('personal_alunos').insert({ personal_id: user.id, aluno_id: alunoId })
-      if (erroVinculo) {
-        if (erroVinculo.code === '23505') throw new Error('Este aluno ja esta vinculado a você.')
-        throw erroVinculo
-      }
-      void queryClient.invalidateQueries({ queryKey: ['alunos'] })
+      const convite = (data as { data?: { convite?: { id?: string; novo?: boolean } } })?.data?.convite
+      if (!convite?.id) throw new Error((data as { error?: string })?.error ?? 'Não foi possível registrar o convite.')
+      setAvisoConvite(convite.novo ? 'Convite enviado por e-mail. O vínculo será ativado somente quando o aluno aceitar.' : 'Convite pendente. O aluno pode aceitar ou recusar no painel da conta dele. Nenhum acesso foi liberado.')
+      void queryClient.invalidateQueries({ queryKey: ['personal-student-invitations'] })
       setEmail(''); setModalAberto(false)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro inesperado.')
@@ -96,6 +104,9 @@ function AlunosConteudo() {
           {[{x:60,y:92},{x:180,y:35},{x:300,y:92}].map(({x,y}) => <g key={x} transform={`translate(${x} ${y})`}><circle r="24" fill="var(--p-bg)" /><circle cy="-6" r="5" /><path d="M-9 12v-3a9 9 0 0 1 18 0v3" /></g>)}
         </svg>} />
       <dl className={styles.metrics} aria-label="Resumo dos alunos" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value ?? 0}</dd></div></div>)}</dl>
+      {avisoConvite && <p role="status" className={styles.inviteNote}>{avisoConvite}</p>}
+      {!!convites.data?.length && <section className={styles.pendingInvites} aria-labelledby="pending-invites-title"><h2 id="pending-invites-title">Convites pendentes <span>{convites.data.length}</span></h2><p>O acesso aos dados só será liberado após o aceite do aluno.</p><ul>{convites.data.map(invite => <li key={invite.id}><strong>{invite.email}</strong><span>Expira em {new Date(invite.expira_em).toLocaleString('pt-BR')}</span></li>)}</ul></section>}
+      {convites.error && <div className="personal-load-error" role="alert"><p>Não foi possível consultar os convites pendentes.</p><Button variant="outline" onClick={() => void convites.refetch()}>Tentar novamente</Button></div>}
       {error ? <div className="personal-load-error" role="alert"><p>Não foi possível carregar seus alunos.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? <div role="status" aria-label="Carregando alunos" className="space-y-3">{[0, 1, 2].map(i => <div key={i} className="h-16 skeleton" />)}</div> : !alunos?.length ? <Card><CardContent className="py-12 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground" aria-hidden="true" /><h2>Nenhum aluno vinculado</h2><p className="text-muted-foreground text-xs mt-2 max-w-sm mx-auto">Convide um aluno por e-mail para começar a montar suas fichas.</p></CardContent></Card> :
         <section className={`personal-panel ${styles.panel}`} aria-labelledby="personal-students-title">
           <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'}</p></header>
@@ -121,7 +132,7 @@ function AlunosConteudo() {
             <Label htmlFor="convite-email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">E-mail do aluno</Label>
             <Input id="convite-email" type="email" placeholder="aluno@exemplo.com" value={email} disabled={ocupado} onChange={(e) => { setEmail(e.target.value); setErro(null) }} className="h-10" />
             <p className={styles.inviteNote}>
-              Se o aluno ainda não tem conta, ele recebera um e-mail de convite.
+              Se ainda não tem conta, o aluno receberá um e-mail. Se já tem, verá o convite no painel. O vínculo depende do aceite e o convite expira em 24 horas.
             </p>
           </div>
           {erro ? (
@@ -133,7 +144,7 @@ function AlunosConteudo() {
             <Button variant="outline" disabled={ocupado} onClick={() => setModalAberto(false)} className="rounded-xl">Cancelar</Button>
             <Button onClick={convidar} disabled={ocupado || !emailValido} className="rounded-xl shadow-sm">
               {ocupado ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              {ocupado ? 'Enviando...' : 'Convidar e vincular'}
+              {ocupado ? 'Enviando...' : 'Enviar convite'}
             </Button>
           </div>
         </div>

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Logo from "@/davi/components/Logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { StudentInvitations } from '@/components/fitness/student-invitations';
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -285,6 +286,7 @@ export default function StudentPage() {
                 personal.
               </p>
             </header>
+            <StudentInvitations studentId={id} />
             <nav
               className="flex gap-2 overflow-x-auto pb-1"
               aria-label="Painel do aluno"
@@ -438,3 +440,4 @@ export default function StudentPage() {
     </div>
   );
 }
+

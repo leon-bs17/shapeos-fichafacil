@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { CheckCircle2, Eye, EyeOff, KeyRound, Loader2 } from 'lucide-react'
 import { AuthShell } from '@/components/auth/auth-shell'
+import { StudentInvitations } from '@/components/fitness/student-invitations'
 import { createClient } from '@/lib/supabase/client'
 import { prepareStudentInvite, saveStudentInvitePassword } from '@/lib/auth/student-invite'
 import styles from './page.module.css'
@@ -58,7 +59,7 @@ export default function AceitarConvitePage() {
     <section className={styles.root} aria-labelledby="invite-title" aria-busy={mode === 'loading' || mode === 'saving'}>
       <header><KeyRound size={22} aria-hidden="true" /><p className={styles.eyebrow}>Convite de aluno</p>
         <h1 id="invite-title">{mode === 'success' ? 'Senha definida' : mode === 'invalid' ? 'Convite indisponível' : 'Defina sua senha'}</h1>
-        <p>{mode === 'success' ? 'Seu primeiro acesso está pronto. Entre no seu painel para acompanhar seus treinos.' : mode === 'invalid' ? 'Não foi possível concluir a validação deste link.' : 'Aceite o convite do seu personal criando uma senha para sua conta.'}</p>
+        <p>{mode === 'success' ? 'Seu acesso está pronto. Confira abaixo o convite e decida se deseja se vincular ao personal.' : mode === 'invalid' ? 'Não foi possível concluir a validação deste link.' : 'Crie sua senha. Depois, você poderá aceitar ou recusar o vínculo com seu personal.'}</p>
       </header>
       {mode === 'loading' && <p className={styles.state} role="status"><Loader2 size={18} className="animate-spin" aria-hidden="true" />Validando seu convite…</p>}
       {(mode === 'ready' || mode === 'saving') && <form onSubmit={save} noValidate>
@@ -74,7 +75,7 @@ export default function AceitarConvitePage() {
         <button type="submit" className={styles.command} disabled={mode === 'saving'}>{mode === 'saving' && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}{mode === 'saving' ? 'Salvando…' : 'Definir minha senha'}</button>
       </form>}
       {error && <p role="alert" className={styles.error}>{error}</p>}
-      {mode === 'success' && <div className={styles.state}><CheckCircle2 size={24} aria-hidden="true" /><Link href="/painel" className={styles.command}>Acessar meu painel</Link></div>}
+      {mode === 'success' && student && <><StudentInvitations studentId={student.id} /><div className={styles.state}><CheckCircle2 size={24} aria-hidden="true" /><Link href="/painel" className={styles.command}>Acessar meu painel</Link></div></>}
       {mode === 'invalid' && <Link href="/recuperar-senha" className={styles.command}>Recuperar meu acesso</Link>}
       {mode !== 'loading' && mode !== 'saving' && mode !== 'success' && <Link href="/login" className={styles.back}>Voltar ao login</Link>}
     </section>

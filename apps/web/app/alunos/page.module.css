@@ -93,4 +93,13 @@
 
 :global(html body .personal-content) .inviteModal .inviteError { min-width:0; padding:8px 10px; border:1px solid color-mix(in srgb,var(--p-danger) 25%,var(--p-line)); border-radius:13px; background:color-mix(in srgb,var(--p-danger) 7%,var(--p-panel)); color:var(--p-danger); }
 :global(html body .personal-content) .inviteModal .inviteError p { margin:0; font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+.pendingInvites { min-width:0; padding:16px 18px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.pendingInvites h2 { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; margin:0; }
+.pendingInvites h2 span { color:var(--p-muted); font-size:11px; font-weight:500; }
+.pendingInvites p { font-size:11px; line-height:1.6; color:var(--p-muted); margin:6px 0 12px; }
+.pendingInvites ul { list-style:none; margin:0; padding:0; }
+.pendingInvites li { display:flex; flex-wrap:wrap; justify-content:space-between; gap:5px 12px; padding:10px 0; border-top:1px solid var(--p-line); font-size:11px; }
+.pendingInvites li strong { font-weight:500; overflow-wrap:anywhere; min-width:0; }
+.pendingInvites li span { color:var(--p-muted); font-size:10px; }
+@media(max-width:767px){ .pendingInvites { padding:16px; } .pendingInvites li { flex-direction:column; } }
 
