@@ -1,8 +1,8 @@
 /* Use the compact Personal report scale; keep shared student views unchanged. */
 :global(html body .personal-content) .compact {
-  display:grid; gap:14px; min-width:0; color:var(--p-ink);
+  display:grid; grid-template-columns:minmax(0,1fr); gap:14px; min-width:0; color:var(--p-ink);
 }
-:global(html body .personal-content) .compact>* { margin-top:0; margin-bottom:0; }
+:global(html body .personal-content) .compact>* { min-width:0; margin-top:0; margin-bottom:0; }
 :global(html body .personal-content) .compact[data-assessment-schedule],
 :global(html body .personal-content) .compact :global(.bg-card) {
   padding:12px 14px; border:1px solid var(--p-line); border-radius:13px;
@@ -74,3 +74,7 @@
 .actionChoices { display:flex; flex-wrap:wrap; gap:8px; }
 :global(html body .personal-content) .compact .actionChoices :global(button.btn-tech[aria-pressed=true]) { color:var(--p-brand); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
 @media(max-width:639px) { .actionChoices { display:grid; grid-template-columns:minmax(0,1fr); } :global(html body .personal-content) .compact .actionChoices :global(button.btn-tech) { width:100%; } }
+
+/* Contain intrinsic table/file widths inside the available mobile column. */
+:global(html body .personal-content) .compact :global(section.bg-card) { min-width:0; grid-template-columns:minmax(0,1fr); }
+:global(html body .personal-content) .compact input[type=file] { width:100%; min-width:0; max-width:100%; }
