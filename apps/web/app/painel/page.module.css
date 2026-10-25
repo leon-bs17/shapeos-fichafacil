@@ -1,4 +1,6 @@
-.body,.training { display:grid; gap:18px; min-width:0; }
+.body,.training { display:grid; grid-template-columns:minmax(0,1fr); gap:18px; min-width:0; }
+.body>*,.training>* { min-width:0; }
+.body input[type="file"] { width:100%; min-width:0; max-width:100%; }
 .loading { min-height:140px; display:grid; place-items:center; color:var(--p-muted); font-size:12px; }
 .metric { border:1px solid transparent; border-radius:0; background:transparent; cursor:pointer; text-align:left; transition:background-color 150ms ease,border-color 150ms ease; }
 .metric:disabled { cursor:default; }
