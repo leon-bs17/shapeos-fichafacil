@@ -54,7 +54,7 @@
   .heading h1 { font-size:23px; }
   .heading p { margin-top:12px; font-size:12px; }
   .form { margin-top:20px; }
-  .page .field input { font-size:16px; }
+  .page .field input,.page .field input:is(:hover,:focus,:focus-visible) { font-size:16px; }
   .cardFooter a { min-height:44px; }
 }
 @media(max-width:359px) {

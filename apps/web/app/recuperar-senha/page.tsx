@@ -159,7 +159,7 @@ export default function RecuperarSenhaPage() {
             : 'Informe seu e-mail e enviaremos um link seguro para redefinir sua senha.'
 
   return (
-    <main className={styles.page} data-testid="recovery-view">
+    <main id="main-content" className={styles.page} data-testid="recovery-view">
       <header className={styles.top}>
         <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
         <div className={styles.tools}><Link href="/apresentacao" className={styles.about}><ArrowLeft size={15} aria-hidden="true" /><span>Conhecer a ShapeOS</span></Link><ThemeToggle /></div>
