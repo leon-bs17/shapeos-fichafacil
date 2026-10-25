@@ -1,6 +1,9 @@
 'use client'
 
-import { AuthShell } from '@/components/auth/auth-shell'
+import Link from 'next/link'
+import Logo from '@/davi/components/Logo'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
+import styles from './page.module.css'
 
 import { FormEvent, useEffect, useState } from 'react'
 import { ArrowLeft, CheckCircle2, KeyRound, Loader2, Mail, ShieldCheck } from 'lucide-react'
@@ -156,184 +159,57 @@ export default function RecuperarSenhaPage() {
             : 'Informe seu e-mail e enviaremos um link seguro para redefinir sua senha.'
 
   return (
-    <AuthShell compact>
-        <section
-          className="rounded-xl p-6 sm:p-7"
-          style={{
-            background: "var(--shapeos-surface)",
-            border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)',
-            boxShadow: 'none',
-          }}
-        >
-          <div className="mb-6">
-            <h1
-              className="text-2xl tracking-tight text-[var(--shapeos-text)]"
-              style={{ fontFamily: "'Sora', sans-serif", fontWeight: 600 }}
-            >
-              {titulo}
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
-              {descricao}
-            </p>
-          </div>
+    <main className={styles.page} data-testid="recovery-view">
+      <header className={styles.top}>
+        <Link href="/apresentacao" aria-label="ShapeOS — página de apresentação"><Logo size="sm" /></Link>
+        <div className={styles.tools}><Link href="/apresentacao" className={styles.about}><ArrowLeft size={15} aria-hidden="true" /><span>Conhecer a ShapeOS</span></Link><ThemeToggle /></div>
+      </header>
+      <div className={styles.main}>
+        <section className={styles.card} aria-labelledby="recovery-title" aria-busy={mode === 'sending' || mode === 'saving' || mode === 'loading'}>
+          <header className={styles.heading}><h1 id="recovery-title">{titulo}</h1><p>{descricao}</p></header>
 
-          {mode === 'loading' ? (
-            <div className="flex flex-col items-center py-8 text-muted-foreground" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <Loader2 className="mb-3 h-7 w-7 animate-spin text-[var(--shapeos-brand)]" />
-              <span className="text-sm">Validando seu link...</span>
-            </div>
-          ) : null}
+          {mode === 'loading' && <div className={styles.state} role="status"><Loader2 size={28} className="animate-spin" aria-hidden="true" /><span>Validando seu link...</span></div>}
 
-          {mode === 'request' || mode === 'sending' || mode === 'invalid' ? (
-            <form onSubmit={enviarLink} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div>
-                <label htmlFor="recovery-email" className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Email
-                </label>
-                <div className="relative mt-2">
-                  <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    id="recovery-email"
-                    data-testid="recovery-email-input"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="voce@shapeos.app"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
-                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
-                  />
-                </div>
-              </div>
+          {(mode === 'request' || mode === 'sending' || mode === 'invalid') && <form onSubmit={enviarLink} className={styles.form}>
+            <div><label htmlFor="recovery-email">Email</label><div className={styles.field}>
+              <Mail size={18} aria-hidden="true" />
+              <input id="recovery-email" data-testid="recovery-email-input" type="email" autoComplete="email" required value={email} onChange={event => setEmail(event.target.value)} placeholder="voce@shapeos.app" disabled={mode === 'sending'} aria-describedby={erro ? 'recovery-error' : undefined} />
+            </div></div>
+            <button type="submit" data-testid="recovery-send-button" disabled={mode === 'sending'} className={styles.submit}>
+              {mode === 'sending' ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <Mail size={17} aria-hidden="true" />}
+              {mode === 'sending' ? 'Enviando...' : 'Enviar link de recuperação'}
+            </button>
+          </form>}
 
-              <button
-                type="submit"
-                data-testid="recovery-send-button"
-                disabled={mode === 'sending'}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: 'hsl(var(--warning))', boxShadow: "none" }}
-              >
-                {mode === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
-                {mode === 'sending' ? 'Enviando...' : 'Enviar link de recuperação'}
-              </button>
-            </form>
-          ) : null}
+          {mode === 'sent' && <div className={styles.state} role="status">
+            <CheckCircle2 size={32} aria-hidden="true" />
+            <button type="button" onClick={() => { setErro(null); setMode('request') }} className={styles.textAction}>Enviar para outro e-mail</button>
+          </div>}
 
-          {mode === 'sent' ? (
-            <div className="space-y-5 text-center" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[var(--shapeos-brand)]/30 bg-[var(--shapeos-brand)]/10">
-                <CheckCircle2 className="h-8 w-8 text-[var(--shapeos-brand)]" />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setErro(null)
-                  setMode('request')
-                }}
-                className="text-sm font-medium text-[var(--shapeos-brand)] hover:underline"
-              >
-                Enviar para outro e-mail
-              </button>
-            </div>
-          ) : null}
+          {(mode === 'reset' || mode === 'saving') && <form onSubmit={salvarNovaSenha} className={styles.form}>
+            <div><label htmlFor="new-password">Nova senha</label><div className={styles.field}>
+              <KeyRound size={18} aria-hidden="true" />
+              <input id="new-password" data-testid="recovery-new-password-input" type="password" autoComplete="new-password" required minLength={8} value={novaSenha} onChange={event => setNovaSenha(event.target.value)} placeholder="Mínimo de 8 caracteres" disabled={mode === 'saving'} aria-describedby={erro ? 'recovery-error' : undefined} />
+            </div></div>
+            <div><label htmlFor="confirm-password">Confirmar nova senha</label><div className={styles.field}>
+              <KeyRound size={18} aria-hidden="true" />
+              <input id="confirm-password" data-testid="recovery-confirm-password-input" type="password" autoComplete="new-password" required minLength={8} value={confirmarSenha} onChange={event => setConfirmarSenha(event.target.value)} placeholder="Repita a nova senha" disabled={mode === 'saving'} aria-describedby={erro ? 'recovery-error' : undefined} />
+            </div></div>
+            <button type="submit" data-testid="recovery-save-password-button" disabled={mode === 'saving'} className={styles.submit}>
+              {mode === 'saving' ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <KeyRound size={17} aria-hidden="true" />}
+              {mode === 'saving' ? 'Salvando...' : 'Salvar nova senha'}
+            </button>
+          </form>}
 
-          {mode === 'reset' || mode === 'saving' ? (
-            <form onSubmit={salvarNovaSenha} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div>
-                <label htmlFor="new-password" className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Nova senha
-                </label>
-                <div className="relative mt-2">
-                  <KeyRound className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    id="new-password"
-                    data-testid="recovery-new-password-input"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={novaSenha}
-                    onChange={(event) => setNovaSenha(event.target.value)}
-                    placeholder="Mínimo de 8 caracteres"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
-                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="confirm-password" className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Confirmar nova senha
-                </label>
-                <div className="relative mt-2">
-                  <KeyRound className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    id="confirm-password"
-                    data-testid="recovery-confirm-password-input"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={confirmarSenha}
-                    onChange={(event) => setConfirmarSenha(event.target.value)}
-                    placeholder="Repita a nova senha"
-                    className="w-full rounded-xl py-3.5 pl-11 pr-4 text-[var(--shapeos-text)] outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--shapeos-brand)]/60 focus:ring-2 focus:ring-[var(--shapeos-brand)]/20"
-                    style={{ background: 'rgba(var(--shapeos-neutral-rgb),0.03)', border: '1px solid rgba(var(--shapeos-neutral-rgb),0.08)' }}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                data-testid="recovery-save-password-button"
-                disabled={mode === 'saving'}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                style={{ background: 'hsl(var(--warning))', boxShadow: "none" }}
-              >
-                {mode === 'saving' ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
-                {mode === 'saving' ? 'Salvando...' : 'Salvar nova senha'}
-              </button>
-            </form>
-          ) : null}
-
-          {mode === 'success' ? (
-            <div className="space-y-5 text-center" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[var(--shapeos-brand)]/30 bg-[var(--shapeos-brand)]/10">
-                <CheckCircle2 className="h-8 w-8 text-[var(--shapeos-brand)]" />
-              </div>
-              <a
-                href="/login"
-                className="flex w-full items-center justify-center rounded-2xl bg-[var(--shapeos-brand)] py-3.5 font-semibold text-[var(--shapeos-on-brand)] transition-all hover:brightness-110"
-              >
-                Voltar para o login
-              </a>
-            </div>
-          ) : null}
-
-          {erro ? (
-            <div
-              role="alert"
-              className="mt-4 rounded-xl border border-red-400/25 bg-red-400/5 px-4 py-3 text-sm leading-relaxed text-red-300"
-              style={{ fontFamily: "'Sora', sans-serif" }}
-            >
-              {erro}
-            </div>
-          ) : null}
-
-          {mode !== 'success' ? (
-            <div className="mt-6 flex items-center justify-between gap-3 text-xs" style={{ fontFamily: "'Sora', sans-serif" }}>
-              <a href="/login" className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--shapeos-text)]">
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Voltar ao login
-              </a>
-              <span className="flex items-center gap-1.5 text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-[var(--shapeos-brand)]" />
-                Link seguro
-              </span>
-            </div>
-          ) : null}
+          {mode === 'success' && <div className={styles.state} role="status"><CheckCircle2 size={32} aria-hidden="true" /><Link href="/login" className={styles.submit}>Voltar para o login</Link></div>}
+          {erro && <p id="recovery-error" role="alert" className={styles.error}>{erro}</p>}
+          {mode !== 'success' && <footer className={styles.cardFooter}>
+            <Link href="/login"><ArrowLeft size={14} aria-hidden="true" />Voltar ao login</Link>
+            <span><ShieldCheck size={16} aria-hidden="true" />Link seguro</span>
+          </footer>}
         </section>
-    </AuthShell>
+      </div>
+      <footer className={styles.footer}>ShapeOS · Seu espaço para planejar e treinar</footer>
+    </main>
   )
 }
