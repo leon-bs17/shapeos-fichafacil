@@ -37,9 +37,14 @@ export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "st
       element.dataset.side = placement.side;
     };
     const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
+    // Scrolling options must not temporarily expand the popup and reset its scroll position.
+    const onScroll = (event: Event) => {
+      if (event.target instanceof Node && element.contains(event.target)) return;
+      schedule();
+    };
     update();
     window.addEventListener("resize", schedule);
-    document.addEventListener("scroll", schedule, true);
+    document.addEventListener("scroll", onScroll, true);
     window.visualViewport?.addEventListener("resize", schedule);
     window.visualViewport?.addEventListener("scroll", schedule);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
@@ -47,7 +52,7 @@ export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "st
     return () => {
       cancelAnimationFrame(frame); observer?.disconnect();
       window.removeEventListener("resize", schedule);
-      document.removeEventListener("scroll", schedule, true);
+      document.removeEventListener("scroll", onScroll, true);
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
       if (typeof element.hidePopover === "function" && element.matches(":popover-open")) element.hidePopover();
