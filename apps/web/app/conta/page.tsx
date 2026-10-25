@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CheckCircle2, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
+import { CheckCircle2, Dumbbell, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
@@ -84,13 +84,23 @@ export default function ContaPersonalPage() {
         eyebrow="Conta do Personal"
         title={<>Seu perfil, sua <span>segurança</span></>}
         description="Gerencie seus dados e mantenha seu acesso protegido."
-        art={<svg viewBox="0 0 300 160" fill="none" stroke="currentColor" strokeWidth="1.2"><circle cx="143" cy="83" r="70" /><circle cx="143" cy="63" r="19" /><path d="M102 127c0-25 18-41 41-41s41 16 41 41M57 83a86 86 0 0 1 86-86M229 83a86 86 0 0 1-86 86" /><path d="M234 48a21 21 0 1 1 13 38l-30 30h-12v-12h-12V92l28-28a21 21 0 0 1 13-16Z" /><circle cx="243" cy="67" r="5" /></svg>}
+        art={<svg viewBox="0 0 300 180" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M61 60V48a18 18 0 0 1 18-18h30M218 150h20a18 18 0 0 0 18-18v-16" opacity=".25" />
+          <rect x="80" y="37" width="110" height="106" rx="12" />
+          <path d="M92 37h86" strokeWidth="2" opacity=".55" />
+          <circle cx="135" cy="73" r="13" />
+          <path d="M112 107v-3a23 23 0 0 1 46 0v3M111 122h29M148 122h10" />
+          <rect x="173" y="80" width="68" height="67" rx="13" fill="var(--shapeos-banner-end)" />
+          <path d="m207 93 19 7v14c0 12-9 20-19 25-10-5-19-13-19-25v-14l19-7Z" />
+          <path d="m199 115 6 6 11-13" strokeWidth="1.8" />
+          <path d="M209 55h20M219 45v20M56 112h10M61 107v10" opacity=".4" />
+        </svg>}
       />
       <div className="personal-account-columns">
         <section className="personal-account-panel" aria-labelledby="personal-account-data-title" aria-busy={profile.isLoading}>
           <header><UserRound size={21} strokeWidth={1.75} aria-hidden="true" /><div><h2 id="personal-account-data-title">Dados da conta</h2><p>Informações do seu perfil de Personal.</p></div></header>
           {profile.isLoading ? <p className="personal-account-state" role="status">Carregando seus dados…</p> : profile.error ? <div className="personal-account-state"><p role="alert">Não foi possível carregar os dados da conta.</p><button type="button" className="personal-account-command" disabled={profile.isFetching} onClick={() => void profile.refetch()}>{profile.isFetching ? 'Carregando…' : 'Tentar novamente'}</button></div> : <>
-            <div className="personal-account-identity"><span className="personal-avatar" aria-hidden="true">{initials}</span><div><h3>{name}</h3><span>Personal</span></div></div>
+            <div className="personal-account-identity"><span className="personal-avatar" aria-hidden="true">{initials}</span><div><h3>{name}</h3><span className="personal-account-role"><Dumbbell size={12} aria-hidden="true" />Personal</span></div></div>
             <dl><div><dt>Nome</dt><dd>{profile.data?.nome || 'Não informado'}</dd></div><div><dt>E-mail</dt><dd>{profile.data?.email || 'Não informado'}</dd></div><div><dt>Perfil</dt><dd>Personal</dd></div></dl>
           </>}
         </section>
@@ -126,6 +136,8 @@ export default function ContaPersonalPage() {
       .personal-account .personal-account-command:enabled:active{background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line));}
       html body .personal-account .personal-account-identity>.personal-avatar{width:32px;height:32px;min-width:32px;max-width:32px;flex:0 0 32px;border:0;border-radius:50%;background:linear-gradient(145deg,#6f86b6,#4f678f);color:#fff;font-size:11px;font-weight:700;}
       .personal-account-panel dl>div:last-child{padding-bottom:0;}
+      .personal-account .personal-account-identity .personal-account-role{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:3px 7px;background:hsl(var(--info) / .1);color:hsl(var(--info));font-size:10px;font-weight:500;line-height:1.5;margin-top:5px;}
+      .personal-account-role>svg{width:12px;height:12px;flex-shrink:0;color:inherit;}
       .personal-account-success>svg{flex-shrink:0;}
       .personal-account .personal-account-password button:hover,.personal-account .personal-account-password button:active{background:transparent;color:var(--p-muted);box-shadow:none;transform:none;filter:none;}
       .personal-account button:focus-visible{outline:2px solid var(--p-brand);outline-offset:2px;}
