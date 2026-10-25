@@ -20,7 +20,7 @@ sql_paths = ["./seed.sql"]
 enabled = false
 
 [storage]
-enabled = false
+enabled = true
 
 [auth]
 enabled = true
