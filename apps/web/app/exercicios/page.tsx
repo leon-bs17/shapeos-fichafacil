@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { Library, Plus, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2, Star, ArrowLeftRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ShapeosBanner } from '@/components/layout/shapeos-banner'
+import { WorkoutSelect } from '@/components/fitness/workout-select'
 import { PersonalSearch } from '@/components/ui/personal-search'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -55,6 +57,7 @@ function ExerciciosConteudo() {
   const [modalAberto, setModalAberto] = useState(false)
   const [modalEditarAberto, setModalEditarAberto] = useState(false)
   const [exEditando, setExEditando] = useState<ExercicioBiblioteca | null>(null)
+  const [exExcluindo, setExExcluindo] = useState<ExercicioBiblioteca | null>(null)
   
   const [nome, setNome] = useState('')
   const [mediaUrl, setMediaUrl] = useState('')
@@ -63,6 +66,11 @@ function ExerciciosConteudo() {
 
   const filtrados = useMemo(() => filterExerciseLibrary(exercicios ?? [], busca, grupoAtivo, equipmentFilter, favoritesOnly, favorites.ids), [exercicios, busca, grupoAtivo, equipmentFilter, favoritesOnly, favorites.ids])
   const filterEquipment = Array.from(new Set([...EQUIPAMENTOS, ...(exercicios ?? []).map(item => item.equipamento || 'Sem equipamento informado')])).sort((a, b) => a.localeCompare(b, 'pt-BR'))
+
+  const metrics = [
+    { label: 'Exercícios disponíveis', value: exercicios?.length, icon: Library },
+    { label: 'Grupos musculares', value: exercicios ? new Set(exercicios.map(exercicio => exercicio.grupo_muscular?.trim()).filter(Boolean)).size : undefined, icon: Dumbbell },
+  ]
 
   function abrirCriacao() {
     setNome('')
@@ -104,32 +112,18 @@ function ExerciciosConteudo() {
     <PersonalWorkspace page="biblioteca">
       <PersonalPageHeader icon="biblioteca" title="Biblioteca de exercícios" description="Encontre demonstrações e organize seus exercícios." actions={<Button onClick={abrirCriacao}><Plus size={16} aria-hidden="true" />Novo exercício</Button>} />
 
-      <div className="personal-toolbar">
-        <div className="personal-search">
-          <PersonalSearch
-            aria-label="Buscar exercício pelo nome"
-            placeholder="Buscar por nome..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
-        </div>
-        <div className={styles.filters}>
-          <div className={styles.equipment}><label htmlFor="library-equipment">Equipamento</label><select id="library-equipment" value={equipmentFilter} onChange={event => setEquipmentFilter(event.target.value)}><option value="Todos">Todos os equipamentos</option>{filterEquipment.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
-          <button type="button" className={`personal-filter-chip ${styles.favoriteFilter}`} aria-pressed={favoritesOnly} disabled={!favorites.query.data} onClick={() => setFavoritesOnly(value => !value)}><Star size={16} aria-hidden="true" />Somente favoritos</button>
-        </div>
-        <div className="personal-filter-chips">
-          {['Todos', ...GRUPOS_MUSCULARES].map((g) => (
-            <button
-              key={g}
-              onClick={() => setGrupoAtivo(g)}
-              className="personal-filter-chip"
-              aria-pressed={grupoAtivo === g}
-            >
-              {g !== 'Todos' && GRUPO_ICONS[g]}
-              {g}
-            </button>
-          ))}
-        </div>
+      <div className={styles.page}>
+      <ShapeosBanner titleId="personal-library-banner" eyebrow="Biblioteca do Personal" title={<>Encontre o <span>movimento</span> certo</>} description="Consulte demonstrações e organize seus exercícios em um só lugar."
+        art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
+          <rect x="35" y="35" width="115" height="80" rx="8"/><rect x="80" y="15" width="115" height="80" rx="8"/><rect x="160" y="40" width="150" height="85" rx="8"/>
+          <g transform="translate(155 42) rotate(-12)"><rect x="0" y="8" width="10" height="44" rx="3"/><rect x="14" width="15" height="60" rx="4"/><path d="M29 24h65v12H29"/><rect x="94" width="15" height="60" rx="4"/><rect x="113" y="8" width="10" height="44" rx="3"/></g>
+        </svg>} />
+      <dl className={styles.metrics} aria-label="Resumo da biblioteca" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value ?? 0}</dd></div></div>)}</dl>
+      <div className={styles.toolbar}>
+        <div className={styles.searchField}><Label htmlFor="library-search">Buscar exercícios</Label><PersonalSearch id="library-search" aria-label="Buscar exercício pelo nome" placeholder="Buscar por nome..." value={busca} onChange={event => setBusca(event.target.value)} /></div>
+        <div className={styles.equipment}><Label htmlFor="library-equipment">Equipamento</Label><WorkoutSelect id="library-equipment" label="Equipamento" value={equipmentFilter} onChange={setEquipmentFilter} options={[{value:'Todos',label:'Todos os equipamentos'},...filterEquipment.map(value=>({value,label:value}))]} /></div>
+        <button type="button" className={`personal-filter-chip ${styles.favoriteFilter}`} aria-pressed={favoritesOnly} disabled={!favorites.query.data} onClick={() => setFavoritesOnly(value => !value)}><Star size={16} aria-hidden="true" />Somente favoritos</button>
+        <div className={`personal-filter-chips ${styles.groupFilters}`}>{['Todos', ...GRUPOS_MUSCULARES].map(g => <button key={g} type="button" onClick={() => setGrupoAtivo(g)} className="personal-filter-chip" aria-pressed={grupoAtivo === g}>{g !== 'Todos' && GRUPO_ICONS[g]}{g}</button>)}</div>
       </div>
 
       <p className="personal-results-note" aria-live="polite">{isLoading ? 'Carregando exercícios…' : favoritesOnly && favorites.query.isError ? 'Favoritos indisponíveis.' : `${filtrados.length} de ${exercicios?.length ?? 0} exercícios`}</p>
@@ -137,7 +131,7 @@ function ExerciciosConteudo() {
       {favorites.mutation.error && <p role="alert" className="text-destructive text-sm">{favorites.mutation.error.message}</p>}
       {excluir.error && <p role="alert" className="text-destructive text-sm">{excluir.error.message}</p>}
       {error ? <div role="alert" className="personal-load-error"><p>Não foi possível carregar os exercícios.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? (
-        <div className="personal-exercise-grid">
+        <div className={`personal-exercise-grid ${styles.grid}`}>
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="h-20 skeleton" />
           ))}
@@ -153,11 +147,11 @@ function ExerciciosConteudo() {
           </CardContent>
         </Card>
       ) : (
-        <div className="personal-exercise-grid">
+        <div className={`personal-exercise-grid ${styles.grid}`}>
           {filtrados.map((e) => (
-            <Card key={e.id} className="personal-exercise-card">
-              <CardContent className="flex items-center justify-between gap-3 p-4">
-                <ExerciseThumbnail name={e.nome} exerciseId={e.id} videoUrl={e.video_url} />
+            <Card key={e.id} className={`personal-exercise-card ${styles.card}`}>
+              <CardContent className={styles.cardBody}>
+                <div className={styles.thumbnail}><ExerciseThumbnail name={e.nome} exerciseId={e.id} videoUrl={e.video_url} /></div>
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="min-w-0">
                     <p className="personal-exercise-name">{e.nome}</p>
@@ -180,9 +174,7 @@ function ExerciciosConteudo() {
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
                     <button
-                      onClick={() => {
-                        if (window.confirm(`Excluir "${e.nome}" permanentemente?`)) excluir.mutate(e.id)
-                      }}
+                      onClick={() => setExExcluindo(e)}
                       className="personal-command personal-danger"
                       aria-label={`Excluir ${e.nome}`} data-shapeos-tooltip="Excluir exercício"
                     >
@@ -201,17 +193,21 @@ function ExerciciosConteudo() {
                     </a>
                   ) : null
                 )}
-              </CardContent>
               <div className={styles.secondaryActions}>
                 <button type="button" className={`personal-command ${styles.favorite}`} data-favorite={favorites.ids.has(e.id)} aria-pressed={favorites.ids.has(e.id)} aria-label={`${favorites.ids.has(e.id) ? 'Remover dos favoritos' : 'Favoritar'} ${e.nome}`} disabled={!favorites.query.data || favorites.mutation.isPending} onClick={() => favorites.mutation.mutate({ id: e.id, favorite: !favorites.ids.has(e.id) })}><Star size={15} aria-hidden="true" />{favorites.ids.has(e.id) ? 'Favorito' : 'Favoritar'}</button>
                 <button type="button" className="personal-command" onClick={() => setAlternativeSource(e)} aria-label={`Ver alternativas de ${e.nome}`}><ArrowLeftRight size={15} aria-hidden="true" />Alternativas</button>
               </div>
+              </CardContent>
             </Card>
           ))}
         </div>
       )}
 
       {alternativeSource && <ExerciseAlternatives key={alternativeSource.id} exercise={alternativeSource} exercises={exercicios ?? []} onClose={() => setAlternativeSource(null)} />}
+
+      <Modal personal open={!!exExcluindo} onClose={() => { if (!excluir.isPending) setExExcluindo(null) }} titulo="Excluir exercício">
+        {exExcluindo && <div className="space-y-3"><p>Excluir “{exExcluindo.nome}” permanentemente?</p>{excluir.error && <p role="alert" className="text-destructive">{excluir.error.message}</p>}<div className="flex flex-wrap justify-end gap-2 border-t border-border pt-3"><Button variant="outline" disabled={excluir.isPending} onClick={() => setExExcluindo(null)}>Cancelar</Button><Button variant="outline" className="personal-danger" disabled={excluir.isPending} onClick={() => excluir.mutate(exExcluindo.id, {onSuccess:()=>setExExcluindo(null)})}><Trash2 size={14} aria-hidden="true" />{excluir.isPending ? 'Excluindo…' : 'Excluir exercício'}</Button></div></div>}
+      </Modal>
 
       {/* Modal Criar */}
       <Modal personal open={modalAberto} onClose={() => setModalAberto(false)} titulo="Novo Exercício">
@@ -223,15 +219,11 @@ function ExerciciosConteudo() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="ex-grupo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Grupo muscular</Label>
-              <select id="ex-grupo" value={grupo} onChange={(e) => setGrupo(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
-                {GRUPOS_MUSCULARES.map((g) => (<option key={g} value={g}>{g}</option>))}
-              </select>
+              <WorkoutSelect id="ex-grupo" label="Grupo muscular" value={grupo} onChange={setGrupo} options={Array.from(new Set([...GRUPOS_MUSCULARES,grupo])).map(value=>({value,label:value}))} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="ex-equip" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Equipamento</Label>
-              <select id="ex-equip" value={equipamento} onChange={(e) => setEquipamento(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
-                {EQUIPAMENTOS.map((eq) => (<option key={eq} value={eq}>{eq}</option>))}
-              </select>
+              <WorkoutSelect id="ex-equip" label="Equipamento" value={equipamento} onChange={setEquipamento} options={Array.from(new Set([...EQUIPAMENTOS,equipamento])).map(value=>({value,label:value}))} />
             </div>
           </div>
           <div className="space-y-1.5">
@@ -263,15 +255,11 @@ function ExerciciosConteudo() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="edit-grupo" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Grupo muscular</Label>
-              <select id="edit-grupo" value={grupo} onChange={(e) => setGrupo(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
-                {GRUPOS_MUSCULARES.map((g) => (<option key={g} value={g}>{g}</option>))}
-              </select>
+              <WorkoutSelect id="edit-grupo" label="Grupo muscular" value={grupo} onChange={setGrupo} options={Array.from(new Set([...GRUPOS_MUSCULARES,grupo])).map(value=>({value,label:value}))} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="edit-equip" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Equipamento</Label>
-              <select id="edit-equip" value={equipamento} onChange={(e) => setEquipamento(e.target.value)} className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm">
-                {EQUIPAMENTOS.map((eq) => (<option key={eq} value={eq}>{eq}</option>))}
-              </select>
+              <WorkoutSelect id="edit-equip" label="Equipamento" value={equipamento} onChange={setEquipamento} options={Array.from(new Set([...EQUIPAMENTOS,equipamento])).map(value=>({value,label:value}))} />
             </div>
           </div>
           <div className="space-y-1.5">
@@ -297,6 +285,7 @@ function ExerciciosConteudo() {
           </div>
         </div>
       </Modal>
+      </div>
     </PersonalWorkspace>
   )
 }

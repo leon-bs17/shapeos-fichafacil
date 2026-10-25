@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Modal } from '@/components/ui/modal'
+import { WorkoutSelect } from './workout-select'
 import { ExercisePreview, ExerciseThumbnail } from './exercise-demonstration'
 import { exerciseAlternatives } from '@/lib/fitness/exercise-library'
 import type { ExercicioBiblioteca } from '@/services/exercicios'
@@ -15,7 +16,7 @@ export function ExerciseAlternatives({ exercise, exercises, onClose }: { exercis
     <div className={styles.alternatives}>
       <div className={styles.source}><strong>{exercise.nome}</strong><p>{exercise.grupo_muscular}{exercise.equipamento ? ` · ${exercise.equipamento}` : ''}</p></div>
       <p className={styles.note}>Exercícios do mesmo grupo muscular, priorizando o mesmo equipamento. Revise movimento, prescrição e necessidades do aluno antes de substituir na ficha.</p>
-      <div><label htmlFor="alternative-equipment">Equipamento disponível</label><select id="alternative-equipment" value={equipment} onChange={event => setEquipment(event.target.value)}><option value="Todos">Todos os equipamentos</option>{availableEquipment.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
+      <div><label htmlFor="alternative-equipment">Equipamento disponível</label><WorkoutSelect id="alternative-equipment" label="Equipamento disponível" value={equipment} onChange={setEquipment} options={[{value:'Todos',label:'Todos os equipamentos'},...availableEquipment.map(value=>({value,label:value}))]} /></div>
       <p className={styles.note} aria-live="polite">{alternatives.length} {alternatives.length === 1 ? 'alternativa encontrada' : 'alternativas encontradas'}.</p>
       {!alternatives.length ? <p className={styles.note}>Nenhuma alternativa encontrada com esse equipamento.</p> : <ul className={styles.list}>
         {alternatives.map(item => <li key={item.id}>
