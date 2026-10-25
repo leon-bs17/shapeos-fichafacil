@@ -6,7 +6,7 @@ import { markNotificationsRead, receivedNotifications, type NotificationCursor }
 import styles from './student-experience.module.css'
 
 function useStudentLinks(studentId: string) {
-  return useQuery({ queryKey: ['student-links', studentId], queryFn: async () => {
+  return useQuery({ queryKey: ['fitness-student', studentId, 'links'], queryFn: async () => {
     const { data, error } = await createClient().from('personal_alunos').select('id,proxima_avaliacao_em').eq('aluno_id', studentId).eq('status', 'ATIVO')
     if (error) throw new Error('Não foi possível consultar seus vínculos.')
     return (data ?? []) as { id: string; proxima_avaliacao_em: string | null }[]
