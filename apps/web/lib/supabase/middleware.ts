@@ -52,7 +52,7 @@ export async function updateSession(request: NextRequest) {
 
   // Recovery and OAuth callbacks must finish before profile routing or sign-out.
   // These pages only update the authenticated user's password; app access remains gated below.
-  if (pathname === '/auth/callback' || pathname === '/recuperar-senha' || pathname === '/admin/redefinir-senha') {
+  if (pathname === '/auth/callback' || pathname === '/recuperar-senha' || pathname === '/admin/redefinir-senha' || pathname === '/aceitar-convite') {
     return response
   }
 
@@ -165,3 +165,4 @@ export async function updateSession(request: NextRequest) {
 
   return response
 }
+

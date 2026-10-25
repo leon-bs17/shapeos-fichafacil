@@ -61,7 +61,7 @@ async function run() {
   }
   f = fixture(); r = await f.request({ email: '  STUDENT@Example.test  ' })
   assert.equal(r.status, 200); assert.equal(f.calls.email, 'student@example.test')
-  assert.equal(f.calls.config.redirectTo, origin + '/login'); assert.equal(f.calls.config.data.tipo, 'ALUNO')
+  assert.equal(f.calls.config.redirectTo, origin + '/aceitar-convite'); assert.equal(f.calls.config.data.tipo, 'ALUNO')
   assert.deepEqual(await r.json(), { data: { user: { id: 'new-student', novo: true } } })
   for (const [status, expected] of [[429, 429], [500, 502]]) {
     f = fixture({ mailResult: { data: { user: null }, error: { status, code: 'mail_error', message: 'private provider detail' } } })

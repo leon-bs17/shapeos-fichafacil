@@ -69,7 +69,7 @@ Deno.serve(async (req: Request) => {
     if (existing) return existingReply(existing)
 
     const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${WEB_APP_URL}/login`, data: { nome, tipo: 'ALUNO' },
+      redirectTo: `${WEB_APP_URL}/aceitar-convite`, data: { nome, tipo: 'ALUNO' },
     })
     if (!error && data.user) return reply(200, { data: { user: { id: data.user.id, novo: true } } })
     if (error?.code === 'email_exists' || error?.code === 'user_already_exists' || /already.*(registered|exists)/i.test(error?.message || '')) {

@@ -25,7 +25,7 @@ enabled = false
 [auth]
 enabled = true
 site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = ["http://127.0.0.1:3000/auth/callback"]
+additional_redirect_urls = ["http://127.0.0.1:3000/auth/callback", "http://127.0.0.1:3000/aceitar-convite", "http://localhost:3000/aceitar-convite"]
 jwt_expiry = 3600
 enable_signup = true
 
@@ -44,3 +44,10 @@ enabled = true
 rp_display_name = "ShapeOS"
 rp_id = "localhost"
 rp_origins = ["http://localhost:3000"]
+
+# Invitation emails use the Invite user template, not the Magic Link template.
+# Hosted projects must publish this template and allow /aceitar-convite in Auth URL Configuration.
+[auth.email.template.invite]
+subject = "ShapeOS · Convite para sua conta de aluno"
+content_path = "./docs/emails/convite-aluno.html"
+
