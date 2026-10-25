@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, type RefObject } from "react";
 import { positionAnchoredPopover } from "@/lib/ui/anchored-popover";
 
 /** Pair with popover="manual": preserve theme/focus scope and escape clipped ancestors. */
-export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "start", matchWidth = false, heightLimit = Infinity }: {
+export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "start", matchWidth = false, heightLimit = Infinity, preferBelow = false }: {
   open: boolean;
   trigger: RefObject<HTMLElement | null>;
   panel: RefObject<HTMLElement | null>;
@@ -12,6 +12,7 @@ export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "st
   align?: "start" | "end";
   matchWidth?: boolean;
   heightLimit?: number;
+  preferBelow?: boolean;
 }) {
   const hiddenHandler = useRef(onHidden);
   useLayoutEffect(() => { hiddenHandler.current = onHidden; }, [onHidden]);
@@ -28,7 +29,10 @@ export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "st
       Object.assign(element.style, { position: "fixed", boxSizing: "border-box", inset: "auto", margin: "0", maxWidth: `${Math.max(0, viewport.width - 16)}px`, maxHeight: "none" });
       if (matchWidth) element.style.width = `${Math.min(rect.width, Math.max(0, viewport.width - 16))}px`;
       const box = element.getBoundingClientRect();
-      const placement = positionAnchoredPopover(rect, { width: box.width, height: Math.min(heightLimit, Math.max(element.scrollHeight + 2, box.height)) }, viewport, align);
+      const naturalHeight = Math.min(heightLimit, Math.max(element.scrollHeight + 2, box.height));
+      const below = viewport.top + viewport.height - rect.bottom - 16;
+      const height = preferBelow && below >= 80 ? Math.min(naturalHeight, below) : naturalHeight;
+      const placement = positionAnchoredPopover(rect, { width: box.width, height }, viewport, align);
       Object.assign(element.style, { left: `${placement.left}px`, top: `${placement.top}px`, maxHeight: `${Math.min(heightLimit, placement.maxHeight)}px`, overflowY: "auto", overscrollBehavior: "contain", visibility: "visible" });
       element.dataset.side = placement.side;
     };
@@ -48,5 +52,5 @@ export function useAnchoredPopover({ open, trigger, panel, onHidden, align = "st
       window.visualViewport?.removeEventListener("scroll", schedule);
       if (typeof element.hidePopover === "function" && element.matches(":popover-open")) element.hidePopover();
     };
-  }, [open, trigger, panel, align, matchWidth, heightLimit]);
+  }, [open, trigger, panel, align, matchWidth, heightLimit, preferBelow]);
 }
