@@ -28,9 +28,20 @@ test.describe('Autenticação', () => {
     await expect(page.getByRole('heading', { name: /criar conta de aluno/i })).toBeVisible()
   })
 
-  test('recuperação de senha é pública', async ({ page }) => {
+  test('recuperação de senha é pública e valida o e-mail sem enviar pedido inválido', async ({ page }) => {
     await page.goto('/recuperar-senha')
-    await expect(page.getByTestId('recovery-email-input')).toBeVisible()
+    let recoveryRequests = 0
+    page.on('request', request => { if (new URL(request.url()).pathname === '/auth/v1/recover') recoveryRequests++ })
+    const email = page.getByTestId('recovery-email-input')
+    await expect(email).toBeVisible()
+    await page.getByTestId('recovery-send-button').click()
+    await expect(page.getByRole('alert')).toHaveText('Informe seu e-mail.')
+    await expect(email).toBeFocused()
+    await email.fill('email-invalido')
+    await page.getByTestId('recovery-send-button').click()
+    await expect(page.getByRole('alert')).toHaveText('Informe um e-mail válido, como nome@exemplo.com.')
+    await expect(email).toHaveAttribute('aria-invalid', 'true')
+    expect(recoveryRequests).toBe(0)
   })
 
   test('alterna entre os modos e preserva a preferência', async ({ page }) => {
