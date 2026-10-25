@@ -11,7 +11,7 @@ import { SupportSelect } from '@/components/support/support-select'
 import type { Workout } from '@/services/fitness'
 import s from './student-experience.module.css'
 export function StudentTrainers({studentId,onSupport}:{studentId:string;onSupport:()=>void}) {
- const trainers=useQuery({queryKey:['student-trainers',studentId],queryFn:studentTrainers})
+ const trainers=useQuery({queryKey:['fitness-student',studentId,'trainers'],queryFn:studentTrainers})
  return <section className={s.panel}><h2>Meu Personal</h2><p>Seus vínculos ativos e as próximas avaliações informadas pelo profissional.</p>{trainers.isPending?<p role="status">Carregando seus vínculos…</p>:trainers.isError?<div role="alert"><p>Não foi possível consultar seus vínculos.</p><button type="button" onClick={()=>void trainers.refetch()}>Tentar novamente</button></div>:!trainers.data.length?<p>Peça um convite ao Personal e aceite-o no painel para iniciar o acompanhamento.</p>:<div className={s.stack}>{trainers.data.map(trainer=><article key={trainer.id} className={s.notice}><div className={s.row}><h3><Dumbbell size={14} className="inline mr-2" aria-hidden="true"/>{trainer.nome}</h3><span className="personal-status" data-active="true"><CheckCircle2 size={12} aria-hidden="true"/>Ativo</span></div><p>{trainer.proxima_avaliacao_em?`Próxima avaliação informada: ${new Date(`${trainer.proxima_avaliacao_em}T12:00:00`).toLocaleDateString('pt-BR')}`:'Próxima avaliação ainda não informada.'}</p></article>)}</div>}<div className={s.choices}><button type="button" onClick={onSupport}>Falar com meu Personal</button></div></section>
 }
 export function StudentLibrary({workouts}:{workouts:Workout[]}) {

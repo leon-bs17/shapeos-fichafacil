@@ -71,6 +71,7 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
         await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
         await page.getByRole('dialog', { name: 'Menu do Aluno', exact: true }).getByRole('button', { name: tab, exact: true }).click()
         await expect(page.getByRole('heading', { level: 1, name: tab, exact: true })).toBeVisible()
+        if (tab === 'Mys · Assistente') await expect(page.getByRole('button', { name: 'Nova conversa', exact: true })).toBeVisible()
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${tab} no modo ${mode}`).toBe(true)
       }
     }

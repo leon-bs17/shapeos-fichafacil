@@ -504,3 +504,5 @@
 
 /* Personal uses the same outer content width as Admin; keep chat text limits. */
 :global([data-personal-mys]) .workspace.workspace.workspace.workspace { width:100%; max-width:var(--personal-content-max,1400px); }
+
+.embeddedToolbar { display:flex; justify-content:flex-end; margin-bottom:12px; }

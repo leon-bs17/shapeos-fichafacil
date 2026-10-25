@@ -102,6 +102,7 @@ export function MysChat({ role, name, configured, embedded = false }: { role: My
   }
 
   return <section className={`${s.workspace} ${messages.length ? '' : s.emptyWorkspace}`} aria-label="Mys, assistente ShapeOS">
+    {embedded && <div className={s.embeddedToolbar}><button className={s.newChat} disabled={loading} aria-label="Nova conversa" onClick={() => messages.length ? setConfirmClear(true) : clear()}><Plus size={18} aria-hidden="true"/><span>Nova conversa</span></button></div>}
     {!embedded && <header className={s.header}>
       <div className={s.identity}><MysMark small/><div><h1>Mys <span>ShapeOS</span></h1><p>Sua assistente de {admin ? 'gestão e academia' : 'treino e acompanhamento'}.</p></div></div>
       <div className={s.headerActions}>
