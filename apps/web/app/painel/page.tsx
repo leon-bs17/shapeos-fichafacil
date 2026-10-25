@@ -20,7 +20,12 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
 import { ExercisePreview } from '@/components/fitness/exercise-demonstration';
-import { ProgressPanel } from "@/components/fitness/progress-panel";
+import { StudentProgress } from '@/components/fitness/student-progress';
+import { StudentToday } from '@/components/fitness/student-today';
+import { StudentWeek } from '@/components/fitness/student-week';
+import { StudentAssessmentComparison } from '@/components/fitness/student-assessment-comparison';
+import { StudentGuidance, StudentLinkStatus, StudentAssessmentSchedule } from '@/components/fitness/student-support';
+import { estimatedWorkoutMinutes } from '@/lib/fitness/student-experience';
 import { AgendaPanel } from "@/components/fitness/agenda-panel";
 import { AssessmentPanel } from "@/components/fitness/assessment-panel";
 import { ImportPanel } from "@/components/fitness/import-panel";
@@ -33,6 +38,7 @@ import {
   syncQueue,
   sessionsForStudent,
   today,
+  previousSets,
   workoutsForStudent,
   type Session,
   type Workout,
@@ -208,7 +214,7 @@ export default function StudentPage() {
         <div className="personal-header-right"><div className="personal-header-tools">{!active && <NotificationBell />}<ThemeToggle /></div></div>
       </header>
       {!active && <>
-        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : <>Seus <span>dados</span></>}
+        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : tab === 'orientacoes' ? <>Suas <span>orientações</span></> : <>Seus <span>dados</span></>}
           description={tab === 'treino' ? 'Treine, acompanhe sua evolução e compartilhe resultados com seu personal.' : current.description}
           art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
         <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
@@ -249,9 +255,10 @@ export default function StudentPage() {
             <StudentInvitations studentId={id} />
             {tab === "treino" && (
               <div className={styles.training}>
+                <StudentToday workouts={workouts} agenda={agenda} sessions={sessions} onStart={w => void start(w)} onAgenda={() => setTab('agenda')} />
                 {unfinished.length > 0 && (
                   <section className={styles.resume}>
-                    <h2 className="font-semibold">Retomar treino</h2>
+                    <h2 className="font-semibold">Continuar de onde parou</h2>
                     {unfinished.map((s) => (
                       <div
                         key={s.id}
@@ -275,12 +282,12 @@ export default function StudentPage() {
                       ? "Planejado para hoje"
                       : "Suas fichas ativas"}
                   </h2>
-                  {!workouts.length && (
+                  {!workouts.length && (<>
                     <div className={styles.empty}><Dumbbell size={26} strokeWidth={1.5} aria-hidden="true" /><p>
                       Seu personal ainda não disponibilizou uma ficha ativa.
                       Assim que ela for criada, aparecerá aqui.
-                    </p></div>
-                  )}
+                    </p></div><StudentLinkStatus studentId={id} />
+                  </>)}
                   <div className={styles.workoutGrid}>
                     {[...workouts]
                       .sort(
@@ -305,6 +312,7 @@ export default function StudentPage() {
                           <p className={styles.workoutMeta}>
                             {w.itens.length} exercícios ·{" "}
                             {w.itens.reduce((n, e) => n + e.series, 0)} séries
+                            {estimatedWorkoutMinutes(w) != null && ` · estimativa de ${estimatedWorkoutMinutes(w)} min`}
                           </p>
                           <ul className={styles.exercises}>
                             {w.itens.map((e) => (
@@ -319,6 +327,8 @@ export default function StudentPage() {
                                       Superset {e.config.superset}
                                     </span>
                                   )}
+                                  {e.config.observacoes && <p className="text-xs text-muted-foreground">{e.config.observacoes}</p>}
+                                  <p className="text-xs text-muted-foreground">{(() => { const last = previousSets(sessions, e)[0]; return last ? `Último registro: ${last.carga == null ? 'carga não informada' : `${last.carga} kg`} · ${last.reps != null ? `${last.reps} reps` : `${last.segundos ?? '—'}s`}` : 'Sem registro anterior neste exercício.' })()}</p>
                                   <ExercisePreview name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url}/>
                                 </div>
                                 <span className="text-muted-foreground shrink-0">
@@ -347,8 +357,12 @@ export default function StudentPage() {
                 </p>
               </div>
             )}
-            {tab === "evolucao" && <ProgressPanel sessions={sessions} compact />}
+            {tab === "evolucao" && <StudentProgress sessions={sessions} />}
+            {tab === 'orientacoes' && <StudentGuidance studentId={id} />}
             {tab === "agenda" && (
+              <div className={styles.training}>
+              <StudentWeek agenda={agenda} sessions={sessions} workouts={workouts} onStart={w => void start(w)} />
+              <StudentAssessmentSchedule studentId={id} />
               <AgendaPanel compact
                 alunoId={id}
                 workouts={workouts}
@@ -356,15 +370,18 @@ export default function StudentPage() {
                 sessions={sessions}
                 onChange={() => void data.refetch()}
                 onStart={(w) => void start(w)}
-              />
+              /></div>
             )}
             {tab === "avaliacao" && (
+              <div className={styles.training}>
+              <StudentAssessmentSchedule studentId={id} />
+              <StudentAssessmentComparison assessments={assessments} />
               <AssessmentPanel compact
                 alunoId={id}
                 assessments={assessments}
                 own
                 onChange={() => void data.refetch()}
-              />
+              /></div>
             )}
             {tab === "dados" && (
               <ImportPanel

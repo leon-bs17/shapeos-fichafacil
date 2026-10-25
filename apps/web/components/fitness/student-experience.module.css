@@ -1,0 +1,28 @@
+.panel { border:1px solid var(--p-line); border-radius:13px; padding:18px; background:var(--p-panel); min-width:0; }
+.panel h2,.panel h3 { margin:0; font-weight:600; }
+.panel h2 { font-size:15px; } .panel h3 { font-size:13px; }
+.panel p,.panel small { color:var(--p-muted); font-size:12px; line-height:1.7; }
+.stack { display:grid; gap:14px; min-width:0; }
+.row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.row>div { min-width:0; overflow-wrap:anywhere; }
+.row p { margin:4px 0; }
+.today { border-left:3px solid var(--p-brand); }
+.today .row+.row { border-top:1px solid var(--p-line); margin-top:12px; padding-top:12px; }
+.toolbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.choices { display:flex; flex-wrap:wrap; gap:6px; }
+.choices button,.week button { color:var(--p-muted); background:var(--p-panel); border:1px solid var(--p-line); border-radius:8px; font-size:12px; padding:8px 12px; cursor:pointer; }
+.choices button[aria-pressed="true"],.week button[aria-pressed="true"] { color:var(--p-brand); border-color:var(--p-brand); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+.choices button:hover,.week button:hover { border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); }
+.choices button:focus-visible,.week button:focus-visible { outline:2px solid var(--p-brand); outline-offset:2px; }
+.week { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin-top:12px; }
+.week button { display:grid; justify-items:center; gap:5px; padding:10px 2px; }
+.week strong { color:var(--p-ink); font-size:17px; } .week span { font-size:10px; }
+.week small { font-size:10px; }
+.notice { border-top:1px solid var(--p-line); padding-top:12px; }
+.notice summary { cursor:pointer; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:13px; color:var(--p-ink); }
+.notice time { font-size:11px; color:var(--p-muted); }
+.message { white-space:pre-wrap; overflow-wrap:anywhere; }
+.comparison { display:grid; gap:10px; margin-top:14px; grid-template-columns:repeat(4,minmax(0,1fr)); }
+.comparison div { border:1px solid var(--p-line); border-radius:8px; padding:12px; }
+.comparison dt { color:var(--p-muted); font-size:11px; } .comparison dd { margin:6px 0 0; font-size:14px; color:var(--p-ink); }
+@media(max-width:767px) { .panel { padding:16px; } .comparison { grid-template-columns:repeat(2,minmax(0,1fr)); } .choices button { min-height:44px; } .week button { min-height:75px; } }

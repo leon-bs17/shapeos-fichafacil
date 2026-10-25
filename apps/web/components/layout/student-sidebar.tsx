@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, MessageSquare, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import type { DashboardNavigationControls } from './dashboard-shell'
 
@@ -10,6 +10,7 @@ export const studentTabs = [
   { id: 'evolucao', label: 'Evolução', Icon: TrendingUp, description: 'Consulte sua frequência e seus registros.' },
   { id: 'agenda', label: 'Agenda', Icon: CalendarDays, description: 'Organize os próximos treinos.' },
   { id: 'avaliacao', label: 'Avaliações', Icon: Ruler, description: 'Acompanhe medidas e avaliações físicas.' },
+  { id: 'orientacoes', label: 'Orientações', Icon: MessageSquare, description: 'Leia as orientações do Personal e os avisos recebidos.' },
   { id: 'dados', label: 'Meus dados', Icon: FileDown, description: 'Exporte e importe seus registros.' },
 ] as const
 export type StudentTab = typeof studentTabs[number]['id']

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
 import { useEffect, useState, type ReactNode } from "react";
@@ -186,7 +187,7 @@ export function AssessmentPanel({
         </div>
         <div>
           <Label htmlFor="assessment-notes">Observações e metas</Label>
-          <textarea
+          <AutoResizeTextarea
             id="assessment-notes"
             rows={compact ? 2 : undefined}
             maxLength={2000}

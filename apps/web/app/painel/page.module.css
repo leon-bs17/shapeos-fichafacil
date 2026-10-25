@@ -28,3 +28,5 @@
 .body :global(section.bg-card) { padding:18px; }
 .body input[type="number"] { appearance:textfield; }
 .body input[type="number"]::-webkit-inner-spin-button,.body input[type="number"]::-webkit-outer-spin-button { appearance:none; margin:0; }
+
+.empty { margin-bottom:14px; }

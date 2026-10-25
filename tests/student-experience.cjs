@@ -1,0 +1,16 @@
+const assert = require('node:assert/strict'), fs = require('node:fs'), ts = require('typescript'), Module = require('node:module');
+const file = 'apps/web/lib/fitness/student-experience.ts', m = new Module(file, module);
+m._compile(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText, file);
+const { estimatedWorkoutMinutes, todayWorkouts, weekDates, measureDelta } = m.exports;
+const workout = { id: 'w', itens: [{ series: 3, repeticoes: '8-12', descanso_segundos: 60, config: { duracao_segundos: null, aquecimento: 1 } }] };
+assert.equal(estimatedWorkoutMinutes(workout), 6);
+assert.equal(estimatedWorkoutMinutes({ itens: [] }), null);
+assert.equal(estimatedWorkoutMinutes({ ...workout, itens: [{ ...workout.itens[0], repeticoes: 'até a falha' }] }), null);
+assert.equal(estimatedWorkoutMinutes({ ...workout, itens: [{ ...workout.itens[0], config: { duracao_segundos: 30, aquecimento: 0 } }] }), 4);
+assert.deepEqual(todayWorkouts([workout], [{ treino_id: 'paused', data: '2026-10-25' }], [], '2026-10-25'), []);
+assert.equal(todayWorkouts([workout], [{ treino_id: 'w', data: '2026-10-25' }], [{ treino_id: 'w', status: 'CONCLUIDO', inicio: new Date(2026,9,25,12).toISOString() }], '2026-10-25')[0].completed, true);
+assert.deepEqual(weekDates('2026-03-01'), ['2026-02-23','2026-02-24','2026-02-25','2026-02-26','2026-02-27','2026-02-28','2026-03-01']);
+assert.deepEqual(weekDates('2024-02-29').slice(0,4), ['2024-02-26','2024-02-27','2024-02-28','2024-02-29']);
+assert.equal(measureDelta({ peso: null }, { peso: 70 }, 'peso'), null);
+assert.equal(measureDelta({ peso: 70.3 }, { peso: 70.1 }, 'peso'), -.2);
+console.log('PASS: Student estimates (missing prescription vs timed effort), real today schedule, completion, week/year/leap boundaries, and missing vs measured changes.');

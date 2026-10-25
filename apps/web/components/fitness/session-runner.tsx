@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronRight, Clock, Pause, Play, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AutoResizeTextarea } from '@/components/ui/auto-resize-textarea';
 import { Label } from "@/components/ui/label";
 import { ExerciseDemonstration } from '@/components/fitness/exercise-demonstration';
 import {
@@ -224,7 +225,7 @@ export function SessionRunner({
           <p className="text-sm text-primary">Sessão em andamento</p>
           <h1 className="text-2xl font-semibold">{session.titulo}</h1>
         </div>
-        <Button variant="outline" disabled={busy} onClick={onClose}>
+        <Button variant="outline" disabled={busy} onClick={() => { void persist(session).then(saved => { if (saved) onClose() }) }}>
           <Pause size={16} className="mr-2" />
           Salvar e sair
         </Button>
@@ -236,7 +237,7 @@ export function SessionRunner({
             {sessionVolume(session).toLocaleString("pt-BR")} kg de volume
           </span>
         </div>
-        <div className="mt-3 h-2 rounded bg-muted">
+        <div className="mt-3 h-2 rounded bg-muted" role="progressbar" aria-label="Séries previstas realizadas" aria-valuemin={0} aria-valuemax={100} aria-valuenow={completion(session)}>
           <div
             className="h-2 rounded bg-primary"
             style={{ width: `${completion(session)}%` }}
@@ -460,17 +461,19 @@ export function SessionRunner({
         </p>
       )}
       <Label htmlFor="session-notes">Como foi o treino?</Label>
-      <textarea
+      <AutoResizeTextarea
         id="session-notes"
+        disabled={busy}
         maxLength={2000}
         className="w-full rounded-xl border bg-card p-3"
         value={session.observacoes}
         onChange={(v) =>
           setSession({ ...session, observacoes: v.target.value })
         }
-        onBlur={() => void persist(session)}
         placeholder="Observações para seu personal"
       />
+      <Button variant="outline" disabled={busy} onClick={() => void persist(session)}>Salvar observação</Button>
+      <p className="text-xs text-muted-foreground">A observação também é salva ao sair ou finalizar a sessão e fica disponível no acompanhamento do Personal.</p>
       <Button
         className="w-full h-12"
         disabled={busy || session.series.length === 0}

@@ -24,7 +24,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
     cutoff = periodWindow ? Date.parse(periodWindow.start) : Date.now() - 30 * 86400000,
     recent = done.filter((s) => new Date(s.inicio).getTime() >= cutoff);
   const days = new Set(recent.map((s) => dayOf(s.inicio))),
-    volume = recent.reduce((n, s) => n + sessionVolume(s), 0);
+    volume = recent.some(s => workingSets(s).some(r => r.carga != null && r.reps != null)) ? recent.reduce((n, s) => n + sessionVolume(s), 0) : null;
   const groups = useMemo(() => {
     const map = new Map<
       string,
@@ -32,7 +32,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
         nome: string;
         rows: {
           data: string;
-          carga: number;
+          carga: number | null;
           reps: number | null;
           volume: number;
         }[];
@@ -43,12 +43,14 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
         const sets = workingSets(s).filter((r) => r.item_id === e.id);
         if (!sets.length) continue;
         const g = map.get(e.exercicio_id) ?? { nome: e.nome, rows: [] };
+        const loads = sets.flatMap(r => r.carga == null ? [] : [r.carga]);
+        const maxLoad = loads.length ? Math.max(...loads) : null;
         g.rows.push({
           data: s.inicio,
-          carga: Math.max(...sets.map((r) => r.carga ?? 0)),
+          carga: maxLoad,
           reps:
             sets.find(
-              (r) => r.carga === Math.max(...sets.map((v) => v.carga ?? 0)),
+              (r) => r.carga === maxLoad,
             )?.reps ?? null,
           volume: sets.reduce((n, r) => n + (r.carga ?? 0) * (r.reps ?? 0), 0),
         });
@@ -69,7 +71,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
     },
     {
       label: `Volume · ${periodDays ?? 30} dias`,
-      value: `${volume.toLocaleString("pt-BR")} kg`,
+      value: volume == null ? '—' : `${volume.toLocaleString("pt-BR")} kg`,
       Icon: TrendingUp,
     },
     { label: "Exercícios acompanhados", value: groups.length, Icon: Trophy },
@@ -126,20 +128,20 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
       )}
       <div data-exercise-grid className="grid md:grid-cols-2 gap-4">
         {groups.map((g) => {
-          const best = Math.max(...g.rows.map((r) => r.carga)),
+          const loads = g.rows.flatMap(r => r.carga == null ? [] : [r.carga]);
+          const best = loads.length ? Math.max(...loads) : null,
             first = g.rows[0].carga,
             last = g.rows.at(-1)!.carga,
-            diff = Math.round((last - first) * 100) / 100;
+            diff = last == null || first == null ? null : Math.round((last - first) * 100) / 100;
           return (
             <section data-exercise-card key={g.id} className="rounded-2xl border bg-card p-5">
               <h3 className="font-semibold">{g.nome}</h3>
               <div className="flex justify-between mt-2 text-sm">
                 <span className="text-primary">
-                  Maior carga registrada: {best} kg
+                  Maior carga registrada: {best == null ? 'não informada' : `${best} kg`}
                 </span>
                 <span className="text-muted-foreground">
-                  {diff > 0 ? "+" : ""}
-                  {diff} kg
+                  {diff == null ? 'Sem comparação de carga' : `${diff > 0 ? '+' : ''}${diff} kg`}
                 </span>
               </div>
               <div
@@ -152,9 +154,9 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
                     key={i}
                     className="flex-1 bg-primary/50 rounded-t min-w-1"
                     style={{
-                      height: `${best ? Math.max(4, (r.carga / best) * 100) : 4}%`,
+                      height: `${r.carga == null ? 0 : best ? Math.max(4, (r.carga / best) * 100) : 4}%`,
                     }}
-                    title={`${new Date(r.data).toLocaleDateString("pt-BR")}: ${r.carga} kg`}
+                    title={`${new Date(r.data).toLocaleDateString("pt-BR")}: ${r.carga == null ? 'carga não informada' : `${r.carga} kg`}`}
                   />
                 ))}
               </div>
@@ -165,8 +167,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
                 <ul className="mt-2 space-y-1">
                   {g.rows.slice(-20).map((r, i) => (
                     <li key={i}>
-                      {new Date(r.data).toLocaleDateString("pt-BR")} · {r.carga}{" "}
-                      kg · {r.reps ?? "—"} reps · volume {r.volume} kg
+                      {new Date(r.data).toLocaleDateString("pt-BR")} · {r.carga == null ? 'carga não informada' : `${r.carga} kg`} · {r.reps ?? "—"} reps · volume {r.volume} kg
                     </li>
                   ))}
                 </ul>

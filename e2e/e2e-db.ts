@@ -36,7 +36,7 @@ function validarAmbienteE2E() {
   }
 }
 
-async function adminRequest(
+export async function adminRequest(
   path: string,
   init: RequestInit
 ): Promise<Response> {
@@ -98,7 +98,7 @@ async function removerUsuario(id: string): Promise<void> {
   }
 }
 
-async function obterToken(email: string): Promise<string> {
+export async function obterToken(email: string): Promise<string> {
   const response = await fetch(
     SUPABASE_URL + '/auth/v1/token?grant_type=password',
     {
