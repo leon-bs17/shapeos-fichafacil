@@ -46,8 +46,8 @@ export default function PersonalPage() {
       <section className="personal-summary" aria-label="Resumo dos alunos e fichas" aria-busy={students.isLoading}>
         {[
           { name: 'Alunos vinculados', value: metrics.totalAlunos, href: '/alunos', Icon: Users },
-          { name: 'Alunos ativos', value: metrics.alunosAtivos, href: '/alunos', Icon: CircleCheck },
-          { name: 'Fichas ativas', value: metrics.fichasAtivas, href: '/treinos', Icon: Dumbbell },
+          { name: 'Alunos ativos', value: metrics.alunosAtivos, href: '/alunos?status=ATIVO', Icon: CircleCheck },
+          { name: 'Fichas ativas', value: metrics.fichasAtivas, href: '/treinos?status=ATIVAS', Icon: Dumbbell },
         ].map(({ name, value, href, Icon }) => <Link key={name} href={href} className="personal-metric" aria-label={name + ': ' + (students.isLoading ? 'carregando' : students.error ? 'indisponível' : value)}>
           <span className={styles.metricIcon}><Icon size={23} strokeWidth={1.75} aria-hidden="true" /></span>
           <div><strong>{students.isLoading ? '…' : students.error && !students.data ? '—' : value}</strong><p>{name}</p></div>

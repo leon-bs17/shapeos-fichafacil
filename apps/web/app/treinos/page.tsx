@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
+import { workoutStatusFilter } from '@/lib/fitness/list-filters'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { calendarDaysUntil, workoutDeadline } from '@/lib/fitness/deadlines'
 import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
@@ -88,7 +89,12 @@ function TreinosConteudo() {
   const [templateSelecionado, setTemplateSelecionado] = useState<TemplateFicha | null>(null)
   const [tipoTreino, setTipoTreino] = useState<TipoTreino>('hipertrofia')
   const [busca,setBusca]=useState('')
-  const [status,setStatus]=useState<WorkoutStatus>('TODAS')
+  const status = workoutStatusFilter(params.get('status'))
+  function setStatus(next: WorkoutStatus) {
+    const query = new URLSearchParams(params.toString())
+    if (next === 'TODAS') query.delete('status'); else query.set('status', next)
+    router.replace('/treinos' + (query.size ? '?' + query.toString() : ''), { scroll: false })
+  }
   const [exportMessage,setExportMessage]=useState('')
   const studentWorkouts = selectedStudentId ? (fichas ?? []).filter(ficha => ficha.aluno_id === selectedStudentId) : fichas ?? []
   const filtradas=filterWorkouts(studentWorkouts,busca,status)

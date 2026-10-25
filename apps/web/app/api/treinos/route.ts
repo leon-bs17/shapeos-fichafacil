@@ -2,8 +2,16 @@ import { access,api,body,createSchema,dbError,json,normalizeWorkout,validate,wor
 
 export async function GET(request:Request){return api(async()=>{
   const a=await access(request)
-  const {data,error}=await workoutQuery(a).order('criado_em',{ascending:false})
-  dbError(error);return json({data:(data??[]).map(normalizeWorkout)})
+  const rows: ReturnType<typeof normalizeWorkout>[] = []
+  for (;;) {
+    const {data,error}=await workoutQuery(a).order('criado_em',{ascending:false}).order('id')
+      .range(rows.length,rows.length+199)
+    dbError(error)
+    if (!data) throw new Error('Consulta indisponível')
+    if (!data.length) break
+    rows.push(...data.map(normalizeWorkout))
+  }
+  return json({data:rows})
 })}
 export async function POST(request:Request){return api(async()=>{
   const a=await access(request,true),input=validate(createSchema,await body(request))

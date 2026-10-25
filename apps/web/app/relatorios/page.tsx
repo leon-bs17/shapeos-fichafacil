@@ -14,15 +14,12 @@ import { PersonalReportIndicators } from '@/components/fitness/personal-report-i
 import { ReportStudentPicker } from '@/components/fitness/report-student-picker'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { groupLoadHistory, summarizeLoadHistory, type LoadHistoryGroup } from '@/lib/fitness/load-history'
 import { comparisonWindows, type PeriodDays } from '@/lib/fitness/period-comparison'
 import styles from '@/components/fitness/personal-report.module.css'
 
 export default function RelatoriosPage() {
   return <DashboardShell><Suspense fallback={<p role="status">Carregando acompanhamento…</p>}><RelatoriosConteudo /></Suspense></DashboardShell>
-}
-interface Agrupado {
-  nome: string
-  registros: { carga: number | null; reps: number | null; data: string }[]
 }
 function RelatoriosConteudo() {
   const { data: alunos, isLoading: carregandoAlunos, error: erroAlunos, refetch: recarregarAlunos } = useAlunos()
@@ -40,9 +37,9 @@ function RelatoriosConteudo() {
     if (period !== 30) query.set('dias', String(period))
     router.replace('/relatorios' + (query.size ? '?' + query.toString() : ''), { scroll: false })
   }
-  const { data: registros, isLoading, error: erroRegistros, refetch: recarregarRegistros } = useRegistrosDoAluno(tab === 'analise' ? alunoId || undefined : undefined)
+  const { data: registros, isLoading, error: erroRegistros, refetch: recarregarRegistros } = useRegistrosDoAluno(tab === 'analise' ? alunoId || undefined : undefined, days)
   const analysisWindow = comparisonWindows(days)
-  const agrupados = agruparPorExercicio((registros ?? []).filter(registro => {
+  const agrupados = groupLoadHistory((registros ?? []).filter(registro => {
     const date = Date.parse(registro.data_registro)
     return Number.isFinite(date) && date >= Date.parse(analysisWindow.start) && date <= Date.parse(analysisWindow.end)
   }))
@@ -80,7 +77,7 @@ function RelatoriosConteudo() {
                 {isLoading ? <p role="status">Carregando registros de exercícios…</p> :
                   erroRegistros ? <div className={styles.state} role="alert"><p>Não foi possível carregar o histórico de cargas.</p><button type="button" onClick={() => void recarregarRegistros()}>Tentar novamente</button></div> :
                   !agrupados.length ? <div className={styles.state}>Nenhuma execução registrada no período selecionado.</div> :
-                  <div className="grid gap-4 md:grid-cols-2">{agrupados.map(grupo => <EvolucaoExercicio key={grupo.nome} grupo={grupo} />)}</div>}
+                  <div className="grid gap-4 md:grid-cols-2">{agrupados.map(grupo => <EvolucaoExercicio key={grupo.id} grupo={grupo} />)}</div>}
               </>}
             </div>}
         </>}
@@ -88,75 +85,22 @@ function RelatoriosConteudo() {
   </div></PersonalWorkspace>
 }
 
-function EvolucaoExercicio({ grupo }: { grupo: Agrupado }) {
-  const cargas = grupo.registros.map((r) => r.carga ?? 0)
-  const melhor = Math.max(...cargas)
-  const primeiro = cargas[0]
-  const ultimo = cargas[cargas.length - 1]
-  const evoluiu = ultimo > primeiro
-
-  return (
-    <Card className="personal-history-card">
-      <CardHeader className="pb-2">
-        <CardTitle className="personal-history-title flex items-center justify-between text-base">
-          <span className="">{grupo.nome}</span>
-          <span className="text-muted-foreground shrink-0 text-xs font-normal">
-            melhor: {melhor} kg
-          </span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="personal-history-chart flex h-20 items-end gap-1" aria-hidden="true">
-          {cargas.map((carga, i) => (
-            <div
-              key={i}
-              className={
-                carga === melhor
-                  ? 'min-w-[8px] flex-1 rounded-t bg-primary'
-                  : 'bg-primary/30 min-w-[8px] flex-1 rounded-t'
-              }
-              style={{ height: `${melhor > 0 ? Math.max((carga / melhor) * 100, 4) : 4}%` }}
-              title={`${carga} kg`}
-            />
-          ))}
-        </div>
-        <div className="personal-history-meta">
-          <span className="inline-flex items-center gap-1">
-            <TrendingUp className={evoluiu ? 'h-3.5 w-3.5 text-primary' : 'h-3.5 w-3.5 rotate-180'} />
-            {ultimo === primeiro ? 'sem variação' : `${ultimo > primeiro ? '+' : ''}${Math.round((ultimo - primeiro) * 100) / 100} kg desde o início`}
-          </span>
-          <span>último: {formatarData(grupo.registros[grupo.registros.length - 1].data)}</span>
-        </div>
-      </CardContent>
-    </Card>
-  )
+function EvolucaoExercicio({ grupo }: { grupo: LoadHistoryGroup }) {
+  const { points, best, difference, missing, latest } = summarizeLoadHistory(grupo)
+  return <Card className="personal-history-card">
+    <CardHeader className="pb-2"><CardTitle className="personal-history-title flex items-center justify-between text-base">
+      <span>{grupo.nome}</span><span className="text-muted-foreground shrink-0 text-xs font-normal">melhor: {best == null ? '—' : `${best} kg`}</span>
+    </CardTitle></CardHeader>
+    <CardContent className="space-y-3">
+      <div className="personal-history-chart flex h-20 items-end gap-1 overflow-x-auto" aria-hidden="true">{points.map(point => <div key={point.id}
+        className={point.carga == null ? 'min-w-[8px] flex-1 rounded-t bg-muted' : point.carga === best ? 'min-w-[8px] flex-1 rounded-t bg-primary' : 'bg-primary/30 min-w-[8px] flex-1 rounded-t'}
+        style={{ height: `${point.carga != null && best != null && best > 0 ? Math.max(point.carga / best * 100, 4) : 4}%` }}
+        data-shapeos-tooltip={point.carga == null ? 'Carga não informada' : `${point.carga} kg`} />)}</div>
+      <div className="personal-history-meta"><span className="inline-flex items-center gap-1">
+        {difference != null && <TrendingUp className={difference >= 0 ? 'h-3.5 w-3.5 text-primary' : 'h-3.5 w-3.5 rotate-180'} />}
+        {difference == null ? 'Dados insuficientes para comparar' : difference === 0 ? 'Sem variação entre cargas informadas' : `${difference > 0 ? '+' : ''}${Math.round(difference * 100) / 100} kg entre cargas informadas`}
+      </span>{latest && <span>último registro: {formatarData(latest)}</span>}</div>
+      {missing > 0 && <p className="text-xs text-muted-foreground">{missing} {missing === 1 ? 'registro sem carga informada' : 'registros sem carga informada'}. Esses valores não são considerados zero.</p>}
+    </CardContent>
+  </Card>
 }
-
-function agruparPorExercicio(
-  registros: { carga_utilizada: number | null; repeticoes_feitas: number | null; data_registro: string; exercicio_nome: string }[]
-): Agrupado[] {
-  const mapa = new Map<string, Agrupado>()
-
-  for (const r of registros) {
-    let grupo = mapa.get(r.exercicio_nome)
-    if (!grupo) {
-      grupo = { nome: r.exercicio_nome, registros: [] }
-      mapa.set(r.exercicio_nome, grupo)
-    }
-    grupo.registros.push({
-      carga: r.carga_utilizada,
-      reps: r.repeticoes_feitas,
-      data: r.data_registro,
-    })
-  }
-
-  for (const grupo of mapa.values()) {
-    grupo.registros.sort(
-      (a, b) => new Date(a.data).getTime() - new Date(b.data).getTime()
-    )
-  }
-
-  return [...mapa.values()]
-}
-
-

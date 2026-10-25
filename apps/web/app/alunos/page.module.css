@@ -103,3 +103,7 @@
 .pendingInvites li span { color:var(--p-muted); font-size:10px; }
 @media(max-width:767px){ .pendingInvites { padding:16px; } .pendingInvites li { flex-direction:column; } }
 
+
+.studentFilters { display:grid; gap:6px; width:180px; max-width:100%; margin:0 0 12px; }
+.studentFilters label { font-size:10px; color:var(--p-muted); font-weight:500; }
+@media(max-width:767px){.studentFilters{width:100%}}

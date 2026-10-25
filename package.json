@@ -17,7 +17,8 @@
     "test:e2e:ui": "playwright test --ui",
     "gen:types": "supabase gen types typescript --local > packages/shared/src/types/database.generated.ts",
     "test:sprint3": "node tests/sprint3-api.cjs",
-    "test:api:live": "node scripts/sprint3-smoke.mjs"
+    "test:api:live": "node scripts/sprint3-smoke.mjs",
+    "test:unit": "node scripts/test-unit.cjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

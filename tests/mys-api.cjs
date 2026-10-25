@@ -15,7 +15,8 @@ for (const tipo of ['ADMIN','PERSONAL']) {
   assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'ATIVO' }), true)
   assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'BLOQUEADO' }), false)
 }
-let access = null, calls = 0, sent, providerStatus = 200
+let access = null, calls = 0, sent, providerStatus = 200, quotaError = false
+const quotaCounts = new Map()
 const environment = { DEEPSEEK_API_KEY: 'test-key-not-real' }
 const summary = load('apps/web/lib/mys/student-summary.ts', {})
 const dataTools = load('apps/web/lib/mys/data-tools.ts', { './student-summary': summary })
@@ -26,7 +27,7 @@ const api = load('apps/web/app/api/mys/route.ts', {
   '@/lib/mys/contract': contract,
   '@/lib/mys/generate': generate,
   '@/lib/mys/data-tools': dataTools,
-  '@/lib/supabase/server': { createClient: async () => ({}) },
+  '@/lib/supabase/server': { createClient: async () => ({ rpc: async name => { assert.equal(name, 'consumir_cota_mys'); if(quotaError) return {error:{message:'database unavailable'}}; const count=quotaCounts.get(access.id)||0; quotaCounts.set(access.id,count+1); return {data:{permitido:count<8,motivo:'minuto',retry_after:60},error:null} } }) },
 }, { process: { env: environment }, fetch: async (url, init) => { calls++; sent = JSON.parse(init.body); return Response.json({ choices: [{ message: { content: 'Resposta de teste' }, finish_reason: 'stop' }] }, { status: providerStatus }) } })
 const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'}]}, origin = 'https://shapeos.test') => new Request('https://shapeos.test/api/mys', { method:'POST', headers:{origin,'Content-Type':'application/json'}, body:JSON.stringify(body) })
 ;(async () => {
@@ -54,6 +55,10 @@ const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'
   providerStatus=200
   for(let i=0;i<6;i++) assert.equal((await api.POST(req())).status,200)
   assert.equal((await api.POST(req())).status,429)
+  const before=calls; quotaError=true
+  assert.equal((await api.POST(req())).status,503)
+  assert.equal(calls,before)
+  quotaError=false
   access={id:'admin-test',role:'ADMIN',name:'Teste'}
   assert.equal((await api.POST(req())).status,200)
   assert.match(sent.messages[0].content,/atende o ADMIN/)

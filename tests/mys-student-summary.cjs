@@ -9,7 +9,7 @@ assert.equal(contract.parseMysStudent({studentId:student}),student)
 for(const id of ['',null,{},'invalid',12])assert.throws(()=>contract.parseMysStudent({studentId:id}))
 function setup(options={}){
  const calls=[];let countIndex=0
- const db={from(table){const call={table,ops:[]};calls.push(call);const q={}
+ const db={rpc:async()=>({data:{permitido:true},error:null}),from(table){const call={table,ops:[]};calls.push(call);const q={}
  for(const method of ['select','eq','gte','lte','order','limit','abortSignal','maybeSingle','ilike'])q[method]=(...args)=>{call.ops.push([method,...args]);return q}
  q.then=(resolve,reject)=>{
   let data=[],count=0

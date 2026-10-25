@@ -15,16 +15,17 @@ test.describe('Autenticação', () => {
     await page.goto('/login')
 
     await page.getByTestId('role-tab-personal').click()
-    await expect(page.getByTestId('role-tab-personal')).toHaveCSS('background-color', 'rgb(34, 199, 199)')
+    await expect(page.getByTestId('role-tab-personal')).toHaveAttribute('aria-pressed', 'true')
 
     await page.getByTestId('role-tab-aluno').click()
-    await expect(page.getByTestId('role-tab-aluno')).toHaveCSS('background-color', 'rgb(34, 199, 199)')
+    await expect(page.getByTestId('role-tab-aluno')).toHaveAttribute('aria-pressed', 'true')
   })
 
-  test('cadastro é exclusivo para personal', async ({ page }) => {
+  test('cadastro de personal oferece acesso ao cadastro de aluno', async ({ page }) => {
     await page.goto('/cadastro')
     await expect(page.getByRole('heading', { name: /criar conta de personal/i })).toBeVisible()
-    await expect(page.getByText(/alunos não precisam de conta aqui/i)).toBeVisible()
+    await page.getByRole('link', { name: 'Sou Aluno', exact: true }).click()
+    await expect(page.getByRole('heading', { name: /criar conta de aluno/i })).toBeVisible()
   })
 
   test('recuperação de senha é pública', async ({ page }) => {
@@ -32,9 +33,13 @@ test.describe('Autenticação', () => {
     await expect(page.getByTestId('recovery-email-input')).toBeVisible()
   })
 
-  test('dark mode está ativo por padrão', async ({ page }) => {
+  test('alterna entre os modos e preserva a preferência', async ({ page }) => {
     await page.goto('/login')
-    const htmlClass = await page.evaluate(() => document.documentElement.className)
-    expect(htmlClass).toContain('dark')
+    await page.getByRole('button', { name: 'Ativar modo escuro', exact: true }).click()
+    await expect(page.locator('html')).toHaveClass(/dark/)
+    await page.reload()
+    await expect(page.locator('html')).toHaveClass(/dark/)
+    await page.getByRole('button', { name: 'Ativar modo claro', exact: true }).click()
+    await expect(page.locator('html')).toHaveClass(/light/)
   })
 })

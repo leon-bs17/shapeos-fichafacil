@@ -30,6 +30,9 @@ jobs:
       - name: Shared package tests
         run: pnpm test:shared
 
+      - name: Unit and API regression tests
+        run: pnpm test:unit
+
       - name: Start isolated Supabase
         run: pnpm exec supabase start
 

@@ -19,7 +19,7 @@ Sem a chave, a interface permite preparar perguntas e mostra que a conexão est�
 - Limites por resposta: até 3 rodadas de ferramentas, 6 consultas e 50 segundos para geração e consultas. Perguntas amplas podem precisar ser divididas.
 - As mensagens ficam apenas na memória da página. Sair, atualizar ou começar nova conversa limpa esse histórico local. O tratamento das mensagens enviadas ao provedor segue as políticas da DeepSeek.
 - A conversa enviada contém até nove trocas anteriores e a pergunta atual; há limites de caracteres, corpo da requisição, tempo e tokens de resposta.
-- Existe proteção contra rajadas por usuário e instância (8 chamadas/minuto). Não é uma cota distribuída de custos. Uma cota compartilhada deve acompanhar a expansão futura da integração.
+- A cota é compartilhada no Postgres, com verificações e incrementos atômicos: 8 chamadas/minuto e 100/dia por usuário, além de 1.000/dia no projeto. O dia segue America/Sao_Paulo. A identidade vem de auth.uid(), sem limites ou usuário fornecidos pelo cliente. Falhas na verificação bloqueiam a chamada ao provedor. São limites de solicitações, não um orçamento monetário; tentativas aceitas consomem cota mesmo quando o provedor falha.
 - O conteúdo retornado é renderizado como texto e formatação limitada, nunca como HTML bruto.
 
 ## Interface

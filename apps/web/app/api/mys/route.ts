@@ -8,19 +8,6 @@ import { generateMysReply, MysProviderError } from '@/lib/mys/generate'
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
-// Burst protection per server instance. A shared usage quota belongs to the next
-// data integration phase; this is not a global billing limit.
-const requests = new Map<string, { started: number; count: number }>()
-function acceptRequest(id: string) {
-  const now = Date.now()
-  for (const [key, value] of requests) if (now - value.started >= 60000) requests.delete(key)
-  const record = requests.get(id)
-  if (record && record.count >= 8) return false
-  if (record) record.count++
-  else requests.set(id, { started: now, count: 1 })
-  return true
-}
-
 function failure(error: string, status: number) {
   return NextResponse.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } })
 }
@@ -54,10 +41,16 @@ export async function POST(request: Request) {
     studentId = parseMysStudent(parsed)
   } catch (error) { return failure(error instanceof SyntaxError ? 'Pedido inválido.' : error instanceof Error ? error.message : 'Mensagem inválida.', 400) }
   if (studentId && access.role !== 'PERSONAL') return failure('Seleção de aluno disponível na conta do Personal.', 403)
-  if (!acceptRequest(access.id)) return failure('Você enviou várias mensagens em sequência. Aguarde um minuto.', 429)
+  const db = await createClient()
+  const { data: quota, error: quotaError } = await db.rpc('consumir_cota_mys')
+  if (quotaError || !quota || typeof quota.permitido !== 'boolean') return failure('Não foi possível verificar a disponibilidade da Mys. Tente novamente.', 503)
+  if (!quota.permitido) return NextResponse.json({ error: quota.motivo === 'minuto'
+    ? 'Você enviou várias mensagens em sequência. Aguarde um minuto.'
+    : 'O limite diário da Mys foi atingido. Tente novamente amanhã.' },
+    { status: 429, headers: { 'Cache-Control': 'no-store', 'Retry-After': String(Math.max(1, Number(quota.retry_after) || 60)) } })
   try {
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(50000)])
-    const reader = createMysDataReader(await createClient(), access, signal, studentId)
+    const reader = createMysDataReader(db, access, signal, studentId)
     let studentContext
     if (studentId) {
       const context = await reader.run('resumir_acompanhamento', JSON.stringify({ aluno_id: studentId }))

@@ -1,6 +1,9 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { WorkoutSelect } from '@/components/fitness/workout-select'
+import { filterLinkedStudents, studentStatusFilter, paginationPages } from '@/lib/fitness/list-filters'
 import { UserPlus, Users, Loader2, CheckCircle2, Clock3, Eye, FileText, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -24,20 +27,28 @@ function studentInitials(nome: string) {
 export default function AlunosPage() {
   return (
     <DashboardShell>
-      <AlunosConteudo />
+      <Suspense fallback={<p role="status">Carregando alunos…</p>}><AlunosConteudo /></Suspense>
     </DashboardShell>
   )
 }
 
 function AlunosConteudo() {
   const { data: alunos, isLoading, error, refetch } = useAlunos()
+  const params = useSearchParams(), router = useRouter()
+  const status = studentStatusFilter(params.get('status'))
+  const filteredStudents = filterLinkedStudents(alunos ?? [], status)
+  function changeStatus(value: string) {
+    const query = new URLSearchParams(params.toString())
+    if (value === 'TODOS') query.delete('status'); else query.set('status', studentStatusFilter(value))
+    router.replace('/alunos' + (query.size ? '?' + query.toString() : ''), { scroll: false }); setPage(1)
+  }
   const [modalAberto, setModalAberto] = useState(false)
   const [page, setPage] = useState(1)
-  const totalStudents = alunos?.length ?? 0
+  const totalStudents = filteredStudents.length
   const totalPages = Math.max(1, Math.ceil(totalStudents / 5))
   const currentPage = Math.min(page, totalPages)
   const start = (currentPage - 1) * 5
-  const visibleStudents = alunos?.slice(start, start + 5)
+  const visibleStudents = filteredStudents.slice(start, start + 5)
   const [selectedStudentId, setSelectedStudentId] = useState('')
   const selectedStudent = alunos?.find(student => student.aluno_id === selectedStudentId)
   const [email, setEmail] = useState('')
@@ -109,18 +120,20 @@ function AlunosConteudo() {
       {convites.error && <div className="personal-load-error" role="alert"><p>Não foi possível consultar os convites pendentes.</p><Button variant="outline" onClick={() => void convites.refetch()}>Tentar novamente</Button></div>}
       {error ? <div className="personal-load-error" role="alert"><p>Não foi possível carregar seus alunos.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? <div role="status" aria-label="Carregando alunos" className="space-y-3">{[0, 1, 2].map(i => <div key={i} className="h-16 skeleton" />)}</div> : !alunos?.length ? <Card><CardContent className="py-12 text-center"><Users size={28} className="mx-auto mb-3 text-muted-foreground" aria-hidden="true" /><h2>Nenhum aluno vinculado</h2><p className="text-muted-foreground text-xs mt-2 max-w-sm mx-auto">Convide um aluno por e-mail para começar a montar suas fichas.</p></CardContent></Card> :
         <section className={`personal-panel ${styles.panel}`} aria-labelledby="personal-students-title">
-          <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'}</p></header>
+          <header className="personal-panel-heading"><h2 id="personal-students-title">Alunos vinculados</h2><p>{totalStudents} {totalStudents === 1 ? 'aluno' : 'alunos'}</p></header>
+          <div className={styles.studentFilters}><label htmlFor="student-status">Status do vínculo</label><WorkoutSelect id="student-status" label="Status do vínculo" value={status} onChange={changeStatus} options={[{value:"TODOS",label:"Todos"},{value:"ATIVO",label:"Ativos"},{value:"INATIVO",label:"Inativos"}]} /></div>
           <div className={styles.tableFrame}><table className={`personal-table ${styles.table}`}><caption className="sr-only">Alunos vinculados, fichas ativas e acesso ao acompanhamento</caption><thead><tr><th scope="col">Aluno</th><th scope="col">Fichas ativas</th><th scope="col">Status</th><th scope="col" className={styles.actionCell}>Ações</th></tr></thead><tbody>
-            {visibleStudents?.map(aluno => <tr key={aluno.vinculo_id}>
+            {!visibleStudents.length && <tr><td colSpan={4}>Nenhum aluno neste status.</td></tr>}
+            {visibleStudents.map(aluno => <tr key={aluno.vinculo_id}>
               <td data-label="Aluno"><div className="personal-student-identity"><span className={`personal-avatar ${styles.avatar}`} aria-hidden="true">{studentInitials(aluno.nome)}</span><div className={styles.studentIdentity}><div className={styles.nameProfile}><strong>{aluno.nome}</strong></div><span className={styles.studentEmail}>{aluno.email}</span></div></div></td>
               <td data-label="Fichas ativas"><span className="personal-student-count">{aluno.treinos_ativos}</span></td>
               <td data-label="Status"><span className={`personal-status ${styles.status}`} data-active={aluno.status === 'ATIVO'}>{aluno.status === 'ATIVO' ? <CheckCircle2 size={12} aria-hidden="true" /> : <Clock3 size={12} aria-hidden="true" />}{aluno.status === 'ATIVO' ? 'Ativo' : aluno.status}</span></td>
               <td data-label="Ações" className={styles.actionCell}><Button variant="outline" size="sm" className={styles.view} disabled={!aluno.aluno_id} onClick={() => setSelectedStudentId(aluno.aluno_id)} aria-label={`Ver acompanhamento de ${aluno.nome}`}><Eye size={14} strokeWidth={1.75} aria-hidden="true" />Ver</Button></td>
             </tr>)}
           </tbody></table></div>
-          <footer className={styles.pagination}><span>{start + 1}–{Math.min(start + 5, totalStudents)} de {totalStudents} {totalStudents === 1 ? 'aluno' : 'alunos'}</span><nav aria-label="Paginação de alunos">
+          <footer className={styles.pagination}><span>{totalStudents ? start + 1 : 0}–{Math.min(start + 5, totalStudents)} de {totalStudents} {totalStudents === 1 ? 'aluno' : 'alunos'}</span><nav aria-label="Paginação de alunos">
             <Button variant="outline" aria-label="Página anterior" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}><ChevronLeft size={16} aria-hidden="true" /></Button>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(number => <Button key={number} variant="outline" aria-label={`Página ${number}`} aria-current={number === currentPage ? 'page' : undefined} onClick={() => setPage(number)}>{number}</Button>)}
+            {paginationPages(currentPage,totalPages).map(number => typeof number === 'number' ? <Button key={number} variant="outline" aria-label={`Página ${number}`} aria-current={number === currentPage ? 'page' : undefined} onClick={() => setPage(number)}>{number}</Button> : <span key={number} aria-hidden="true">…</span>)}
             <Button variant="outline" aria-label="Próxima página" disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}><ChevronRight size={16} aria-hidden="true" /></Button>
           </nav></footer>
         </section>}

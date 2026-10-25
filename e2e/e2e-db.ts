@@ -74,6 +74,12 @@ async function criarConta(
     )
   }
 
+  // Test-only account approval in the isolated database; never bypass this in the app.
+  const approval = await adminRequest('/rest/v1/usuarios?id=eq.' + data.id, {
+    method: 'PATCH', body: JSON.stringify({ status_conta: 'ATIVO' }),
+  })
+  if (!approval.ok) throw new Error('Falha ao ativar fixture E2E: ' + await approval.text())
+
   return data.id as string
 }
 
@@ -118,34 +124,20 @@ async function obterToken(email: string): Promise<string> {
 async function vincularAluno(
   personalId: string,
   alunoId: string,
-  personalEmail: string
+  alunoEmail: string
 ): Promise<void> {
-  const token = await obterToken(personalEmail)
-
-  const response = await fetch(
-    SUPABASE_URL + '/rest/v1/personal_alunos',
-    {
-      method: 'POST',
-      headers: {
-        apikey: ANON_KEY,
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({
-        personal_id: personalId,
-        aluno_id: alunoId,
-        status: 'ATIVO',
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error(
-      'Falha ao vincular contas E2E via RLS: ' +
-        (await response.text())
-    )
-  }
+  const invitationResponse = await adminRequest('/rest/v1/convites_aluno', {
+    method: 'POST', headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ personal_id: personalId, personal_nome: 'Personal E2E', email: alunoEmail }),
+  })
+  if (!invitationResponse.ok) throw new Error('Falha ao criar convite E2E: ' + await invitationResponse.text())
+  const [invitation] = await invitationResponse.json()
+  const token = await obterToken(alunoEmail)
+  const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/responder_convite_aluno', {
+    method: 'POST', headers: { apikey: ANON_KEY, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_convite_id: invitation.id, p_aceitar: true }),
+  })
+  if (!response.ok) throw new Error('Falha ao aceitar convite E2E: ' + await response.text())
 }
 
 export async function semearContasE2E(): Promise<ContasE2E> {
@@ -162,7 +154,7 @@ export async function semearContasE2E(): Promise<ContasE2E> {
   try {
     personalId = await criarConta(personalEmail, 'Personal E2E', 'PERSONAL')
     alunoId = await criarConta(alunoEmail, 'Aluno E2E', 'ALUNO')
-    await vincularAluno(personalId, alunoId, personalEmail)
+    await vincularAluno(personalId, alunoId, alunoEmail)
 
     return {
       personalEmail,
