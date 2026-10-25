@@ -98,3 +98,5 @@
  :global(html body .personal-content) .page :global(.personal-workout-item) :global(.personal-workout-number):nth-child(4) { grid-column:3; grid-row:2; }
  :global(html body .personal-content) .page :global(.personal-workout-item) :global(.personal-workout-number):nth-child(5) { grid-column:4; grid-row:2; }
 }
+
+:global(html body .personal-content) .page :global([data-personal-modal]) :global(.personal-workout-number) label { font-size:10px; line-height:1.5; white-space:nowrap; }
