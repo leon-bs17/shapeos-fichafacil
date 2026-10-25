@@ -6,15 +6,17 @@ import { Menu } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import { Sidebar } from '@/components/layout/sidebar'
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+export type DashboardNavigationControls = { collapsed: boolean; onToggle: () => void; mobileOpen: boolean; onClose: () => void }
+
+export function DashboardShell({ children, navigation, variant = 'personal' }: { children: React.ReactNode; variant?: 'personal' | 'student'; navigation?: (controls: DashboardNavigationControls) => React.ReactNode }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const closeMenu = useCallback(() => setMobileOpen(false), [])
   useEffect(() => { setMobileOpen(false) }, [pathname])
   return (
-    <div data-shapeos-app-shell="dashboard" data-personal-mys={pathname === '/mys' ? '' : undefined} className="personal-shell">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(value => !value)} mobileOpen={mobileOpen} onClose={closeMenu} />
+    <div data-student-shell={variant === 'student' ? '' : undefined} data-shapeos-app-shell="dashboard" data-personal-mys={pathname === '/mys' ? '' : undefined} className="personal-shell">
+      {navigation ? navigation({ collapsed, onToggle: () => setCollapsed(value => !value), mobileOpen, onClose: closeMenu }) : <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(value => !value)} mobileOpen={mobileOpen} onClose={closeMenu} />}
       <main className="personal-main">
         <header className="personal-topbar">
           <div className="personal-topbar-identity">

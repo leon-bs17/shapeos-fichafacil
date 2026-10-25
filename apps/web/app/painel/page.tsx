@@ -4,13 +4,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarDays,
   Dumbbell,
-  FileDown,
-  LogOut,
-  Ruler,
-  TrendingUp,
+  CheckCircle2,
   WifiOff,
 } from "lucide-react";
-import Logo from "@/davi/components/Logo";
+import { DashboardShell, type DashboardNavigationControls } from '@/components/layout/dashboard-shell';
+import { StudentSidebar, studentTabs, type StudentTab } from '@/components/layout/student-sidebar';
+import { PersonalWorkspace } from '@/components/layout/personal-workspace';
+import { ShapeosBanner } from '@/components/layout/shapeos-banner';
+import styles from './page.module.css';
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { StudentInvitations } from '@/components/fitness/student-invitations';
 import { NotificationBell } from "@/components/layout/notification-bell";
@@ -35,16 +36,9 @@ import {
   type Session,
   type Workout,
 } from "@/services/fitness";
-const tabs = [
-  { id: "treino", label: "Treinar", Icon: Dumbbell },
-  { id: "evolucao", label: "Evolução", Icon: TrendingUp },
-  { id: "agenda", label: "Agenda", Icon: CalendarDays },
-  { id: "avaliacao", label: "Avaliações", Icon: Ruler },
-  { id: "dados", label: "Meus dados", Icon: FileDown },
-];
 export default function StudentPage() {
   const qc = useQueryClient(),
-    [tab, setTab] = useState("treino"),
+    [tab, setTab] = useState<StudentTab>("treino"),
     [active, setActive] = useState<Session | null>(null),
     [pending, setPending] = useState<Session[]>([]),
     [syncError, setSyncError] = useState(""),
@@ -199,53 +193,28 @@ export default function StudentPage() {
     }
     window.location.assign("/login");
   }
-  if (profile.isLoading || data.isLoading)
-    return (
-      <main className="max-w-6xl mx-auto p-6">
-        <p role="status">Carregando seu painel…</p>
-      </main>
-    );
-  if (profile.error || data.error)
-    return (
-      <main className="max-w-xl mx-auto p-6 space-y-4">
-        <p role="alert">{(profile.error ?? data.error)?.message}</p>
-        <Button
-          onClick={() => {
-            void profile.refetch();
-            void data.refetch();
-          }}
-        >
-          Tentar novamente
-        </Button>
-        <Button variant="outline" onClick={() => void logout()}>
-          Sair
-        </Button>
-      </main>
-    );
-  if (!id || !data.data) return null;
-  const { workouts, agenda, assessments } = data.data,
-    sessions = [
-      ...pending,
-      ...data.data.sessions.filter((s) => !pending.some((p) => p.id === s.id)),
-    ].sort((a, b) => b.inicio.localeCompare(a.inicio)),
-    planned = agenda.filter((a) => a.data === today()),
-    unfinished = sessions.filter((s) => s.status === "EM_ANDAMENTO");
+  const workouts = data.data?.workouts ?? [], agenda = data.data?.agenda ?? [], assessments = data.data?.assessments ?? [];
+  const sessions = [...pending, ...(data.data?.sessions ?? []).filter(s => !pending.some(p => p.id === s.id))].sort((a,b) => b.inicio.localeCompare(a.inicio));
+  const planned = agenda.filter(a => a.data === today()), unfinished = sessions.filter(s => s.status === 'EM_ANDAMENTO');
+  const current = studentTabs.find(item => item.id === tab) ?? studentTabs[0], Icon = current.Icon;
+  const loading = profile.isLoading || data.isLoading, failure = profile.error ?? data.error;
+  const navigation = (controls: DashboardNavigationControls) => <StudentSidebar {...controls} tab={tab} onSelect={setTab} name={profile.data?.nome || 'Aluno'} onLogout={logout} locked={!!active} />;
   return (
-    <div className="min-h-screen pb-28">
-      <header className="border-b bg-card">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap gap-3 justify-between items-center">
-          <Logo size="sm" />
-          <div className="flex items-center gap-2">
-            {!active && <NotificationBell />}
-            <ThemeToggle />
-            <Button variant="ghost" className="h-11 w-11 p-0 sm:w-auto sm:px-4" aria-label="Sair" onClick={() => void logout()}>
-              <LogOut size={16} className="sm:mr-2" aria-hidden="true" />
-              <span className="hidden sm:inline">Sair</span>
-            </Button>
-          </div>
-        </div>
+    <DashboardShell variant="student" navigation={navigation}>
+      <PersonalWorkspace page="aluno">
+      <header className="personal-content-heading">
+        <div className="personal-page-heading"><span className="personal-heading-icon"><Icon size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>{active ? 'Treino em andamento' : current.label}</h1><p>{active ? 'Registre suas séries e acompanhe a sessão.' : current.description}</p></div></div>
+        <div className="personal-header-right"><div className="personal-header-tools">{!active && <NotificationBell />}<ThemeToggle /></div></div>
       </header>
-      <main className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
+      {!active && <>
+        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : <>Seus <span>dados</span></>}
+          description={tab === 'treino' ? 'Treine, acompanhe sua evolução e compartilhe resultados com seu personal.' : current.description}
+          art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
+        <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
+          {[{label:'Fichas ativas',value:workouts.length,target:'treino' as const,Icon:Dumbbell},{label:'Concluídos no histórico',value:sessions.filter(s => s.status === 'CONCLUIDO').length,target:'evolucao' as const,Icon:CheckCircle2},{label:'Na agenda de hoje',value:planned.length,target:'agenda' as const,Icon:CalendarDays}].map(({label,value,target,Icon:MetricIcon}) => <button key={label} type="button" className={`personal-metric ${styles.metric}`} onClick={() => setTab(target)} disabled={loading || !!failure} aria-label={`${label}: ${loading || failure ? 'indisponível' : value}`}><MetricIcon size={23} strokeWidth={1.75} aria-hidden="true" /><div><strong>{loading || failure ? '—' : value}</strong><p>{label}</p></div></button>)}
+        </section>
+      </>}
+      {loading ? <div className={styles.loading} role="status">Carregando seu painel…</div> : failure || !id || !data.data ? <div className="personal-load-error" role="alert"><p>{failure?.message || 'Não foi possível carregar seu painel.'}</p><Button variant="outline" onClick={() => { void profile.refetch(); void data.refetch() }}>Tentar novamente</Button><Button variant="outline" onClick={() => void logout()}>Sair</Button></div> : <div className={styles.body}>
         {(offline || pending.length > 0 || syncError) && (
           <div
             role="status"
@@ -276,38 +245,11 @@ export default function StudentPage() {
           />
         ) : (
           <>
-            <header>
-              <p className="text-primary text-sm">Seu espaço de treino</p>
-              <h1 className="mt-2 text-3xl font-semibold">
-                Olá, {profile.data?.nome.split(" ")[0]}
-              </h1>
-              <p className="mt-2 text-muted-foreground">
-                Treine, acompanhe sua evolução e compartilhe resultados com seu
-                personal.
-              </p>
-            </header>
             <StudentInvitations studentId={id} />
-            <nav
-              className="flex gap-2 overflow-x-auto pb-1"
-              aria-label="Painel do aluno"
-            >
-              {tabs.map((t) => (
-                <Button
-                  key={t.id}
-                  className="shrink-0"
-                  variant={tab === t.id ? "default" : "outline"}
-                  aria-current={tab === t.id ? "page" : undefined}
-                  onClick={() => setTab(t.id)}
-                >
-                  <t.Icon size={16} className="mr-2" />
-                  {t.label}
-                </Button>
-              ))}
-            </nav>
             {tab === "treino" && (
-              <div className="space-y-5">
+              <div className={styles.training}>
                 {unfinished.length > 0 && (
-                  <section className="rounded-2xl border border-primary/40 bg-primary/5 p-5">
+                  <section className={styles.resume}>
                     <h2 className="font-semibold">Retomar treino</h2>
                     {unfinished.map((s) => (
                       <div
@@ -327,18 +269,18 @@ export default function StudentPage() {
                   </section>
                 )}
                 <section>
-                  <h2 className="text-lg font-semibold mb-3">
+                  <h2 className={styles.sectionTitle}>
                     {planned.length
                       ? "Planejado para hoje"
                       : "Suas fichas ativas"}
                   </h2>
                   {!workouts.length && (
-                    <div className="rounded-2xl border border-dashed p-8 text-muted-foreground">
+                    <div className={styles.empty}><Dumbbell size={26} strokeWidth={1.5} aria-hidden="true" /><p>
                       Seu personal ainda não disponibilizou uma ficha ativa.
                       Assim que ela for criada, aparecerá aqui.
-                    </div>
+                    </p></div>
                   )}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className={styles.workoutGrid}>
                     {[...workouts]
                       .sort(
                         (a, b) =>
@@ -348,25 +290,26 @@ export default function StudentPage() {
                       .map((w) => (
                         <section
                           key={w.id}
-                          className="rounded-2xl border bg-card p-5 space-y-4"
+                          className={styles.workout}
                         >
-                          <div className="flex justify-between gap-3">
-                            <h3 className="text-xl font-semibold">
+                          <div className={styles.workoutHeading}>
+                            <h3>
                               {w.titulo}
                             </h3>
+                            <div className={styles.badges}><span className="personal-status" data-active="true"><CheckCircle2 size={12} aria-hidden="true" />Ativo</span>
                             {planned.some((p) => p.treino_id === w.id) && (
-                              <span className="text-primary text-xs">Hoje</span>
-                            )}
+                              <span className={styles.today}>Hoje</span>
+                            )}</div>
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className={styles.workoutMeta}>
                             {w.itens.length} exercícios ·{" "}
                             {w.itens.reduce((n, e) => n + e.series, 0)} séries
                           </p>
-                          <ul className="space-y-2 text-sm">
+                          <ul className={styles.exercises}>
                             {w.itens.map((e) => (
                               <li
                                 key={e.id}
-                                className="flex justify-between gap-3 border-t pt-2"
+                                className={styles.exercise}
                               >
                                 <div>
                                   {e.nome}
@@ -387,7 +330,7 @@ export default function StudentPage() {
                             ))}
                           </ul>
                           <Button
-                            className="w-full h-11"
+                            className={`w-full h-11 ${styles.start}`}
                             disabled={!w.itens.length}
                             onClick={() => void start(w)}
                           >
@@ -397,15 +340,15 @@ export default function StudentPage() {
                       ))}
                   </div>
                 </section>
-                <p className="text-xs text-muted-foreground">
+                <p className={styles.note}>
                   As fichas e registros deste painel são vinculados à sua conta.
                   Sessões completas e parciais aparecem na evolução.
                 </p>
               </div>
             )}
-            {tab === "evolucao" && <ProgressPanel sessions={sessions} />}
+            {tab === "evolucao" && <ProgressPanel sessions={sessions} compact />}
             {tab === "agenda" && (
-              <AgendaPanel
+              <AgendaPanel compact
                 alunoId={id}
                 workouts={workouts}
                 agenda={agenda}
@@ -415,7 +358,7 @@ export default function StudentPage() {
               />
             )}
             {tab === "avaliacao" && (
-              <AssessmentPanel
+              <AssessmentPanel compact
                 alunoId={id}
                 assessments={assessments}
                 own
@@ -436,8 +379,9 @@ export default function StudentPage() {
             )}
           </>
         )}
-      </main>
-    </div>
+      </div>}
+      </PersonalWorkspace>
+    </DashboardShell>
   );
 }
 

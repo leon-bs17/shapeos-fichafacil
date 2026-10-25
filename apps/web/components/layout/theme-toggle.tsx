@@ -10,7 +10,7 @@ export function ThemeToggle({ floating = false }: { floating?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme()
   const pathname = usePathname()
   const admin = pathname === '/admin' || pathname?.startsWith('/admin/')
-  const personalRoutes = ['/', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys', '/conta']
+  const personalRoutes = ['/', '/painel', '/alunos', '/treinos', '/exercicios', '/relatorios', '/mys', '/conta']
   const dashboard = admin || personalRoutes.some(route => pathname === route || (route !== '/' && pathname?.startsWith(route + '/')))
   const [mounted, setMounted] = useState(false)
   const themeFrame = useRef(0)

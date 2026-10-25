@@ -16,7 +16,7 @@ export function PersonalPageHeader({ title, description, icon, actions }: { titl
 }
 
 /** Shared presentation only: all queries, form state and mutations stay in their pages. */
-export function PersonalWorkspace({ children, page }: { children: ReactNode; page: 'comunicados' | 'agenda' | 'alunos' | 'treinos' | 'biblioteca' | 'relatorios' | 'mys' }) {
+export function PersonalWorkspace({ children, page }: { children: ReactNode; page: 'aluno' | 'comunicados' | 'agenda' | 'alunos' | 'treinos' | 'biblioteca' | 'relatorios' | 'mys' }) {
   return <div className="personal-content" data-personal-content={page}>
     {children}
     <style jsx global>{`
