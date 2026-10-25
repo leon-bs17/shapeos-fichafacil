@@ -10,8 +10,8 @@ function load(file, imports, extra = {}) {
   return module.exports
 }
 const contract = load('apps/web/lib/mys/contract.ts', {})
-for (const tipo of ['ALUNO', 'OTHER']) assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'ATIVO' }), false)
-for (const tipo of ['ADMIN','PERSONAL']) {
+for (const tipo of ['OTHER']) assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'ATIVO' }), false)
+for (const tipo of ['ADMIN','PERSONAL','ALUNO']) {
   assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'ATIVO' }), true)
   assert.equal(contract.allowedMysProfile({ tipo, status_conta: 'BLOQUEADO' }), false)
 }
@@ -62,6 +62,13 @@ const req = (body = {messages:[{role:'user',content:'Ajude a planejar um treino'
   access={id:'admin-test',role:'ADMIN',name:'Teste'}
   assert.equal((await api.POST(req())).status,200)
   assert.match(sent.messages[0].content,/atende o ADMIN/)
+  access={id:'student-test',role:'ALUNO',name:'Aluno'}
+  assert.equal((await api.POST(req({role:'ADMIN',messages:[{role:'user',content:'Resuma meus registros'}]}))).status,200)
+  assert.match(sent.messages[0].content,/para o ALUNO/)
+  assert.deepEqual(Array.from(sent.tools,t=>t.function.name),['resumo_meu_acompanhamento','consultar_meu_treino'])
+  const previousCalls=calls
+  assert.equal((await api.POST(req({studentId:'11111111-1111-4111-8111-111111111111',messages:[{role:'user',content:'Outro aluno'}]}))).status,403)
+  assert.equal(calls,previousCalls)
   console.log('Mys: perfis, origem, mensagens, limites, chave ausente, erros do provedor e escopo validados.')
 })().catch(error=>{console.error(error);process.exit(1)})
 

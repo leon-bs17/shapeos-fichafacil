@@ -52,7 +52,7 @@ export async function adminRequest(
   })
 }
 
-async function criarConta(
+export async function criarConta(
   email: string,
   nome: string,
   tipo: 'PERSONAL' | 'ALUNO'
@@ -83,7 +83,7 @@ async function criarConta(
   return data.id as string
 }
 
-async function removerUsuario(id: string): Promise<void> {
+export async function removerUsuario(id: string): Promise<void> {
   const response = await adminRequest('/auth/v1/admin/users/' + id, {
     method: 'DELETE',
   })

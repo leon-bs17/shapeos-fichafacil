@@ -3,9 +3,9 @@
 import { NotificationBell } from '@/components/layout/notification-bell'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import type { ReactNode } from 'react'
-import { Megaphone, CalendarDays, Dumbbell, FileText, Library, Users, LayoutGrid, CircleUserRound } from 'lucide-react'
+import { Megaphone, CalendarDays, Dumbbell, FileText, Library, Users, LayoutGrid, CircleUserRound, LifeBuoy } from 'lucide-react'
 
-const icons = { comunicados: Megaphone, agenda: CalendarDays, alunos: Users, treinos: Dumbbell, biblioteca: Library, relatorios: FileText, visao: LayoutGrid, conta: CircleUserRound }
+const icons = { ajuda: LifeBuoy, comunicados: Megaphone, agenda: CalendarDays, alunos: Users, treinos: Dumbbell, biblioteca: Library, relatorios: FileText, visao: LayoutGrid, conta: CircleUserRound, LifeBuoy }
 
 export function PersonalPageHeader({ title, description, icon, actions }: { title: string; description: string; icon: keyof typeof icons; actions?: ReactNode }) {
   const Icon = icons[icon]
@@ -16,7 +16,7 @@ export function PersonalPageHeader({ title, description, icon, actions }: { titl
 }
 
 /** Shared presentation only: all queries, form state and mutations stay in their pages. */
-export function PersonalWorkspace({ children, page, className }: { children: ReactNode; className?: string; page: 'aluno' | 'comunicados' | 'agenda' | 'alunos' | 'treinos' | 'biblioteca' | 'relatorios' | 'mys' }) {
+export function PersonalWorkspace({ children, page, className }: { children: ReactNode; className?: string; page: 'ajuda' | 'aluno' | 'comunicados' | 'agenda' | 'alunos' | 'treinos' | 'biblioteca' | 'relatorios' | 'mys' }) {
   return <div className={`personal-content ${className ?? ''}`} data-personal-content={page}>
     {children}
     <style jsx global>{`

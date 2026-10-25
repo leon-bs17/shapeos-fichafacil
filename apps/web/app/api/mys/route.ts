@@ -12,10 +12,16 @@ function failure(error: string, status: number) {
   return NextResponse.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } })
 }
 
+export async function GET() {
+  const access = await getMysAccess()
+  if (!access) return failure('Entre na sua conta para acessar a Mys.', 403)
+  return NextResponse.json({ configured: Boolean(process.env.DEEPSEEK_API_KEY?.trim()), role: access.role }, { headers: { 'Cache-Control': 'no-store' } })
+}
+
 export async function POST(request: Request) {
   if (request.headers.get('origin') !== new URL(request.url).origin) return failure('Origem inválida.', 403)
   const access = await getMysAccess()
-  if (!access) return failure('A Mys está disponível para administradores e personals com conta ativa. Entre novamente.', 403)
+  if (!access) return failure('A Mys está disponível para contas ativas da ShapeOS. Entre novamente.', 403)
   const key = process.env.DEEPSEEK_API_KEY?.trim()
   if (!key) return failure('A conexão da Mys ainda não foi configurada. Tente novamente após a ativação.', 503)
   if (!request.headers.get('content-type')?.includes('application/json')) return failure('Formato de mensagem inválido.', 400)

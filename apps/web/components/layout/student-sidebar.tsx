@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, MessageSquare, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, MessageSquare, MessageCircle, Library, LifeBuoy, Users, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import type { DashboardNavigationControls } from './dashboard-shell'
 
@@ -10,7 +10,12 @@ export const studentTabs = [
   { id: 'evolucao', label: 'Evolução', Icon: TrendingUp, description: 'Consulte sua frequência e seus registros.' },
   { id: 'agenda', label: 'Agenda', Icon: CalendarDays, description: 'Organize os próximos treinos.' },
   { id: 'avaliacao', label: 'Avaliações', Icon: Ruler, description: 'Acompanhe medidas e avaliações físicas.' },
-  { id: 'orientacoes', label: 'Orientações', Icon: MessageSquare, description: 'Leia as orientações do Personal e os avisos recebidos.' },
+  { id: 'orientacoes', label: 'Comunicados', Icon: MessageSquare, description: 'Leia as orientações do Personal e os avisos recebidos.' },
+  { id: 'personal', label: 'Meu Personal', Icon: Users, description: 'Seus vínculos e o acompanhamento do Personal.' },
+  { id: 'biblioteca', label: 'Biblioteca de exercícios', Icon: Library, description: 'Consulte os exercícios das suas fichas ativas.' },
+  { id: 'mys', label: 'Mys · Assistente', Icon: MessageCircle, description: 'Entenda sua ficha e consulte seus registros.' },
+  { id: 'conta', label: 'Minha conta', Icon: CircleUserRound, description: 'Seus dados e a segurança do seu acesso.' },
+  { id: 'ajuda', label: 'Ajuda e suporte', Icon: LifeBuoy, description: 'Fale com seu Personal ou com a administração.' },
   { id: 'dados', label: 'Meus dados', Icon: FileDown, description: 'Exporte e importe seus registros.' },
 ] as const
 export type StudentTab = typeof studentTabs[number]['id']
@@ -55,11 +60,13 @@ export function StudentSidebar({ collapsed, onToggle, mobileOpen, onClose, tab, 
         {mobile ? <button type="button" className="personal-icon-button" aria-label="Fechar menu" onClick={onClose}><X size={20} /></button> : <button type="button" className="personal-icon-button personal-menu-toggle" aria-label={compact ? 'Expandir menu' : 'Recolher menu'} aria-expanded={!compact} data-shapeos-tooltip={compact ? 'Expandir menu' : 'Recolher menu'} onClick={onToggle}>{compact ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}</button>}
       </div>
       <div className="personal-menu-area" data-shapeos-tooltip={compact ? 'Área do Aluno' : undefined}><CircleUserRound size={19} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>Área do Aluno</span>}</div>
-      <nav aria-label="Menu do Aluno" className="personal-menu-nav"><div className="personal-menu-group">
-        {!compact && <p className="personal-menu-group-label">Meu acompanhamento</p>}
-        {studentTabs.map(({id,label,Icon}) => <button key={id} type="button" className="personal-menu-row" aria-label={label} aria-current={tab === id ? 'page' : undefined} disabled={locked} data-shapeos-tooltip={compact ? label : undefined} onClick={() => select(id)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{label}</span>}</button>)}
+      <nav aria-label="Menu do Aluno" className="personal-menu-nav">
+        {[{label:'Acompanhamento',ids:['treino','evolucao','agenda','avaliacao','orientacoes']},{label:'Ferramentas',ids:['mys','personal','biblioteca']},{label:'Conta',ids:['conta','dados','ajuda']}].map(group=><div className="personal-menu-group" key={group.label}>
+          {!compact && <p className="personal-menu-group-label">{group.label}</p>}
+          {studentTabs.filter(item=>group.ids.includes(item.id)).map(({id,label,Icon}) => <button key={id} type="button" className="personal-menu-row" aria-label={label} aria-current={tab === id ? 'page' : undefined} disabled={locked} data-shapeos-tooltip={compact ? label : undefined} onClick={() => select(id)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{label}</span>}</button>)}
+        </div>)}
         {locked && !compact && <p className="student-menu-hint">Seu treino está aberto. Use os controles da sessão para voltar ao painel.</p>}
-      </div></nav>
+      </nav>
       <div className="personal-menu-footer"><button type="button" className="personal-menu-row personal-logout" aria-label={signingOut ? 'Saindo…' : 'Sair'} disabled={signingOut} data-shapeos-tooltip={compact ? 'Sair' : undefined} onClick={() => void logout()}><LogOut size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{signingOut ? 'Saindo…' : 'Sair'}</span>}</button>{error && <p className="personal-menu-error" role="alert">{error}</p>}</div>
       <div className="personal-menu-profile" data-shapeos-tooltip={compact ? `${name} · Aluno` : undefined} tabIndex={compact ? 0 : undefined} aria-label={compact ? `${name} · Aluno` : undefined}><span className="personal-avatar" aria-hidden="true">{initials}</span>{!compact && <div><p>{name}</p><span>Aluno</span></div>}</div>
     </>

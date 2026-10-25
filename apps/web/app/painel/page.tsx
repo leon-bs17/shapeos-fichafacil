@@ -20,6 +20,9 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
 import { ExercisePreview } from '@/components/fitness/exercise-demonstration';
+import { HelpDesk } from '@/components/support/help-desk';
+import { AccountPanel } from '@/components/account/account-panel';
+import { StudentTrainers, StudentLibrary, StudentMys } from '@/components/fitness/student-tools';
 import { StudentProgress } from '@/components/fitness/student-progress';
 import { StudentToday } from '@/components/fitness/student-today';
 import { StudentWeek } from '@/components/fitness/student-week';
@@ -214,7 +217,7 @@ export default function StudentPage() {
         <div className="personal-header-right"><div className="personal-header-tools">{!active && <NotificationBell />}<ThemeToggle /></div></div>
       </header>
       {!active && <>
-        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : tab === 'orientacoes' ? <>Suas <span>orientações</span></> : <>Seus <span>dados</span></>}
+        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : tab === 'orientacoes' ? <>Seus <span>comunicados</span></> : tab === 'dados' ? <>Seus <span>dados</span></> : <span>{current.label}</span>}
           description={tab === 'treino' ? 'Treine, acompanhe sua evolução e compartilhe resultados com seu personal.' : current.description}
           art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
         <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
@@ -383,6 +386,11 @@ export default function StudentPage() {
                 onChange={() => void data.refetch()}
               /></div>
             )}
+            {tab === 'personal' && <StudentTrainers studentId={id} onSupport={() => setTab('ajuda')} />}
+            {tab === 'biblioteca' && <StudentLibrary workouts={workouts} />}
+            {tab === 'mys' && <StudentMys studentId={id} name={profile.data?.nome ?? 'Aluno'} />}
+            {tab === 'conta' && <AccountPanel student embedded />}
+            {tab === 'ajuda' && <HelpDesk banner={false} />}
             {tab === "dados" && (
               <ImportPanel
                 alunoId={id}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { Megaphone, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Dumbbell, FileText, LayoutGrid, Library, MessageCircle, LogOut, Users, X } from 'lucide-react'
+import { Megaphone, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Dumbbell, FileText, LayoutGrid, Library, LifeBuoy, MessageCircle, LogOut, Users, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Logo from '@/davi/components/Logo'
 
@@ -23,6 +23,7 @@ const GROUPS = [
   ] },
   { label: 'Conta', items: [
     { href: '/conta', label: 'Minha conta', icon: CircleUserRound },
+    { href: '/ajuda', label: 'Ajuda e suporte', icon: LifeBuoy },
   ] },
 ]
 

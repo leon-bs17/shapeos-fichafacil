@@ -17,6 +17,7 @@ import {
   FileText,
   LayoutGrid,
   LogOut,
+  LifeBuoy,
   Megaphone,
   MessageCircle,
   Search,
@@ -49,7 +50,8 @@ const gestaoLinks = [
 ]
 
 const contaLink = { href: '/admin/conta', label: 'Minha conta', icone: CircleUserRound }
-const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink]
+const ajudaLink = { href: '/admin/ajuda', label: 'Ajuda e suporte', icone: LifeBuoy }
+const todosLinks = [...novasFerramentas, ...gestaoLinks, contaLink, ajudaLink]
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
@@ -100,6 +102,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const personals = pathname === '/admin/personais'
   const exercises = pathname === '/admin/exercicios'
   const audit = pathname === '/admin/auditoria'
+  const support = pathname === '/admin/ajuda'
   const account = pathname === '/admin/conta'
   useEffect(() => {
     if (pathname !== '/admin/auditoria' && pathname !== '/admin/usuarios') return
@@ -242,7 +245,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <nav id={mobile?'admin-mobile-navigation':'admin-desktop-navigation'} aria-label={mobile?'Administração no celular':'Administração'} className="admin-menu-nav">
         <section aria-label="Operação"><h2 className="admin-menu-group">Operação</h2><div>{novasFerramentas.map(item=>menuLink(item,mobile))}</div></section>
         <section aria-label="Gestão"><h2 className="admin-menu-group">Gestão</h2><div>{gestaoLinks.map(item=>menuLink(item,mobile))}</div></section>
-        <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}</div></section>
+        <section aria-label="Conta"><h2 className="admin-menu-group">Conta</h2><div>{menuLink(contaLink,mobile)}{menuLink(ajudaLink,mobile)}</div></section>
       </nav>
       <div className="admin-menu-footer">
         <Link href="/" className="admin-menu-row admin-menu-footer-action" aria-label="Voltar ao app" data-shapeos-tooltip={compact?'Voltar ao app':undefined} onClick={()=>setMobileOpen(false)}><ArrowLeft size={18} className="shapeos-menu-icon" strokeWidth={1.75} aria-hidden="true"/><span className="admin-menu-label">Voltar ao app</span></Link>
@@ -261,7 +264,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="admin-mobile-bar">
         <button ref={mobileTrigger} type="button" className="admin-menu-open" aria-label="Abrir menu de administração" aria-expanded={mobileOpen} aria-controls="admin-mobile-menu" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button>
         <Logo size="sm"/>
-        {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && !personals && !exercises && !audit && !account && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
+        {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && !personals && !exercises && !audit && !account && !support && <div className="admin-mobile-tools"><NotificationBell/><ThemeToggle/></div>}
       </div>
       <dialog ref={mobileDialog} id="admin-mobile-menu" className="shapeos-navigation admin-mobile-menu" aria-label="Menu de administração"
         onCancel={event=>{event.preventDefault();setMobileOpen(false)}}
@@ -271,16 +274,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <main className="min-h-screen px-4 py-5 md:px-6 md:py-7 lg:ml-64 lg:px-8 xl:px-10">
         <div className="mx-auto max-w-[1400px]">
-          {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && !personals && !exercises && !audit && !account && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
+          {pathname !== '/admin/mys' && !central && !approvals && !activity && !reports && !notices && !system && !users && !personals && !exercises && !audit && !account && !support && <div data-admin-breadcrumb className="admin-breadcrumb mb-6 hidden items-center gap-2 border-b border-border pb-4 text-xs text-muted-foreground lg:flex">
             <span>ShapeOS</span><span aria-hidden="true">/</span>
             <span className="text-foreground">{todosLinks.find((item) => item.href === pathname)?.label ?? 'Administração'}</span>
             <div className="ml-auto flex items-center gap-2"><NotificationBell /><ThemeToggle /></div>
           </div>}
 
-          {(central || approvals || activity || reports || notices || system || users || personals || exercises || audit || account) && <header className="control-compact-top">
+          {(central || approvals || activity || reports || notices || system || users || personals || exercises || audit || account || support) && <header className="control-compact-top">
             <div className="control-compact-identity">
-              <span className="control-compact-icon" aria-hidden="true">{account ? <CircleUserRound size={22} strokeWidth={1.75}/> : audit ? <ShieldCheck size={22} strokeWidth={1.75}/> : exercises ? <Dumbbell size={22} strokeWidth={1.75}/> : personals ? <UserRound size={22} strokeWidth={1.75}/> : users ? <Users size={22} strokeWidth={1.75}/> : system ? <Settings size={22} strokeWidth={1.75}/> : notices ? <Megaphone size={22} strokeWidth={1.75}/> : reports ? <FileText size={22} strokeWidth={1.75}/> : activity ? <ChartColumn size={22} strokeWidth={1.75}/> : approvals ? <CircleCheck size={22} strokeWidth={1.75}/> : <LayoutGrid size={22} strokeWidth={1.75}/>}</span>
-              <div><h1>{account ? 'Minha conta' : audit ? 'Auditoria' : exercises ? 'Exercícios' : personals ? 'Personais' : users ? 'Usuários' : system ? 'Sistema' : notices ? 'Comunicados' : reports ? 'Relatórios' : activity ? 'Atividade' : approvals ? 'Aprovações' : 'Central de controle'}</h1><p>{account ? 'Gerencie seus dados e a segurança da sua conta.' : audit ? 'Acompanhe as ações administrativas e as alterações registradas.' : exercises ? 'Gerencie a biblioteca e as demonstrações dos exercícios.' : personals ? 'Gerencie os profissionais, alunos e treinos vinculados.' : users ? 'Gerencie as contas e os acessos da plataforma.' : system ? 'Acompanhe a disponibilidade dos serviços da plataforma.' : notices ? 'Gerencie a comunicação da plataforma.' : reports ? 'Acompanhe os resultados e indicadores da plataforma.' : activity ? 'Histórico de cadastros e ações da plataforma.' : approvals ? 'Revise os cadastros e gerencie novos acessos.' : 'Acompanhe a plataforma e gerencie sua operação.'}</p></div>
+              <span className="control-compact-icon" aria-hidden="true">{support ? <LifeBuoy size={22} strokeWidth={1.75}/> : account ? <CircleUserRound size={22} strokeWidth={1.75}/> : audit ? <ShieldCheck size={22} strokeWidth={1.75}/> : exercises ? <Dumbbell size={22} strokeWidth={1.75}/> : personals ? <UserRound size={22} strokeWidth={1.75}/> : users ? <Users size={22} strokeWidth={1.75}/> : system ? <Settings size={22} strokeWidth={1.75}/> : notices ? <Megaphone size={22} strokeWidth={1.75}/> : reports ? <FileText size={22} strokeWidth={1.75}/> : activity ? <ChartColumn size={22} strokeWidth={1.75}/> : approvals ? <CircleCheck size={22} strokeWidth={1.75}/> : <LayoutGrid size={22} strokeWidth={1.75}/>}</span>
+              <div><h1>{support ? 'Ajuda e suporte' : account ? 'Minha conta' : audit ? 'Auditoria' : exercises ? 'Exercícios' : personals ? 'Personais' : users ? 'Usuários' : system ? 'Sistema' : notices ? 'Comunicados' : reports ? 'Relatórios' : activity ? 'Atividade' : approvals ? 'Aprovações' : 'Central de controle'}</h1><p>{support ? 'Atenda às solicitações técnicas de Alunos e Personais.' : account ? 'Gerencie seus dados e a segurança da sua conta.' : audit ? 'Acompanhe as ações administrativas e as alterações registradas.' : exercises ? 'Gerencie a biblioteca e as demonstrações dos exercícios.' : personals ? 'Gerencie os profissionais, alunos e treinos vinculados.' : users ? 'Gerencie as contas e os acessos da plataforma.' : system ? 'Acompanhe a disponibilidade dos serviços da plataforma.' : notices ? 'Gerencie a comunicação da plataforma.' : reports ? 'Acompanhe os resultados e indicadores da plataforma.' : activity ? 'Histórico de cadastros e ações da plataforma.' : approvals ? 'Revise os cadastros e gerencie novos acessos.' : 'Acompanhe a plataforma e gerencie sua operação.'}</p></div>
             </div>
             <div className="control-compact-tools"><NotificationBell/><ThemeToggle/></div>
           </header>}

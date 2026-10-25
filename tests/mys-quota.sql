@@ -6,7 +6,7 @@ begin
  select id into p from public.usuarios where tipo='PERSONAL' and status_conta='ATIVO' limit 1;
  select id into a from public.usuarios where tipo='ALUNO' and status_conta='ATIVO' limit 1;
  if p is null or a is null then raise exception 'Fixtures missing'; end if;
- delete from shapeos_private.mys_cotas where chave in ('minute:'||p,'day:'||p,'global:day');
+ delete from shapeos_private.mys_cotas where chave in ('minute:'||p,'day:'||p,'minute:'||a,'day:'||a,'global:day');
  perform set_config('request.jwt.claims',json_build_object('sub',p,'role','authenticated')::text,true);
  execute 'set local role authenticated';
  for i in 1..8 loop
@@ -24,10 +24,8 @@ begin
   raise exception 'Personal executed admin action';
  exception when insufficient_privilege then null; end;
  perform set_config('request.jwt.claims',json_build_object('sub',a,'role','authenticated')::text,true);
- begin
-  perform public.consumir_cota_mys();
-  raise exception 'Student consumed quota';
- exception when insufficient_privilege then null; end;
+ r:=public.consumir_cota_mys();
+ if r->>'permitido'<>'true' then raise exception 'Active Student quota rejected'; end if;
  execute 'reset role';
  update shapeos_private.mys_cotas set quantidade=0 where chave='minute:'||p;
  update shapeos_private.mys_cotas set quantidade=100,periodo=day_start where chave='day:'||p;

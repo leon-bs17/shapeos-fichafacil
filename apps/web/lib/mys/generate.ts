@@ -1,5 +1,5 @@
 import { mysInstructions, type MysMessage, type MysRole } from './contract'
-import { mysDataTools } from './data-tools'
+import { mysDataTools, mysStudentTools } from './data-tools'
 import type { MysDataCard } from './data-cards'
 
 type ToolCall = { id: string; type: 'function'; function: { name: string; arguments: string } }
@@ -22,7 +22,7 @@ export async function generateMysReply(options: {
   for (let round = 0; round <= 3; round++) {
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method:'POST', headers: { Authorization:`Bearer ${options.key}`, 'Content-Type':'application/json' },
-      body: JSON.stringify({ model: options.model, messages: conversation, tools: options.role === 'PERSONAL' ? mysDataTools : mysDataTools.filter(tool => tool.function.name !== 'resumir_acompanhamento'), tool_choice: round === 3 || calls >= 6 ? 'none' : 'auto', max_tokens:1800, thinking:{ type:'disabled' }, stream:false }),
+      body: JSON.stringify({ model: options.model, messages: conversation, tools: options.role === 'ALUNO' ? mysStudentTools : options.role === 'PERSONAL' ? mysDataTools : mysDataTools.filter(tool => tool.function.name !== 'resumir_acompanhamento'), tool_choice: round === 3 || calls >= 6 ? 'none' : 'auto', max_tokens:1800, thinking:{ type:'disabled' }, stream:false }),
       cache:'no-store', signal: options.signal,
     })
     if (!response.ok) throw new MysProviderError(response.status)

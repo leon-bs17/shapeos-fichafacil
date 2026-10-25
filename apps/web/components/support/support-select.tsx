@@ -1,0 +1,12 @@
+'use client'
+import { useEffect, useId, useRef, useState } from 'react'
+import { Check, ChevronDown } from 'lucide-react'
+import { useAnchoredPopover } from '@/components/ui/use-anchored-popover'
+import styles from '../fitness/personal-report.module.css'
+export function SupportSelect({label,value,options,onChange,disabled=false}:{label:string;value:string;options:{value:string;label:string}[];onChange:(value:string)=>void;disabled?:boolean}) {
+ const [open,setOpen]=useState(false),id=useId(),field=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null),menu=useRef<HTMLDivElement>(null)
+ useAnchoredPopover({open,trigger,panel:menu,matchWidth:true,preferBelow:true,heightLimit:300,onHidden:()=>setOpen(false)})
+ const close=()=>{setOpen(false);trigger.current?.focus()}
+ useEffect(()=>{if(!open)return;menu.current?.querySelector<HTMLButtonElement>('button[aria-pressed=true]')?.focus({preventScroll:true});const out=(e:PointerEvent)=>{if(!field.current?.contains(e.target as Node))setOpen(false)};document.addEventListener('pointerdown',out);return()=>document.removeEventListener('pointerdown',out)},[open])
+ return <div ref={field} className={styles.picker}><span id={id+'-label'} className={styles.label}>{label}</span><button ref={trigger} type="button" disabled={disabled} className={styles.pickerTrigger} aria-labelledby={id+'-label '+id+'-value'} aria-haspopup="dialog" aria-expanded={open} onClick={()=>setOpen(v=>!v)}><span id={id+'-value'}>{options.find(o=>o.value===value)?.label??'Selecione'}</span><ChevronDown size={15} aria-hidden="true"/></button>{open&&<div ref={menu} popover="manual" style={{visibility:'hidden'}} role="dialog" aria-label={label} className={styles.pickerMenu} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node)&&!trigger.current?.contains(e.relatedTarget as Node))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}if(e.key==='ArrowDown'||e.key==='ArrowUp'){const buttons=Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button')),index=buttons.indexOf(document.activeElement as HTMLButtonElement);e.preventDefault();buttons[Math.max(0,Math.min(buttons.length-1,index+(e.key==='ArrowDown'?1:-1)))]?.focus()}}}><div className={styles.pickerOptions}>{options.map(o=><button key={o.value} type="button" aria-pressed={value===o.value} onClick={()=>{onChange(o.value);close()}}><span>{o.label}</span>{value===o.value&&<Check size={14} aria-hidden="true"/>}</button>)}</div></div>}</div>
+}
