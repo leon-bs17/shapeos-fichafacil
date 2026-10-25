@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { CheckCircle2, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { createClient } from '@/lib/supabase/client'
 
 export default function ContaPersonalPage() {
@@ -32,7 +33,8 @@ export default function ContaPersonalPage() {
   const passwordRef = useRef<HTMLInputElement>(null)
   const confirmationRef = useRef<HTMLInputElement>(null)
   const name = profile.data?.nome?.trim() || 'Personal'
-  const initials = name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toLocaleUpperCase('pt-BR')
+  const nameParts = name.split(/\s+/)
+  const initials = [nameParts[0], ...(nameParts.length > 1 ? [nameParts[nameParts.length - 1]] : [])].map(part => part[0]).join('').toLocaleUpperCase('pt-BR')
 
   async function savePassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -77,6 +79,13 @@ export default function ContaPersonalPage() {
   return <DashboardShell>
     <div className="personal-overview personal-account">
       <PersonalPageHeader icon="conta" title="Minha conta" description="Consulte seus dados e gerencie sua senha de acesso." />
+      <ShapeosBanner
+        titleId="personal-account-banner"
+        eyebrow="Conta do Personal"
+        title={<>Seu perfil, sua <span>segurança</span></>}
+        description="Gerencie seus dados e mantenha seu acesso protegido."
+        art={<svg viewBox="0 0 300 160" fill="none" stroke="currentColor" strokeWidth="1.2"><circle cx="143" cy="83" r="70" /><circle cx="143" cy="63" r="19" /><path d="M102 127c0-25 18-41 41-41s41 16 41 41M57 83a86 86 0 0 1 86-86M229 83a86 86 0 0 1-86 86" /><path d="M234 48a21 21 0 1 1 13 38l-30 30h-12v-12h-12V92l28-28a21 21 0 0 1 13-16Z" /><circle cx="243" cy="67" r="5" /></svg>}
+      />
       <div className="personal-account-columns">
         <section className="personal-account-panel" aria-labelledby="personal-account-data-title" aria-busy={profile.isLoading}>
           <header><UserRound size={21} strokeWidth={1.75} aria-hidden="true" /><div><h2 id="personal-account-data-title">Dados da conta</h2><p>Informações do seu perfil de Personal.</p></div></header>
@@ -104,17 +113,31 @@ export default function ContaPersonalPage() {
       </div>
     </div>
     <style jsx global>{`
-      .personal-account-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;}
-      .personal-account-panel{padding:22px;border:1px solid var(--p-line);border-radius:16px;background:var(--p-panel);min-width:0;}
-      .personal-account-panel>header{display:flex;align-items:center;gap:12px;margin-bottom:24px;}.personal-account-panel>header>svg{color:var(--p-brand);flex-shrink:0;}.personal-account-panel h2{font-size:14px;font-weight:600;margin:0;}.personal-account-panel>header p{font-size:11px;line-height:1.6;color:var(--p-muted);margin:4px 0 0;}
-      .personal-account-identity{display:flex;gap:12px;align-items:center;margin-bottom:22px;min-width:0;}.personal-account-identity>div{min-width:0;}.personal-account-identity h3{font-size:14px;font-weight:600;overflow-wrap:anywhere;margin:0;}.personal-account-identity>div>span{font-size:11px;color:var(--p-muted);display:block;margin-top:4px;}.personal-account-panel dl{margin:0;}.personal-account-panel dl>div{padding:13px 0;border-top:1px solid var(--p-line);}.personal-account-panel dt{font-size:11px;color:var(--p-muted);margin-bottom:5px;}.personal-account-panel dd{font-size:12px;line-height:1.6;overflow-wrap:anywhere;margin:0;}
-      .personal-account-panel form{display:grid;gap:18px;}.personal-account-field label{display:block;font-size:12px;font-weight:500;margin-bottom:8px;}.personal-account-field>p{font-size:11px;color:var(--p-muted);line-height:1.6;margin:7px 0 0;}
+      html body .personal-overview.personal-account{min-width:0;gap:14px;}
+      .personal-account-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;}
+      .personal-account-panel{display:flex;flex-direction:column;padding:18px;border:1px solid var(--p-line);border-radius:13px;background:var(--p-panel);min-width:0;color:var(--p-ink);}
+      .personal-account-panel>header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}.personal-account-panel>header>svg{color:var(--p-brand);flex-shrink:0;}.personal-account-panel h2{font-size:16px;line-height:1.4;font-weight:600;margin:0;}.personal-account-panel>header p{font-size:12px;line-height:1.6;color:var(--p-muted);margin:4px 0 0;}
+      .personal-account-identity{display:flex;gap:10px;align-items:center;margin-bottom:14px;min-width:0;}.personal-account-identity>div{min-width:0;}.personal-account-identity h3{font-size:13px;line-height:1.5;font-weight:600;overflow-wrap:anywhere;margin:0;}.personal-account-identity>div>span{font-size:11px;color:var(--p-muted);display:block;margin-top:4px;}.personal-account-panel dl{margin:0;}.personal-account-panel dl>div{padding:10px 0;border-top:1px solid var(--p-line);}.personal-account-panel dt{font-size:11px;color:var(--p-muted);margin-bottom:5px;}.personal-account-panel dd{font-size:12px;line-height:1.6;overflow-wrap:anywhere;margin:0;}
+      .personal-account-panel form{display:flex;flex:1;flex-direction:column;gap:14px;min-width:0;} .personal-account-field{min-width:0;}.personal-account-field label{display:block;font-size:12px;font-weight:500;line-height:1.5;margin-bottom:6px;}.personal-account-field>p{font-size:11px;color:var(--p-muted);line-height:1.6;margin:7px 0 0;}
       .personal-account .personal-account-password{display:flex;align-items:center;border:1px solid var(--p-line);border-radius:13px;background:var(--p-panel);min-width:0;transition:background-color 150ms ease,border-color 150ms ease;}.personal-account .personal-account-password:focus-within{border-color:var(--p-brand);outline:1px solid var(--p-brand);outline-offset:0;}.personal-account .personal-account-password[data-invalid="true"]{border-color:var(--p-danger);}
-      html body .personal-shell .personal-account-password input{border:0;outline:0;box-shadow:none;background:transparent;padding:12px;min-width:0;flex:1;width:100%;min-height:44px;font-size:14px;}.personal-account .personal-account-password button{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;padding:0;background:transparent;color:var(--p-muted);border:0;border-radius:13px;cursor:pointer;box-shadow:none;transform:none;}
-      .personal-account-actions{display:flex;justify-content:flex-end;border-top:1px solid var(--p-line);padding-top:18px;}.personal-account .personal-account-command{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:var(--p-panel);color:var(--p-ink);font-size:12px;font-weight:500;border:1px solid var(--p-line);border-radius:13px;cursor:pointer;transition:background-color 150ms ease,border-color 150ms ease;}.personal-account button:disabled{opacity:.5;cursor:default;}.personal-account .personal-account-error{font-size:12px;line-height:1.6;color:var(--p-danger);margin:0;}.personal-account-success{display:flex;align-items:center;gap:8px;color:var(--p-brand);font-size:12px;line-height:1.6;margin:0 0 20px;}.personal-account-state{font-size:12px;line-height:1.7;color:var(--p-muted);}.personal-account-state p{margin:0 0 14px;}
+      html body .personal-shell .personal-account-password input{border:0;outline:0;box-shadow:none;background:transparent;padding:8px 10px;min-width:0;flex:1;width:100%;height:34px;min-height:34px;font-size:12px;line-height:18px;}.personal-account .personal-account-password button{display:grid;place-items:center;flex:0 0 36px;width:36px;height:34px;min-height:0;padding:0;background:transparent;color:var(--p-muted);border:0;border-radius:13px;cursor:pointer;box-shadow:none;transform:none;}
+      .personal-account-actions{display:flex;justify-content:flex-end;border-top:1px solid var(--p-line);padding-top:14px;margin-top:auto;}.personal-account .personal-account-command{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 12px;background:var(--p-panel);color:var(--p-brand);font-size:11px;line-height:1.5;font-weight:500;border:1px solid var(--p-line);border-radius:13px;cursor:pointer;transition:background-color 150ms ease,border-color 150ms ease;}.personal-account button:disabled{opacity:.5;cursor:default;}.personal-account .personal-account-error{font-size:12px;line-height:1.6;color:var(--p-danger);margin:0;}.personal-account-success{display:flex;align-items:center;gap:8px;color:var(--p-brand);font-size:12px;line-height:1.6;margin:0 0 14px;}.personal-account-state{font-size:12px;line-height:1.7;color:var(--p-muted);}.personal-account-state p{margin:0 0 14px;}
       @media(hover:hover){.personal-account .personal-account-command:enabled:hover,.personal-account .personal-account-password:not(:has(input:disabled)):not(:focus-within):hover{background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line));}}
       .personal-account .personal-account-command:enabled:active{background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel));border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line));}
-      @media(max-width:767px){.personal-account-columns{grid-template-columns:minmax(0,1fr);gap:16px;}.personal-account-panel{padding:18px;}.personal-account .personal-account-password input{font-size:16px;}.personal-account-actions .personal-account-command{width:100%;}}
+      html body .personal-account .personal-account-identity>.personal-avatar{width:32px;height:32px;min-width:32px;max-width:32px;flex:0 0 32px;border:0;border-radius:50%;background:linear-gradient(145deg,#6f86b6,#4f678f);color:#fff;font-size:11px;font-weight:700;}
+      .personal-account-panel dl>div:last-child{padding-bottom:0;}
+      .personal-account-success>svg{flex-shrink:0;}
+      .personal-account .personal-account-password button:hover,.personal-account .personal-account-password button:active{background:transparent;color:var(--p-muted);box-shadow:none;transform:none;filter:none;}
+      .personal-account button:focus-visible{outline:2px solid var(--p-brand);outline-offset:2px;}
+      @media(max-width:767px){
+        .personal-account-columns{grid-template-columns:minmax(0,1fr);}
+        .personal-account-panel{padding:16px;}
+        html body .personal-account .personal-account-identity>.personal-avatar{width:34px;height:34px;min-width:34px;max-width:34px;flex-basis:34px;}
+        html body .personal-shell .personal-account-password input{height:42px;min-height:42px;font-size:16px;}
+        .personal-account .personal-account-password button{width:44px;height:42px;flex-basis:44px;}
+        .personal-account .personal-account-command{min-height:44px;}
+        .personal-account-actions .personal-account-command{width:100%;}
+      }
       @media(prefers-reduced-motion:reduce){.personal-account :is(.personal-account-command,.personal-account-password){transition:none;}}
     `}</style>
   </DashboardShell>
