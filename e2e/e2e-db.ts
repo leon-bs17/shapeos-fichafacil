@@ -172,8 +172,8 @@ export async function semearContasE2E(): Promise<ContasE2E> {
 export async function removerContasE2E(
   contas: ContasE2E
 ): Promise<void> {
-  await Promise.all([
-    removerUsuario(contas.alunoId),
-    removerUsuario(contas.personalId),
-  ])
+  // Both accounts reference the same invitation/link. Sequential deletion avoids
+  // concurrent cascading FK updates locking the same rows in opposite order.
+  await removerUsuario(contas.alunoId)
+  await removerUsuario(contas.personalId)
 }

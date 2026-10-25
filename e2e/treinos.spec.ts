@@ -27,7 +27,8 @@ test.describe('Treinos', () => {
     await page.getByRole('button', { name: /nova ficha/i }).click()
 
     await page.getByText(/push \/ pull \/ legs/i).click()
-    await expect(page.getByText(/exercícios/i)).toBeVisible()
+    await expect(page.getByLabel('Titulo', { exact: true })).toHaveValue('Push / Pull / Legs')
+    await expect(page.getByRole('button', { name: 'Exercício 1: Supino Reto', exact: true })).toBeVisible()
     await expect(page.getByText(/trocar template/i)).toBeVisible()
   })
 

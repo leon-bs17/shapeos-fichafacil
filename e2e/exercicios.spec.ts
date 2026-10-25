@@ -17,16 +17,16 @@ test.describe('Biblioteca de Exercícios', () => {
   test('exercícios do seed estão presentes', async ({ page }) => {
     await loginComoPersonal(page)
     await page.goto('/exercicios')
-    await expect(page.getByText(/supino reto/i)).toBeVisible()
-    await expect(page.getByText(/agachamento livre/i)).toBeVisible()
+    await expect(page.getByRole('paragraph').filter({ hasText: /^supino reto$/i })).toBeVisible()
+    await expect(page.getByRole('paragraph').filter({ hasText: /^agachamento livre$/i })).toBeVisible()
   })
 
   test('busca filtra exercícios', async ({ page }) => {
     await loginComoPersonal(page)
     await page.goto('/exercicios')
     await page.getByPlaceholder(/buscar/i).fill('supino')
-    await expect(page.getByText(/supino reto/i)).toBeVisible()
-    await expect(page.getByText(/supino inclinado/i)).toBeVisible()
-    await expect(page.getByText(/agachamento livre/i)).not.toBeVisible()
+    await expect(page.getByRole('paragraph').filter({ hasText: /^supino reto$/i })).toBeVisible()
+    await expect(page.getByRole('paragraph').filter({ hasText: /^supino inclinado$/i })).toBeVisible()
+    await expect(page.getByRole('paragraph').filter({ hasText: /^agachamento livre$/i })).not.toBeVisible()
   })
 })
