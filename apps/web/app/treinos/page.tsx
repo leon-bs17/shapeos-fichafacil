@@ -79,6 +79,7 @@ function TreinosConteudo() {
   const [prescricao, setPrescricao] = useState<FichaResumo | null>(null)
   const [fichaEditando, setFichaEditando] = useState<FichaResumo | null>(null)
   const [fichaDuplicando, setFichaDuplicando] = useState<FichaResumo | null>(null)
+  const [fichaExcluindo, setFichaExcluindo] = useState<FichaResumo | null>(null)
   const [copyNotice, setCopyNotice] = useState<FichaResumo | null>(null)
   const [fichaParaModelo, setFichaParaModelo] = useState<FichaResumo | null>(null)
   const [modelosAbertos, setModelosAbertos] = useState(false)
@@ -237,11 +238,7 @@ function TreinosConteudo() {
                     className="personal-danger ml-auto h-8 w-8 p-0"
                     aria-label={`Excluir ficha ${ficha.titulo}`}
                     disabled={acoes.excluir.isPending}
-                    onClick={() => {
-                      if (window.confirm(`Excluir a ficha "${ficha.titulo}"?`)) {
-                        acoes.excluir.mutate(ficha.id)
-                      }
-                    }}
+                    onClick={() => setFichaExcluindo(ficha)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
@@ -252,6 +249,15 @@ function TreinosConteudo() {
         </div>
       )}
 
+      <Modal personal open={!!fichaExcluindo} onClose={() => { if (!acoes.excluir.isPending) setFichaExcluindo(null) }} titulo="Excluir ficha">
+        {fichaExcluindo && <div className="space-y-3"><p>Excluir a ficha “{fichaExcluindo.titulo}”?</p>
+          {acoes.excluir.error && <p role="alert" className="text-destructive">{acoes.excluir.error.message}</p>}
+          <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-3">
+            <Button variant="outline" disabled={acoes.excluir.isPending} onClick={() => setFichaExcluindo(null)}>Cancelar</Button>
+            <Button variant="outline" className="personal-danger" disabled={acoes.excluir.isPending} onClick={() => acoes.excluir.mutate(fichaExcluindo.id, { onSuccess: () => setFichaExcluindo(null) })}><Trash2 size={14} aria-hidden="true" />{acoes.excluir.isPending ? 'Excluindo…' : 'Excluir ficha'}</Button>
+          </div>
+        </div>}
+      </Modal>
       {fichaParaModelo && <SaveWorkoutModel key={fichaParaModelo.id} ficha={fichaParaModelo} onClose={() => setFichaParaModelo(null)} onSaved={model => { setModeloSalvo(model); setCopyNotice(null) }} />}
       {modelosAbertos && <WorkoutModelsLibrary onClose={() => setModelosAbertos(false)} onUse={model => { setModelosAbertos(false); setModeloAplicando(model) }} />}
       {modeloAplicando && <ApplyWorkoutModel key={modeloAplicando.id} model={modeloAplicando} initialStudentId={selectedStudentId} onClose={() => setModeloAplicando(null)} onCreated={notifyCopy} onReview={reviewCopy} />}

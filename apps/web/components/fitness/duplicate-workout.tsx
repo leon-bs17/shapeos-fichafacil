@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
+import { WorkoutSelect } from './workout-select'
 import { useAlunos } from '@/hooks/use-alunos'
 import { useAcoesFichas } from '@/hooks/use-fichas'
 import type { FichaResumo } from '@/services/treinos'
@@ -75,7 +76,7 @@ export function PausedWorkoutCopy({ heading, sourceLabel, sourceTitle, sourceDes
     </div> : <div className="space-y-4" aria-busy={pending}>
       <div className="rounded-xl border border-border p-4 space-y-1"><p className="text-xs text-muted-foreground">{sourceLabel}</p><h3 className="break-words">{sourceTitle}</h3><p className="text-xs text-muted-foreground">{sourceDescription ? `${sourceDescription} · ` : ''}{itemCount} {itemCount === 1 ? 'exercício' : 'exercícios'}</p></div>
       {students.isPending ? <p role="status" className="text-sm text-muted-foreground">Carregando alunos…</p> : students.error ? <div role="alert" className="space-y-3"><p className="text-sm text-destructive">Não foi possível carregar os alunos.</p><Button variant="outline" onClick={() => void students.refetch()}>Tentar novamente</Button></div> : !activeStudents.length ? <p className="text-sm text-muted-foreground">Você precisa de um aluno com vínculo ativo para duplicar esta ficha.</p> : <>
-        <div className="space-y-1.5"><Label htmlFor="duplicate-student">Aluno de destino</Label><select id="duplicate-student" className="w-full" value={alunoId} disabled={pending} onChange={event => { setSelectedId(event.target.value); setError('') }}><option value="">Selecione o aluno…</option>{activeStudents.map(student => <option key={student.vinculo_id} value={student.aluno_id}>{student.nome}{sourceDescription && student.aluno_id === initialStudentId ? ' (mesmo aluno)' : ''}</option>)}</select></div>
+        <div className="space-y-1.5"><Label htmlFor="duplicate-student">Aluno de destino</Label><WorkoutSelect id="duplicate-student" label="Aluno de destino" value={alunoId} disabled={pending} onChange={value => { setSelectedId(value); setError('') }} options={[{value:'',label:'Selecione o aluno…'},...activeStudents.map(student=>({value:student.aluno_id,label:student.nome+(sourceDescription && student.aluno_id === initialStudentId ? ' (mesmo aluno)' : '')}))]} /></div>
         <div className="space-y-1.5"><Label htmlFor="duplicate-title">Título da cópia</Label><Input id="duplicate-title" value={title} disabled={pending} maxLength={80} onChange={event => { setTitle(event.target.value); setError('') }} /></div>
         <p id="duplicate-note" className="text-xs text-muted-foreground">A cópia mantém exercícios e prescrição, começa pausada e sem validade definida. Revise a prescrição para o aluno escolhido antes de ativar.</p>
       </>}

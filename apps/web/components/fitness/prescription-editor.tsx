@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { ExercisePreview } from "@/components/fitness/exercise-demonstration";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
@@ -187,12 +188,19 @@ export function PrescriptionEditor({
               <Label htmlFor={`${r.item_treino_id}-note`}>
                 Instruções do personal
               </Label>
-              <Input
+              {personal ? <AutoResizeTextarea
+                id={`${r.item_treino_id}-note`}
+                className="w-full"
+                rows={2}
+                maxLength={1000}
+                value={r.observacoes ?? ""}
+                onChange={(e) => change(i, "observacoes", e.target.value)}
+              /> : <Input
                 id={`${r.item_treino_id}-note`}
                 maxLength={1000}
                 value={r.observacoes ?? ""}
                 onChange={(e) => change(i, "observacoes", e.target.value)}
-              />
+              />}
             </div>
           </section>
         ))}
