@@ -4,6 +4,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCircle2, Dumbbell, Eye, EyeOff, KeyRound, UserRound } from 'lucide-react'
 import { PersonalPageHeader } from '@/components/layout/personal-workspace'
+import { PersonalBannerWireframe } from '@/components/layout/personal-banner-wireframe'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { createClient } from '@/lib/supabase/client'
 
@@ -83,17 +84,7 @@ export function AccountPanel({ student = false, embedded = false }: { student?: 
         eyebrow={student ? 'Conta do Aluno' : 'Conta do Personal'}
         title={<>Seu perfil, sua <span>segurança</span></>}
         description="Gerencie seus dados e mantenha seu acesso protegido."
-        art={<svg viewBox="0 0 300 180" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M61 60V48a18 18 0 0 1 18-18h30M218 150h20a18 18 0 0 0 18-18v-16" opacity=".25" />
-          <rect x="80" y="37" width="110" height="106" rx="12" />
-          <path d="M92 37h86" strokeWidth="2" opacity=".55" />
-          <circle cx="135" cy="73" r="13" />
-          <path d="M112 107v-3a23 23 0 0 1 46 0v3M111 122h29M148 122h10" />
-          <rect x="173" y="80" width="68" height="67" rx="13" fill="var(--shapeos-banner-end)" />
-          <path d="m207 93 19 7v14c0 12-9 20-19 25-10-5-19-13-19-25v-14l19-7Z" />
-          <path d="m199 115 6 6 11-13" strokeWidth="1.8" />
-          <path d="M209 55h20M219 45v20M56 112h10M61 107v10" opacity=".4" />
-        </svg>}
+        art={<PersonalBannerWireframe variant="account"/>}
       />}
       <div className="personal-account-columns">
         <section className="personal-account-panel" aria-labelledby="personal-account-data-title" aria-busy={profile.isLoading}>

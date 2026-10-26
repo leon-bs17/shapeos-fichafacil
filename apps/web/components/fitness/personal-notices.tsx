@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Eye, Send, Users, CheckCheck, SquareCheck, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PersonalSearch } from '@/components/ui/personal-search'
+import { PersonalBannerWireframe } from '@/components/layout/personal-banner-wireframe'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { AutoResizeTextarea } from '@/components/ui/auto-resize-textarea'
 import { Input } from '@/components/ui/input'
@@ -59,11 +60,7 @@ export function PersonalNotices() {
     <ShapeosBanner titleId="personal-notices-banner" eyebrow="Comunicados do Personal"
       title={<>Oriente e acompanhe <span>seus alunos</span></>}
       description="Envie orientações e acompanhe a leitura dos seus comunicados."
-      art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
-        <ellipse cx="185" cy="76" rx="145" ry="36" strokeDasharray="3 5" />
-        <rect x="157" y="25" width="94" height="99" rx="10" /><path d="M180 60h47M180 79h47M180 98h30M108 31l79-17-27 57-17-22-35-18ZM143 49l44-35M143 49l-4 20 13-8" />
-        <circle cx="60" cy="75" r="3" /><circle cx="325" cy="78" r="2" />
-      </svg>} />
+      art={<PersonalBannerWireframe variant="notices"/>} />
     <dl className={styles.metrics} aria-label="Indicadores de comunicados">
       {metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon} aria-hidden="true"><Icon size={24} /></span><div><dt>{label}</dt><dd>{value ?? '—'}</dd></div></div>)}
     </dl>
