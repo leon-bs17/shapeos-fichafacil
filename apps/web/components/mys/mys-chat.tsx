@@ -5,7 +5,6 @@ import { ArrowUp, ArrowUpRight, ChartColumn, CircleCheck, Check, Copy, Dumbbell,
 import type { MysMessage, MysRole } from '@/lib/mys/contract'
 import { MessageResponse } from '@/components/ai-elements/message'
 import type { MysDataCard } from '@/lib/mys/data-cards'
-import { PersonalBannerWireframe } from '@/components/layout/personal-banner-wireframe'
 import { MysWelcomeWireframe } from './mys-welcome-wireframe'
 import s from './mys.module.css'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
@@ -116,7 +115,7 @@ export function MysChat({ role, name, configured, embedded = false }: { role: My
       <div className={`${s.thread} ${messages.length ? '' : s.emptyThread}`} role="log" aria-label="Conversa com a Mys" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
         {!messages.length ? <div className={s.welcome}>
           <div className={s.welcomeMark}>
-            <span className={s.wireframeClip} aria-hidden="true">{role === 'PERSONAL' ? <PersonalBannerWireframe variant="assistant" className={s.welcomeWireframe}/> : <MysWelcomeWireframe className={s.welcomeWireframe}/>}</span>
+            <span className={s.wireframeClip} aria-hidden="true"><MysWelcomeWireframe className={s.welcomeWireframe}/></span>
             <MysMark/>
           </div>
           <p className={s.greeting}>Olá, {firstName}.</p>

@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import { Library, Plus, Dumbbell, Weight, Bike, Footprints, Pencil, Trash2, Star, ArrowLeftRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { PersonalBannerWireframe } from '@/components/layout/personal-banner-wireframe'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { WorkoutSelect } from '@/components/fitness/workout-select'
 import { PersonalSearch } from '@/components/ui/personal-search'
@@ -115,7 +114,10 @@ function ExerciciosConteudo() {
 
       <div className={styles.page}>
       <ShapeosBanner titleId="personal-library-banner" eyebrow="Biblioteca do Personal" title={<>Encontre o <span>movimento</span> certo</>} description="Consulte demonstrações e organize seus exercícios em um só lugar."
-        art={<PersonalBannerWireframe variant="library"/>} />
+        art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
+          <rect x="35" y="35" width="115" height="80" rx="8"/><rect x="80" y="15" width="115" height="80" rx="8"/><rect x="160" y="40" width="150" height="85" rx="8"/>
+          <g transform="translate(155 42) rotate(-12)"><rect x="0" y="8" width="10" height="44" rx="3"/><rect x="14" width="15" height="60" rx="4"/><path d="M29 24h65v12H29"/><rect x="94" width="15" height="60" rx="4"/><rect x="113" y="8" width="10" height="44" rx="3"/></g>
+        </svg>} />
       <dl className={styles.metrics} aria-label="Resumo da biblioteca" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value ?? 0}</dd></div></div>)}</dl>
       <div className={styles.toolbar}>
         <div className={styles.searchField}><Label htmlFor="library-search">Buscar exercícios</Label><PersonalSearch id="library-search" aria-label="Buscar exercício pelo nome" placeholder="Buscar por nome..." value={busca} onChange={event => setBusca(event.target.value)} /></div>

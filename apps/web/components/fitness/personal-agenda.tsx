@@ -11,7 +11,6 @@ import { localCalendarDate, formatCalendarDate } from '@/lib/fitness/deadlines'
 import { moveWeek, weekWindow } from '@/lib/fitness/personal-agenda'
 import { fetchPersonalAgenda } from '@/services/personal-agenda'
 import styles from './personal-agenda.module.css'
-import { PersonalBannerWireframe } from '@/components/layout/personal-banner-wireframe'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { fitnessRequest } from '@/lib/api/client'
 import { mergeReminderEvents,type PersonalReminder } from '@/lib/fitness/personal-reminders'
@@ -62,7 +61,13 @@ export function PersonalAgenda() {
     <ShapeosBanner titleId="personal-agenda-title" eyebrow="Agenda do Personal"
       title={<>Organize a <span>semana</span> dos seus alunos</>}
       description="Acompanhe treinos, avaliações e lembretes em um só lugar."
-      art={<PersonalBannerWireframe variant="agenda"/>} />
+      art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
+        <ellipse cx="180" cy="75" rx="145" ry="34" transform="rotate(-12 180 75)" />
+        <ellipse cx="180" cy="75" rx="122" ry="22" transform="rotate(12 180 75)" />
+        <rect x="145" y="28" width="70" height="84" rx="9" /><path d="M145 51h70M164 18v22M196 18v22" />
+        {[0,1,2].map(row => [0,1,2].map(col => <circle key={`${row}-${col}`} cx={163+col*17} cy={65+row*15} r="1.5" />))}
+        <circle cx="76" cy="91" r="8" /><circle cx="76" cy="91" r="3" /><circle cx="259" cy="28" r="7" />
+      </svg>} />
     {!query.isError && query.data && reminders.isSuccess && (
       <dl className={styles.metrics}>
         {[{ label: 'Treinos na semana', value: events.filter(event => event.kind === 'treino').length, icon: Dumbbell },
