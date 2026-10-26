@@ -1,5 +1,6 @@
 'use client'
 
+import { PersonalBannerArt } from '@/components/layout/personal-banner-art'
 import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { resolveLinkedStudent } from '@/lib/fitness/personal-attention'
@@ -47,12 +48,7 @@ function RelatoriosConteudo() {
   return <PersonalWorkspace page="relatorios">{heading}<div className={styles.page}>
     <section className={styles.banner} data-shapeos-banner>
       <div><p data-shapeos-banner-label>Relatórios do Personal</p><h2>Acompanhamento dos <span>alunos</span></h2><p>Veja a evolução dos treinos, frequência e avaliações em um só lugar.</p></div>
-      <svg className={styles.wireframe} viewBox="0 0 360 140" aria-hidden="true">
-        <g fill="none" stroke="currentColor" strokeWidth=".8">
-          {[0, 1, 2, 3, 4].map(index => <path key={index} d={`M10 ${105 + index * 5} C70 ${80 + index * 5},100 ${120 + index * 5},160 ${65 + index * 5} S240 ${90 + index * 5},350 ${22 + index * 5}`} />)}
-          {[0, 1, 2, 3].map(index => <rect key={index} x={220 + index * 25} y={95 - index * 17} width="12" height={20 + index * 17} rx="2" />)}
-        </g>
-      </svg>
+      <PersonalBannerArt variant="reports" className={styles.wireframe}/>
     </section>
     {carregandoAlunos ? <div className={styles.state} role="status">Carregando alunos…</div> :
       erroAlunos ? <div className={styles.state} role="alert"><p>Não foi possível carregar seus alunos.</p><button type="button" onClick={() => void recarregarAlunos()}>Tentar novamente</button></div> :

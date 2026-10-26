@@ -16,6 +16,7 @@ import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace'
 import { useAlunos } from '@/hooks/use-alunos'
 import { StudentFollowUpPanel } from '@/components/fitness/student-follow-up'
+import { PersonalBannerArt } from '@/components/layout/personal-banner-art'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import styles from './page.module.css'
 
@@ -110,10 +111,7 @@ function AlunosConteudo() {
       <PersonalPageHeader icon="alunos" title="Alunos" description="Seus alunos, fichas e acompanhamento em um só lugar." actions={<Button onClick={() => setModalAberto(true)}><UserPlus size={16} aria-hidden="true" />Convidar aluno</Button>} />
       <div className={styles.page}>
       <ShapeosBanner titleId="personal-students-banner" eyebrow="Alunos do Personal" title={<>Acompanhe <span>seus alunos</span> de perto</>} description="Consulte fichas e acompanhe cada aluno em um só lugar."
-        art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
-          <path d="M60 92C120 15 225 15 300 92M60 92C140 145 210 145 300 92M60 92C150 88 205 18 300 92" />
-          {[{x:60,y:92},{x:180,y:35},{x:300,y:92}].map(({x,y}) => <g key={x} transform={`translate(${x} ${y})`}><circle r="24" fill="var(--p-bg)" /><circle cy="-6" r="5" /><path d="M-9 12v-3a9 9 0 0 1 18 0v3" /></g>)}
-        </svg>} />
+        art={<PersonalBannerArt variant="students"/>} />
       <dl className={styles.metrics} aria-label="Resumo dos alunos" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value ?? 0}</dd></div></div>)}</dl>
       {avisoConvite && <p role="status" className={styles.inviteNote}>{avisoConvite}</p>}
       {!!convites.data?.length && <section className={styles.pendingInvites} aria-labelledby="pending-invites-title"><h2 id="pending-invites-title">Convites pendentes <span>{convites.data.length}</span></h2><p>O acesso aos dados só será liberado após o aceite do aluno.</p><ul>{convites.data.map(invite => <li key={invite.id}><strong>{invite.email}</strong><span>Expira em {new Date(invite.expira_em).toLocaleString('pt-BR')}</span></li>)}</ul></section>}

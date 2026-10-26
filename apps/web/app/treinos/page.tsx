@@ -23,6 +23,7 @@ import {
 import { Copy, Dumbbell, Pause, Play, Plus, Pencil, Trash2, FileCheck2, BookOpen, FileText, Users, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { PersonalBannerArt } from '@/components/layout/personal-banner-art'
 import { ShapeosBanner } from '@/components/layout/shapeos-banner'
 import { WorkoutSelect } from '@/components/fitness/workout-select'
 import { AgendaDatePicker } from '@/components/fitness/agenda-date-picker'
@@ -128,11 +129,7 @@ function TreinosConteudo() {
 
       <div className={styles.page}>
       <ShapeosBanner titleId="personal-workouts-banner" eyebrow="Treinos do Personal" title={<>Prescreva com <span>clareza</span> e organização</>} description="Organize suas fichas e acompanhe a prescrição de cada aluno."
-        art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8">
-          <path d="M10 110C85 10 145 140 225 45S320 20 355 85M10 90C85 0 145 120 225 25S320 0 355 65" />
-          <g transform="translate(210 20) rotate(12)"><rect width="82" height="108" rx="6" fill="var(--p-bg)" /><path d="M15 23h9m9 0h34M15 43h9m9 0h34M15 63h9m9 0h34M15 83h9m9 0h25" /></g>
-          <g transform="translate(55 50)"><rect x="0" y="6" width="12" height="36" rx="3"/><rect x="16" width="12" height="48" rx="3"/><path d="M28 19h50v10H28"/><rect x="78" width="12" height="48" rx="3"/><rect x="94" y="6" width="12" height="36" rx="3"/></g>
-        </svg>} />
+        art={<PersonalBannerArt variant="workouts"/>} />
       <dl className={styles.metrics} aria-label="Resumo das fichas" aria-busy={isLoading}>{metrics.map(({label,value,icon:Icon}) => <div key={label}><span className={styles.metricIcon}><Icon aria-hidden="true" /></span><div><dt>{label}</dt><dd>{isLoading || error ? '—' : value}</dd></div></div>)}</dl>
       {params.get('aluno') && !selectedStudent && <p role="status" className="personal-results-note">Aluno indisponível neste vínculo. Exibindo suas fichas.</p>}
       {selectedStudent && <div className="personal-toolbar"><p className="personal-results-note">Fichas de <strong>{selectedStudent.nome}</strong></p><Button variant="outline" onClick={() => router.replace('/treinos', { scroll: false })}>Ver todos os alunos</Button></div>}
