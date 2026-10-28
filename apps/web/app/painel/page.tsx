@@ -208,9 +208,15 @@ export default function StudentPage() {
   const planned = agenda.filter(a => a.data === today()), unfinished = sessions.filter(s => s.status === 'EM_ANDAMENTO');
   const current = studentTabs.find(item => item.id === tab) ?? studentTabs[0], Icon = current.Icon;
   const loading = profile.isLoading || data.isLoading, failure = profile.error ?? data.error;
+  const mysPage = tab === 'mys' && !active;
   const navigation = (controls: DashboardNavigationControls) => <StudentSidebar {...controls} tab={tab} onSelect={setTab} name={profile.data?.nome || 'Aluno'} onLogout={logout} locked={!!active} />;
   return (
     <DashboardShell variant="student" navigation={navigation}>
+      {mysPage ? (
+        profile.isLoading ? <p role="status">Preparando sua assistente…</p> :
+        profile.error || !id ? <div className="personal-load-error" role="alert"><p>Não foi possível carregar sua conta.</p><Button variant="outline" onClick={() => void profile.refetch()}>Tentar novamente</Button></div> :
+        <StudentMys studentId={id} name={profile.data?.nome ?? 'Aluno'} />
+      ) : (
       <PersonalWorkspace page="aluno" className={overviewStyles.overview}>
       <header className="personal-content-heading">
         <div className="personal-page-heading"><span className="personal-heading-icon"><Icon size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>{active ? 'Treino em andamento' : current.label}</h1><p>{active ? 'Registre suas séries e acompanhe a sessão.' : current.description}</p></div></div>
@@ -388,7 +394,6 @@ export default function StudentPage() {
             )}
             {tab === 'personal' && <StudentTrainers studentId={id} onSupport={() => setTab('ajuda')} />}
             {tab === 'biblioteca' && <StudentLibrary workouts={workouts} />}
-            {tab === 'mys' && <StudentMys studentId={id} name={profile.data?.nome ?? 'Aluno'} />}
             {tab === 'conta' && <AccountPanel student embedded />}
             {tab === 'ajuda' && <HelpDesk banner={false} />}
             {tab === "dados" && (
@@ -407,6 +412,7 @@ export default function StudentPage() {
         )}
       </div>}
       </PersonalWorkspace>
+      )}
     </DashboardShell>
   );
 }

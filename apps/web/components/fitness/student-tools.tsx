@@ -25,5 +25,5 @@ export function StudentMys({studentId,name}:{studentId:string;name:string}) {
  const connection=useQuery({queryKey:['student-mys-connection',studentId],queryFn:async()=>{const response=await fetch('/api/mys',{cache:'no-store'});if(!response.ok)throw new Error('Não foi possível verificar a conexão da Mys.');const data=await response.json();if(data.role!=='ALUNO')throw new Error('Entre novamente na conta do Aluno.');return data as {configured:boolean}}})
  if(connection.isPending)return <p role="status">Preparando sua assistente…</p>
  if(connection.isError)return <div role="alert"><p>{connection.error.message}</p><button onClick={()=>void connection.refetch()}>Tentar novamente</button></div>
- return <div data-personal-mys><MysChat role="ALUNO" name={name} configured={connection.data.configured} embedded/></div>
+ return <div data-personal-mys data-student-mys><MysChat role="ALUNO" name={name} configured={connection.data.configured}/></div>
 }

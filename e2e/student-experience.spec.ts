@@ -63,6 +63,18 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
     await page.getByText('Personal E2E · Orientação E2E · Não lida', { exact: true }).click()
     await expect(page.getByRole('region', { name: 'Orientações e avisos', exact: true }).getByText('Mantenha a execução controlada.', { exact: true })).toBeVisible()
     await expect.poll(async () => (await rest('personal_comunicado_leituras?select=lida_em')).length).toBe(1)
+    async function expectCompactMys() {
+      const assistant = page.getByRole('region', { name: 'Mys, assistente ShapeOS', exact: true })
+      await expect(assistant).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
+      await expect(assistant.getByRole('heading', { level: 1, name: /^Mys/ })).toBeVisible()
+      await expect(page.locator('[data-shapeos-banner]')).toHaveCount(0)
+      await expect(page.getByRole('region', { name: 'Resumo dos seus treinos', exact: true })).toHaveCount(0)
+      await expect(assistant.getByRole('button', { name: 'Nova conversa', exact: true })).toBeVisible()
+      await expect(assistant.getByLabel('Mensagem para a Mys', { exact: true })).toBeVisible()
+    }
+    await page.getByRole('button', { name: 'Mys · Assistente', exact: true }).click()
+    await expectCompactMys()
     await page.setViewportSize({ width: 390, height: 844 })
     for (const mode of ['claro', 'escuro']) {
       const toggle = page.getByRole('button', { name: `Ativar modo ${mode}`, exact: true })
@@ -70,8 +82,8 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
       for (const tab of ['Treinar', 'Evolução', 'Agenda', 'Avaliações', 'Comunicados', 'Meu Personal', 'Biblioteca de exercícios', 'Mys · Assistente', 'Minha conta', 'Meus dados', 'Ajuda e suporte']) {
         await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
         await page.getByRole('dialog', { name: 'Menu do Aluno', exact: true }).getByRole('button', { name: tab, exact: true }).click()
-        await expect(page.getByRole('heading', { level: 1, name: tab, exact: true })).toBeVisible()
-        if (tab === 'Mys · Assistente') await expect(page.getByRole('button', { name: 'Nova conversa', exact: true })).toBeVisible()
+        if (tab === 'Mys · Assistente') await expectCompactMys()
+        else await expect(page.getByRole('heading', { level: 1, name: tab, exact: true })).toBeVisible()
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${tab} no modo ${mode}`).toBe(true)
       }
     }
