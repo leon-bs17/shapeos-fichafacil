@@ -1,0 +1,25 @@
+/* One period-scoped summary; keep the account-wide shortcuts on the other tabs. */
+.evolution { gap:14px; }
+.overview { min-width:0; container-type:inline-size; }
+.toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding-bottom:12px; }
+:global(html body .personal-content) .toolbar h2 { margin:0; font-size:13px; line-height:1.5; }
+.toolbar p { margin:4px 0 0; color:var(--p-muted); font-size:11px; line-height:1.6; }
+.toolbar button { min-height:36px; border-radius:13px; padding:7px 12px; font-size:11px; }
+.overview>dl { padding:14px 0; border-block:1px solid var(--p-line); }
+.overview>dl>div:first-child { padding-left:0; }
+.overview>dl>div:last-child { padding-right:0; }
+.overview>dl dd { font-size:26px; }
+.evolution :global([data-compact-progress]) { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; min-width:0; }
+.evolution :global([data-compact-progress])>* { margin-block:0; min-width:0; }
+@media(max-width:767px) {
+  .toolbar button { min-height:44px; }
+  .overview>dl { row-gap:12px; }
+  .overview>dl>div:nth-child(3) { padding-left:0; }
+  .overview>dl>div:nth-child(2) { padding-right:0; }
+}
+@media(max-width:479px) {
+  .toolbar { align-items:flex-start; gap:10px; }
+  .toolbar>div:last-child { width:100%; }
+  .toolbar button { flex:1; }
+  .overview>dl dd { font-size:24px; }
+}

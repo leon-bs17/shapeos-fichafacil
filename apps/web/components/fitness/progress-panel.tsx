@@ -11,7 +11,7 @@ import {
   workingSets,
   type Session,
 } from "@/services/fitness";
-export function ProgressPanel({ sessions, compact = false, periodDays, hideMetrics = false, metricsOnly = false }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays; hideMetrics?: boolean; metricsOnly?: boolean }) {
+export function ProgressPanel({ sessions, compact = false, periodDays, hideMetrics = false, metricsOnly = false, conciseMetrics = false }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays; hideMetrics?: boolean; metricsOnly?: boolean; conciseMetrics?: boolean }) {
   const periodWindow = periodDays == null ? null : comparisonWindows(periodDays)
   const scopedSessions = periodWindow ? sessions.filter(session => {
     const date = Date.parse(session.inicio)
@@ -63,14 +63,14 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
     }));
   }, [done]);
   const metrics = [
-    { label: `Sessões · ${periodDays ?? 30} dias`, value: recent.length, Icon: Dumbbell },
+    { label: conciseMetrics ? "Sessões concluídas" : `Sessões · ${periodDays ?? 30} dias`, value: recent.length, Icon: Dumbbell },
     {
-      label: `Dias com treino · ${periodDays ?? 30} dias`,
+      label: conciseMetrics ? "Dias com treino" : `Dias com treino · ${periodDays ?? 30} dias`,
       value: days.size,
       Icon: CalendarDays,
     },
     {
-      label: `Volume · ${periodDays ?? 30} dias`,
+      label: conciseMetrics ? "Volume de treino" : `Volume · ${periodDays ?? 30} dias`,
       value: volume == null ? '—' : `${volume.toLocaleString("pt-BR")} kg`,
       Icon: TrendingUp,
     },
