@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Megaphone, MessageCircle, Library, LifeBuoy, Users, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
+import { ArrowLeft, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Megaphone, MessageCircle, Library, LifeBuoy, Users, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import type { DashboardNavigationControls } from './dashboard-shell'
 
@@ -76,7 +76,9 @@ export function StudentSidebar({ collapsed, onToggle, mobileOpen, onClose, tab, 
         </div>)}
         {locked && !compact && <p className="student-menu-hint">Seu treino está aberto. Use os controles da sessão para voltar ao painel.</p>}
       </nav>
-      <div className="personal-menu-footer"><button type="button" className="personal-menu-row personal-logout" aria-label={signingOut ? 'Saindo…' : 'Sair'} disabled={signingOut} data-shapeos-tooltip={compact ? 'Sair' : undefined} onClick={() => void logout()}><LogOut size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{signingOut ? 'Saindo…' : 'Sair'}</span>}</button>{error && <p className="personal-menu-error" role="alert">{error}</p>}</div>
+      <div className="personal-menu-footer">
+        <button type="button" className="personal-menu-row student-footer-action" aria-label="Voltar ao app" disabled={locked || signingOut} data-shapeos-tooltip={compact ? 'Voltar ao app' : undefined} onClick={() => select('treino')}><ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>Voltar ao app</span>}</button>
+        <button type="button" className="personal-menu-row personal-logout student-footer-action" aria-label={signingOut ? 'Saindo…' : 'Sair'} disabled={signingOut} data-shapeos-tooltip={compact ? 'Sair' : undefined} onClick={() => void logout()}><LogOut size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{signingOut ? 'Saindo…' : 'Sair'}</span>}</button>{error && <p className="personal-menu-error" role="alert">{error}</p>}</div>
       <div className="personal-menu-profile" data-shapeos-tooltip={compact ? `${name} · Aluno` : undefined} tabIndex={compact ? 0 : undefined} aria-label={compact ? `${name} · Aluno` : undefined}><span className="personal-avatar" aria-hidden="true">{initials}</span>{!compact && <div><p>{name}</p><span>Aluno</span></div>}</div>
     </>
   }
@@ -86,7 +88,7 @@ export function StudentSidebar({ collapsed, onToggle, mobileOpen, onClose, tab, 
     <style jsx global>{`
       [data-student-shell] .student-menu-logo { border:0; padding:0; background:transparent; cursor:pointer; text-align:left; }
       [data-student-shell] .student-menu-hint { color:var(--p-muted); font-size:11px; line-height:1.6; padding:8px 10px; }
-      html body [data-student-shell] .personal-logout:not(:disabled):is(:hover,:active) { background:color-mix(in srgb,var(--p-danger) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-danger) 40%,var(--p-line)); color:var(--p-danger); box-shadow:none; }
+      html body [data-student-shell] .personal-menu-footer .personal-menu-row.student-footer-action:is(:hover,:active) { background:transparent!important; border-color:transparent!important; box-shadow:none!important; transform:none!important; filter:none!important; transition:none!important; }
     `}</style>
   </>
 }
