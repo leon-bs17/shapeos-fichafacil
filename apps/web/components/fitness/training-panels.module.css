@@ -1,0 +1,97 @@
+/* Opt-in presentation for Treinar. Session state, prescriptions and media stay shared. */
+:global(html body .personal-content) .runner {
+  display:grid; grid-template-columns:minmax(0,1fr); gap:14px;
+  width:100%; max-width:720px; margin-inline:auto; min-width:0; color:var(--p-ink);
+}
+:global(html body .personal-content) .runner>* { min-width:0; margin-block:0; }
+:global(html body .personal-content) .runner :is(h1,h2,h3,p) { margin:0; overflow-wrap:anywhere; }
+:global(html body .personal-content) .runner h1 { font-size:16px; line-height:1.5; font-weight:600; }
+:global(html body .personal-content) .runner h2 { font-size:15px; line-height:1.5; }
+:global(html body .personal-content) .runner h3 { font-size:13px; line-height:1.5; }
+:global(html body .personal-content) .runner p { font-size:12px; line-height:1.6; }
+.heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
+.heading>div { min-width:0; flex:1 1 220px; }
+.progress,.exercisePanel,.notes {
+  border:1px solid var(--p-line); border-radius:13px; padding:14px 16px; background:var(--p-panel); min-width:0;
+}
+.progress>div:first-child { display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px 14px; color:var(--p-muted); font-size:11px; line-height:1.6; }
+.progress :global([role=progressbar]) { margin-top:10px; height:6px; overflow:hidden; border-radius:99px; background:color-mix(in srgb,var(--p-brand) 10%,var(--p-panel)); }
+.progress :global([role=progressbar])>div { height:100%; border-radius:inherit; background:var(--p-brand); }
+.exercisePicker { display:flex; flex-wrap:wrap; gap:6px; min-width:0; }
+.exercisePanel,.record,.notes { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+.exercisePanel>div:first-child { display:grid; grid-template-columns:minmax(0,1fr); gap:6px; }
+:global(html body .personal-content) .runner .exercisePanel>div:first-child>p { color:var(--p-muted); font-size:11px; }
+:global(html body .personal-content) .runner .exercisePanel>div:first-child>p:first-child { font-size:10px; letter-spacing:.06em; }
+.previous { border:1px solid var(--p-line); border-radius:10px; padding:10px 12px; background:color-mix(in srgb,var(--p-brand) 4%,var(--p-panel)); color:var(--p-muted); font-size:11px; line-height:1.6; }
+.fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; align-items:end; }
+.fields>div { min-width:0; }
+:global(html body .personal-content) .runner label { display:block; margin:0 0 5px; color:var(--p-muted); font-size:11px; line-height:1.5; }
+:global(html body .personal-content) .runner :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),textarea) {
+  width:100%; min-width:0; min-height:36px; border:1px solid var(--p-line); border-radius:13px;
+  background:var(--p-panel); color:var(--p-ink); padding:7px 10px; font-size:12px; line-height:1.5;
+  box-shadow:none; filter:none; transition:background-color 150ms ease,border-color 150ms ease;
+}
+:global(html body .personal-content) .runner input { height:36px; font-variant-numeric:tabular-nums; appearance:textfield; }
+.runner input::-webkit-inner-spin-button,.runner input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+:global(html body .personal-content) .runner textarea { min-height:56px; resize:none; }
+:global(html body .personal-content) .runner :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),textarea):focus { outline:none; border-color:var(--p-brand); box-shadow:none; }
+:global(html body .personal-content) .runner :global(button.btn-tech) {
+  min-height:36px; height:auto; padding:7px 10px; font-size:11px; line-height:1.5; white-space:normal; text-align:center;
+}
+:global(html body .personal-content) .runner .exercisePicker button { max-width:100%; overflow-wrap:anywhere; }
+.rest { display:grid; justify-items:center; gap:10px; padding:14px 0; border-block:1px solid var(--p-line); }
+:global(html body .personal-content) .runner .rest p:nth-of-type(2) { font-size:36px; line-height:1.2; font-variant-numeric:tabular-nums; }
+.rest>div { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+.log { min-width:0; overflow-x:auto; border:1px solid var(--p-line); border-radius:10px; }
+.log table { width:100%; border-collapse:collapse; text-align:left; font-variant-numeric:tabular-nums; }
+.log :is(th,td) { padding:9px 10px; border-bottom:1px solid var(--p-line); font-size:11px; white-space:nowrap; }
+.log th { color:var(--p-muted); font-weight:500; background:color-mix(in srgb,var(--p-brand) 3%,var(--p-panel)); }
+.log tr:last-child td { border-bottom:0; }
+.notes { gap:8px; }
+.notes>button { justify-self:start; }
+:global(html body .personal-content) .runner .notes label { margin:0; color:var(--p-ink); font-size:12px; }
+:global(html body .personal-content) .runner .notes p { color:var(--p-muted); font-size:11px; }
+
+/* Native dialogs retain their focus trap, Escape handling and centered top layer. */
+:global(html body .personal-content) .dialog {
+  width:600px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); margin:auto;
+  padding:16px; border:1px solid var(--p-line); border-radius:13px; overflow:auto;
+  background:var(--p-panel); color:var(--p-ink); box-shadow:0 12px 40px #0002;
+}
+.dialog::backdrop { background:#0007; backdrop-filter:blur(3px); }
+.dialog>header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--p-line); }
+:global(html body .personal-content) .dialog>header h3 { margin:0; font-size:14px; line-height:1.5; overflow-wrap:anywhere; }
+:global(html body .personal-content) :is(.demonstration,.dialog) { color:var(--p-ink); }
+:global(html body .personal-content) .demonstration { margin:8px 0 0; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+:global(html body .personal-content) .dialog .demonstration { margin:0; border:0; }
+.demonstration :global([data-exercise-stage]),.dialog :global([data-exercise-stage]) { min-height:180px; background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--p-brand) 7%,transparent),transparent 70%),var(--p-panel); }
+.demonstration :global([data-exercise-stage])>svg { width:100%; height:220px; max-width:360px; }
+.dialog :global([data-exercise-stage])>svg { height:clamp(180px,38dvh,300px); max-width:420px; }
+.demonstration :global([data-exercise-stage]) :is(video,img,canvas),.dialog :global([data-exercise-stage]) :is(video,img,canvas) { height:clamp(180px,32dvh,300px); max-width:100%; object-fit:contain; }
+:global(html body .personal-content) :is(.demonstration,.dialog) :global([data-exercise-cue]) { margin:10px 0; padding:0 12px; color:var(--p-muted); font-size:11px; line-height:1.6; }
+.demonstration :global([data-exercise-controls]),.dialog :global([data-exercise-controls]) { padding:8px 10px; border-color:var(--p-line); gap:8px; }
+.demonstration :global([data-exercise-controls])>span,.dialog :global([data-exercise-controls])>span { color:var(--p-muted); font-size:11px; }
+:global(html body .personal-content) :is(.demonstration,.dialog) button {
+  width:36px; height:36px; min-width:36px; border:1px solid var(--p-line); border-radius:10px;
+  background:var(--p-panel); color:var(--p-ink); box-shadow:none; flex-shrink:0;
+}
+:global(html body .personal-content) :is(.demonstration,.dialog) button:focus-visible { outline:2px solid var(--p-brand); outline-offset:3px; }
+@media(hover:hover) {
+  :global(html body .personal-content) .runner :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),textarea):not(:disabled):not(:focus):hover,
+  :global(html body .personal-content) :is(.demonstration,.dialog) button:hover {
+    background:color-mix(in srgb,var(--p-brand) 7%,var(--p-panel)); border-color:color-mix(in srgb,var(--p-brand) 40%,var(--p-line)); box-shadow:none;
+  }
+}
+@media(max-width:639px) {
+  :global(html body .personal-content) .runner { gap:12px; }
+  .progress,.exercisePanel,.notes { padding:14px; }
+  .fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .fields>div:last-child { grid-column:1/-1; }
+  :global(html body .personal-content) .runner :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),textarea) { min-height:44px; font-size:16px; }
+  :global(html body .personal-content) .runner input { height:44px; }
+  :global(html body .personal-content) .runner :global(button.btn-tech) { min-height:44px; }
+  :global(html body .personal-content) .dialog { max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); padding:14px; }
+  :global(html body .personal-content) :is(.demonstration,.dialog) button { width:44px; height:44px; min-width:44px; }
+  .demonstration :global([data-exercise-stage])>svg { height:200px; }
+}
+@media(prefers-reduced-motion:reduce) { .runner :is(button,input,textarea),.dialog button,.demonstration button { transition:none; } }

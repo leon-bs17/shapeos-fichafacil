@@ -250,7 +250,7 @@ export default function StudentPage() {
           </div>
         )}
         {active ? (
-          <SessionRunner
+          <SessionRunner compact
             key={active.id}
             initial={active}
             history={sessions}
@@ -339,7 +339,7 @@ export default function StudentPage() {
                                   )}
                                   {e.config.observacoes && <p className="text-xs text-muted-foreground">{e.config.observacoes}</p>}
                                   <p className="text-xs text-muted-foreground">{(() => { const last = previousSets(sessions, e)[0]; return last ? `Último registro: ${last.carga == null ? 'carga não informada' : `${last.carga} kg`} · ${last.reps != null ? `${last.reps} reps` : `${last.segundos ?? '—'}s`}` : 'Sem registro anterior neste exercício.' })()}</p>
-                                  <ExercisePreview name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url}/>
+                                  <ExercisePreview compact name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url}/>
                                 </div>
                                 <span className="text-muted-foreground shrink-0">
                                   {e.series} ×{" "}
@@ -417,4 +417,3 @@ export default function StudentPage() {
     </DashboardShell>
   );
 }
-

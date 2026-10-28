@@ -4,10 +4,11 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { Expand, Pause, Play, X } from 'lucide-react'
 import { findExerciseMotion, type Motion, type Point, type Pose } from '@/lib/fitness/exercise-motions'
 import s from './exercise-demonstration.module.css'
+import compactStyles from './training-panels.module.css'
 import { resolveExerciseMedia, safeExerciseUrl } from '@/lib/fitness/exercise-media'
 import { ExerciseMediaPlayer } from './exercise-media'
 
-type Props = { name: string; exerciseId?: string; videoUrl?: string | null }
+type Props = { compact?: boolean; name: string; exerciseId?: string; videoUrl?: string | null }
 const limbPairs = [['hip','rightKnee'],['rightKnee','rightFoot'],['shoulder','rightElbow'],['rightElbow','rightHand'],['hip','leftKnee'],['leftKnee','leftFoot'],['shoulder','leftElbow'],['leftElbow','leftHand']] as const
 function NativeMotion({attribute,values,hold}:{attribute:string;values:(string|number)[];hold?:boolean}) {
   if(hold) return null
@@ -55,7 +56,7 @@ function Mannequin({motion,svgRef}:{motion:Motion;svgRef:React.RefObject<SVGSVGE
     {motion.weight==='rope' && <path d={`M${first.leftHand.join(',')} L170,82 L${first.rightHand.join(',')}`} fill="none" stroke="#334b54" strokeWidth="5" strokeLinecap="round">{motionAttr('d',p=>`M${p.leftHand.join(',')} L170,82 L${p.rightHand.join(',')}`)}</path>}
   </svg>
 }
-export function ExerciseDemonstration({name,exerciseId,videoUrl}:Props) {
+export function ExerciseDemonstration({name,exerciseId,videoUrl,compact=false}:Props) {
   const motion=findExerciseMotion(name,exerciseId)
   const resolvedMedia=resolveExerciseMedia(name,videoUrl,exerciseId)
   const [failedSource,setFailedSource]=useState<string|null>(null)
@@ -78,15 +79,15 @@ export function ExerciseDemonstration({name,exerciseId,videoUrl}:Props) {
   useEffect(()=>{if(expanded)dialogRef.current?.showModal();else dialogRef.current?.close()},[expanded])
   const safeVideo=safeExerciseUrl(videoUrl)
   const content=<><div className={s.stage} data-exercise-stage>{media ? <ExerciseMediaPlayer key={media.src} media={media} name={name} playing={playing} onError={()=>setFailedSource(media.src)}/> : motion ? <Mannequin motion={motion} svgRef={svgRef}/> : <p className={s.pending}>Este exercício precisa de uma demonstração cadastrada pelo personal.</p>}</div>{motion && <p className={s.cue} data-exercise-cue>{motion.cue}</p>}<div className={s.controls} data-exercise-controls><span>{media?'Demonstração do exercício':motion?.hold?'Posição isométrica':motion?'Movimento ilustrativo':'Demonstração pendente'}</span><div>{canPlay && <button type="button" onClick={()=>setPlaying(v=>!v)} aria-label={playing?'Pausar demonstração':'Reproduzir demonstração'}>{playing?<Pause size={15}/>:<Play size={15}/>}</button>}{(media || motion) && !expanded && <button type="button" onClick={()=>setExpanded(true)} aria-label="Ampliar demonstração"><Expand size={15}/></button>}</div></div>{media?.credit && <span className={s.sourceCredit}>{media.source ? <a href={media.source} target="_blank" rel="noopener noreferrer">Fonte: {media.credit}</a> : media.credit}</span>}{safeVideo && safeVideo !== media?.src && <a className={s.videoLink} href={safeVideo} target="_blank" rel="noopener noreferrer">Ver vídeo do personal</a>}</>
-  return <section className={s.demo} aria-label={`Demonstração de ${name}`} data-exercise-motion={motion?.id ?? 'pending'} data-exercise-media={media?.kind ?? 'illustration'}>
+  return <section className={`${s.demo} ${compact ? compactStyles.demonstration : ''}`} aria-label={`Demonstração de ${name}`} data-exercise-motion={motion?.id ?? 'pending'} data-exercise-media={media?.kind ?? 'illustration'}>
     {!expanded && content}
-    <dialog ref={dialogRef} className={s.dialog} data-exercise-dialog onCancel={()=>setExpanded(false)} onClose={()=>setExpanded(false)} onClick={event=>{if(event.target===event.currentTarget)setExpanded(false)}}><header><h3>{name}</h3><button type="button" onClick={()=>setExpanded(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{expanded && content}</dialog>
+    <dialog ref={dialogRef} className={`${s.dialog} ${compact ? compactStyles.dialog : ''}`} data-exercise-dialog aria-label={`Demonstração ampliada de ${name}`} onCancel={event=>{event.stopPropagation();setExpanded(false)}} onClose={event=>{event.stopPropagation();setExpanded(false)}} onClick={event=>{if(event.target===event.currentTarget)setExpanded(false)}}><header><h3>{name}</h3><button type="button" onClick={()=>setExpanded(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{expanded && content}</dialog>
   </section>
 }
 export function ExercisePreview(props:Props){
   const [open,setOpen]=useState(false),dialogRef=useRef<HTMLDialogElement>(null)
   useEffect(()=>{if(open)dialogRef.current?.showModal();else dialogRef.current?.close()},[open])
-  return <><button type="button" className={s.previewButton} onClick={()=>setOpen(true)} aria-label={`Ver movimento de ${props.name}`}><Play size={13}/>Ver movimento</button><dialog className={s.dialog} data-exercise-dialog ref={dialogRef} onCancel={()=>setOpen(false)} onClose={()=>setOpen(false)}><header><h3>{props.name}</h3><button type="button" onClick={()=>setOpen(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{open && <ExerciseDemonstration {...props}/>}</dialog></>
+  return <><button type="button" className={s.previewButton} onClick={()=>setOpen(true)} aria-label={`Ver movimento de ${props.name}`}><Play size={13}/>Ver movimento</button><dialog className={`${s.dialog} ${props.compact ? compactStyles.dialog : ''}`} data-exercise-dialog aria-label={`Demonstração de ${props.name}`} ref={dialogRef} onCancel={event=>{event.stopPropagation();setOpen(false)}} onClose={event=>{event.stopPropagation();setOpen(false)}}><header><h3>{props.name}</h3><button type="button" onClick={()=>setOpen(false)} aria-label="Fechar demonstração"><X size={20}/></button></header>{open && <ExerciseDemonstration {...props}/>}</dialog></>
 }
 
 export function ExerciseThumbnail({name,exerciseId,videoUrl}:Props) {

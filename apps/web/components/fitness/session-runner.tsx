@@ -4,6 +4,7 @@ import { Check, ChevronRight, Clock, Pause, Play, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AutoResizeTextarea } from '@/components/ui/auto-resize-textarea';
+import styles from "./training-panels.module.css";
 import { Label } from "@/components/ui/label";
 import { ExerciseDemonstration } from '@/components/fitness/exercise-demonstration';
 import {
@@ -16,11 +17,13 @@ import {
 } from "@/services/fitness";
 
 export function SessionRunner({
+  compact = false,
   initial,
   history,
   onSave,
   onClose,
 }: {
+  compact?: boolean;
   initial: Session;
   history: Session[];
   onSave: (s: Session) => Promise<void>;
@@ -219,8 +222,8 @@ export function SessionRunner({
     Number(load) > Math.max(...prev.map((r) => r.carga ?? 0)) &&
     !warming;
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
-      <header className="flex flex-wrap justify-between gap-3">
+    <div className={compact ? styles.runner : "mx-auto max-w-2xl space-y-5"} data-training-session={compact || undefined}>
+      <header className={compact ? styles.heading : "flex flex-wrap justify-between gap-3"}>
         <div>
           <p className="text-sm text-primary">Sessão em andamento</p>
           <h1 className="text-2xl font-semibold">{session.titulo}</h1>
@@ -230,7 +233,7 @@ export function SessionRunner({
           Salvar e sair
         </Button>
       </header>
-      <div className="rounded-2xl border bg-card p-4">
+      <div className={compact ? styles.progress : "rounded-2xl border bg-card p-4"}>
         <div className="flex justify-between text-sm">
           <span>{completion(session)}% das séries previstas</span>
           <span>
@@ -244,12 +247,13 @@ export function SessionRunner({
           />
         </div>
       </div>
-      <div className="flex flex-wrap gap-2" aria-label="Exercícios da sessão">
+      <div className={compact ? styles.exercisePicker : "flex flex-wrap gap-2"} aria-label="Exercícios da sessão">
         {session.prescricao.map((v, i) => (
           <Button
             key={v.id}
             size="sm"
             variant={i === index ? "default" : "outline"}
+            aria-pressed={i === index}
             disabled={busy}
             onClick={() => {
               setIndex(i);
@@ -262,7 +266,7 @@ export function SessionRunner({
           </Button>
         ))}
       </div>
-      <section className="rounded-2xl border bg-card p-5 sm:p-7 space-y-5">
+      <section className={compact ? styles.exercisePanel : "rounded-2xl border bg-card p-5 sm:p-7 space-y-5"}>
         <div>
           <p className="text-xs uppercase tracking-widest text-muted-foreground">
             {e.grupo_muscular}
@@ -282,10 +286,10 @@ export function SessionRunner({
               {e.config.observacoes}
             </p>
           )}
-          <ExerciseDemonstration key={e.exercicio_id} name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url} />
+          <ExerciseDemonstration compact={compact} key={e.exercicio_id} name={e.nome} exerciseId={e.exercicio_id} videoUrl={e.video_url} />
         </div>
         {prev[0] && (
-          <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm">
+          <div className={compact ? styles.previous : "rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm"}>
             Último registro: {prev[0].carga ?? "—"} kg ·{" "}
             {prev[0].reps != null
               ? `${prev[0].reps} reps`
@@ -299,7 +303,7 @@ export function SessionRunner({
           </div>
         )}
         {rest > 0 ? (
-          <div className="text-center space-y-4 py-5">
+          <div className={compact ? styles.rest : "text-center space-y-4 py-5"}>
             <Clock className="mx-auto text-primary" />
             <p className="text-sm text-muted-foreground">Descanso</p>
             <p className="text-5xl font-semibold tabular-nums">
@@ -336,7 +340,7 @@ export function SessionRunner({
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className={compact ? styles.record : "space-y-4"}>
             <h3 className="font-medium">
               {warming
                 ? `Aquecimento ${warm + 1}/${e.config.aquecimento}`
@@ -344,7 +348,7 @@ export function SessionRunner({
                   ? "Séries previstas registradas"
                   : `Série ${done + 1}/${e.series}`}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className={compact ? styles.fields : "grid grid-cols-2 sm:grid-cols-3 gap-3"}>
               <div>
                 <Label htmlFor="fitness-load">Carga (kg)</Label>
                 <Input
@@ -426,7 +430,7 @@ export function SessionRunner({
           </div>
         )}
         {logs.length > 0 && (
-          <div className="overflow-x-auto">
+          <div className={compact ? styles.log : "overflow-x-auto"}>
             <table className="w-full text-sm">
               <caption className="sr-only">
                 Séries registradas neste exercício
@@ -460,9 +464,12 @@ export function SessionRunner({
           {error}
         </p>
       )}
+      <section className={compact ? styles.notes : undefined}>
       <Label htmlFor="session-notes">Como foi o treino?</Label>
       <AutoResizeTextarea
         id="session-notes"
+        style={compact ? { minHeight: 56 } : undefined}
+        rows={compact ? 1 : undefined}
         disabled={busy}
         maxLength={2000}
         className="w-full rounded-xl border bg-card p-3"
@@ -474,6 +481,7 @@ export function SessionRunner({
       />
       <Button variant="outline" disabled={busy} onClick={() => void persist(session)}>Salvar observação</Button>
       <p className="text-xs text-muted-foreground">A observação também é salva ao sair ou finalizar a sessão e fica disponível no acompanhamento do Personal.</p>
+      </section>
       <Button
         className="w-full h-12"
         disabled={busy || session.series.length === 0}
