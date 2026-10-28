@@ -14,7 +14,7 @@ function useStudentLinks(studentId: string) {
 }
 export function StudentLinkStatus({ studentId }: { studentId: string }) {
   const links = useStudentLinks(studentId)
-  return <div className={styles.panel}>
+  return <div className={styles.panel} data-student-link-status>
     <h2>Próximo passo</h2>
     {links.isPending ? <p role="status">Consultando seu vínculo…</p> : links.isError ? <><p role="alert">Não foi possível consultar seu vínculo.</p><Button variant="outline" onClick={() => void links.refetch()}>Tentar novamente</Button></> : <p>{links.data.length ? 'Seu vínculo com o Personal está ativo. Peça a ele para disponibilizar sua ficha de treino.' : 'Você ainda não tem um vínculo ativo. Peça um convite ao seu Personal e aceite-o na seção de convites deste painel.'}</p>}
   </div>

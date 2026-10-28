@@ -26,3 +26,16 @@
 .comparison div { border:1px solid var(--p-line); border-radius:8px; padding:12px; }
 .comparison dt { color:var(--p-muted); font-size:11px; } .comparison dd { margin:6px 0 0; font-size:14px; color:var(--p-ink); }
 @media(max-width:767px) { .panel { padding:16px; } .comparison { grid-template-columns:repeat(2,minmax(0,1fr)); } .choices button { min-height:44px; } .week button { min-height:75px; } }
+
+/* Today's training uses the same quiet, compact card outline as the other accounts. */
+.panel.today { border-left:1px solid var(--p-line); padding:14px 16px; }
+.panel.today h2 { font-size:13px; line-height:1.5; margin:0 0 8px; }
+.panel.today h3 { font-size:13px; line-height:1.5; }
+.panel.today .row p { font-size:12px; line-height:1.6; margin:3px 0; }
+.panel.today .row>button { min-height:40px; padding:8px 12px; font-size:11px; border:1px solid var(--p-line); border-radius:13px; box-shadow:none; }
+.panel.today>.row~p { margin:8px 0 0; font-size:11px; line-height:1.6; }
+.panel.today .row+.row { margin-top:10px; padding-top:10px; }
+@media(max-width:767px) {
+ .panel.today { padding:14px; }
+ .panel.today .row>button { width:100%; min-height:44px; font-size:12px; }
+}

@@ -32,3 +32,27 @@
 .body input[type="number"]::-webkit-inner-spin-button,.body input[type="number"]::-webkit-outer-spin-button { appearance:none; margin:0; }
 
 .empty { margin-bottom:14px; }
+
+/* Compact Treinar only; the shared banner, indicators and other tabs keep their contract. */
+.compactTraining { gap:14px; }
+.compactTraining .sectionTitle { margin-bottom:10px; font-size:13px; line-height:1.5; }
+.compactTraining .resume { padding:14px 16px; }
+.compactTraining .resume h2 { font-size:13px; }
+.compactTraining .workoutGrid { gap:12px; }
+.compactTraining .workout { gap:10px; padding:14px 16px; }
+.compactTraining .workoutHeading { gap:8px; }
+.compactTraining .workoutHeading h3 { font-size:13px; line-height:1.5; }
+.compactTraining .exercise { padding:9px 0; }
+.compactTraining .empty { gap:8px; padding:14px 16px; margin-bottom:12px; }
+.compactTraining .empty>svg { width:24px; height:24px; }
+.compactTraining .empty p { max-width:1000px; font-size:12px; line-height:1.6; }
+.compactTraining :global([data-student-link-status]) { padding:14px 16px; }
+.compactTraining :global([data-student-link-status]) h2 { font-size:13px; line-height:1.5; margin:0 0 6px; }
+.compactTraining :global([data-student-link-status]) p { margin:0; font-size:12px; line-height:1.6; }
+.compactTraining .note { padding:10px 14px; font-size:11px; line-height:1.6; }
+@media(max-width:767px) {
+ .compactTraining { gap:12px; }
+ .compactTraining .workout,.compactTraining .resume { padding:14px; }
+ .compactTraining .empty { padding:16px 14px; }
+ .compactTraining :global([data-student-link-status]) { padding:14px; }
+}

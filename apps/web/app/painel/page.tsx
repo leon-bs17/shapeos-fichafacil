@@ -11,6 +11,7 @@ import { DashboardShell, type DashboardNavigationControls } from '@/components/l
 import { StudentSidebar, studentTabs, type StudentTab } from '@/components/layout/student-sidebar';
 import { PersonalWorkspace } from '@/components/layout/personal-workspace';
 import { ShapeosBanner } from '@/components/layout/shapeos-banner';
+import { StudentTrainingWireframe } from '@/components/fitness/student-training-wireframe';
 import styles from './page.module.css';
 import overviewStyles from '../personal-overview.module.css';
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -225,7 +226,7 @@ export default function StudentPage() {
       {!active && <>
         <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : tab === 'orientacoes' ? <>Seus <span>comunicados</span></> : tab === 'dados' ? <>Seus <span>dados</span></> : <span>{current.label}</span>}
           description={tab === 'treino' ? 'Treine, acompanhe sua evolução e compartilhe resultados com seu personal.' : current.description}
-          art={<svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
+          art={tab === 'treino' ? <StudentTrainingWireframe /> : <svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
         <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
           {[{label:'Fichas ativas',value:workouts.length,target:'treino' as const,Icon:Dumbbell},{label:'Concluídos no histórico',value:sessions.filter(s => s.status === 'CONCLUIDO').length,target:'evolucao' as const,Icon:CheckCircle2},{label:'Na agenda de hoje',value:planned.length,target:'agenda' as const,Icon:CalendarDays}].map(({label,value,target,Icon:MetricIcon}) => <button key={label} type="button" className={`personal-metric ${styles.metric}`} onClick={() => setTab(target)} disabled={loading || !!failure} aria-label={`${label}: ${loading || failure ? 'indisponível' : value}`}><span className={overviewStyles.metricIcon}><MetricIcon size={23} strokeWidth={1.75} aria-hidden="true" /></span><div><strong>{loading || failure ? '—' : value}</strong><p>{label}</p></div></button>)}
         </section>
@@ -263,7 +264,7 @@ export default function StudentPage() {
           <>
             <StudentInvitations studentId={id} />
             {tab === "treino" && (
-              <div className={styles.training}>
+              <div className={`${styles.training} ${styles.compactTraining}`}>
                 <StudentToday workouts={workouts} agenda={agenda} sessions={sessions} onStart={w => void start(w)} onAgenda={() => setTab('agenda')} />
                 {unfinished.length > 0 && (
                   <section className={styles.resume}>
