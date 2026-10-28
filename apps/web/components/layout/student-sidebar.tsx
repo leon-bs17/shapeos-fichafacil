@@ -20,6 +20,15 @@ export const studentTabs = [
 ] as const
 export type StudentTab = typeof studentTabs[number]['id']
 
+// Explicit item order, matching Admin and Personal with Mys at the top.
+const studentMenuGroups = [
+  { label: 'Acompanhamento', ids: ['mys', 'treino', 'evolucao', 'agenda', 'avaliacao', 'orientacoes'] },
+  { label: 'Ferramentas', ids: ['personal', 'biblioteca'] },
+  { label: 'Conta', ids: ['conta', 'dados', 'ajuda'] },
+] as const satisfies ReadonlyArray<{ label: string; ids: readonly StudentTab[] }>
+
+const studentTabsById = Object.fromEntries(studentTabs.map(item => [item.id, item])) as Record<StudentTab, typeof studentTabs[number]>
+
 export function StudentSidebar({ collapsed, onToggle, mobileOpen, onClose, tab, onSelect, name, onLogout, locked = false }: DashboardNavigationControls & {
   tab: StudentTab; onSelect: (tab: StudentTab) => void; name: string; onLogout: () => Promise<void>; locked?: boolean
 }) {
@@ -61,9 +70,9 @@ export function StudentSidebar({ collapsed, onToggle, mobileOpen, onClose, tab, 
       </div>
       <div className="personal-menu-area" data-shapeos-tooltip={compact ? 'Área do Aluno' : undefined}><CircleUserRound size={19} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>Área do Aluno</span>}</div>
       <nav aria-label="Menu do Aluno" className="personal-menu-nav">
-        {[{label:'Acompanhamento',ids:['treino','evolucao','agenda','avaliacao','orientacoes']},{label:'Ferramentas',ids:['mys','personal','biblioteca']},{label:'Conta',ids:['conta','dados','ajuda']}].map(group=><div className="personal-menu-group" key={group.label}>
+        {studentMenuGroups.map(group=><div className="personal-menu-group" key={group.label}>
           {!compact && <p className="personal-menu-group-label">{group.label}</p>}
-          {studentTabs.filter(item=>group.ids.includes(item.id)).map(({id,label,Icon}) => <button key={id} type="button" className="personal-menu-row" aria-label={label} aria-current={tab === id ? 'page' : undefined} disabled={locked} data-shapeos-tooltip={compact ? label : undefined} onClick={() => select(id)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{label}</span>}</button>)}
+          {group.ids.map(id => studentTabsById[id]).map(({id,label,Icon}) => <button key={id} type="button" className="personal-menu-row" aria-label={label} aria-current={tab === id ? 'page' : undefined} disabled={locked} data-shapeos-tooltip={compact ? label : undefined} onClick={() => select(id)}><Icon size={18} strokeWidth={1.75} aria-hidden="true" />{!compact && <span>{label}</span>}</button>)}
         </div>)}
         {locked && !compact && <p className="student-menu-hint">Seu treino está aberto. Use os controles da sessão para voltar ao painel.</p>}
       </nav>
