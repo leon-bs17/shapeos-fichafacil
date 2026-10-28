@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, MessageSquare, MessageCircle, Library, LifeBuoy, Users, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Megaphone, MessageCircle, Library, LifeBuoy, Users, Dumbbell, FileDown, LogOut, Ruler, TrendingUp, X } from 'lucide-react'
 import Logo from '@/davi/components/Logo'
 import type { DashboardNavigationControls } from './dashboard-shell'
 
@@ -10,7 +10,7 @@ export const studentTabs = [
   { id: 'evolucao', label: 'Evolução', Icon: TrendingUp, description: 'Consulte sua frequência e seus registros.' },
   { id: 'agenda', label: 'Agenda', Icon: CalendarDays, description: 'Organize os próximos treinos.' },
   { id: 'avaliacao', label: 'Avaliações', Icon: Ruler, description: 'Acompanhe medidas e avaliações físicas.' },
-  { id: 'orientacoes', label: 'Comunicados', Icon: MessageSquare, description: 'Leia as orientações do Personal e os avisos recebidos.' },
+  { id: 'orientacoes', label: 'Comunicados', Icon: Megaphone, description: 'Leia as orientações do Personal e os avisos recebidos.' },
   { id: 'personal', label: 'Meu Personal', Icon: Users, description: 'Seus vínculos e o acompanhamento do Personal.' },
   { id: 'biblioteca', label: 'Biblioteca de exercícios', Icon: Library, description: 'Consulte os exercícios das suas fichas ativas.' },
   { id: 'mys', label: 'Mys · Assistente', Icon: MessageCircle, description: 'Entenda sua ficha e consulte seus registros.' },
@@ -23,7 +23,7 @@ export type StudentTab = typeof studentTabs[number]['id']
 // Explicit item order, matching Admin and Personal with Mys at the top.
 const studentMenuGroups = [
   { label: 'Acompanhamento', ids: ['mys', 'treino', 'evolucao', 'agenda', 'avaliacao', 'orientacoes'] },
-  { label: 'Ferramentas', ids: ['personal', 'biblioteca'] },
+  { label: 'Gestão', ids: ['personal', 'biblioteca'] },
   { label: 'Conta', ids: ['conta', 'dados', 'ajuda'] },
 ] as const satisfies ReadonlyArray<{ label: string; ids: readonly StudentTab[] }>
 
