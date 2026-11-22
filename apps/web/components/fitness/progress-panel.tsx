@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import reportStyles from "./personal-report.module.css";
+import styles from "./progress-panel.module.css";
 import { comparisonWindows, type PeriodDays } from "@/lib/fitness/period-comparison";
 import { CalendarDays, ChevronDown, Dumbbell, FileText, Trophy, TrendingUp } from "lucide-react";
 import {
@@ -12,19 +13,25 @@ import {
   type Session,
 } from "@/services/fitness";
 export function ProgressPanel({ sessions, compact = false, periodDays, hideMetrics = false, metricsOnly = false, conciseMetrics = false }: { sessions: Session[]; compact?: boolean; periodDays?: PeriodDays; hideMetrics?: boolean; metricsOnly?: boolean; conciseMetrics?: boolean }) {
-  const periodWindow = periodDays == null ? null : comparisonWindows(periodDays)
-  const scopedSessions = periodWindow ? sessions.filter(session => {
-    const date = Date.parse(session.inicio)
-    return Number.isFinite(date) && date >= Date.parse(periodWindow.start) && date <= Date.parse(periodWindow.end)
-  }) : sessions
+  const periodWindow = periodDays == null ? null : comparisonWindows(periodDays);
+  const cutoff = periodWindow ? Date.parse(periodWindow.start) : Date.now() - 30 * 86400000;
+  const periodEnd = periodWindow ? Date.parse(periodWindow.end) : null;
+  const scopedSessions = periodEnd == null ? sessions : sessions.filter(session => {
+    const date = Date.parse(session.inicio);
+    return date >= cutoff && date <= periodEnd;
+  });
   const done = useMemo(
       () => scopedSessions.filter((s) => s.status === "CONCLUIDO"),
       [scopedSessions],
     ),
-    cutoff = periodWindow ? Date.parse(periodWindow.start) : Date.now() - 30 * 86400000,
     recent = done.filter((s) => new Date(s.inicio).getTime() >= cutoff);
   const days = new Set(recent.map((s) => dayOf(s.inicio))),
     volume = recent.some(s => workingSets(s).some(r => r.carga != null && r.reps != null)) ? recent.reduce((n, s) => n + sessionVolume(s), 0) : null;
+  const workoutsByDay = new Map<string, number>();
+  for (const session of done) {
+    const date = dayOf(session.inicio);
+    workoutsByDay.set(date, (workoutsByDay.get(date) ?? 0) + 1);
+  }
   const groups = useMemo(() => {
     const map = new Map<
       string,
@@ -92,7 +99,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
       </div>)
   if (metricsOnly) return metricsContent
   return (
-    <div data-compact-progress={compact || undefined} className="space-y-6">
+    <div data-compact-progress={compact || undefined} className={compact ? styles.compact : "space-y-6"}>
       {!hideMetrics && metricsContent}
       <section data-consistency data-filtered-period={periodDays} className="rounded-2xl border bg-card p-5">
         <h2 className="font-semibold mb-4">{periodDays ? `Consistência · ${periodDays} dias` : "Consistência · últimas 4 semanas"}</h2>
@@ -101,7 +108,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
             const d = new Date();
             d.setDate(d.getDate() - (periodDays ?? 28) + 1 + i);
             const key = dayOf(d.toISOString()),
-              count = done.filter((s) => dayOf(s.inicio) === key).length;
+              count = workoutsByDay.get(key) ?? 0;
             return (
               <div
                 key={key}
@@ -122,61 +129,70 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
         </p>
       </section>
       {!done.length && (
-        <p className="rounded-2xl border border-dashed p-6 text-muted-foreground">
+        <p className={compact ? styles.empty : "rounded-2xl border border-dashed p-6 text-muted-foreground"}>
           {periodDays ? "Nenhuma sessão concluída no período selecionado." : "Finalize uma sessão para acompanhar sua evolução. Os registros anteriores continuam nos relatórios existentes."}
         </p>
       )}
-      <div data-exercise-grid className="grid md:grid-cols-2 gap-4">
-        {groups.map((g) => {
-          const loads = g.rows.flatMap(r => r.carga == null ? [] : [r.carga]);
-          const best = loads.length ? Math.max(...loads) : null,
-            first = g.rows[0].carga,
-            last = g.rows.at(-1)!.carga,
-            diff = last == null || first == null ? null : Math.round((last - first) * 100) / 100;
-          return (
-            <section data-exercise-card key={g.id} className="rounded-2xl border bg-card p-5">
-              <h3 className="font-semibold">{g.nome}</h3>
-              <div className="flex justify-between mt-2 text-sm">
-                <span className="text-primary">
-                  Maior carga registrada: {best == null ? 'não informada' : `${best} kg`}
-                </span>
-                <span className="text-muted-foreground">
-                  {diff == null ? 'Sem comparação de carga' : `${diff > 0 ? '+' : ''}${diff} kg`}
-                </span>
-              </div>
-              <div
-                data-load-chart
-                aria-hidden="true"
-                className="flex h-24 gap-1 items-end mt-4"
-              >
-                {g.rows.slice(-20).map((r, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-primary/50 rounded-t min-w-1"
-                    style={{
-                      height: `${r.carga == null ? 0 : best ? Math.max(4, (r.carga / best) * 100) : 4}%`,
-                    }}
-                    title={`${new Date(r.data).toLocaleDateString("pt-BR")}: ${r.carga == null ? 'carga não informada' : `${r.carga} kg`}`}
-                  />
-                ))}
-              </div>
-              <details className="mt-3 text-sm">
-                <summary className="cursor-pointer text-muted-foreground">
-                  <span>Ver valores do gráfico</span>{compact && <ChevronDown size={14} aria-hidden="true" />}
-                </summary>
-                <ul className="mt-2 space-y-1">
-                  {g.rows.slice(-20).map((r, i) => (
-                    <li key={i}>
-                      {new Date(r.data).toLocaleDateString("pt-BR")} · {r.carga == null ? 'carga não informada' : `${r.carga} kg`} · {r.reps ?? "—"} reps · volume {r.volume} kg
-                    </li>
+      {groups.length > 0 && <section className={compact ? styles.exerciseSection : undefined} aria-label="Carga por exercício">
+        {compact && <h2>Carga por exercício</h2>}
+        <div data-exercise-grid className="grid md:grid-cols-2 gap-4">
+          {groups.map((g) => {
+            const loads = g.rows.flatMap(r => r.carga == null ? [] : [r.carga]);
+            const best = loads.length ? Math.max(...loads) : null;
+            const first = compact ? loads[0] : g.rows[0].carga;
+            const last = compact ? loads.at(-1) : g.rows.at(-1)?.carga;
+            const diff = last == null || first == null || (compact && loads.length < 2) ? null : Math.round((last - first) * 100) / 100;
+            const recentRows = g.rows.slice(-20);
+            const visibleLoads = recentRows.flatMap(row => row.carga == null ? [] : [row.carga]);
+            const showChart = !compact || visibleLoads.length >= 2;
+            const chartMax = compact ? Math.max(0, ...visibleLoads) : best;
+            const loadComparison = diff == null ? (compact && loads.length === 1 ? '1 registro com carga' : 'Sem comparação de carga') :
+              compact && diff === 0 ? 'Sem variação de carga' : `${diff > 0 ? '+' : ''}${diff.toLocaleString('pt-BR')} kg`;
+            return (
+              <section data-exercise-card key={g.id} className="rounded-2xl border bg-card p-5">
+                <h3 className="font-semibold">{g.nome}</h3>
+                <div className="flex justify-between mt-2 text-sm">
+                  <span className="text-primary">
+                    {best == null ? 'Carga não informada' : `Maior carga: ${best.toLocaleString('pt-BR')} kg`}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {loadComparison}
+                  </span>
+                </div>
+                {showChart && <div
+                  data-load-chart
+                  aria-hidden="true"
+                  className="flex h-24 gap-1 items-end mt-4"
+                >
+                  {recentRows.map((r, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-primary/50 rounded-t min-w-1"
+                      style={{
+                        height: `${r.carga == null ? 0 : chartMax ? Math.max(4, (r.carga / chartMax) * 100) : 4}%`,
+                      }}
+                      title={`${new Date(r.data).toLocaleDateString("pt-BR")}: ${r.carga == null ? 'carga não informada' : `${r.carga} kg`}`}
+                    />
                   ))}
-                </ul>
-              </details>
-            </section>
-          );
-        })}
-      </div>
-      <section data-prescription-list className="space-y-3">
+                </div>}
+                <details className="mt-3 text-sm">
+                  <summary className="cursor-pointer text-muted-foreground">
+                    <span>{compact ? 'Ver registros' : 'Ver valores do gráfico'}</span>{compact && <ChevronDown size={14} aria-hidden="true" />}
+                  </summary>
+                  <ul className="mt-2 space-y-1">
+                    {recentRows.map((r, i) => (
+                      <li key={i}>
+                        {new Date(r.data).toLocaleDateString("pt-BR")} · {r.carga == null ? 'carga não informada' : `${r.carga} kg`} · {r.reps ?? "—"} reps · volume {r.volume} kg
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </section>
+            );
+          })}
+        </div>
+      </section>}
+      {(!compact || scopedSessions.length > 0) && <section data-prescription-list className={compact ? undefined : "space-y-3"}>
         <h2 className="text-lg font-semibold">Prescrito × realizado</h2>
         {scopedSessions.slice(0, 50).map((s) => (
           <details key={s.id} className="rounded-2xl border bg-card p-4">
@@ -236,7 +252,7 @@ export function ProgressPanel({ sessions, compact = false, periodDays, hideMetri
             )}
           </details>
         ))}
-      </section>
+      </section>}
     </div>
   );
 }
