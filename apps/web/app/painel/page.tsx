@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarDays,
@@ -9,14 +9,13 @@ import {
 } from "lucide-react";
 import { DashboardShell, type DashboardNavigationControls } from '@/components/layout/dashboard-shell';
 import { StudentSidebar, studentTabs, type StudentTab } from '@/components/layout/student-sidebar';
-import { PersonalWorkspace } from '@/components/layout/personal-workspace';
+import { PersonalPageHeader, PersonalWorkspace } from '@/components/layout/personal-workspace';
+import { PersonalBannerArt } from '@/components/layout/personal-banner-art';
 import { ShapeosBanner } from '@/components/layout/shapeos-banner';
 import { StudentTrainingWireframe } from '@/components/fitness/student-training-wireframe';
 import styles from './page.module.css';
 import overviewStyles from '../personal-overview.module.css';
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { StudentInvitations } from '@/components/fitness/student-invitations';
-import { NotificationBell } from "@/components/layout/notification-bell";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { SessionRunner } from "@/components/fitness/session-runner";
@@ -47,6 +46,20 @@ import {
   type Session,
   type Workout,
 } from "@/services/fitness";
+
+const studentBanners: Partial<Record<StudentTab, {
+  title: ReactNode;
+  art: ComponentProps<typeof PersonalBannerArt>['variant'];
+}>> = {
+  evolucao: { title: <>Sua <span>evolução</span></>, art: 'reports' },
+  agenda: { title: <>Sua <span>agenda</span></>, art: 'agenda' },
+  avaliacao: { title: <>Suas <span>avaliações</span></>, art: 'reports' },
+  orientacoes: { title: <>Seus <span>comunicados</span></>, art: 'notices' },
+  personal: { title: <>Acompanhe seus <span>vínculos</span></>, art: 'students' },
+  biblioteca: { title: <>Encontre o <span>movimento</span> certo</>, art: 'library' },
+  dados: { title: <>Seus <span>dados</span></>, art: 'account' },
+};
+
 export default function StudentPage() {
   const qc = useQueryClient(),
     [tab, setTab] = useState<StudentTab>("treino"),
@@ -207,31 +220,66 @@ export default function StudentPage() {
   const workouts = data.data?.workouts ?? [], agenda = data.data?.agenda ?? [], assessments = data.data?.assessments ?? [];
   const sessions = [...pending, ...(data.data?.sessions ?? []).filter(s => !pending.some(p => p.id === s.id))].sort((a,b) => b.inicio.localeCompare(a.inicio));
   const planned = agenda.filter(a => a.data === today()), unfinished = sessions.filter(s => s.status === 'EM_ANDAMENTO');
-  const current = studentTabs.find(item => item.id === tab) ?? studentTabs[0], Icon = current.Icon;
+  const current = studentTabs.find(item => item.id === tab) ?? studentTabs[0];
+  const banner = studentBanners[tab];
   const loading = profile.isLoading || data.isLoading, failure = profile.error ?? data.error;
   const mysPage = tab === 'mys' && !active;
+  const profileError = <div className="personal-load-error" role="alert">
+    <p>Não foi possível carregar sua conta.</p>
+    <Button variant="outline" onClick={() => void profile.refetch()}>Tentar novamente</Button>
+  </div>;
+  let standaloneContent: ReactNode = null;
+  if (!active) {
+    switch (tab) {
+      case 'conta': standaloneContent = <AccountPanel student embedded />; break;
+      case 'ajuda': standaloneContent = <HelpDesk />; break;
+      case 'orientacoes':
+      case 'personal':
+        standaloneContent = profile.isLoading ? <p className={styles.loading} role="status">Carregando sua conta…</p> :
+          profile.error || !id ? profileError : tab === 'orientacoes' ? <StudentGuidance studentId={id} /> : (
+            <div className={styles.body}>
+              <StudentInvitations studentId={id} />
+              <StudentTrainers studentId={id} onSupport={() => setTab('ajuda')} />
+            </div>
+          );
+        break;
+    }
+  }
   const navigation = (controls: DashboardNavigationControls) => <StudentSidebar {...controls} tab={tab} onSelect={setTab} name={profile.data?.nome || 'Aluno'} onLogout={logout} locked={!!active} />;
   return (
     <DashboardShell variant="student" navigation={navigation}>
       {mysPage ? (
-        profile.isLoading ? <p role="status">Preparando sua assistente…</p> :
-        profile.error || !id ? <div className="personal-load-error" role="alert"><p>Não foi possível carregar sua conta.</p><Button variant="outline" onClick={() => void profile.refetch()}>Tentar novamente</Button></div> :
+        profile.isLoading ? <p className={styles.loading} role="status">Preparando sua assistente…</p> :
+        profile.error || !id ? profileError :
         <StudentMys studentId={id} name={profile.data?.nome ?? 'Aluno'} />
       ) : (
       <PersonalWorkspace page="aluno" className={overviewStyles.overview}>
-      <header className="personal-content-heading">
-        <div className="personal-page-heading"><span className="personal-heading-icon"><Icon size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>{active ? 'Treino em andamento' : current.label}</h1><p>{active ? 'Registre suas séries e acompanhe a sessão.' : current.description}</p></div></div>
-        <div className="personal-header-right"><div className="personal-header-tools">{!active && <NotificationBell />}<ThemeToggle /></div></div>
-      </header>
+      <PersonalPageHeader
+        icon={active ? Dumbbell : current.Icon}
+        title={active ? 'Treino em andamento' : current.label}
+        description={active ? 'Registre suas séries e acompanhe a sessão.' : current.description}
+        showNotifications={!active}
+      />
       {!active && <>
-        <ShapeosBanner titleId="student-banner-title" eyebrow="Aluno" title={tab === 'treino' ? <>Olá, <span>{profile.data?.nome.split(' ')[0] || 'Aluno'}</span></> : tab === 'evolucao' ? <>Sua <span>evolução</span></> : tab === 'agenda' ? <>Sua <span>agenda</span></> : tab === 'avaliacao' ? <>Suas <span>avaliações</span></> : tab === 'orientacoes' ? <>Seus <span>comunicados</span></> : tab === 'dados' ? <>Seus <span>dados</span></> : <span>{current.label}</span>}
-          description={tab === 'treino' ? 'Treine, acompanhe sua evolução e compartilhe resultados com seu personal.' : current.description}
-          art={tab === 'treino' ? <StudentTrainingWireframe /> : <svg viewBox="0 0 360 140" fill="none" stroke="currentColor" strokeWidth=".8"><ellipse cx="190" cy="70" rx="138" ry="45" transform="rotate(-15 190 70)" /><ellipse cx="190" cy="70" rx="110" ry="55" transform="rotate(20 190 70)" /><circle cx="190" cy="70" r="32" /><path d="M143 65h-35v10h35m94-10h35v10h-35M99 49h9v42h-9zm173 0h9v42h-9zM178 69l9 9 19-22" strokeWidth="1.2" /></svg>} />
-        {tab !== 'evolucao' && <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
+        {tab === 'treino' && <ShapeosBanner
+          titleId="student-banner-title"
+          eyebrow="Aluno"
+          title={<>Olá, <span>{profile.data?.nome?.trim().split(/\s+/)[0] || 'Aluno'}</span></>}
+          description="Treine, acompanhe sua evolução e compartilhe resultados com seu personal."
+          art={<StudentTrainingWireframe />}
+        />}
+        {banner && <ShapeosBanner
+          titleId="student-banner-title"
+          eyebrow="Aluno"
+          title={banner.title}
+          description={current.description}
+          art={<PersonalBannerArt variant={banner.art} />}
+        />}
+        {tab === 'treino' && <section className="personal-summary" aria-label="Resumo dos seus treinos" aria-busy={loading}>
           {[{label:'Fichas ativas',value:workouts.length,target:'treino' as const,Icon:Dumbbell},{label:'Concluídos no histórico',value:sessions.filter(s => s.status === 'CONCLUIDO').length,target:'evolucao' as const,Icon:CheckCircle2},{label:'Na agenda de hoje',value:planned.length,target:'agenda' as const,Icon:CalendarDays}].map(({label,value,target,Icon:MetricIcon}) => <button key={label} type="button" className={`personal-metric ${styles.metric}`} onClick={() => setTab(target)} disabled={loading || !!failure} aria-label={`${label}: ${loading || failure ? 'indisponível' : value}`}><span className={overviewStyles.metricIcon}><MetricIcon size={23} strokeWidth={1.75} aria-hidden="true" /></span><div><strong>{loading || failure ? '—' : value}</strong><p>{label}</p></div></button>)}
         </section>}
       </>}
-      {loading ? <div className={styles.loading} role="status">Carregando seu painel…</div> : failure || !id || !data.data ? <div className="personal-load-error" role="alert"><p>{failure?.message || 'Não foi possível carregar seu painel.'}</p><Button variant="outline" onClick={() => { void profile.refetch(); void data.refetch() }}>Tentar novamente</Button><Button variant="outline" onClick={() => void logout()}>Sair</Button></div> : <div className={styles.body}>
+      {standaloneContent ?? (loading ? <div className={styles.loading} role="status">Carregando seu painel…</div> : failure || !id || !data.data ? <div className="personal-load-error" role="alert"><p>{failure?.message || 'Não foi possível carregar seu painel.'}</p><Button variant="outline" onClick={() => { void profile.refetch(); if (id) void data.refetch() }}>Tentar novamente</Button><Button variant="outline" onClick={() => void logout()}>Sair</Button></div> : <div className={styles.body}>
         {(offline || pending.length > 0 || syncError) && (
           <div
             role="status"
@@ -262,9 +310,9 @@ export default function StudentPage() {
           />
         ) : (
           <>
-            <StudentInvitations studentId={id} />
             {tab === "treino" && (
               <div className={`${styles.training} ${styles.compactTraining}`}>
+                <StudentInvitations studentId={id} />
                 <StudentToday workouts={workouts} agenda={agenda} sessions={sessions} onStart={w => void start(w)} onAgenda={() => setTab('agenda')} />
                 {unfinished.length > 0 && (
                   <section className={styles.resume}>
@@ -287,11 +335,7 @@ export default function StudentPage() {
                   </section>
                 )}
                 <section>
-                  <h2 className={styles.sectionTitle}>
-                    {planned.length
-                      ? "Planejado para hoje"
-                      : "Suas fichas ativas"}
-                  </h2>
+                  <h2 className={styles.sectionTitle}>Suas fichas ativas</h2>
                   {!workouts.length && (<>
                     <div className={styles.empty}><Dumbbell size={26} strokeWidth={1.5} aria-hidden="true" /><p>
                       Seu personal ainda não disponibilizou uma ficha ativa.
@@ -368,7 +412,6 @@ export default function StudentPage() {
               </div>
             )}
             {tab === "evolucao" && <StudentProgress sessions={sessions} />}
-            {tab === 'orientacoes' && <StudentGuidance studentId={id} />}
             {tab === "agenda" && (
               <div className={styles.training}>
               <StudentWeek agenda={agenda} sessions={sessions} workouts={workouts} onStart={w => void start(w)} />
@@ -393,10 +436,7 @@ export default function StudentPage() {
                 onChange={() => void data.refetch()}
               /></div>
             )}
-            {tab === 'personal' && <StudentTrainers studentId={id} onSupport={() => setTab('ajuda')} />}
             {tab === 'biblioteca' && <StudentLibrary workouts={workouts} />}
-            {tab === 'conta' && <AccountPanel student embedded />}
-            {tab === 'ajuda' && <HelpDesk banner={false} />}
             {tab === "dados" && (
               <ImportPanel
                 alunoId={id}
@@ -411,7 +451,7 @@ export default function StudentPage() {
             )}
           </>
         )}
-      </div>}
+      </div>)}
       </PersonalWorkspace>
       )}
     </DashboardShell>

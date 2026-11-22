@@ -23,3 +23,7 @@
   .toolbar button { flex:1; }
   .overview>dl dd { font-size:24px; }
 }
+.toolbar :global(.personal-filter-chips) { width:auto; }
+@media(max-width:479px) {
+  .toolbar :global(.personal-filter-chips) { width:100%; }
+}
