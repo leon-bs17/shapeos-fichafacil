@@ -8,7 +8,14 @@
 .empty { display:grid; justify-items:center; gap:12px; padding:24px 20px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); text-align:center; color:var(--p-muted); }
 .empty>svg { color:var(--p-brand); }
 .empty p { margin:0; max-width:500px; font-size:12px; line-height:1.7; }
-.resume { padding:18px 20px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.resume { padding:14px 16px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
+.resume h2, .resume h3 { margin:0; font-size:13px; line-height:1.5; font-weight:600; }
+.resumeList { margin:6px 0 0; padding:0; list-style:none; }
+.resumeRow { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; padding:7px 0; }
+.resumeRow + .resumeRow { border-top:1px solid var(--p-line); }
+.resumeRow:last-child { padding-bottom:0; }
+.resumeRow h3 { overflow-wrap:anywhere; }
+.resumeMeta { margin:2px 0 0; color:var(--p-muted); font-size:11px; line-height:1.5; }
 .workoutGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
 .workout { display:grid; align-content:start; gap:14px; min-width:0; padding:18px; border:1px solid var(--p-line); border-radius:13px; background:var(--p-panel); }
 .workoutHeading { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:10px; }
@@ -23,7 +30,8 @@
 @media(max-width:767px) {
   .body,.training { gap:16px; } .workoutGrid { grid-template-columns:minmax(0,1fr); } .workout { padding:16px; }
   .empty { padding:22px 14px; } .empty p { font-size:12px; }
-  .resume { padding:16px; } .exercise { flex-wrap:wrap; gap:6px; } .note { padding:14px; }
+  .resume { padding:14px; } .resumeRow { gap:8px; } .resumeRow > button { height:44px; }
+  .exercise { flex-wrap:wrap; gap:6px; } .note { padding:14px; }
 }
 @media(prefers-reduced-motion:reduce) { .metric { transition:none; } }
 .body .start { white-space:normal; }
@@ -36,8 +44,6 @@
 /* Compact Treinar only; the shared banner, indicators and other tabs keep their contract. */
 .compactTraining { gap:14px; }
 .compactTraining .sectionTitle { margin-bottom:10px; font-size:13px; line-height:1.5; }
-.compactTraining .resume { padding:14px 16px; }
-.compactTraining .resume h2 { font-size:13px; }
 .compactTraining .workoutGrid { gap:12px; }
 .compactTraining .workout { gap:10px; padding:14px 16px; }
 .compactTraining .workoutHeading { gap:8px; }
@@ -52,7 +58,7 @@
 .compactTraining .note { padding:10px 14px; font-size:11px; line-height:1.6; }
 @media(max-width:767px) {
  .compactTraining { gap:12px; }
- .compactTraining .workout,.compactTraining .resume { padding:14px; }
+ .compactTraining .workout { padding:14px; }
  .compactTraining .empty { padding:16px 14px; }
  .compactTraining :global([data-student-link-status]) { padding:14px; }
 }

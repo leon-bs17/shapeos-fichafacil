@@ -315,23 +315,22 @@ export default function StudentPage() {
                 <StudentInvitations studentId={id} />
                 <StudentToday workouts={workouts} agenda={agenda} sessions={sessions} onStart={w => void start(w)} onAgenda={() => setTab('agenda')} />
                 {unfinished.length > 0 && (
-                  <section className={styles.resume}>
-                    <h2 className="font-semibold">Continuar de onde parou</h2>
-                    {unfinished.map((s) => (
-                      <div
-                        key={s.id}
-                        className="mt-3 flex justify-between gap-3 items-center"
-                      >
-                        <div>
-                          <p>{s.titulo}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {s.series.length} séries salvas ·{" "}
-                            {new Date(s.inicio).toLocaleDateString("pt-BR")}
-                          </p>
-                        </div>
-                        <Button onClick={() => setActive(s)}>Retomar</Button>
-                      </div>
-                    ))}
+                  <section className={styles.resume} aria-labelledby="student-resume-title">
+                    <h2 id="student-resume-title">Continuar de onde parou</h2>
+                    <ul className={styles.resumeList}>
+                      {unfinished.map((s) => (
+                        <li key={s.id} className={styles.resumeRow}>
+                          <div>
+                            <h3 id={`resume-session-${s.id}`}>{s.titulo}</h3>
+                            <p className={styles.resumeMeta}>
+                              {s.series.length} {s.series.length === 1 ? "série salva" : "séries salvas"} ·{" "}
+                              <time dateTime={s.inicio}>{new Date(s.inicio).toLocaleDateString("pt-BR")}</time>
+                            </p>
+                          </div>
+                          <Button size="sm" variant="outline" aria-describedby={`resume-session-${s.id}`} onClick={() => setActive(s)}>Retomar</Button>
+                        </li>
+                      ))}
+                    </ul>
                   </section>
                 )}
                 <section>
