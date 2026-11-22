@@ -81,7 +81,7 @@ export function AccountPanel({ student = false, embedded = false }: { student?: 
       {!embedded && <PersonalPageHeader icon="conta" title="Minha conta" description="Consulte seus dados e gerencie sua senha de acesso." />}
       <ShapeosBanner
         titleId="personal-account-banner"
-        eyebrow={student ? 'Conta do Aluno' : 'Conta do Personal'}
+        eyebrow={student ? 'Minha conta' : 'Conta do Personal'}
         title={<>Seu perfil, sua <span>segurança</span></>}
         description="Gerencie seus dados e mantenha seu acesso protegido."
         art={<PersonalBannerArt variant="account"/>}

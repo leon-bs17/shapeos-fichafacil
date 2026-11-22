@@ -263,14 +263,14 @@ export default function StudentPage() {
       {!active && <>
         {tab === 'treino' && <ShapeosBanner
           titleId="student-banner-title"
-          eyebrow="Aluno"
+          eyebrow={current.label}
           title={<>Olá, <span>{profile.data?.nome?.trim().split(/\s+/)[0] || 'Aluno'}</span></>}
           description="Treine, acompanhe sua evolução e compartilhe resultados com seu personal."
           art={<StudentTrainingWireframe />}
         />}
         {banner && <ShapeosBanner
           titleId="student-banner-title"
-          eyebrow="Aluno"
+          eyebrow={current.label}
           title={banner.title}
           description={current.description}
           art={<PersonalBannerArt variant={banner.art} />}
