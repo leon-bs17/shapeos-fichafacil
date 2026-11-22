@@ -3,15 +3,21 @@
 import { NotificationBell } from '@/components/layout/notification-bell'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import type { ReactNode } from 'react'
-import { Megaphone, CalendarDays, Dumbbell, FileText, Library, Users, LayoutGrid, CircleUserRound, LifeBuoy } from 'lucide-react'
+import { Megaphone, CalendarDays, Dumbbell, FileText, Library, Users, LayoutGrid, CircleUserRound, LifeBuoy, type LucideIcon } from 'lucide-react'
 
 const icons = { ajuda: LifeBuoy, comunicados: Megaphone, agenda: CalendarDays, alunos: Users, treinos: Dumbbell, biblioteca: Library, relatorios: FileText, visao: LayoutGrid, conta: CircleUserRound, LifeBuoy }
 
-export function PersonalPageHeader({ title, description, icon, actions }: { title: string; description: string; icon: keyof typeof icons; actions?: ReactNode }) {
-  const Icon = icons[icon]
+export function PersonalPageHeader({ title, description, icon, actions, showNotifications = true }: {
+  title: string
+  description: string
+  icon: keyof typeof icons | LucideIcon
+  actions?: ReactNode
+  showNotifications?: boolean
+}) {
+  const Icon = typeof icon === 'string' ? icons[icon] : icon
   return <header className="personal-content-heading">
     <div className="personal-page-heading"><span className="personal-heading-icon"><Icon size={21} strokeWidth={1.75} aria-hidden="true" /></span><div><h1>{title}</h1><p>{description}</p></div></div>
-    <div className="personal-header-right"><div className="personal-header-tools"><NotificationBell /><ThemeToggle /></div>{actions && <div className="personal-heading-actions">{actions}</div>}</div>
+    <div className="personal-header-right"><div className="personal-header-tools">{showNotifications && <NotificationBell />}<ThemeToggle /></div>{actions && <div className="personal-heading-actions">{actions}</div>}</div>
   </header>
 }
 

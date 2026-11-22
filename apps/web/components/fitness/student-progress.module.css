@@ -9,8 +9,6 @@
 .overview>dl>div:first-child { padding-left:0; }
 .overview>dl>div:last-child { padding-right:0; }
 .overview>dl dd { font-size:26px; }
-.evolution :global([data-compact-progress]) { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; min-width:0; }
-.evolution :global([data-compact-progress])>* { margin-block:0; min-width:0; }
 @media(max-width:767px) {
   .toolbar button { min-height:44px; }
   .overview>dl { row-gap:12px; }
@@ -22,4 +20,8 @@
   .toolbar>div:last-child { width:100%; }
   .toolbar button { flex:1; }
   .overview>dl dd { font-size:24px; }
+}
+.toolbar :global(.personal-filter-chips) { width:auto; }
+@media(max-width:479px) {
+  .toolbar :global(.personal-filter-chips) { width:100%; }
 }

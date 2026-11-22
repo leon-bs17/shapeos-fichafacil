@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
+import { ImagePlus } from "lucide-react";
 import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FilePicker } from "@/components/ui/file-picker";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { saveAssessment, today, type Assessment } from "@/services/fitness";
@@ -197,23 +199,18 @@ export function AssessmentPanel({
           />
         </div>
         {own && (
-          <div>
-            <Label htmlFor="assessment-photo">
-              Foto de evolução (opcional)
-            </Label>
-            <input
-              id="assessment-photo"
-              key={file ? "selected" : "empty"}
-              className="block mt-2 max-w-full text-sm"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Foto privada, visível para você, seus personais vinculados e a
-              administração.
-            </p>
-          </div>
+          <FilePicker
+            label="Foto de evolução"
+            optional
+            help="Visível só para você, personais vinculados e administração."
+            accept="image/jpeg,image/png,image/webp"
+            fileName={file?.name}
+            disabled={busy}
+            onSelect={setFile}
+            onRemove={() => setFile(null)}
+            icon={ImagePlus}
+            labels={{ choose: "Adicionar foto", change: "Trocar foto", remove: "Remover foto" }}
+          />
         )}
         <div className={compact ? styles.formActions : undefined}>
           <Button className={compact ? styles.saveButton : undefined} disabled={busy} onClick={() => void save()}>

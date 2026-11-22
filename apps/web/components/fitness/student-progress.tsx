@@ -11,8 +11,8 @@ export function StudentProgress({ sessions }: { sessions: Session[] }) {
     <section className={evolutionStyles.overview} aria-label="Resumo da evolução">
       <header className={evolutionStyles.toolbar}>
         <div><h2>Seu acompanhamento</h2><p>Resumo dos últimos {period} dias</p></div>
-        <div className={styles.choices} role="group" aria-label="Período da evolução">
-          {([7,30,90] as const).map(days => <button key={days} type="button" aria-pressed={period === days} onClick={() => setPeriod(days)}>{days} dias</button>)}
+        <div className="personal-filter-chips" role="group" aria-label="Período da evolução">
+          {([7,30,90] as const).map(days => <button key={days} type="button" className="personal-filter-chip" aria-pressed={period === days} onClick={() => setPeriod(days)}>{days} dias</button>)}
         </div>
       </header>
       <ProgressPanel sessions={sessions} compact periodDays={period} metricsOnly conciseMetrics />

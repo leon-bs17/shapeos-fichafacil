@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import { Download, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FilePicker } from "@/components/ui/file-picker";
 import { Input } from "@/components/ui/input";
 import {
   download,
@@ -9,6 +11,7 @@ import {
   type Workout,
 } from "@/services/fitness";
 import { importRows, type ImportRow } from "@/lib/fitness-import";
+import styles from "./student-experience.module.css";
 export function ImportPanel({
   alunoId,
   workouts,
@@ -21,6 +24,7 @@ export function ImportPanel({
   onImport: (s: Session[]) => Promise<void>;
 }) {
   const [rows, setRows] = useState<ImportRow[]>([]),
+    [fileName, setFileName] = useState<string>(),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [error, setError] = useState("");
@@ -28,6 +32,9 @@ export function ImportPanel({
     w.itens.map((e) => ({ ...e, workout: w })),
   );
   async function read(file: File) {
+    setBusy(true);
+    setFileName(file.name);
+    setRows([]);
     setError("");
     setMessage("");
     try {
@@ -47,7 +54,14 @@ export function ImportPanel({
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Arquivo inválido.");
+    } finally {
+      setBusy(false);
     }
+  }
+  function removeFile() {
+    setFileName(undefined);
+    setRows([]);
+    setError("");
   }
   function edit(i: number, k: keyof ImportRow, v: string) {
     setRows((all) => all.map((r, n) => (n === i ? { ...r, [k]: v } : r)));
@@ -108,6 +122,7 @@ export function ImportPanel({
       }
       await onImport([...map.values()]);
       setRows([]);
+      setFileName(undefined);
       setMessage("Histórico importado. Confira o painel de evolução.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Não foi possível importar.");
@@ -131,57 +146,41 @@ export function ImportPanel({
     URL.revokeObjectURL(url);
   }
   return (
-    <div className="space-y-5">
-      <section className="rounded-2xl border bg-card p-5 space-y-4">
-        <h2 className="text-lg font-semibold">Seu histórico, seus dados</h2>
-        <p className="text-sm text-muted-foreground">
-          Exporte suas sessões ShapeOS em JSON ou importe séries de CSV/JSON.
-          Cabeçalhos comuns de Strong e Hevy são reconhecidos; datas ambíguas
-          precisam ser corrigidas na revisão. As cargas devem estar em kg.
-          Vincule cada exercício a uma ficha ativa antes de importar.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={() =>
-              download("shapeos-treinos.json", {
-                format: "shapeos-fitness-v1",
-                sessions,
-              })
-            }
-          >
-            Exportar sessões
-          </Button>
-          <Button variant="outline" onClick={model}>
-            Baixar modelo CSV
+    <div className={styles.stack}>
+      <section className="personal-panel" aria-labelledby="student-data-export">
+        <header className="personal-panel-heading">
+          <div><h2 id="student-data-export">Exportar registros</h2><p>Baixe suas sessões do ShapeOS em JSON.</p></div>
+        </header>
+        <div className={styles.state}>
+          <Button variant="outline" onClick={() => download("shapeos-treinos.json", { format: "shapeos-fitness-v1", sessions })}>
+            <Download size={16} aria-hidden="true" />Exportar sessões
           </Button>
         </div>
-        <label className="block text-sm" htmlFor="fitness-import">
-          Arquivo CSV ou JSON (até 500 séries)
-        </label>
-        <input
-          id="fitness-import"
-          type="file"
-          accept=".csv,.json"
-          disabled={busy}
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) void read(f);
-            e.target.value = "";
-          }}
-        />
-        <p className="text-xs text-muted-foreground">
-          Importe apenas registros ainda ausentes. Uma nova importação do mesmo
-          arquivo cria novas sessões.
-        </p>
+      </section>
+      <section className="personal-panel" aria-labelledby="student-data-import">
+        <header className={`personal-panel-heading ${styles.sectionHeading}`}>
+          <div><h2 id="student-data-import">Importar registros</h2><p>CSV ou JSON de até 2 MB e 500 séries.</p></div>
+          <Button variant="outline" onClick={model}><FileDown size={16} aria-hidden="true" />Baixar modelo CSV</Button>
+        </header>
+        <div className={styles.state} aria-busy={busy}>
+          <FilePicker
+            label="Arquivo de treino"
+            help="Aceita formatos comuns do Strong e Hevy. Use kg e revise datas e vínculos. Evite duplicatas."
+            accept=".csv,.json"
+            fileName={fileName}
+            disabled={busy}
+            onSelect={file => void read(file)}
+            onRemove={removeFile}
+          />
+        </div>
       </section>
       {rows.length > 0 && (
-        <section className="rounded-2xl border bg-card p-4">
-          <h3 className="font-semibold mb-3">
-            Revisar {rows.length} séries antes de salvar
-          </h3>
+        <section className="personal-panel" aria-labelledby="student-data-review">
+          <header className="personal-panel-heading">
+            <h2 id="student-data-review">Revisar {rows.length} séries antes de salvar</h2>
+          </header>
           <div className="overflow-x-auto max-h-[500px]">
-            <table className="w-full text-sm text-left">
+            <table className="personal-table">
               <thead>
                 <tr>
                   <th>Exercício original / destino</th>
@@ -236,9 +235,11 @@ export function ImportPanel({
               </tbody>
             </table>
           </div>
-          <Button className="mt-4" disabled={busy} onClick={() => void apply()}>
-            {busy ? "Importando…" : "Confirmar importação revisada"}
-          </Button>
+          <footer className={styles.state}>
+            <Button disabled={busy} onClick={() => void apply()}>
+              {busy ? "Importando…" : "Confirmar importação revisada"}
+            </Button>
+          </footer>
         </section>
       )}
       {error && (

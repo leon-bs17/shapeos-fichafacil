@@ -50,8 +50,12 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
     await page.getByRole('button', { name: 'Evolução', exact: true }).click()
     await page.getByRole('button', { name: '7 dias', exact: true }).click()
     await expect(page.getByRole('heading', { name: 'Consistência · 7 dias', exact: true })).toBeVisible()
+    const loads = page.getByRole('region', { name: 'Carga por exercício', exact: true })
+    await expect(loads.getByText('Maior carga: 20 kg', { exact: true })).toBeVisible()
+    await expect(loads.getByText('1 registro com carga', { exact: true })).toBeVisible()
+    await expect(loads.locator('[data-load-chart]')).toHaveCount(0)
     await page.getByRole('button', { name: 'Agenda', exact: true }).click()
-    await expect(page.getByRole('region', { name: 'Agenda semanal' })).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Sua semana', exact: true })).toBeVisible()
     await expect(page.getByText('01/12/2026', { exact: true })).toBeVisible()
     await page.getByRole('button', { name: 'Avaliações', exact: true }).click()
     await expect(page.getByRole('heading', { name: 'Comparar medidas', exact: true })).toBeVisible()
@@ -60,8 +64,9 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
     await expect(page.getByRole('dialog', { name: 'Avaliação inicial', exact: true })).toBeVisible()
     await page.keyboard.press('Escape')
     await page.getByRole('button', { name: 'Comunicados', exact: true }).click()
-    await page.getByText('Personal E2E · Orientação E2E · Não lida', { exact: true }).click()
-    await expect(page.getByRole('region', { name: 'Orientações e avisos', exact: true }).getByText('Mantenha a execução controlada.', { exact: true })).toBeVisible()
+    const notices = page.getByRole('region', { name: 'Comunicados recebidos', exact: true })
+    await notices.getByText('Personal E2E · Orientação E2E', { exact: true }).click()
+    await expect(notices.getByText('Mantenha a execução controlada.', { exact: true })).toBeVisible()
     await expect.poll(async () => (await rest('personal_comunicado_leituras?select=lida_em')).length).toBe(1)
     async function expectCompactMys() {
       const assistant = page.getByRole('region', { name: 'Mys, assistente ShapeOS', exact: true })
@@ -83,7 +88,10 @@ test('aluno treina, retoma, compara medidas e lê orientações com dados reais 
         await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
         await page.getByRole('dialog', { name: 'Menu do Aluno', exact: true }).getByRole('button', { name: tab, exact: true }).click()
         if (tab === 'Mys · Assistente') await expectCompactMys()
-        else await expect(page.getByRole('heading', { level: 1, name: tab, exact: true })).toBeVisible()
+        else {
+          await expect(page.getByRole('heading', { level: 1, name: tab, exact: true })).toBeVisible()
+          await expect(page.locator('[data-shapeos-banner] [data-shapeos-banner-label]')).toHaveText(tab)
+        }
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${tab} no modo ${mode}`).toBe(true)
       }
     }

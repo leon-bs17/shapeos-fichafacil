@@ -79,13 +79,13 @@ export function AccountPanel({ student = false, embedded = false }: { student?: 
   return <>
     <div className="personal-overview personal-account">
       {!embedded && <PersonalPageHeader icon="conta" title="Minha conta" description="Consulte seus dados e gerencie sua senha de acesso." />}
-      {!embedded && <ShapeosBanner
+      <ShapeosBanner
         titleId="personal-account-banner"
-        eyebrow={student ? 'Conta do Aluno' : 'Conta do Personal'}
+        eyebrow={student ? 'Minha conta' : 'Conta do Personal'}
         title={<>Seu perfil, sua <span>segurança</span></>}
         description="Gerencie seus dados e mantenha seu acesso protegido."
         art={<PersonalBannerArt variant="account"/>}
-      />}
+      />
       <div className="personal-account-columns">
         <section className="personal-account-panel" aria-labelledby="personal-account-data-title" aria-busy={profile.isLoading}>
           <header><UserRound size={21} strokeWidth={1.75} aria-hidden="true" /><div><h2 id="personal-account-data-title">Dados da conta</h2><p>Informações do seu perfil de {student ? 'Aluno' : 'Personal'}.</p></div></header>
