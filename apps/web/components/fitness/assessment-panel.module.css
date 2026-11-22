@@ -78,12 +78,3 @@
 /* Contain intrinsic table/file widths inside the available mobile column. */
 :global(html body .personal-content) .compact :global(section.bg-card) { min-width:0; grid-template-columns:minmax(0,1fr); }
 :global(html body .personal-content) .compact input[type=file] { width:100%; min-width:0; max-width:100%; }
-
-.photoField { display:grid; gap:7px; min-width:0; }
-.photoTitle { display:flex; align-items:baseline; gap:7px; font-size:12px; font-weight:600; }
-.photoTitle span { color:var(--p-muted); font-size:11px; font-weight:400; }
-.photoActions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
-.photoSelection { display:flex; align-items:center; gap:6px; min-width:0; max-width:100%; }
-.photoSelection button { flex-shrink:0; }
-.photoName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
-.photoHelp { margin:0; color:var(--p-muted); font-size:11px; line-height:1.5; }

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Download, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FilePicker } from "@/components/ui/file-picker";
 import { Input } from "@/components/ui/input";
 import {
   download,
@@ -23,6 +24,7 @@ export function ImportPanel({
   onImport: (s: Session[]) => Promise<void>;
 }) {
   const [rows, setRows] = useState<ImportRow[]>([]),
+    [fileName, setFileName] = useState<string>(),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [error, setError] = useState("");
@@ -30,6 +32,9 @@ export function ImportPanel({
     w.itens.map((e) => ({ ...e, workout: w })),
   );
   async function read(file: File) {
+    setBusy(true);
+    setFileName(file.name);
+    setRows([]);
     setError("");
     setMessage("");
     try {
@@ -49,7 +54,14 @@ export function ImportPanel({
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Arquivo inválido.");
+    } finally {
+      setBusy(false);
     }
+  }
+  function removeFile() {
+    setFileName(undefined);
+    setRows([]);
+    setError("");
   }
   function edit(i: number, k: keyof ImportRow, v: string) {
     setRows((all) => all.map((r, n) => (n === i ? { ...r, [k]: v } : r)));
@@ -110,6 +122,7 @@ export function ImportPanel({
       }
       await onImport([...map.values()]);
       setRows([]);
+      setFileName(undefined);
       setMessage("Histórico importado. Confira o painel de evolução.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Não foi possível importar.");
@@ -146,30 +159,19 @@ export function ImportPanel({
       </section>
       <section className="personal-panel" aria-labelledby="student-data-import">
         <header className={`personal-panel-heading ${styles.sectionHeading}`}>
-          <div><h2 id="student-data-import">Importar registros</h2><p>Use um arquivo CSV ou JSON, com até 500 séries.</p></div>
+          <div><h2 id="student-data-import">Importar registros</h2><p>CSV ou JSON de até 2 MB e 500 séries.</p></div>
           <Button variant="outline" onClick={model}><FileDown size={16} aria-hidden="true" />Baixar modelo CSV</Button>
         </header>
-        <div className={`${styles.state} ${styles.stack}`}>
-          <div>
-            <label className="block" htmlFor="fitness-import">Arquivo de treino</label>
-            <input
-              id="fitness-import"
-              className={styles.fileInput}
-              type="file"
-              accept=".csv,.json"
-              aria-describedby="fitness-import-help"
-              disabled={busy}
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) void read(file);
-                event.target.value = "";
-              }}
-            />
-          </div>
-          <p id="fitness-import-help" className="m-0">
-            O ShapeOS reconhece cabeçalhos comuns de Strong e Hevy. Use cargas em kg, corrija as datas na revisão e vincule cada exercício a uma ficha ativa.
-            Importe apenas registros ausentes para evitar duplicatas.
-          </p>
+        <div className={styles.state} aria-busy={busy}>
+          <FilePicker
+            label="Arquivo de treino"
+            help="Aceita formatos comuns do Strong e Hevy. Use kg e revise datas e vínculos. Evite duplicatas."
+            accept=".csv,.json"
+            fileName={fileName}
+            disabled={busy}
+            onSelect={file => void read(file)}
+            onRemove={removeFile}
+          />
         </div>
       </section>
       {rows.length > 0 && (
