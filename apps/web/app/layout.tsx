@@ -31,8 +31,8 @@ export const metadata: Metadata = {
     'Gestão de treinos e consultoria para personal trainers e alunos.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icons/icon-192.png',
-    apple: '/apple-touch-icon.png',
+    icon: '/icons/icon-192.png?v=2',
+    apple: '/apple-touch-icon.png?v=2',
   },
   appleWebApp: {
     capable: true,
