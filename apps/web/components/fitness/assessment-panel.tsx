@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
+import { ImagePlus, X } from "lucide-react";
 import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { AgendaDatePicker } from "./agenda-date-picker";
 import styles from "./assessment-panel.module.css";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,8 @@ export function AssessmentPanel({
   actionPicker?: ReactNode;
   schedule?: ReactNode;
 }) {
+  const photoInput = useRef<HTMLInputElement>(null);
+  const photoButton = useRef<HTMLButtonElement>(null);
   const [date, setDate] = useState(today()),
     [values, setValues] = useState({
       peso: "",
@@ -197,21 +200,36 @@ export function AssessmentPanel({
           />
         </div>
         {own && (
-          <div>
-            <Label htmlFor="assessment-photo">
-              Foto de evolução (opcional)
-            </Label>
+          <div className={styles.photoField} role="group" aria-labelledby="assessment-photo-title">
+            <div id="assessment-photo-title" className={styles.photoTitle}>
+              Foto de evolução <span>Opcional</span>
+            </div>
             <input
               id="assessment-photo"
-              key={file ? "selected" : "empty"}
-              className="block mt-2 max-w-full text-sm"
+              ref={photoInput}
+              hidden
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              disabled={busy}
+              onChange={(event) => {
+                const selected = event.currentTarget.files?.[0];
+                if (selected) setFile(selected);
+                event.currentTarget.value = "";
+              }}
             />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Foto privada, visível para você, seus personais vinculados e a
-              administração.
+            <div className={styles.photoActions}>
+              <Button ref={photoButton} type="button" variant="outline" disabled={busy} aria-describedby="assessment-photo-help" onClick={() => photoInput.current?.click()}>
+                <ImagePlus size={16} aria-hidden="true" />{file ? "Trocar foto" : "Adicionar foto"}
+              </Button>
+              <div className={styles.photoSelection}>
+                <span className={styles.photoName} aria-live="polite" title={file?.name}>{file?.name}</span>
+                {file && <Button type="button" variant="outline" size="icon" aria-label="Remover foto" disabled={busy} onClick={() => { setFile(null); photoButton.current?.focus(); }}>
+                  <X size={16} aria-hidden="true" />
+                </Button>}
+              </div>
+            </div>
+            <p id="assessment-photo-help" className={styles.photoHelp}>
+              Visível só para você, personais vinculados e administração.
             </p>
           </div>
         )}
